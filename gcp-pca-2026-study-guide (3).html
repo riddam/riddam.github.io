@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GCP Professional Cloud Architect — 2026 Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A2540;--blueprint:#123A63;--paper:#FBFBF8;--panel:#FFFFFF;
+    --line:#D4DBE4;--grid:rgba(18,58,99,.06);--muted:#5A6B7E;
+    --primary:#1A73E8;--green:#188038;--red:#C5221F;--amber:#B06000;
+    --amber-bg:#FEF7E6;--primary-bg:#E8F0FE;--green-bg:#E6F4EA;--red-bg:#FCE8E6;
+    --disp:'Space Grotesk',system-ui,sans-serif;--body:'IBM Plex Sans',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px;}
+  .sheet{max-width:1120px;margin:0 auto;padding:0 22px 90px}
+
+  .titleblock{background:var(--ink);color:#fff;margin:0 -22px 40px;padding:44px 40px 34px;border-bottom:4px solid var(--primary);position:relative;overflow:hidden;}
+  .titleblock::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:22px 22px;pointer-events:none;}
+  .tb-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#7FB0F0;margin:0 0 14px;position:relative}
+  .titleblock h1{font-family:var(--disp);font-weight:700;font-size:clamp(30px,5.5vw,52px);line-height:1.02;margin:0 0 6px;letter-spacing:-.02em;position:relative}
+  .titleblock h1 .sub{display:block;font-size:clamp(15px,2.4vw,21px);font-weight:500;color:#AFC6E4;letter-spacing:0;margin-top:10px}
+  .tb-meta{display:flex;flex-wrap:wrap;gap:0;margin-top:26px;border:1px solid rgba(255,255,255,.18);position:relative;font-family:var(--mono)}
+  .tb-cell{flex:1 1 120px;padding:12px 16px;border-right:1px solid rgba(255,255,255,.18)}
+  .tb-cell:last-child{border-right:none}
+  .tb-cell .k{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#7FB0F0;display:block;margin-bottom:4px}
+  .tb-cell .v{font-size:15px;font-weight:500}
+  .banner{position:relative;margin-top:22px;background:rgba(240,180,0,.14);border-left:3px solid #F4B400;padding:12px 16px;font-size:13.5px;color:#FDECC0}
+  .banner b{color:#fff}
+
+  nav.toc{position:relative;margin:0 0 42px;padding:18px 20px;background:var(--panel);border:1px solid var(--line);border-radius:4px}
+  nav.toc h4{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+  nav.toc ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px 20px}
+  nav.toc a{color:var(--blueprint);text-decoration:none;font-size:13.5px;display:flex;gap:8px;padding:3px 0;border-bottom:1px solid transparent}
+  nav.toc a:hover{border-bottom-color:var(--primary);color:var(--primary)}
+  nav.toc a .n{font-family:var(--mono);color:var(--muted);font-size:12px}
+
+  section{margin:0 0 54px;scroll-margin-top:16px}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin:0 0 20px;padding-bottom:10px;border-bottom:2px solid var(--ink)}
+  .sec-num{font-family:var(--mono);font-size:13px;font-weight:600;color:#fff;background:var(--ink);padding:4px 10px;border-radius:3px;letter-spacing:.05em;flex:none}
+  .sec-head h2{font-family:var(--disp);font-weight:600;font-size:clamp(21px,3.4vw,29px);margin:0;letter-spacing:-.01em}
+  h3{font-family:var(--disp);font-weight:600;font-size:18px;margin:30px 0 12px;color:var(--blueprint)}
+  h4{font-family:var(--disp);font-weight:600;font-size:15px;margin:22px 0 10px}
+  p{margin:0 0 14px}
+  a{color:var(--primary)}
+
+  .tw{overflow-x:auto;margin:14px 0 6px;border:1px solid var(--line);border-radius:4px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px}
+  th{background:var(--ink);color:#fff;text-align:left;padding:9px 12px;font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase}
+  td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:rgba(18,58,99,.025)}
+  td code,.svc{font-family:var(--mono);font-size:12.5px;font-weight:500;color:var(--blueprint)}
+  .old{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+  .aws{font-family:var(--mono);font-size:12px;color:#8A5A00}
+
+  .wt{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;white-space:nowrap}
+  .wt .bar{height:7px;background:var(--primary);border-radius:3px;min-width:6px}
+
+  .callout{border-radius:4px;padding:13px 15px 13px 16px;margin:16px 0;font-size:13.5px;border-left:4px solid}
+  .callout .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;display:block;margin-bottom:5px}
+  .callout p{margin:0}
+  .co-trade{background:var(--amber-bg);border-color:var(--amber)}.co-trade .lbl{color:var(--amber)}
+  .co-tip{background:var(--primary-bg);border-color:var(--primary)}.co-tip .lbl{color:var(--primary)}
+  .co-trap{background:var(--red-bg);border-color:var(--red)}.co-trap .lbl{color:var(--red)}
+
+  .diagram{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:22px;margin:18px 0;overflow-x:auto}
+  .diagram .cap{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+  .node{font-family:var(--mono);font-size:12.5px;font-weight:500;padding:9px 13px;border-radius:4px;border:1.5px solid var(--blueprint);background:#fff;color:var(--ink);display:inline-block;text-align:center;line-height:1.3}
+  .node.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .node.blue{background:var(--primary-bg);border-color:var(--primary);color:var(--primary)}
+  .node.green{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+  .node.amber{background:var(--amber-bg);border-color:var(--amber);color:var(--amber)}
+
+  .hier{display:flex;flex-direction:column;align-items:center;gap:0}
+  .hier .node{margin:0}
+  .hier .drop{width:2px;height:18px;background:var(--blueprint)}
+
+  .tree{display:flex;flex-direction:column;gap:10px}
+  .branch{display:flex;align-items:center;gap:0;flex-wrap:wrap}
+  .branch .q{font-family:var(--body);font-size:13.5px;flex:1 1 300px;padding:9px 13px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--muted);border-radius:3px}
+  .branch .arr{font-family:var(--mono);color:var(--muted);padding:0 12px;font-size:15px;flex:none}
+  .branch .q b{color:var(--red)}
+
+  .ladder{display:flex;flex-direction:column;gap:2px}
+  .rung{display:grid;grid-template-columns:120px 1fr auto;gap:14px;align-items:center;padding:10px 14px;background:#fff;border:1px solid var(--line);border-radius:3px}
+  .rung .cls{font-family:var(--mono);font-weight:600;color:var(--blueprint)}
+  .rung .desc{font-size:13px;color:var(--muted)}
+  .rung .tag{font-family:var(--mono);font-size:11px;padding:3px 8px;border-radius:20px;white-space:nowrap}
+  .cold-cost-1{background:var(--green-bg);color:var(--green)}.cold-cost-2{background:var(--primary-bg);color:var(--primary)}
+  .cold-cost-3{background:var(--amber-bg);color:var(--amber)}.cold-cost-4{background:var(--red-bg);color:var(--red)}
+
+  .stack{display:flex;flex-direction:column;gap:8px}
+  .layer{border:1px solid var(--line);border-radius:4px;padding:12px 15px;background:#fff}
+  .layer .lt{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-family:var(--mono);font-size:12px;padding:5px 10px;border-radius:20px;background:var(--primary-bg);color:var(--primary);border:1px solid #C2D7FA}
+
+  .pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin:16px 0}
+  .pillar{border:1px solid var(--line);border-top:3px solid var(--primary);border-radius:4px;padding:13px;background:#fff}
+  .pillar .pn{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:.1em}
+  .pillar b{font-family:var(--disp);display:block;font-size:14px;margin:3px 0 5px}
+  .pillar span{font-size:12.5px;color:var(--muted)}
+
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+  .split .col{border-radius:4px;padding:13px 15px;font-size:13px}
+  .split .pro{background:var(--green-bg);border:1px solid #B7DFC4}
+  .split .con{background:var(--red-bg);border:1px solid #F3C1BE}
+  .split h5{margin:0 0 8px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+  .split .pro h5{color:var(--green)}.split .con h5{color:var(--red)}
+  .split ul{margin:0;padding-left:17px}.split li{margin-bottom:5px}
+
+  ul.tick{list-style:none;padding-left:0;margin:12px 0}
+  ul.tick li{padding-left:26px;position:relative;margin-bottom:9px;font-size:13.5px}
+  ul.tick li::before{content:"›";position:absolute;left:6px;top:-1px;color:var(--primary);font-family:var(--mono);font-weight:600;font-size:16px}
+
+  .case-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:12px;margin:16px 0}
+  .case{border:1px solid var(--line);border-radius:4px;padding:16px;background:#fff;border-top:3px solid var(--ink)}
+  .case .tag{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--primary);margin-bottom:4px}
+  .case b.cn{font-family:var(--disp);font-size:16px;display:block;margin-bottom:9px}
+  .case .row{font-size:12.5px;margin-bottom:7px;line-height:1.45}
+  .case .rl{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block}
+  .case .row .sv{font-family:var(--mono);font-size:11.5px;color:var(--blueprint)}
+
+  /* FAQ */
+  .faq{border:1px solid var(--line);border-radius:4px;margin:10px 0;background:#fff;overflow:hidden}
+  .faq summary{cursor:pointer;padding:13px 16px;font-family:var(--disp);font-weight:600;font-size:14.5px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";font-family:var(--mono);color:var(--primary);font-size:20px;flex:none}
+  .faq[open] summary::after{content:"–"}
+  .faq summary:hover{color:var(--primary)}
+  .faq .a{padding:0 16px 15px;font-size:13.5px;color:#2b3a4a}
+  .faq .a p{margin:0}
+
+  footer{margin-top:60px;padding-top:22px;border-top:2px solid var(--ink);font-size:12.5px;color:var(--muted);font-family:var(--mono)}
+  footer a{color:var(--primary)}
+
+  @media (max-width:640px){
+    .split{grid-template-columns:1fr}
+    .rung{grid-template-columns:1fr;gap:6px}
+    .tb-cell{flex:1 1 45%}
+    .branch .arr{padding:0 6px}
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  @media print{body{background:#fff;font-size:11pt}.titleblock{-webkit-print-color-adjust:exact;print-color-adjust:exact}nav.toc{display:none}section{page-break-inside:avoid}.faq{page-break-inside:avoid}.faq[open]{}.faq:not([open]) .a{display:block}}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- ===================== TITLE BLOCK ===================== -->
+  <header class="titleblock">
+    <p class="tb-eyebrow">Google Cloud · Certification Blueprint · Rev. 2026</p>
+    <h1>Professional Cloud Architect
+      <span class="sub">Last-minute review — format, all domains, service trade-offs, scenario triggers, HA/DR, cost &amp; the new AI focus</span>
+    </h1>
+    <div class="tb-meta">
+      <div class="tb-cell"><span class="k">Questions</span><span class="v">50–60</span></div>
+      <div class="tb-cell"><span class="k">Duration</span><span class="v">2 hours</span></div>
+      <div class="tb-cell"><span class="k">Fee</span><span class="v">$200 USD</span></div>
+      <div class="tb-cell"><span class="k">Validity</span><span class="v">2 years</span></div>
+      <div class="tb-cell"><span class="k">Case studies</span><span class="v">2 of 4 · 20–30%</span></div>
+      <div class="tb-cell"><span class="k">Pass mark</span><span class="v">Not published</span></div>
+    </div>
+    <div class="banner"><b>⚠ 2026 naming change:</b> the exam is transitioning from <b>Vertex AI</b> to <b>Gemini Enterprise Agent Platform</b>. Both names may appear on questions. Renamed services are flagged here with the old name in brackets, e.g. <i>GKE Enterprise (Anthos)</i>.</div>
+  </header>
+
+  <!-- ===================== TOC ===================== -->
+  <nav class="toc">
+    <h4>Sheet index</h4>
+    <ul>
+      <li><a href="#format"><span class="n">00</span> Exam format &amp; domains</a></li>
+      <li><a href="#cases"><span class="n">01</span> The 4 case studies</a></li>
+      <li><a href="#renames"><span class="n">02</span> Service renames</a></li>
+      <li><a href="#ai"><span class="n">03</span> AI &amp; ML (focus)</a></li>
+      <li><a href="#compute"><span class="n">04</span> Compute</a></li>
+      <li><a href="#storage"><span class="n">05</span> Storage</a></li>
+      <li><a href="#db"><span class="n">06</span> Databases</a></li>
+      <li><a href="#net"><span class="n">07</span> Networking</a></li>
+      <li><a href="#hadr"><span class="n">08</span> HA / DR · RTO &amp; RPO</a></li>
+      <li><a href="#sec"><span class="n">09</span> IAM &amp; Security</a></li>
+      <li><a href="#ops"><span class="n">10</span> Operations</a></li>
+      <li><a href="#data"><span class="n">11</span> Data &amp; analytics</a></li>
+      <li><a href="#migrate"><span class="n">12</span> Migration</a></li>
+      <li><a href="#cost"><span class="n">13</span> Cost optimization</a></li>
+      <li><a href="#biz"><span class="n">14</span> Business &amp; governance</a></li>
+      <li><a href="#waf"><span class="n">15</span> Well-Architected</a></li>
+      <li><a href="#tradeoffs"><span class="n">16</span> Trade-off master list</a></li>
+      <li><a href="#tips"><span class="n">17</span> Exam-day tips</a></li>
+      <li><a href="#faq"><span class="n">18</span> Exam FAQs</a></li>
+      <li><a href="#cli"><span class="n">A1</span> CLI quick reference</a></li>
+      <li><a href="#tiers"><span class="n">A2</span> Editions &amp; tiers</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===================== 00 FORMAT ===================== -->
+  <section id="format">
+    <div class="sec-head"><span class="sec-num">00</span><h2>Exam Format &amp; Domains</h2></div>
+    <p>The PCA is Google Cloud's flagship architect credential. It rewards <b>architectural judgment and case-study reasoning, not memorization</b>. Roughly 20–30% of questions attach to a case study; the rest are standalone scenarios where you pick the <i>best</i> answer among several that all "work". The <b>Well-Architected Framework</b> is woven through every domain — treat its six pillars as your default tie-breaker.</p>
+
+    <h3>Standard vs Renewal exam</h3>
+    <div class="tw"><table>
+      <tr><th>Attribute</th><th>Standard exam</th><th>Renewal exam</th></tr>
+      <tr><td>Length</td><td>2 hours</td><td>1 hour</td></tr>
+      <tr><td>Fee</td><td>$200</td><td>$100</td></tr>
+      <tr><td>Questions</td><td>50–60 MC &amp; multi-select</td><td>25 MC &amp; multi-select</td></tr>
+      <tr><td>Case studies</td><td>2 (from a pool of 4), 20–30%</td><td>1, gen-AI focused, 90–100%</td></tr>
+      <tr><td>Who</td><td>First-timers / expired certs</td><td>Active cert, within renewal window</td></tr>
+      <tr><td>Languages</td><td>English, Japanese</td><td>English, Japanese</td></tr>
+    </table></div>
+
+    <h3>Six domains &amp; weighting (2026 guide)</h3>
+    <div class="tw"><table>
+      <tr><th style="width:52%">Domain</th><th>Weight</th><th>Watch for</th></tr>
+      <tr><td><b>1.</b> Designing &amp; planning a cloud solution architecture</td>
+        <td><div class="wt"><span class="bar" style="width:64px"></span>~25%</div></td>
+        <td>Business→technical mapping, trade-offs, HA/DR, <span class="svc">Gemini Cloud Assist</span></td></tr>
+      <tr><td><b>2.</b> Managing &amp; provisioning solution infrastructure</td>
+        <td><div class="wt"><span class="bar" style="width:45px"></span>~17.5%</div></td>
+        <td>Network topology, storage/compute config, <span class="svc">Agent Platform</span> ML workflows</td></tr>
+      <tr><td><b>3.</b> Designing for security &amp; compliance</td>
+        <td><div class="wt"><span class="bar" style="width:45px"></span>~17.5%</div></td>
+        <td>IAM hierarchy, KMS, VPC-SC, <b>Securing AI</b> (Model Armor)</td></tr>
+      <tr><td><b>4.</b> Analyzing &amp; optimizing processes</td>
+        <td><div class="wt"><span class="bar" style="width:38px"></span>~15%</div></td>
+        <td>SDLC, CI/CD, cost (CapEx/OpEx), stakeholder mgmt</td></tr>
+      <tr><td><b>5.</b> Managing implementation</td>
+        <td><div class="wt"><span class="bar" style="width:32px"></span>~12.5%</div></td>
+        <td>Apigee, IaC/Terraform, <span class="svc">gcloud/gsutil/bq</span>, emulators</td></tr>
+      <tr><td><b>6.</b> Ensuring solution &amp; operations excellence</td>
+        <td><div class="wt"><span class="bar" style="width:32px"></span>~12.5%</div></td>
+        <td>Cloud Observability, SLO/alerting, chaos/load testing</td></tr>
+    </table></div>
+    <div class="callout co-tip"><span class="lbl">Read this first</span><p>The case studies are <b>published in advance</b>. Read all four cold before exam day — know each company's existing tech, business goals, constraints and compliance needs so you don't burn time reading during the exam.</p></div>
+  </section>
+
+  <!-- ===================== 01 CASE STUDIES ===================== -->
+  <section id="cases">
+    <div class="sec-head"><span class="sec-num">01</span><h2>The Four Case Studies (2026 pool)</h2></div>
+    <p>The old pool (Mountkirk Games, TerramEarth, Helicopter Racing League) is <b>retired</b>. Several current cases explicitly use Google's <b>generative-AI solutions</b>. Learn each as <i>challenge → key services → themes</i>.</p>
+    <div class="case-grid">
+      <div class="case"><span class="tag">Media</span><b class="cn">Altostrat Media</b>
+        <div class="row"><span class="rl">Core challenge</span>Global streaming/media platform; personalization &amp; gen-AI content features, cost-efficient transcoding, global low-latency delivery.</div>
+        <div class="row"><span class="rl">Key services</span><span class="sv">Global External App LB · Cloud CDN/Media CDN · Transcoder API · Agent Platform (Vertex AI) · BigQuery</span></div>
+        <div class="row"><span class="rl">Themes</span>Global delivery, personalization, cost at scale, gen-AI features.</div>
+      </div>
+      <div class="case"><span class="tag">Retail</span><b class="cn">Cymbal Retail</b>
+        <div class="row"><span class="rl">Core challenge</span>Omnichannel retailer; demand forecasting, recommendations/search, seasonal traffic spikes, unifying operational + analytical data.</div>
+        <div class="row"><span class="rl">Key services</span><span class="sv">GKE / Cloud Run · Spanner or Cloud SQL · BigQuery · Agent Builder (search/recs) · Pub/Sub</span></div>
+        <div class="row"><span class="rl">Themes</span>Elastic scale, recommendations, HTAP data, gen-AI search.</div>
+      </div>
+      <div class="case"><span class="tag">Healthcare</span><b class="cn">EHR Healthcare</b>
+        <div class="row"><span class="rl">Core challenge</span>Multi-hospital EHR SaaS migrating off legacy on-prem; <b>HIPAA</b>, multi-region HA, hybrid connectivity, strict governance.</div>
+        <div class="row"><span class="rl">Key services</span><span class="sv">Cloud Healthcare API · Cloud SQL (HA) · Shared VPC · Cloud Armor · Cloud KMS (CMEK) · VPC-SC · Assured Workloads</span></div>
+        <div class="row"><span class="rl">Themes</span>Compliance, security, hybrid migration, minimal downtime.</div>
+      </div>
+      <div class="case"><span class="tag">Automotive / IoT</span><b class="cn">KnightMotives Automotive</b>
+        <div class="row"><span class="rl">Core challenge</span>Connected-vehicle telemetry at massive scale; time-series ingest, predictive-maintenance ML, modern data platform.</div>
+        <div class="row"><span class="rl">Key services</span><span class="sv">Pub/Sub · Dataflow · Bigtable · BigQuery · Agent Platform (Vertex AI) predictive models</span></div>
+        <div class="row"><span class="rl">Themes</span>IoT pipeline, batch vs streaming, ML integration, data lifecycle.</div>
+      </div>
+    </div>
+    <div class="callout co-tip"><span class="lbl">Pattern to internalize</span><p>Healthcare → compliance + <span class="svc">Assured Workloads</span>/CMEK. IoT telemetry → <span class="svc">Pub/Sub → Dataflow → Bigtable/BigQuery</span>. Retail/media personalization → <span class="svc">Agent Platform (Vertex AI)</span> + <span class="svc">BigQuery</span>.</p></div>
+  </section>
+
+  <!-- ===================== 02 RENAMES ===================== -->
+  <section id="renames">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Service Renames — Old → New</h2></div>
+    <p>Questions may use either name. These are the renames and deprecations most likely to trip you up in 2026.</p>
+    <div class="tw"><table>
+      <tr><th>Current name</th><th>Old / former name</th><th>Note</th></tr>
+      <tr><td class="svc">Gemini Enterprise Agent Platform</td><td class="old">Vertex AI</td><td>The headline change — unified ML + gen-AI + agent platform</td></tr>
+      <tr><td class="svc">GKE Enterprise</td><td class="old">Anthos</td><td>Fleet mgmt, multicluster/multicloud, Config Mgmt, Service Mesh</td></tr>
+      <tr><td class="svc">Cloud Run functions</td><td class="old">Cloud Functions</td><td>FaaS folded under the Cloud Run brand</td></tr>
+      <tr><td class="svc">Cloud Service Mesh</td><td class="old">Traffic Director / Anthos Service Mesh</td><td>Managed Istio/Envoy mesh</td></tr>
+      <tr><td class="svc">Google Cloud Observability</td><td class="old">Stackdriver</td><td>= Cloud Monitoring + Logging + Trace + Profiler</td></tr>
+      <tr><td class="svc">Sensitive Data Protection</td><td class="old">Data Loss Prevention (DLP)</td><td>Discover/classify/de-identify PII</td></tr>
+      <tr><td class="svc">Artifact Registry</td><td class="old">Container Registry (GCR)</td><td>GCR deprecated — use Artifact Registry</td></tr>
+      <tr><td class="svc">Infrastructure Manager</td><td class="old">Deployment Manager</td><td>Terraform-based; Deployment Manager is being retired</td></tr>
+      <tr><td class="svc">Chrome Enterprise Premium</td><td class="old">BeyondCorp Enterprise</td><td>Zero-trust context-aware access</td></tr>
+      <tr><td class="svc">Google Security Operations (SecOps)</td><td class="old">Chronicle</td><td>SIEM/SOAR under Google SecOps</td></tr>
+      <tr><td class="svc">Spot VMs</td><td class="old">Preemptible VMs</td><td>Spot = successor, no 24h cap; preemptible is legacy</td></tr>
+      <tr><td class="svc">Migrate to Virtual Machines</td><td class="old">Migrate for Compute Engine</td><td>VM lift-and-shift</td></tr>
+      <tr><td class="svc">Migrate to Containers</td><td class="old">Migrate for Anthos</td><td>VM → container modernization</td></tr>
+      <tr><td class="svc">Managed Service for Apache Spark</td><td class="old">(new, complements Dataproc)</td><td>Serverless Spark option</td></tr>
+      <tr><td class="svc">Hyperdisk / Block Storage</td><td class="old">Persistent Disk (still valid)</td><td>Hyperdisk = next-gen, decoupled IOPS/throughput</td></tr>
+      <tr><td class="svc">gcloud storage</td><td class="old">gsutil</td><td>Newer, faster CLI for Cloud Storage</td></tr>
+      <tr><td class="svc">Dataplex Catalog</td><td class="old">Data Catalog</td><td>Now part of Dataplex governance</td></tr>
+    </table></div>
+    <div class="callout co-trap"><span class="lbl">Deprecated — don't pick these</span><p><span class="svc">Cloud Debugger</span> (retired), <span class="svc">Cloud IoT Core</span> (retired — use Pub/Sub + partners), and <span class="svc">Deployment Manager</span> (superseded by Terraform / Infrastructure Manager). If an answer relies on a retired service, it's almost certainly a distractor.</p></div>
+  </section>
+
+  <!-- ===================== 03 AI (FOCUS) ===================== -->
+  <section id="ai">
+    <div class="sec-head"><span class="sec-num">03</span><h2>AI &amp; ML — the 2026 Focus Area</h2></div>
+    <p>AI now appears across <b>design (§1.3), provisioning (§2.4/2.5), and security (§3.1)</b>. Almost everything routes through the <b>Gemini Enterprise Agent Platform (Vertex AI)</b>. Learn the stack and how the pieces fit.</p>
+
+    <div class="diagram">
+      <div class="cap">Fig 03.1 — Gemini Enterprise Agent Platform stack</div>
+      <div class="stack">
+        <div class="layer"><div class="lt">Assist &amp; agents (business value)</div><div class="chips">
+          <span class="chip">Gemini Cloud Assist</span><span class="chip">Agent Builder</span><span class="chip">Gemini Enterprise / AI Agents</span><span class="chip">NotebookLM</span><span class="chip">Code Assist</span></div></div>
+        <div class="layer"><div class="lt">Models &amp; APIs (build with)</div><div class="chips">
+          <span class="chip">Gemini LLMs</span><span class="chip">Model Garden (200+ models)</span><span class="chip">Search · Conversation</span><span class="chip">Vision · Image</span><span class="chip">Video · Audio (Speech)</span></div></div>
+        <div class="layer"><div class="lt">MLOps (operate)</div><div class="chips">
+          <span class="chip">Agent Platform Pipelines (Vertex Pipelines)</span><span class="chip">Feature Store</span><span class="chip">Model Registry</span><span class="chip">Endpoints / serving</span></div></div>
+        <div class="layer"><div class="lt">Infrastructure (train &amp; serve)</div><div class="chips">
+          <span class="chip">AI Hypercomputer</span><span class="chip">GPUs</span><span class="chip">TPUs</span><span class="chip">Cloud Run functions</span></div></div>
+        <div class="layer"><div class="lt">Securing AI (§3.1)</div><div class="chips">
+          <span class="chip">Model Armor</span><span class="chip">Sensitive Data Protection (DLP)</span><span class="chip">Secure model deployment / VPC-SC</span></div></div>
+      </div>
+    </div>
+
+    <h3>What each piece is for</h3>
+    <div class="tw"><table>
+      <tr><th>Service</th><th>Choose when…</th><th>AWS analog</th></tr>
+      <tr><td class="svc">Gemini Enterprise Agent Platform <span class="old">(Vertex AI)</span></td><td>Any custom-model training, tuning, deployment, or end-to-end MLOps</td><td class="aws">SageMaker</td></tr>
+      <tr><td class="svc">Model Garden</td><td>Pick from 200+ first/third-party models (Gemini, Llama, etc.) without building from scratch</td><td class="aws">Bedrock catalog</td></tr>
+      <tr><td class="svc">Agent Builder</td><td>Build RAG / search / conversational agents grounded on your data, low-code</td><td class="aws">Bedrock Agents</td></tr>
+      <tr><td class="svc">Gemini Cloud Assist</td><td>AI help <i>designing, deploying &amp; troubleshooting</i> the architecture itself (in-console)</td><td class="aws">Amazon Q Developer</td></tr>
+      <tr><td class="svc">AI Hypercomputer</td><td>Large-scale training/serving; integrates GPUs &amp; TPUs, optimized consumption models</td><td class="aws">EC2 UltraClusters</td></tr>
+      <tr><td class="svc">Prebuilt AI APIs</td><td>Off-the-shelf Vision, Speech-to-Text, Text-to-Speech, Translation, Document AI</td><td class="aws">Rekognition / Transcribe</td></tr>
+      <tr><td class="svc">Conversational Agents <span class="old">(Dialogflow CX / CCAI)</span></td><td>Build virtual agents / contact-center bots (voice &amp; chat)</td><td class="aws">Lex / Connect</td></tr>
+      <tr><td class="svc">Model Armor</td><td>Screen prompts/responses for safety, prompt injection, data leakage</td><td class="aws">Bedrock Guardrails</td></tr>
+    </table></div>
+
+    <div class="callout co-trade"><span class="lbl">Trade-off — prebuilt API vs custom model</span><p><b>Prebuilt API / Model Garden model</b> = fastest, cheapest, no ML expertise, but generic. <b>Custom-trained model on Agent Platform</b> = best domain accuracy, but needs labeled data, MLOps, GPU/TPU cost, maintenance. Default: reach for <b>prebuilt or a foundation model + RAG</b> unless the scenario says pretrained accuracy is insufficient.</p></div>
+    <div class="callout co-tip"><span class="lbl">Scenario triggers</span><p>"Chatbot grounded on our docs/catalog" → <b>Agent Builder + RAG</b>. "Generate architecture / debug a failing deployment" → <b>Gemini Cloud Assist</b>. "Protect an LLM app from prompt injection / PII leakage" → <b>Model Armor + Sensitive Data Protection</b>. "Off-the-shelf image labels / transcription" → <b>prebuilt AI API</b>.</p></div>
+  </section>
+
+  <!-- ===================== 04 COMPUTE ===================== -->
+  <section id="compute">
+    <div class="sec-head"><span class="sec-num">04</span><h2>Compute</h2></div>
+    <div class="tw"><table>
+      <tr><th>Service</th><th>Control</th><th>Choose when…</th><th>AWS</th></tr>
+      <tr><td class="svc">Compute Engine</td><td>Max (IaaS)</td><td>OS access, custom kernels, licensed software, lift-and-shift, GPUs</td><td class="aws">EC2</td></tr>
+      <tr><td class="svc">GKE Standard</td><td>High</td><td>Kubernetes with node control, GPUs, custom node configs</td><td class="aws">EKS</td></tr>
+      <tr><td class="svc">GKE Autopilot</td><td>Medium</td><td>Kubernetes without node ops, pay-per-pod, simplified ops</td><td class="aws">EKS+Fargate</td></tr>
+      <tr><td class="svc">GKE Enterprise <span class="old">(Anthos)</span></td><td>High</td><td>Fleet mgmt across clusters / on-prem / multicloud</td><td class="aws">EKS Anywhere</td></tr>
+      <tr><td class="svc">Cloud Run</td><td>Low</td><td>Stateless containers, pay-per-request, scale-to-zero, HTTP</td><td class="aws">Fargate</td></tr>
+      <tr><td class="svc">Cloud Run functions <span class="old">(Functions)</span></td><td>Minimal</td><td>Event-driven code (Pub/Sub, HTTP triggers), short execution</td><td class="aws">Lambda</td></tr>
+      <tr><td class="svc">App Engine</td><td>Minimal</td><td>Opinionated PaaS web apps (Standard = runtimes; Flex = containers)</td><td class="aws">Beanstalk</td></tr>
+      <tr><td class="svc">Batch</td><td>Medium</td><td>Managed batch/HPC job scheduling</td><td class="aws">AWS Batch</td></tr>
+    </table></div>
+
+    <div class="diagram">
+      <div class="cap">Fig 04.1 — Compute decision tree</div>
+      <div class="tree">
+        <div class="branch"><div class="q">Need <b>specific OS / kernel / licensing / GPUs</b> or lift-and-shift?</div><span class="arr">→</span><span class="node dark">Compute Engine</span></div>
+        <div class="branch"><div class="q">Existing <b>Kubernetes</b> / need portability &amp; fine control?</div><span class="arr">→</span><span class="node">GKE (Autopilot if no node ops)</span></div>
+        <div class="branch"><div class="q">Stateless <b>containerized</b> HTTP service, want scale-to-zero?</div><span class="arr">→</span><span class="node blue">Cloud Run</span></div>
+        <div class="branch"><div class="q">Small <b>event-driven</b> glue (Pub/Sub, Storage triggers)?</div><span class="arr">→</span><span class="node blue">Cloud Run functions</span></div>
+        <div class="branch"><div class="q">Multi-cluster / hybrid / <b>multicloud</b> fleet?</div><span class="arr">→</span><span class="node green">GKE Enterprise</span></div>
+      </div>
+    </div>
+
+    <h3>Compute Engine essentials</h3>
+    <ul class="tick">
+      <li><b>Spot VMs (Preemptible):</b> up to ~91% cheaper, reclaimed with 30s notice — fault-tolerant/batch only. Spot has <b>no 24-hour cap</b> (old preemptible did).</li>
+      <li><b>MIG:</b> autoscaling + autohealing + rolling/canary + regional multi-zone spread. Unmanaged = static, no autoscale.</li>
+      <li><b>CUDs</b> for steady state; <b>Sustained Use Discounts</b> apply automatically; <b>custom machine types</b> right-size vCPU/RAM.</li>
+      <li><b>Sole-tenant nodes</b> for compliance/licensing; <b>Confidential VMs</b> encrypt memory in-use.</li>
+    </ul>
+    <div class="callout co-tip"><span class="lbl">Scenario triggers</span><p>"Reduce operational overhead" → serverless (<b>Cloud Run / functions</b>). "Fine-grained control / custom nodes" → <b>Compute Engine or GKE Standard</b>. "Event-driven" → <b>Cloud Run functions</b>. "Operational simplicity for K8s" → <b>Autopilot</b>.</p></div>
+    <div class="callout co-trade"><span class="lbl">Trade-off — Cloud Run vs GKE</span><p><b>Cloud Run:</b> zero infra, scale-to-zero, per-request billing, fastest to ship — but HTTP/event-centric, less control. <b>GKE:</b> full K8s (DaemonSets, operators, mesh, stateful, GPUs), portability — but you own upgrades/scaling/node cost even when idle. Default Cloud Run unless you need K8s primitives.</p></div>
+    <div class="callout co-tip"><span class="lbl">GKE scaling (concept level)</span><p>GKE scales at <b>two layers</b>: the <b>Horizontal Pod Autoscaler (HPA)</b> adds/removes <i>pods</i> on CPU/memory/custom metrics, while the <b>Cluster Autoscaler</b> and <b>Node Auto-Provisioning</b> add/remove <i>nodes</i> to fit those pods. (Autopilot manages both for you.) You don't need kubectl or manifests for PCA — just know GKE autoscales pods and nodes separately, and that node pools can run on <b>Spot VMs</b> to cut cost.</p></div>
+    <div class="callout co-tip"><span class="lbl">Cloud Run: services vs jobs</span><p><b>Cloud Run services</b> handle requests (HTTP/events, scale-to-zero). <b>Cloud Run jobs</b> run to completion (batch/ETL/scheduled scripts) with no listening port — the answer for "containerized batch task" without standing up GKE.</p></div>
+  </section>
+
+  <!-- ===================== 05 STORAGE ===================== -->
+  <section id="storage">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Storage</h2></div>
+    <div class="tw"><table>
+      <tr><th>Service</th><th>Type</th><th>Choose when…</th><th>AWS</th></tr>
+      <tr><td class="svc">Cloud Storage</td><td>Object</td><td>Unstructured data, backups, data lake, static sites, ML files</td><td class="aws">S3</td></tr>
+      <tr><td class="svc">Persistent Disk / Hyperdisk</td><td>Block</td><td>VM boot &amp; data disks; Hyperdisk decouples IOPS/throughput</td><td class="aws">EBS</td></tr>
+      <tr><td class="svc">Local SSD</td><td>Block (ephemeral)</td><td>Scratch/cache — highest IOPS, data lost on stop</td><td class="aws">Instance Store</td></tr>
+      <tr><td class="svc">Filestore</td><td>File (NFS)</td><td>Shared POSIX file storage for VMs/GKE</td><td class="aws">EFS</td></tr>
+      <tr><td class="svc">NetApp Volumes / Managed Lustre</td><td>File</td><td>Enterprise NFS/SMB; HPC parallel FS</td><td class="aws">FSx</td></tr>
+    </table></div>
+
+    <div class="diagram">
+      <div class="cap">Fig 05.1 — Cloud Storage classes (hotter → colder = cheaper storage, pricier retrieval)</div>
+      <div class="ladder">
+        <div class="rung"><span class="cls">Standard</span><span class="desc">Frequent access · no min duration · hot data, serving</span><span class="tag cold-cost-1">no retrieval fee</span></div>
+        <div class="rung"><span class="cls">Nearline</span><span class="desc">&lt; once / month · 30-day min · backups</span><span class="tag cold-cost-2">low retrieval</span></div>
+        <div class="rung"><span class="cls">Coldline</span><span class="desc">&lt; once / quarter · 90-day min · DR</span><span class="tag cold-cost-3">higher retrieval</span></div>
+        <div class="rung"><span class="cls">Archive</span><span class="desc">&lt; once / year · 365-day min · compliance</span><span class="tag cold-cost-4">highest retrieval</span></div>
+      </div>
+    </div>
+
+    <ul class="tick">
+      <li><b>Location:</b> region (lowest latency/cost), dual-region, or multi-region (highest availability). Bucket location &amp; name are immutable; names globally unique.</li>
+      <li><b>Object Lifecycle Management:</b> auto-transition classes or delete by age — the go-to for "reduce storage cost over time".</li>
+      <li><b>Autoclass:</b> automatically moves each object between classes based on its <i>actual</i> access pattern (no age rules to write) — pick this when access is unpredictable.</li>
+      <li><b>Bucket Lock + retention policy</b> for WORM/compliance; <b>versioning</b> for accidental deletes.</li>
+      <li><b>Signed URLs</b> give time-limited object access to users <i>without</i> Google accounts; <b>signed policy documents</b> constrain browser-based uploads.</li>
+      <li><b>Access control:</b> prefer <b>uniform bucket-level access</b> (IAM only, recommended) over <b>fine-grained</b> (IAM + legacy per-object ACLs).</li>
+    </ul>
+    <div class="callout co-trade"><span class="lbl">Trade-off — colder classes</span><p>Each colder class lowers <b>storage $/GB</b> but adds a <b>retrieval fee + minimum duration</b>. Frequently-read data in Coldline/Archive costs <i>more</i>. Match the class to true access frequency and let <b>lifecycle rules</b> tier automatically.</p></div>
+  </section>
+
+  <!-- ===================== 06 DATABASES ===================== -->
+  <section id="db">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Databases</h2></div>
+    <p>The single most-tested topic — know the decision rule cold.</p>
+    <div class="tw"><table>
+      <tr><th>Service</th><th>Model</th><th>Choose when…</th><th>AWS</th></tr>
+      <tr><td class="svc">Cloud SQL</td><td>Relational OLTP</td><td>MySQL/PostgreSQL/SQL Server, single region, standard OLTP</td><td class="aws">RDS</td></tr>
+      <tr><td class="svc">AlloyDB</td><td>Relational (PG)</td><td>High-perf PostgreSQL, HTAP, AI-ready</td><td class="aws">Aurora</td></tr>
+      <tr><td class="svc">Spanner</td><td>Relational, global</td><td>Multi-region strong consistency, 99.999% SLA, horizontal scale, &gt;1000 TPS</td><td class="aws">Aurora Global</td></tr>
+      <tr><td class="svc">Firestore</td><td>NoSQL document</td><td>Mobile/web, real-time sync, offline, flexible schema</td><td class="aws">DynamoDB</td></tr>
+      <tr><td class="svc">Bigtable</td><td>NoSQL wide-column</td><td>IoT/time-series, high-throughput low-latency, &gt;1TB</td><td class="aws">DynamoDB / Timestream</td></tr>
+      <tr><td class="svc">Memorystore</td><td>In-memory</td><td>Redis/Memcached caching, sessions, leaderboards, sub-ms</td><td class="aws">ElastiCache</td></tr>
+      <tr><td class="svc">BigQuery</td><td>Analytical OLAP</td><td>Petabyte analytics, warehouse, serverless SQL, BI</td><td class="aws">Redshift</td></tr>
+    </table></div>
+
+    <div class="diagram">
+      <div class="cap">Fig 06.1 — Database decision tree</div>
+      <div class="tree">
+        <div class="branch"><div class="q">Analytics / warehousing / SQL over huge datasets?</div><span class="arr">→</span><span class="node blue">BigQuery</span></div>
+        <div class="branch"><div class="q">Relational + <b>global</b> scale &amp; strong consistency?</div><span class="arr">→</span><span class="node dark">Spanner</span></div>
+        <div class="branch"><div class="q">Relational, <b>regional</b> OLTP, standard engines?</div><span class="arr">→</span><span class="node">Cloud SQL (AlloyDB if high-perf PG/HTAP)</span></div>
+        <div class="branch"><div class="q">NoSQL, real-time <b>mobile/web</b>, offline sync?</div><span class="arr">→</span><span class="node green">Firestore</span></div>
+        <div class="branch"><div class="q">NoSQL, <b>high write throughput</b>, time-series/IoT, &gt;1TB?</div><span class="arr">→</span><span class="node green">Bigtable</span></div>
+        <div class="branch"><div class="q">Sub-ms caching / session store?</div><span class="arr">→</span><span class="node amber">Memorystore</span></div>
+      </div>
+    </div>
+
+    <div class="callout co-tip"><span class="lbl">Scenario triggers (memorize)</span><p>"<b>Financial transactions</b>" + "<b>global</b>" in one sentence → <b>Spanner</b>. "<b>Sensor data</b> / <b>time-series</b>" → <b>Bigtable</b>. Plain "<b>relational</b>" with no scale requirement → <b>Cloud SQL</b>. "Real-time mobile sync" → <b>Firestore</b>. "Ad-hoc SQL / dashboards / ML on history" → <b>BigQuery</b>.</p></div>
+    <div class="callout co-trade"><span class="lbl">Trade-off — Cloud SQL vs Spanner</span><p><b>Cloud SQL:</b> cheaper, familiar engines, easy migration — but vertical ceiling &amp; regional (replicas scale reads only). <b>Spanner:</b> unlimited horizontal scale + global strong consistency + 99.999% — but expensive and needs key design to avoid hotspots. Choose Spanner only for <b>global writes or scale beyond one big instance</b>.</p></div>
+    <div class="callout co-trade"><span class="lbl">Trade-off — Firestore vs Bigtable</span><p><b>Firestore:</b> document model, real-time listeners, strong consistency, app backends — modest write throughput. <b>Bigtable:</b> wide-column, single-digit-ms at millions of ops/sec, ideal for time-series/IoT — no cross-row transactions, no secondary indexes, min 1-node cost. Row-key design is everything.</p></div>
+  </section>
+
+  <!-- ===================== 07 NETWORKING ===================== -->
+  <section id="net">
+    <div class="sec-head"><span class="sec-num">07</span><h2>Networking</h2></div>
+    <div class="tw"><table>
+      <tr><th>Service</th><th>Function</th><th>AWS</th></tr>
+      <tr><td class="svc">VPC</td><td><b>Global</b> virtual network (spans all regions)</td><td class="aws">VPC (regional)</td></tr>
+      <tr><td class="svc">Subnet</td><td><b>Regional</b> (spans all zones in region)</td><td class="aws">Subnet (per-AZ)</td></tr>
+      <tr><td class="svc">Shared VPC</td><td>Host project shares subnets with service projects — centralised network admin</td><td class="aws">VPC sharing (RAM)</td></tr>
+      <tr><td class="svc">VPC Peering</td><td>Private connectivity between VPCs — <b>non-transitive</b></td><td class="aws">VPC Peering</td></tr>
+      <tr><td class="svc">Private Service Connect</td><td>Private access to services/APIs across VPCs/orgs</td><td class="aws">PrivateLink</td></tr>
+      <tr><td class="svc">Private Google Access</td><td>VMs without external IP reach Google APIs (per-subnet)</td><td class="aws">Gateway endpoints</td></tr>
+      <tr><td class="svc">Cloud Interconnect</td><td>Dedicated/Partner private link to on-prem</td><td class="aws">Direct Connect</td></tr>
+      <tr><td class="svc">Cloud VPN (HA VPN)</td><td>Encrypted IPsec over internet (99.99% w/ 2 tunnels)</td><td class="aws">Site-to-Site VPN</td></tr>
+      <tr><td class="svc">Cloud Router</td><td>Dynamic BGP for VPN &amp; Interconnect</td><td class="aws">(TGW/DXGW)</td></tr>
+      <tr><td class="svc">Cloud Armor</td><td>WAF + DDoS at the global LB (IP/geo/OWASP)</td><td class="aws">WAF + Shield</td></tr>
+      <tr><td class="svc">Cloud NAT</td><td>Egress for private instances</td><td class="aws">NAT Gateway</td></tr>
+      <tr><td class="svc">Network Connectivity Center</td><td>Hub-and-spoke transit — connects many VPCs/sites (works around peering's non-transitivity)</td><td class="aws">Transit Gateway</td></tr>
+      <tr><td class="svc">Cloud DNS</td><td>Managed DNS — public &amp; private zones, split-horizon</td><td class="aws">Route 53</td></tr>
+      <tr><td class="svc">Cloud Service Mesh <span class="old">(Traffic Director)</span></td><td>Managed service-to-service traffic, mTLS, canary routing (Istio/Envoy)</td><td class="aws">App Mesh</td></tr>
+      <tr><td class="svc">Cloud IDS</td><td>Managed intrusion detection (inspects traffic for threats)</td><td class="aws">GuardDuty (network)</td></tr>
+    </table></div>
+
+    <h3>GCP vs AWS — the key mental model</h3>
+    <div class="tw"><table>
+      <tr><th></th><th>GCP</th><th>AWS</th></tr>
+      <tr><td>VPC scope</td><td><b>Global</b> — one VPC spans every region</td><td>Regional — one VPC per region</td></tr>
+      <tr><td>Subnet scope</td><td><b>Regional</b> — spans all zones</td><td>Per-AZ</td></tr>
+      <tr><td>Global LB</td><td>Single anycast IP, one LB worldwide</td><td>CloudFront + regional LBs</td></tr>
+    </table></div>
+
+    <h3>Load balancer selection</h3>
+    <div class="tw"><table>
+      <tr><th>Scenario</th><th>Use</th></tr>
+      <tr><td>HTTP/HTTPS, global, multiple regions</td><td class="svc">Global External Application LB</td></tr>
+      <tr><td>HTTP/HTTPS, must stay in one region (data residency)</td><td class="svc">Regional External Application LB</td></tr>
+      <tr><td>TCP/UDP, preserve client IP, non-HTTP</td><td class="svc">External Network LB (passthrough)</td></tr>
+      <tr><td>Internal microservices / private VPC traffic</td><td class="svc">Internal Application or Network LB</td></tr>
+    </table></div>
+
+    <div class="diagram">
+      <div class="cap">Fig 07.1 — Hybrid connectivity: choosing the on-prem link</div>
+      <div class="tree">
+        <div class="branch"><div class="q"><b>Highest bandwidth</b>, dedicated physical fibre, lowest latency (10/100 Gbps)?</div><span class="arr">→</span><span class="node dark">Dedicated Interconnect</span></div>
+        <div class="branch"><div class="q"><b>Cannot co-locate</b> at a Google PoP / lower bandwidth (50 Mbps–50 Gbps)?</div><span class="arr">→</span><span class="node">Partner Interconnect</span></div>
+        <div class="branch"><div class="q">Quick / cheap / encrypted over public internet (&lt;3 Gbps)?</div><span class="arr">→</span><span class="node blue">HA VPN (99.99%)</span></div>
+        <div class="branch"><div class="q">Reach Google APIs privately from on-prem/VMs?</div><span class="arr">→</span><span class="node green">Private Google Access / PSC</span></div>
+      </div>
+    </div>
+    <div class="callout co-tip"><span class="lbl">Scenario triggers</span><p>"Cannot co-locate at a Google facility" → <b>Partner Interconnect</b>. "Dedicated physical link, highest bandwidth" → <b>Dedicated Interconnect</b>. "Global users, one IP, HTTP" → <b>Global External App LB</b>. "Preserve source IP / non-HTTP" → <b>Network (passthrough) LB</b>. Remember VPC peering is <b>non-transitive</b>.</p></div>
+    <div class="callout co-tip"><span class="lbl">Network observability</span><p>For "diagnose connectivity / see traffic" answers: <b>VPC Flow Logs</b> (traffic records), <b>Firewall Rules Logging / Insights</b> (what rules allow/deny), and <b>Network Intelligence Center</b> (Connectivity Tests, Topology, Performance Dashboard) to troubleshoot reachability and latency.</p></div>
+    <div class="callout co-trap"><span class="lbl">IP / CIDR planning</span><p>Before any hybrid connectivity, ensure <b>non-overlapping RFC 1918 ranges</b> across on-prem and every VPC/subnet — overlapping CIDRs break routing and can't be corrected without re-addressing. Plan ranges with headroom; subnet ranges can expand but must never overlap.</p></div>
+  </section>
+
+  <!-- ===================== 08 HA / DR ===================== -->
+  <section id="hadr">
+    <div class="sec-head"><span class="sec-num">08</span><h2>High Availability &amp; Disaster Recovery</h2></div>
+
+    <h3>RTO vs RPO — know the difference cold</h3>
+    <div class="split">
+      <div class="col pro"><h5>RTO — Recovery Time Objective</h5><ul>
+        <li>Max acceptable <b>downtime</b> after a failure.</li>
+        <li>"How long until we're back up?"</li>
+        <li>Lower RTO → hot standby, automated failover, MIGs.</li></ul></div>
+      <div class="col con"><h5>RPO — Recovery Point Objective</h5><ul>
+        <li>Max acceptable <b>data loss</b> (measured in time).</li>
+        <li>"How much recent data can we lose?"</li>
+        <li>Lower RPO → synchronous replication, frequent snapshots.</li></ul></div>
+    </div>
+
+    <div class="diagram">
+      <div class="cap">Fig 08.1 — DR strategy ladder (cheaper/slower → pricier/faster)</div>
+      <div class="tree">
+        <div class="branch"><div class="q"><b>Backup &amp; Restore</b> — snapshots/exports to Cloud Storage</div><span class="arr">→</span><span class="node amber">high RTO/RPO · lowest cost</span></div>
+        <div class="branch"><div class="q"><b>Cold standby (pilot light)</b> — minimal core running, scale on failover</div><span class="arr">→</span><span class="node">medium RTO</span></div>
+        <div class="branch"><div class="q"><b>Warm standby</b> — scaled-down full env, promote on failover</div><span class="arr">→</span><span class="node blue">low RTO</span></div>
+        <div class="branch"><div class="q"><b>Hot / multi-region active-active</b> — no data loss</div><span class="arr">→</span><span class="node dark">near-zero RTO/RPO · highest cost</span></div>
+      </div>
+    </div>
+
+    <h3>HA patterns by service</h3>
+    <div class="tw"><table>
+      <tr><th>Service</th><th>HA configuration</th></tr>
+      <tr><td class="svc">Compute Engine</td><td>Regional MIG across multiple zones + autoscaling + health checks</td></tr>
+      <tr><td class="svc">Cloud SQL</td><td>HA config with standby in a 2nd zone, automatic failover</td></tr>
+      <tr><td class="svc">Spanner</td><td>Multi-region config = 99.999%, synchronous replication</td></tr>
+      <tr><td class="svc">GKE</td><td>Regional cluster spreads nodes across 3 zones automatically</td></tr>
+      <tr><td class="svc">Cloud Storage</td><td>Multi-region / dual-region bucket = geo-redundant objects</td></tr>
+      <tr><td class="svc">BigQuery</td><td>Multi-region dataset; cross-region dataset replication for DR</td></tr>
+      <tr><td class="svc">Backup and DR Service</td><td>Centralized managed backup/restore for GCE, disks, databases — the managed backup answer</td></tr>
+    </table></div>
+    <div class="callout co-tip"><span class="lbl">Scenario triggers</span><p>"Cannot tolerate <b>data loss</b>" (RPO≈0) → synchronous replication → <b>Spanner multi-region</b> or <b>Cloud SQL HA</b>. "Low-cost DR, some data loss acceptable" → async replication / cross-region GCS copy. "Survive a <b>zone</b> failure" → regional (multi-zone). "Survive a <b>region</b> failure" → multi-region.</p></div>
+    <div class="callout co-trade"><span class="lbl">Trade-off — availability tiers</span><p><b>Zonal</b> = cheapest, single point of failure. <b>Regional</b> (multi-zone) = survives a zone outage, the usual production baseline. <b>Multi-region</b> = survives a region outage, highest cost and higher write latency. Buy only the tier the SLA demands.</p></div>
+  </section>
+
+  <!-- ===================== 09 IAM & SECURITY ===================== -->
+  <section id="sec">
+    <div class="sec-head"><span class="sec-num">09</span><h2>IAM &amp; Security</h2></div>
+
+    <div class="diagram">
+      <div class="cap">Fig 09.1 — Resource hierarchy (policies inherit downward; org policies + deny rules override)</div>
+      <div class="hier">
+        <span class="node dark">Organization</span><div class="drop"></div>
+        <span class="node">Folder(s)</span><div class="drop"></div>
+        <span class="node">Project(s)</span><div class="drop"></div>
+        <span class="node blue">Resources (VMs, buckets, DBs)</span>
+      </div>
+    </div>
+
+    <ul class="tick">
+      <li><b>Roles:</b> <span class="svc">Basic</span> (Owner/Editor/Viewer — too broad, never in prod) → <span class="svc">Predefined</span> (service-specific, recommended) → <span class="svc">Custom</span> (exact least-privilege permissions).</li>
+      <li><b>Service accounts:</b> both identity <i>and</i> resource. Prefer <b>attached SAs + short-lived tokens</b> and <b>impersonation</b> (separation of duties) over exported keys. <b>Workload Identity Federation</b> = GitHub Actions / AWS / on-prem auth <i>without</i> keys.</li>
+      <li><b>IAM Conditions:</b> attribute-based (time, resource, IP). <b>Deny policies</b> override allow.</li>
+      <li><b>Human identity:</b> <span class="svc">Cloud Identity</span> is the user/group directory (IdaaS). <span class="svc">Google Cloud Directory Sync (GCDS)</span> one-way syncs on-prem AD/LDAP → Cloud Identity. Use <b>SSO via SAML/OIDC</b> with an external IdP (Okta, Entra ID). <span class="svc">Workforce Identity Federation</span> lets external-IdP <i>employees</i> use GCP with short-lived creds and no user provisioning — the human analog to Workload Identity Federation.</li>
+      <li><b>Org policies:</b> preventive guardrails (restrict regions, block external IPs, enforce CMEK) applied hierarchy-wide.</li>
+    </ul>
+
+    <div class="tw"><table>
+      <tr><th>Service</th><th>Function</th><th>AWS</th></tr>
+      <tr><td class="svc">Cloud KMS / HSM / EKM</td><td>Managed / hardware / external key management (CMEK)</td><td class="aws">KMS / CloudHSM</td></tr>
+      <tr><td class="svc">Secret Manager</td><td>Secrets storage + rotation + versioning + audit</td><td class="aws">Secrets Manager</td></tr>
+      <tr><td class="svc">VPC Service Controls</td><td>Perimeter to stop data exfiltration from managed APIs</td><td class="aws">(no direct equal)</td></tr>
+      <tr><td class="svc">Identity-Aware Proxy (IAP)</td><td>Zero-trust access to apps/VMs without VPN</td><td class="aws">Verified Access</td></tr>
+      <tr><td class="svc">Access Context Manager</td><td>Defines access levels (IP, device, region) that power IAP &amp; VPC-SC</td><td class="aws">(condition keys)</td></tr>
+      <tr><td class="svc">Chrome Enterprise Premium <span class="old">(BeyondCorp)</span></td><td>Context-aware zero-trust access</td><td class="aws">—</td></tr>
+      <tr><td class="svc">Binary Authorization</td><td>Only trusted/signed container images deploy to GKE/Run</td><td class="aws">(Signer)</td></tr>
+      <tr><td class="svc">Security Command Center</td><td>Posture mgmt, vuln scanning, threat detection</td><td class="aws">Security Hub</td></tr>
+      <tr><td class="svc">Cloud Asset Inventory</td><td>Search/export/monitor all resources &amp; IAM across the org (governance, audits)</td><td class="aws">Config / Resource Explorer</td></tr>
+      <tr><td class="svc">Google Security Operations <span class="old">(Chronicle)</span></td><td>SIEM/SOAR — threat hunting &amp; correlation (behind SCC Enterprise)</td><td class="aws">Security Lake + Detective</td></tr>
+      <tr><td class="svc">Sensitive Data Protection <span class="old">(DLP)</span></td><td>Discover / classify / de-identify PII</td><td class="aws">Macie</td></tr>
+      <tr><td class="svc">Assured Workloads</td><td>Compliance-controlled envs (residency, personnel)</td><td class="aws">(compliance controls)</td></tr>
+      <tr><td class="svc">Model Armor</td><td>Guardrails for LLM prompts/responses</td><td class="aws">Bedrock Guardrails</td></tr>
+    </table></div>
+
+    <div class="callout co-trade"><span class="lbl">Trade-off — key management tiers</span><p>Encryption at rest is <b>always on</b>. <b>Google-managed keys</b> = zero effort. <b>CMEK</b> (Cloud KMS) = you control rotation/disable for compliance. <b>Cloud HSM</b> = FIPS 140-2 L3 hardware. <b>Cloud EKM</b> = key held by an external/third-party manager (max control &amp; separation, most overhead). Escalate only as compliance demands.</p></div>
+    <div class="callout co-tip"><span class="lbl">Scenario triggers</span><p>"Prevent data leaving a perimeter even with valid creds" → <b>VPC Service Controls</b>. "Access internal app, no VPN" → <b>IAP</b>. "External CI/CD auth without long-lived keys" → <b>Workload Identity Federation</b>. "Only signed images to GKE" → <b>Binary Authorization</b>. "Regulator requires keys off-cloud" → <b>Cloud EKM</b>. "Federate on-prem AD / external IdP for employees" → <b>Cloud Identity + GCDS + SSO</b> (or <b>Workforce Identity Federation</b> for no provisioning).</p></div>
+  </section>
+
+  <!-- ===================== 10 OPERATIONS ===================== -->
+  <section id="ops">
+    <div class="sec-head"><span class="sec-num">10</span><h2>Operations &amp; Observability</h2></div>
+    <p>All under <b>Google Cloud Observability (Stackdriver)</b>.</p>
+    <div class="tw"><table>
+      <tr><th>Service</th><th>Function</th><th>AWS</th></tr>
+      <tr><td class="svc">Cloud Monitoring</td><td>Metrics, dashboards, uptime checks, SLOs, alerting</td><td class="aws">CloudWatch Metrics</td></tr>
+      <tr><td class="svc">Cloud Logging</td><td>Log ingest; <b>Log Sinks</b> export to BigQuery/GCS/Pub/Sub</td><td class="aws">CloudWatch Logs</td></tr>
+      <tr><td class="svc">Cloud Trace</td><td>Distributed latency tracing across microservices</td><td class="aws">X-Ray</td></tr>
+      <tr><td class="svc">Cloud Profiler</td><td>Continuous CPU/heap profiling</td><td class="aws">CodeGuru Profiler</td></tr>
+      <tr><td class="svc">Error Reporting</td><td>Aggregates + surfaces app errors in real time</td><td class="aws">—</td></tr>
+      <tr><td class="svc">Managed Service for Prometheus</td><td>Managed Prometheus for GKE/metrics</td><td class="aws">AMP</td></tr>
+      <tr><td class="svc">Cloud Audit Logs</td><td>Admin / Data Access / System / Policy logs</td><td class="aws">CloudTrail</td></tr>
+    </table></div>
+    <div class="callout co-tip"><span class="lbl">Scenario triggers</span><p>"Centralise logs across all projects" → <b>Log Sinks</b> to a central project's logging/GCS bucket (aggregated sink at org/folder). "Long-term log retention/analytics" → sink to <b>BigQuery/GCS</b>. Admin Activity audit logs are <b>always-on &amp; immutable</b>; Data Access logs are opt-in (high volume/cost).</p></div>
+    <div class="callout co-tip"><span class="lbl">SRE mindset (§6)</span><p>Reliability answers favor <b>SLIs/SLOs + error budgets</b>, alerting on symptoms not causes, and validating resilience with <b>chaos / load / penetration testing</b>.</p></div>
+
+    <h3>CI/CD &amp; orchestration (§5 Managing implementation)</h3>
+    <div class="tw"><table>
+      <tr><th>Service</th><th>Function</th><th>AWS</th></tr>
+      <tr><td class="svc">Cloud Build</td><td>CI — build, test, containerize from source</td><td class="aws">CodeBuild</td></tr>
+      <tr><td class="svc">Artifact Registry <span class="old">(GCR)</span></td><td>Store build artifacts / container images</td><td class="aws">ECR / CodeArtifact</td></tr>
+      <tr><td class="svc">Cloud Deploy</td><td>CD — managed progressive delivery to GKE/Run</td><td class="aws">CodeDeploy</td></tr>
+      <tr><td class="svc">Eventarc</td><td>Event routing (Cloud/Audit/Pub-Sub events → services)</td><td class="aws">EventBridge</td></tr>
+      <tr><td class="svc">Workflows</td><td>Serverless orchestration of API/service steps</td><td class="aws">Step Functions</td></tr>
+      <tr><td class="svc">Cloud Scheduler</td><td>Managed cron for jobs/HTTP/Pub-Sub</td><td class="aws">EventBridge Scheduler</td></tr>
+      <tr><td class="svc">Cloud Tasks</td><td>Async task queue with rate/retry control</td><td class="aws">SQS (task-style)</td></tr>
+    </table></div>
+    <div class="callout co-tip"><span class="lbl">Scenario triggers</span><p>Pipeline chain: <b>Cloud Build → Artifact Registry → Cloud Deploy</b>. "Trigger a service from a GCS/Audit event" → <b>Eventarc</b>. "Coordinate multi-step API calls" → <b>Workflows</b>. "Run on a schedule" → <b>Cloud Scheduler</b>. "Rate-limited async work queue" → <b>Cloud Tasks</b>. Note <b>Cloud Composer</b> (Airflow) is for heavy data pipelines; Workflows is lighter service orchestration.</p></div>
+  </section>
+
+  <!-- ===================== 11 DATA ===================== -->
+  <section id="data">
+    <div class="sec-head"><span class="sec-num">11</span><h2>Data &amp; Analytics</h2></div>
+    <div class="tw"><table>
+      <tr><th>Service</th><th>Function</th><th>AWS</th></tr>
+      <tr><td class="svc">Pub/Sub</td><td>Global async messaging — entry point for streaming pipelines</td><td class="aws">SNS+SQS / Kinesis</td></tr>
+      <tr><td class="svc">Dataflow</td><td>Managed Apache Beam — unified stream + batch ETL</td><td class="aws">Kinesis Data Analytics</td></tr>
+      <tr><td class="svc">Dataproc</td><td>Managed Hadoop/Spark — migrate existing jobs</td><td class="aws">EMR</td></tr>
+      <tr><td class="svc">Managed Service for Apache Spark</td><td>Serverless Spark</td><td class="aws">EMR Serverless</td></tr>
+      <tr><td class="svc">BigQuery</td><td>Serverless warehouse + BQML + BI Engine</td><td class="aws">Redshift</td></tr>
+      <tr><td class="svc">Cloud Composer</td><td>Managed Apache Airflow orchestration</td><td class="aws">MWAA</td></tr>
+      <tr><td class="svc">Cloud Data Fusion</td><td>Visual, code-free ETL/ELT</td><td class="aws">Glue (visual)</td></tr>
+      <tr><td class="svc">Dataplex</td><td>Governance, lakehouse, catalog</td><td class="aws">Lake Formation</td></tr>
+      <tr><td class="svc">Looker / Looker Studio</td><td>Governed BI &amp; visualization on BigQuery</td><td class="aws">QuickSight</td></tr>
+      <tr><td class="svc">Datastream</td><td>Serverless change-data-capture (CDC) — replicate DB changes into BigQuery/GCS</td><td class="aws">DMS (CDC)</td></tr>
+      <tr><td class="svc">Cloud Healthcare API</td><td>Managed FHIR/HL7v2/DICOM store — the EHR-case ingestion/interop layer</td><td class="aws">HealthLake</td></tr>
+    </table></div>
+    <div class="diagram">
+      <div class="cap">Fig 11.1 — Canonical streaming pipeline (the IoT / telemetry answer)</div>
+      <div class="branch" style="justify-content:flex-start">
+        <span class="node blue">Pub/Sub</span><span class="arr">→</span>
+        <span class="node">Dataflow (transform)</span><span class="arr">→</span>
+        <span class="node green">Bigtable (low-latency serving)</span><span class="arr">+</span>
+        <span class="node dark">BigQuery (analytics)</span>
+      </div>
+    </div>
+    <div class="callout co-trade"><span class="lbl">Trade-off — Dataflow vs Dataproc</span><p><b>Dataflow:</b> serverless, autoscaling, one pipeline for batch <i>and</i> stream — preferred greenfield. <b>Dataproc:</b> when <b>migrating existing Hadoop/Spark/Hive</b> with minimal rewrite. Lift-and-shift Spark → Dataproc; net-new streaming → Dataflow.</p></div>
+  </section>
+
+  <!-- ===================== 12 MIGRATION ===================== -->
+  <section id="migrate">
+    <div class="sec-head"><span class="sec-num">12</span><h2>Migration Strategy (the 6 R's)</h2></div>
+    <div class="tw"><table>
+      <tr><th>Strategy</th><th>Meaning</th><th>GCP tooling</th></tr>
+      <tr><td><b>Rehost</b> (lift &amp; shift)</td><td>Move as-is, fastest</td><td class="svc">Migrate to VMs, Migration Center</td></tr>
+      <tr><td><b>Replatform</b></td><td>Minor optimization (self-managed DB → Cloud SQL)</td><td class="svc">Database Migration Service</td></tr>
+      <tr><td><b>Refactor</b> / modernize</td><td>Re-architect to cloud-native</td><td class="svc">Migrate to Containers, GKE, Cloud Run</td></tr>
+      <tr><td><b>Repurchase</b></td><td>Switch to SaaS</td><td class="svc">—</td></tr>
+      <tr><td><b>Retire</b></td><td>Decommission unused</td><td class="svc">—</td></tr>
+      <tr><td><b>Retain</b></td><td>Keep on-prem for now (hybrid)</td><td class="svc">Interconnect / GKE Enterprise</td></tr>
+    </table></div>
+    <ul class="tick">
+      <li><b>Assess first</b> with <b>Migration Center</b> (discovery, TCO, dependency mapping) — always the step before choosing a strategy.</li>
+      <li><b>Data transfer sizing:</b> Storage Transfer Service (online), <b>Transfer Appliance</b> (petabyte-scale offline), <span class="svc">gcloud storage</span> for smaller sets.</li>
+    </ul>
+    <div class="callout co-trade"><span class="lbl">Trade-off — speed vs value</span><p><b>Rehost</b> = fastest, least cloud value, keeps tech debt. <b>Refactor</b> = highest long-term value but most time/cost/risk. "Tight deadline / minimize change" → rehost; "reduce operational burden / scale elastically" → refactor to managed/serverless.</p></div>
+  </section>
+
+  <!-- ===================== 13 COST ===================== -->
+  <section id="cost">
+    <div class="sec-head"><span class="sec-num">13</span><h2>Cost Optimization</h2></div>
+    <div class="tw"><table>
+      <tr><th>Lever</th><th>Savings / trigger</th><th>Use when…</th></tr>
+      <tr><td class="svc">Committed Use Discounts (CUD)</td><td>up to ~57–70% for 1- or 3-yr commit</td><td>Steady-state, predictable baseline load</td></tr>
+      <tr><td class="svc">Spot VMs (Preemptible)</td><td>up to ~91% off; 30s reclaim notice</td><td>Batch, fault-tolerant, stateless workers</td></tr>
+      <tr><td class="svc">Sustained Use Discounts</td><td>automatic after &gt;25% of the month</td><td>Always — no action needed (Compute Engine)</td></tr>
+      <tr><td class="svc">Rightsizing / Recommender</td><td>flags idle/underused VMs</td><td>Regular reviews; Active Assist</td></tr>
+      <tr><td class="svc">Storage Lifecycle policies</td><td>auto-tier to Nearline/Coldline/Archive</td><td>Aging data with dropping access frequency</td></tr>
+      <tr><td class="svc">Autoscaling / scale-to-zero</td><td>pay only for what runs</td><td>Spiky/variable traffic → Cloud Run, MIGs, Autopilot</td></tr>
+      <tr><td class="svc">BigQuery editions vs on-demand</td><td>reservations for heavy, on-demand for variable</td><td>Predictable heavy analytics → capacity/reservations</td></tr>
+      <tr><td class="svc">Budget alerts</td><td>catch overspend early</td><td>Always — set in Cloud Billing</td></tr>
+      <tr><td class="svc">Billing export to BigQuery</td><td>detailed spend analysis &amp; dashboards</td><td>"Analyze / break down cloud spend"</td></tr>
+      <tr><td class="svc">Labels</td><td>tag resources for cost allocation &amp; reporting</td><td>Chargeback / show-back by team/env</td></tr>
+    </table></div>
+    <div class="callout co-tip"><span class="lbl">Scenario triggers</span><p>"Steady 24/7 workload, cut compute cost" → <b>CUDs</b>. "Batch jobs, cost-sensitive, interruptible" → <b>Spot VMs</b>. "Reduce storage cost over time" → <b>lifecycle policies</b>. "Right-size / find waste" → <b>Recommender / Active Assist</b>. "Prevent surprise bills" → <b>budget alerts</b> (they don't cap spend — they notify).</p></div>
+    <div class="callout co-trade"><span class="lbl">Trade-off — CUD vs Spot</span><p><b>CUD</b> guarantees capacity + discount but locks you into a 1/3-yr spend commitment (best for baseline). <b>Spot</b> is far cheaper with no commitment but can vanish in 30s (best for fault-tolerant/batch). Many designs combine: CUD for the steady baseline + Spot for burst/batch.</p></div>
+  </section>
+
+  <!-- ===================== 14 BUSINESS / PROCESS / GOVERNANCE ===================== -->
+  <section id="biz">
+    <div class="sec-head"><span class="sec-num">14</span><h2>Business, Process &amp; Governance</h2></div>
+    <p>Domain §4 (~15%) is <b>not about services</b> — it tests architect judgment: stakeholders, process maturity, buy-vs-build, and how responsibility is shared. These questions have no product in the answer; they reward the option that reflects sound engineering-organization practice.</p>
+
+    <h3>People &amp; process</h3>
+    <ul class="tick">
+      <li><b>Stakeholder &amp; change management:</b> identify stakeholders early, communicate trade-offs in business terms, and plan training/change so a technically correct design actually gets adopted.</li>
+      <li><b>Success = business KPIs</b>, not tech metrics. Tie the architecture to measurable outcomes (cost per transaction, time-to-market, latency SLA) and define them up front.</li>
+      <li><b>SDLC &amp; DevOps maturity:</b> favor CI/CD, IaC, automated testing, and small frequent releases. The <b>DORA metrics</b> — deployment frequency, lead time for changes, change-failure rate, MTTR — are the standard health signals.</li>
+      <li><b>Team skills &amp; topology:</b> assess current skills and plan upskilling; managed/serverless reduces the ops burden on a stretched team.</li>
+    </ul>
+
+    <h3>Buy vs build</h3>
+    <div class="callout co-trade"><span class="lbl">Default heuristic</span><p>Prefer <b>managed services / SaaS (repurchase)</b> to remove undifferentiated heavy lifting; build custom only where it is a genuine competitive differentiator. "Reduce operational burden / focus engineers on the product" points to buy/managed.</p></div>
+
+    <h3>Shared Responsibility &amp; Shared Fate</h3>
+    <div class="tw"><table>
+      <tr><th>Google secures ("of the cloud")</th><th>You secure ("in the cloud")</th></tr>
+      <tr><td>Hardware, network, hypervisor, physical DCs, managed-service internals</td><td>Your data, IAM &amp; access, configuration, OS/patching (on IaaS), app code</td></tr>
+    </table></div>
+    <ul class="tick">
+      <li>The more managed the service, the more responsibility shifts to Google (IaaS → PaaS → serverless).</li>
+      <li><b>Shared fate</b> goes further: Google actively helps you succeed via secure blueprints, <span class="svc">Assured Workloads</span>, and <span class="svc">Security Command Center</span>.</li>
+    </ul>
+
+    <h3>Compliance &amp; data governance</h3>
+    <ul class="tick">
+      <li>Certifications (ISO 27001, SOC 1/2/3, PCI-DSS, HIPAA, FedRAMP) — find attestations in the <b>Compliance Reports Manager</b>.</li>
+      <li><b>Data residency / sovereignty:</b> <span class="svc">Assured Workloads</span> enforces location + personnel controls; the <b>org policy resource-locations constraint</b> restricts where resources can be created.</li>
+    </ul>
+
+    <h3>Deployment strategies</h3>
+    <div class="tw"><table>
+      <tr><th>Strategy</th><th>How it works</th><th>Trade-off</th></tr>
+      <tr><td><b>Recreate</b></td><td>Stop old, deploy new</td><td>Simplest; causes downtime</td></tr>
+      <tr><td><b>Rolling</b></td><td>Replace instances gradually</td><td>No downtime; mixed versions during rollout (MIG/GKE default)</td></tr>
+      <tr><td><b>Blue/Green</b></td><td>Full parallel env, switch traffic</td><td>Instant rollback; double the resources briefly</td></tr>
+      <tr><td><b>Canary</b></td><td>Route a small % to the new version first</td><td>Limits blast radius; needs good metrics/automation</td></tr>
+      <tr><td><b>A/B</b></td><td>Route by attribute to test variants</td><td>Experimentation, not just release safety</td></tr>
+    </table></div>
+    <div class="callout co-tip"><span class="lbl">Scenario triggers</span><p>"Zero downtime, instant rollback" → <b>Blue/Green</b>. "Limit risk / test on real traffic first" → <b>Canary</b>. "No downtime, minimal extra cost" → <b>Rolling</b>. <span class="svc">Cloud Deploy</span> automates progressive (canary/rolling) delivery.</p></div>
+  </section>
+
+  <!-- ===================== 15 WAF ===================== -->
+  <section id="waf">
+    <div class="sec-head"><span class="sec-num">15</span><h2>Well-Architected Framework — 6 Pillars</h2></div>
+    <p>Your <b>default tie-breaker</b> when two answers both "work". Explicitly referenced throughout the exam guide.</p>
+    <div class="pillars">
+      <div class="pillar"><span class="pn">01</span><b>Operational Excellence</b><span>Observability, automation, incident response, deployment discipline.</span></div>
+      <div class="pillar"><span class="pn">02</span><b>Security, Privacy &amp; Compliance</b><span>Least privilege, defense in depth, encryption, governance.</span></div>
+      <div class="pillar"><span class="pn">03</span><b>Reliability</b><span>HA/DR, redundancy, graceful degradation, SLOs &amp; error budgets.</span></div>
+      <div class="pillar"><span class="pn">04</span><b>Performance Optimization</b><span>Right-sizing, autoscaling, caching, managed services.</span></div>
+      <div class="pillar"><span class="pn">05</span><b>Cost Optimization</b><span>CapEx→OpEx, commitment discounts, lifecycle tiering, cleanup.</span></div>
+      <div class="pillar"><span class="pn">06</span><b>Sustainability</b><span>Region carbon data, efficient utilization, right-sizing.</span></div>
+    </div>
+    <div class="callout co-tip"><span class="lbl">How to use it in questions</span><p>Stuck between two valid options? Pick the one serving the pillar the scenario stresses: "always available" → reliability; "sensitive data" → security; "reduce spend" → cost. Managed/serverless usually wins on operational excellence.</p></div>
+  </section>
+
+  <!-- ===================== 15 TRADEOFFS ===================== -->
+  <section id="tradeoffs">
+    <div class="sec-head"><span class="sec-num">16</span><h2>Trade-off Master List</h2></div>
+    <p>The decisions examiners most love to test — memorize the "choose X when" trigger.</p>
+
+    <h4>Compute pricing models</h4>
+    <div class="split">
+      <div class="col pro"><h5>Cheaper</h5><ul>
+        <li><b>Spot VMs</b> — up to ~91% off, interruptible</li>
+        <li><b>CUDs</b> — steady, predictable load</li>
+        <li><b>Sustained Use</b> — automatic, no commitment</li>
+        <li><b>Autopilot / serverless</b> — pay for what runs</li></ul></div>
+      <div class="col con"><h5>Pricier but safer</h5><ul>
+        <li><b>On-demand VMs</b> — no interruption, no commit</li>
+        <li><b>Reserved capacity</b> — guaranteed availability</li>
+        <li><b>Over-provisioned nodes</b> — headroom, waste</li></ul></div>
+    </div>
+
+    <h4>Consistency vs scale (databases)</h4>
+    <div class="split">
+      <div class="col pro"><h5>Strong consistency</h5><ul>
+        <li><b>Spanner</b> — global + strong (premium)</li>
+        <li><b>Cloud SQL / AlloyDB</b> — ACID, regional</li>
+        <li><b>Firestore</b> — strong within region</li></ul></div>
+      <div class="col con"><h5>Scale / throughput</h5><ul>
+        <li><b>Bigtable</b> — huge throughput, no cross-row txns</li>
+        <li><b>BigQuery</b> — analytics scale, not OLTP</li>
+        <li><b>Read replicas</b> — scale reads, eventual lag</li></ul></div>
+    </div>
+
+    <h4>Managed vs self-managed</h4>
+    <div class="callout co-trade"><span class="lbl">Default heuristic</span><p><b>Managed / serverless usually beats self-managed</b> — less ops = better operational excellence + often lower TCO. Choose self-managed (Compute Engine, self-hosted DB, Dataproc) only when you need OS control, a specific engine/version, licensing, or a low-effort lift-and-shift.</p></div>
+
+    <h4>AI build vs buy</h4>
+    <div class="callout co-trade"><span class="lbl">Escalation ladder</span><p><b>Prebuilt API</b> → <b>Foundation model from Model Garden</b> → <b>RAG / Agent Builder on your data</b> → <b>Fine-tune</b> → <b>Train custom on Agent Platform + AI Hypercomputer</b>. Climb only when the cheaper rung can't meet accuracy/latency/data-control needs.</p></div>
+  </section>
+
+  <!-- ===================== 16 TIPS ===================== -->
+  <section id="tips">
+    <div class="sec-head"><span class="sec-num">17</span><h2>Exam-Day Tips</h2></div>
+    <ul class="tick">
+      <li><b>Read the case studies days before.</b> Know each company's goals, existing tech, and constraints so questions become fast lookups.</li>
+      <li><b>Every answer maps to a WAF pillar.</b> When two options both work, pick the one serving the pillar the scenario emphasizes.</li>
+      <li><b>Least privilege &amp; managed services</b> are the safe defaults for "best practice" questions.</li>
+      <li><b>Watch the qualifier:</b> "most cost-effective", "least operational overhead", "fastest to deploy", "minimize change", "global", "cannot tolerate data loss" — the qualifier decides between otherwise-valid answers.</li>
+      <li><b>Eliminate deprecated services</b> (Cloud Debugger, IoT Core, Deployment Manager) — they're distractors.</li>
+      <li><b>AI questions:</b> prefer prebuilt/RAG over custom training unless accuracy demands it; remember <b>Model Armor</b> + <b>Sensitive Data Protection</b> for securing AI.</li>
+      <li><b>Global VPC / regional subnets</b> — a recurring networking trick; VPC peering is non-transitive.</li>
+      <li><b>Compliance flags</b> (HIPAA, PCI, residency, sovereignty) → <b>Assured Workloads + CMEK/EKM + VPC-SC</b>.</li>
+      <li><b>Flag &amp; move on.</b> ~2 min/question; mark for review and return.</li>
+    </ul>
+  </section>
+
+  <!-- ===================== 17 FAQ ===================== -->
+  <section id="faq">
+    <div class="sec-head"><span class="sec-num">18</span><h2>Exam FAQs</h2></div>
+
+    <details class="faq"><summary>How hard is the PCA, and how long should I prepare?</summary>
+      <div class="a"><p>It's one of the harder GCP exams — 50–60 questions in 2 hours, heavily scenario-based. Most candidates with 2+ years of cloud experience pass in one attempt after 4–8 focused weeks, with the emphasis on case studies and service trade-offs rather than rote facts.</p></div></details>
+
+    <details class="faq"><summary>What are the current official case studies?</summary>
+      <div class="a"><p>The 2026 pool is <b>Altostrat Media, Cymbal Retail, EHR Healthcare, and KnightMotives Automotive</b> — you get 2 of the 4 on your exam. The older Mountkirk Games / TerramEarth / Helicopter Racing League set has been retired. Read all four in advance and map their requirements to services.</p></div></details>
+
+    <details class="faq"><summary>Cloud SQL vs Spanner — when do I pick each?</summary>
+      <div class="a"><p><b>Cloud SQL</b> for standard OLTP in a single region (MySQL/PostgreSQL/SQL Server). <b>Spanner</b> when you need multi-region strong consistency, a 99.999% SLA, or horizontal scale beyond one instance (roughly &gt;1,000 TPS or global writes). "Financial + global" in one sentence is almost always Spanner.</p></div></details>
+
+    <details class="faq"><summary>GKE Autopilot vs Standard — quick rule?</summary>
+      <div class="a"><p><b>Autopilot</b> when the scenario prioritizes reduced operational burden — Google manages nodes, scaling, and patching, billed per pod. <b>Standard</b> when you need specific machine types, GPUs/TPUs, or custom node configs. On the exam, "operational simplicity" almost always points to Autopilot.</p></div></details>
+
+    <details class="faq"><summary>Which storage class for archival / compliance data?</summary>
+      <div class="a"><p><b>Archive</b> for &lt; once/year (regulatory records), <b>Coldline</b> for &lt; once/quarter, <b>Nearline</b> for &lt; once/month. Use <b>Object Lifecycle Management</b> to auto-transition so you never pay Standard rates for cold data. Colder = cheaper to store but pricier to retrieve.</p></div></details>
+
+    <details class="faq"><summary>What changed for AI in 2026?</summary>
+      <div class="a"><p>Generative AI is now explicitly in scope and the exam is moving from the <b>Vertex AI</b> name to <b>Gemini Enterprise Agent Platform</b>. Expect questions on Model Garden, Agent Builder (RAG), Gemini Cloud Assist, AI Hypercomputer, and securing AI with Model Armor + Sensitive Data Protection. Both old and new product names may appear.</p></div></details>
+
+    <details class="faq"><summary>Standard vs renewal exam?</summary>
+      <div class="a"><p>First-timers and expired certs take the <b>standard</b> exam (2 hrs, $200, 50–60 questions, 2 case studies). If you hold an active cert within the renewal window, you can take the shorter <b>renewal</b> exam (1 hr, $100, 25 questions, 1 gen-AI case study making up 90–100% of it).</p></div></details>
+  </section>
+
+  <!-- ===================== APPENDIX A1 — CLI ===================== -->
+  <section id="cli">
+    <div class="sec-head"><span class="sec-num">A1</span><h2>Appendix — CLI Quick Reference</h2></div>
+    <div class="callout co-tip"><span class="lbl">Recognition, not memorization</span><p>The PCA is a <b>design</b> exam — it won't ask you to type commands with exact flags (that's the <b>Associate Cloud Engineer</b> exam). §5.2 only expects you to know <i>which tool does what</i> and to recognize a command in an answer choice. Learn the <b>tool-to-service mapping</b> below; don't over-invest here.</p></div>
+
+    <h3>The three CLIs — know the split</h3>
+    <div class="tw"><table>
+      <tr><th>Tool</th><th>Scope</th><th>Example</th></tr>
+      <tr><td class="svc">gcloud</td><td>Everything except the two below — compute, IAM, networking, GKE, projects, config</td><td><code>gcloud compute instances list</code></td></tr>
+      <tr><td class="svc">gcloud storage <span class="old">(gsutil)</span></td><td>Cloud Storage objects &amp; buckets</td><td><code>gcloud storage cp file gs://bucket</code></td></tr>
+      <tr><td class="svc">bq</td><td>BigQuery datasets, tables, queries</td><td><code>bq query 'SELECT ...'</code></td></tr>
+      <tr><td class="svc">kubectl</td><td>In-cluster GKE objects — after <code>get-credentials</code></td><td><code>kubectl get pods</code></td></tr>
+    </table></div>
+
+    <h3>Commands worth recognizing</h3>
+    <div class="tw"><table>
+      <tr><th>Area</th><th>Command</th><th>What it does</th></tr>
+      <tr><td>Config</td><td><code>gcloud init</code> / <code>gcloud auth login</code></td><td>Set up + authenticate the SDK</td></tr>
+      <tr><td>Config</td><td><code>gcloud config set project PROJECT_ID</code></td><td>Switch the active project</td></tr>
+      <tr><td>Projects</td><td><code>gcloud projects create|list</code></td><td>Create / list projects in the hierarchy</td></tr>
+      <tr><td>Compute</td><td><code>gcloud compute instances create|list|delete</code></td><td>Manage individual VMs</td></tr>
+      <tr><td>Compute</td><td><code>gcloud compute instance-templates create</code></td><td>Define the VM blueprint for a MIG</td></tr>
+      <tr><td>Compute</td><td><code>gcloud compute instance-groups managed create</code></td><td>Create a MIG (autoscaling + autohealing)</td></tr>
+      <tr><td>GKE</td><td><code>gcloud container clusters create --region ...</code></td><td>Regional cluster = nodes across 3 zones (HA)</td></tr>
+      <tr><td>GKE</td><td><code>gcloud container clusters get-credentials NAME</code></td><td>Fetch kubeconfig → then use <code>kubectl</code></td></tr>
+      <tr><td>IAM</td><td><code>gcloud projects add-iam-policy-binding \<br>&nbsp;&nbsp;PROJECT --member=... --role=roles/...</code></td><td>Grant a role to a principal (least privilege)</td></tr>
+      <tr><td>IAM</td><td><code>gcloud iam service-accounts create NAME</code></td><td>Create a service-account identity</td></tr>
+      <tr><td>Storage</td><td><code>gcloud storage cp | ls | rm</code></td><td>Copy / list / delete objects (old: <code>gsutil</code>)</td></tr>
+      <tr><td>BigQuery</td><td><code>bq mk</code> · <code>bq load</code> · <code>bq query</code></td><td>Make dataset · load data · run SQL</td></tr>
+      <tr><td>Pub/Sub</td><td><code>gcloud pubsub topics create</code> / <code>subscriptions create</code></td><td>Create streaming entry points</td></tr>
+      <tr><td>Network</td><td><code>gcloud compute networks create \<br>&nbsp;&nbsp;--subnet-mode=custom</code></td><td>Custom-mode VPC (global; subnets regional)</td></tr>
+      <tr><td>Network</td><td><code>gcloud compute firewall-rules create</code></td><td>Allow/deny VPC traffic</td></tr>
+    </table></div>
+
+    <div class="callout co-tip"><span class="lbl">The one fact that actually earns points</span><p>It's the <b>tool-to-service mapping</b>, not flags: <code>bq</code> = BigQuery · <code>gcloud storage</code>/<code>gsutil</code> = Cloud Storage · <code>kubectl</code> (after <code>get-credentials</code>) = inside a GKE cluster. And for provisioning: prefer <b>Terraform / Infrastructure Manager</b> (IaC) over the deprecated <b>Deployment Manager</b>. Also know the emulators — <span class="svc">Bigtable, Spanner, Pub/Sub, Firestore</span> — exist for local testing without touching real resources.</p></div>
+
+    <div class="callout co-trap"><span class="lbl">Don't over-study this</span><p>If you find yourself memorizing exact flag names or output formats, stop — you're studying for the ACE exam, not PCA. Spend that time on case studies and service trade-offs instead.</p></div>
+  </section>
+
+  <!-- ===================== APPENDIX A2 — EDITIONS & TIERS ===================== -->
+  <section id="tiers">
+    <div class="sec-head"><span class="sec-num">A2</span><h2>Appendix — Editions &amp; Tiers</h2></div>
+    <div class="callout co-tip"><span class="lbl">Why this matters</span><p>The exam tests tiers <i>indirectly</i>: a scenario names a capability (threat detection, global backbone routing, high IOPS) and the right answer depends on knowing which tier provides it. Learn <b>what unlocks at each tier</b>, not the prices.</p></div>
+
+    <h3>Security Command Center</h3>
+    <div class="tw"><table>
+      <tr><th>Tier</th><th>Unlocks</th><th>Scenario signal</th></tr>
+      <tr><td class="svc">Standard <span class="old">(free)</span></td><td>Basic posture — Security Health Analytics (misconfigs, exposed resources), Web Security Scanner custom scans. GCP only.</td><td>"Free dashboard / find misconfigurations"</td></tr>
+      <tr><td class="svc">Premium</td><td>+ Threat detection (Event / Container / VM), <b>attack-path simulation</b>, <b>compliance monitoring</b> (CIS, PCI-DSS, NIST, HIPAA, ISO). Org or project level.</td><td>"Detect active threats / monitor PCI-HIPAA / attack paths"</td></tr>
+      <tr><td class="svc">Enterprise</td><td>Multi-cloud CNAPP across <b>AWS/Azure</b>, integrated <b>Google SecOps</b> (SIEM/SOAR), CIEM. Org level only.</td><td>"One security view across GCP + AWS + Azure with SIEM"</td></tr>
+    </table></div>
+    <div class="callout co-trap"><span class="lbl">Note</span><p>The SCC <b>Enterprise</b> tier is scheduled to shut down on <b>May 21, 2027</b>, with those orgs moving to <b>Premium</b>. If a question forces a choice, Premium is the safe "paid tier" default for threat detection + compliance.</p></div>
+
+    <h3>Network Service Tiers</h3>
+    <div class="split">
+      <div class="col pro"><h5>Premium (default)</h5><ul>
+        <li>Traffic rides Google's <b>global backbone</b> end-to-end</li>
+        <li>Supports <b>global</b> load balancing &amp; anycast</li>
+        <li>Best performance &amp; reliability</li></ul></div>
+      <div class="col con"><h5>Standard</h5><ul>
+        <li>Egresses to public internet near the region</li>
+        <li><b>Regional</b> load balancing only</li>
+        <li>Cheaper — trade performance/global reach for cost</li></ul></div>
+    </div>
+    <div class="callout co-tip"><span class="lbl">Trigger</span><p>"Minimize network egress cost, single-region app" → <b>Standard tier</b>. "Global users, best latency/reliability" → <b>Premium tier</b>.</p></div>
+
+    <h3>Other capability-gated choices</h3>
+    <div class="tw"><table>
+      <tr><th>Choice</th><th>Options (cheaper → pricier / more capable)</th><th>Pick on</th></tr>
+      <tr><td class="svc">Persistent Disk / Hyperdisk</td><td>pd-standard (HDD) → pd-balanced (default SSD) → pd-ssd → pd-extreme / <b>Hyperdisk</b> (tunable)</td><td>cost vs IOPS/latency</td></tr>
+      <tr><td class="svc">BigQuery compute</td><td><b>On-demand</b> (per-TB scanned, spiky) vs <b>Editions</b> (Standard / Enterprise / Enterprise Plus — slot capacity + autoscale + commitments)</td><td>predictable heavy load → Editions</td></tr>
+      <tr><td class="svc">Firestore</td><td><b>Native mode</b> (real-time sync + offline) vs <b>Datastore mode</b> (server-side, no real-time)</td><td>new apps → Native</td></tr>
+      <tr><td class="svc">GKE</td><td>Autopilot / Standard modes → <b>GKE Enterprise (Anthos)</b> for fleet/multicloud</td><td>hybrid/multicluster → Enterprise</td></tr>
+      <tr><td class="svc">Cloud VPN</td><td>Classic VPN (99.9%) → <b>HA VPN</b> (99.99%)</td><td>production → HA VPN</td></tr>
+    </table></div>
+  </section>
+
+  <footer>
+    <p>GCP Professional Cloud Architect — 2026 Blueprint · Built from the official Google Cloud exam guide + certification page.<br>
+    Verify current details at cloud.google.com/learn/certification/cloud-architect · Independent study aid, not affiliated with Google.</p>
+  </footer>
+
+</div>
+</body>
+</html>

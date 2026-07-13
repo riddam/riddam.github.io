@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GCP PCA — 100 Practice Questions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A2540;--blueprint:#123A63;--paper:#FBFBF8;--panel:#FFFFFF;
+    --line:#D4DBE4;--grid:rgba(18,58,99,.06);--muted:#5A6B7E;
+    --primary:#1A73E8;--green:#188038;--red:#C5221F;--amber:#B06000;
+    --green-bg:#E6F4EA;--red-bg:#FCE8E6;--primary-bg:#E8F0FE;
+    --disp:'Space Grotesk',system-ui,sans-serif;--body:'IBM Plex Sans',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px;}
+  .sheet{max-width:960px;margin:0 auto;padding:0 20px 80px}
+
+  .titleblock{background:var(--ink);color:#fff;margin:0 -20px 26px;padding:38px 34px 30px;border-bottom:4px solid var(--primary);position:relative;overflow:hidden}
+  .titleblock::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:22px 22px;pointer-events:none}
+  .tb-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#7FB0F0;margin:0 0 12px;position:relative}
+  .titleblock h1{font-family:var(--disp);font-weight:700;font-size:clamp(26px,5vw,42px);margin:0;letter-spacing:-.02em;position:relative}
+  .titleblock p{position:relative;color:#AFC6E4;font-size:14.5px;margin:10px 0 0;max-width:640px}
+
+  /* sticky control bar */
+  .bar{position:sticky;top:0;z-index:20;background:rgba(251,251,248,.94);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:6px;padding:12px 14px;margin-bottom:22px}
+  .scorewrap{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-bottom:10px}
+  .score{font-family:var(--mono);font-size:13px}
+  .score b{color:var(--primary)}
+  .score .pct{color:var(--green);font-weight:600}
+  .progress{flex:1 1 160px;height:8px;background:var(--line);border-radius:5px;overflow:hidden;min-width:120px}
+  .progress i{display:block;height:100%;width:0;background:var(--primary);transition:width .25s}
+  .btn{font-family:var(--mono);font-size:12px;border:1px solid var(--line);background:#fff;color:var(--blueprint);padding:6px 12px;border-radius:20px;cursor:pointer}
+  .btn:hover{border-color:var(--primary);color:var(--primary)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-family:var(--mono);font-size:11.5px;border:1px solid var(--line);background:#fff;color:var(--muted);padding:5px 11px;border-radius:20px;cursor:pointer;white-space:nowrap}
+  .chip:hover{border-color:var(--primary)}
+  .chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:18px 18px 16px;margin-bottom:16px}
+  .qhead{display:flex;gap:10px;align-items:baseline;margin-bottom:12px}
+  .qnum{font-family:var(--mono);font-size:12px;font-weight:600;color:#fff;background:var(--ink);padding:3px 8px;border-radius:3px;flex:none}
+  .qdom{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--primary);border:1px solid #C2D7FA;background:var(--primary-bg);padding:3px 8px;border-radius:20px;flex:none;align-self:center}
+  .qtext{font-size:15px;font-weight:500;margin:0 0 14px;line-height:1.5}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{display:flex;gap:11px;align-items:flex-start;text-align:left;font-family:var(--body);font-size:14px;padding:11px 13px;border:1.5px solid var(--line);border-radius:5px;background:#fff;cursor:pointer;transition:border-color .12s,background .12s;width:100%}
+  .opt:hover{border-color:var(--primary)}
+  .opt .key{font-family:var(--mono);font-weight:600;font-size:13px;color:var(--muted);flex:none}
+  .opt.correct{background:var(--green-bg);border-color:var(--green)}
+  .opt.correct .key{color:var(--green)}
+  .opt.wrong{background:var(--red-bg);border-color:var(--red)}
+  .opt.wrong .key{color:var(--red)}
+  .opt.disabled{cursor:default}
+  .opt.disabled:hover{border-color:var(--line)}
+  .opt.correct.disabled:hover{border-color:var(--green)}
+  .opt.wrong.disabled:hover{border-color:var(--red)}
+  .actions{display:flex;gap:10px;margin-top:13px;align-items:center;flex-wrap:wrap}
+  .reveal{font-family:var(--mono);font-size:12px;border:1px dashed var(--primary);color:var(--primary);background:#fff;padding:6px 13px;border-radius:20px;cursor:pointer}
+  .reveal:hover{background:var(--primary-bg)}
+  .verdict{font-family:var(--mono);font-size:12px;font-weight:600}
+  .verdict.ok{color:var(--green)}.verdict.no{color:var(--red)}
+  .expl{margin-top:12px;padding:12px 14px;border-left:4px solid var(--primary);background:var(--primary-bg);border-radius:4px;font-size:13.5px;display:none}
+  .expl.show{display:block}
+  .expl .lbl{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);font-weight:600;display:block;margin-bottom:5px}
+  .expl b{color:var(--blueprint)}
+  .empty{text-align:center;color:var(--muted);font-family:var(--mono);padding:40px}
+  footer{margin-top:40px;padding-top:20px;border-top:2px solid var(--ink);font-size:12px;color:var(--muted);font-family:var(--mono)}
+  @media (max-width:560px){.qdom{align-self:flex-start}}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <header class="titleblock">
+    <p class="tb-eyebrow">Google Cloud · Professional Cloud Architect · 2026</p>
+    <h1>100 Practice Questions</h1>
+    <p>Scenario-based questions in PCA style. Pick an answer to check it instantly, or hit <b>Reveal</b>. Every question has an explanation. Filter by domain to drill weak spots. Answers are original study material, not real exam items.</p>
+  </header>
+
+  <div class="bar">
+    <div class="scorewrap">
+      <span class="score">Answered <b id="answered">0</b>/100 · Correct <b id="correct">0</b> · <span class="pct" id="pct">0%</span></span>
+      <div class="progress"><i id="pbar"></i></div>
+      <button class="btn" id="revealAll">Reveal all</button>
+      <button class="btn" id="reset">Reset</button>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div id="quiz"></div>
+  <footer>GCP PCA — 100 Practice Questions · Original study material, independent of Google · Pair with the 2026 Blueprint study guide.</footer>
+</div>
+
+<script type="application/json" id="qdata">
+[
+{"id":1,"domain":"Design","q":"A retailer must move a large monolithic application to Google Cloud within a very tight deadline and wants minimal code changes. Which migration strategy fits best?","opts":["Refactor the monolith into microservices on GKE","Rehost (lift-and-shift) the VMs to Compute Engine using Migrate to Virtual Machines","Rewrite the app as event-driven Cloud Run functions","Repurchase an equivalent SaaS product"],"a":1,"e":"A tight deadline with minimal change points to <b>rehost</b>. Refactor and rewrite add value but cost far more time and risk; repurchase changes the product entirely."},
+{"id":2,"domain":"Design","q":"A startup wants an HTTP API packaged as a container, pays only when requests arrive, and needs near-zero operational overhead. Which platform?","opts":["Compute Engine with a MIG","GKE Standard","Cloud Run","App Engine Flexible"],"a":2,"e":"<b>Cloud Run</b> runs stateless containers, scales to zero, and bills per request with no infrastructure to manage — the lowest-overhead fit for an HTTP container API."},
+{"id":3,"domain":"Design","q":"Two proposed designs both satisfy the functional requirements. Which reference should guide the trade-off decision on the exam?","opts":["The cheapest option regardless of other factors","The Google Cloud Well-Architected Framework pillars","Whatever uses the newest services","The option with the most managed services"],"a":1,"e":"The <b>Well-Architected Framework</b> (six pillars) is the intended tie-breaker. Pick the option that best serves the pillar the scenario stresses."},
+{"id":4,"domain":"Design","q":"A business goal states checkout latency must stay under 200 ms at peak. How is this classified?","opts":["A functional requirement","A non-functional requirement","A compliance control","A migration dependency"],"a":1,"e":"Latency, availability, and throughput targets are <b>non-functional requirements</b>. Functional requirements describe what the system does, not how well."},
+{"id":5,"domain":"Design","q":"An application serves users on every continent from a single global IP and handles HTTP(S) traffic. Which entry point should the architecture use?","opts":["Regional External Application Load Balancer","Global External Application Load Balancer","External Network passthrough Load Balancer","Internal Application Load Balancer"],"a":1,"e":"The <b>Global External Application LB</b> provides one anycast IP worldwide with routing to the nearest healthy backend — ideal for global HTTP apps."},
+{"id":6,"domain":"Design","q":"A company must expose internal APIs to external partners with quotas, authentication, versioning, and analytics. Which service?","opts":["Cloud Endpoints only","Apigee API Management","Cloud Load Balancing","Pub/Sub"],"a":1,"e":"<b>Apigee</b> is the full API-management layer: quotas, keys, monetization, versioning and analytics for partner-facing APIs."},
+{"id":7,"domain":"Design","q":"An enterprise wants a cloud-first design that keeps compute portable across environments to avoid lock-in. Which approach fits?","opts":["Build directly on proprietary managed runtimes only","Containerize workloads and run on GKE","Use only Compute Engine VMs with custom images","Deploy everything as Cloud Run functions"],"a":1,"e":"<b>Containers on GKE</b> maximize portability across on-prem, GCP, and other clouds — the standard answer for avoiding lock-in while staying cloud-native."},
+{"id":8,"domain":"Design","q":"Before selecting a migration approach for hundreds of servers, what should the architect do first?","opts":["Start provisioning Compute Engine VMs","Assess the estate with Migration Center for discovery, TCO, and dependencies","Sign a Committed Use Discount","Enable VPC Service Controls"],"a":1,"e":"<b>Assess first.</b> Migration Center discovers inventory, maps dependencies, and estimates TCO so you can choose the right strategy per workload."},
+{"id":9,"domain":"Compute","q":"A nightly batch rendering job is fault-tolerant and cost-sensitive; occasional interruption is acceptable. Which compute is most cost-effective?","opts":["On-demand Compute Engine VMs","Spot VMs","Committed use N2 instances","Sole-tenant nodes"],"a":1,"e":"<b>Spot VMs</b> are up to ~91% cheaper and can be reclaimed with 30s notice — perfect for fault-tolerant batch work."},
+{"id":10,"domain":"Compute","q":"A team wants Kubernetes but does not want to manage nodes, and prefers paying per running pod. Which option?","opts":["GKE Standard","GKE Autopilot","Compute Engine with kubeadm","Cloud Run"],"a":1,"e":"<b>GKE Autopilot</b> removes node management and bills per pod, with hardened defaults — the go-to when the scenario stresses operational simplicity."},
+{"id":11,"domain":"Compute","q":"A workload needs specific GPU types, custom node machine configurations, and privileged DaemonSets on Kubernetes. Which is required?","opts":["GKE Autopilot","GKE Standard","Cloud Run","App Engine Standard"],"a":1,"e":"<b>GKE Standard</b> gives node-level control (custom machine types, GPUs, privileged DaemonSets) that Autopilot restricts."},
+{"id":12,"domain":"Compute","q":"A legacy application requires a specific OS kernel version and commercially licensed software tied to the host. Which platform?","opts":["Cloud Run","Compute Engine","GKE Autopilot","Cloud Run functions"],"a":1,"e":"<b>Compute Engine</b> gives full OS/kernel control and supports bring-your-own-license workloads that serverless and Autopilot cannot."},
+{"id":13,"domain":"Compute","q":"An image should be processed automatically whenever a file lands in a Cloud Storage bucket. Which compute is the simplest fit?","opts":["A always-on Compute Engine VM polling the bucket","Cloud Run functions triggered by the storage event","GKE CronJob","App Engine Standard cron"],"a":1,"e":"<b>Cloud Run functions</b> (event-driven) fire on the Cloud Storage finalize event — no idle compute, minimal code."},
+{"id":14,"domain":"Compute","q":"An enterprise runs Kubernetes clusters on-prem, in GCP, and in AWS, and needs consistent config and policy across all of them. Which product?","opts":["GKE Standard in each cloud independently","GKE Enterprise (Anthos)","Cloud Run","Compute Engine MIGs"],"a":1,"e":"<b>GKE Enterprise (Anthos)</b> provides fleet management, Config Management, and Service Mesh across on-prem and multiple clouds."},
+{"id":15,"domain":"Compute","q":"A stateless web tier on VMs must automatically scale, self-heal failed instances, and roll out updates gradually. Which construct?","opts":["Unmanaged instance group","Managed Instance Group (MIG)","A single large VM","Sole-tenant node group"],"a":1,"e":"A <b>MIG</b> delivers autoscaling, autohealing, and rolling/canary updates across zones. Unmanaged groups are static."},
+{"id":16,"domain":"Compute","q":"A compliance rule forbids running on physical hardware shared with other tenants. Which Compute Engine feature satisfies this?","opts":["Confidential VMs","Sole-tenant nodes","Preemptible VMs","Shielded VMs"],"a":1,"e":"<b>Sole-tenant nodes</b> dedicate a physical host to your project, meeting single-tenancy licensing/compliance needs."},
+{"id":17,"domain":"Compute","q":"A predictable production service runs 24/7 for years. How should the team reduce its compute cost with commitment?","opts":["Switch it to Spot VMs","Purchase Committed Use Discounts","Rely only on Sustained Use Discounts","Move it to App Engine"],"a":1,"e":"<b>Committed Use Discounts</b> (1 or 3 years) give the deepest savings for steady, predictable baseline load. Spot is wrong for an always-up service."},
+{"id":18,"domain":"Compute","q":"A regulated workload requires data to remain encrypted even while being processed in memory. Which feature?","opts":["CMEK on the boot disk","Confidential VMs","VPC Service Controls","Cloud HSM"],"a":1,"e":"<b>Confidential VMs</b> encrypt memory in-use, protecting data during processing — beyond the default at-rest and in-transit encryption."},
+{"id":19,"domain":"Storage","q":"Regulatory records must be kept for seven years and are read roughly once a year. Which Cloud Storage class minimizes cost?","opts":["Standard","Nearline","Coldline","Archive"],"a":3,"e":"<b>Archive</b> is cheapest to store for data accessed less than once a year. Retrieval is pricier, but that is rare here."},
+{"id":20,"domain":"Storage","q":"An architect wants objects to move to cheaper classes automatically as they age, with no manual work. Which feature?","opts":["Bucket Lock","Object Lifecycle Management","Object Versioning","Turbo Replication"],"a":1,"e":"<b>Object Lifecycle Management</b> auto-transitions objects between classes (or deletes them) by age — the standard cost-over-time answer."},
+{"id":21,"domain":"Storage","q":"Multiple VMs and GKE pods need a shared POSIX file system mounted concurrently. Which service?","opts":["Cloud Storage with FUSE","Filestore","Local SSD","Persistent Disk in read-write on one VM"],"a":1,"e":"<b>Filestore</b> provides managed NFS shared file storage for concurrent mounts across VMs and GKE."},
+{"id":22,"domain":"Storage","q":"A workload needs the highest possible disk IOPS for scratch data and can tolerate losing that data when the VM stops. Which storage?","opts":["Balanced Persistent Disk","Local SSD","Cloud Storage Standard","Filestore"],"a":1,"e":"<b>Local SSD</b> offers the highest IOPS/lowest latency but is ephemeral — ideal for scratch/cache where loss on stop is acceptable."},
+{"id":23,"domain":"Storage","q":"A compliance mandate requires that stored objects cannot be modified or deleted for a fixed retention period (WORM). Which feature?","opts":["Object Versioning","Bucket Lock with a retention policy","Signed URLs","Requester Pays"],"a":1,"e":"<b>Bucket Lock</b> with a retention policy enforces immutable WORM storage for the retention window."},
+{"id":24,"domain":"Storage","q":"Objects must survive a full regional outage with the highest availability. Which bucket configuration?","opts":["Single-region bucket","Multi-region bucket","Nearline single-region","Local SSD replication"],"a":1,"e":"A <b>multi-region</b> (or dual-region) bucket stores geo-redundant copies, surviving a regional failure with the highest availability."},
+{"id":25,"domain":"Storage","q":"Website assets are read constantly by many users worldwide. Which storage class is correct?","opts":["Standard","Nearline","Coldline","Archive"],"a":0,"e":"<b>Standard</b> class is for frequently accessed hot data with no retrieval fee — correct for actively served assets."},
+{"id":26,"domain":"Database","q":"A global financial ledger needs strong consistency across regions, horizontal scale, and a 99.999% availability SLA. Which database?","opts":["Cloud SQL with cross-region replicas","Spanner","Bigtable","Firestore"],"a":1,"e":"<b>Spanner</b> uniquely offers globally strong-consistent relational data with horizontal scale and 99.999% multi-region availability. 'Financial + global' is the classic Spanner signal."},
+{"id":27,"domain":"Database","q":"A regional web app uses standard OLTP on MySQL with no extreme scale needs. Which managed database?","opts":["Spanner","Cloud SQL","Bigtable","BigQuery"],"a":1,"e":"<b>Cloud SQL</b> fits standard single-region OLTP on MySQL/PostgreSQL/SQL Server. Spanner would be overkill and costly."},
+{"id":28,"domain":"Database","q":"Connected sensors generate millions of time-series writes per second that must be stored with low-latency reads. Which database?","opts":["Cloud SQL","Firestore","Bigtable","BigQuery"],"a":2,"e":"<b>Bigtable</b> handles very high write throughput and low-latency reads for time-series/IoT at scale. 'Sensor/time-series' is the Bigtable signal."},
+{"id":29,"domain":"Database","q":"A mobile app needs real-time data sync across devices and offline support with a flexible schema. Which database?","opts":["Bigtable","Firestore","Cloud SQL","Spanner"],"a":1,"e":"<b>Firestore</b> provides real-time listeners, offline sync, and a serverless document model — built for mobile/web backends."},
+{"id":30,"domain":"Database","q":"Analysts need serverless SQL over petabytes of historical data for dashboards and ad-hoc queries. Which service?","opts":["Cloud SQL","BigQuery","Bigtable","Memorystore"],"a":1,"e":"<b>BigQuery</b> is the serverless analytical warehouse for petabyte-scale SQL and BI — not an operational database."},
+{"id":31,"domain":"Database","q":"A gaming backend needs a sub-millisecond cache for session data and leaderboards. Which service?","opts":["Firestore","Memorystore","Cloud SQL","BigQuery"],"a":1,"e":"<b>Memorystore</b> (Redis/Memcached) delivers sub-ms in-memory caching for sessions and leaderboards."},
+{"id":32,"domain":"Database","q":"A team needs PostgreSQL compatibility with much higher performance and mixed transactional/analytical (HTAP) workloads. Which database?","opts":["Cloud SQL for PostgreSQL","AlloyDB","Bigtable","Firestore"],"a":1,"e":"<b>AlloyDB</b> is PostgreSQL-compatible with far higher performance and strong HTAP capability."},
+{"id":33,"domain":"Database","q":"A Cloud SQL instance is read-bound and the team must scale reads without changing the database engine. What should they add?","opts":["Read replicas","A second primary","Shard manually across instances","Migrate to Bigtable"],"a":0,"e":"<b>Read replicas</b> scale read traffic for Cloud SQL. Writes still go to the primary; replicas add eventual read lag."},
+{"id":34,"domain":"Database","q":"A self-managed PostgreSQL database must move to Cloud SQL with minimal downtime and continuous replication during cutover. Which tool?","opts":["Storage Transfer Service","Database Migration Service","Transfer Appliance","Dataflow"],"a":1,"e":"<b>Database Migration Service</b> performs serverless, minimal-downtime migrations with continuous replication to Cloud SQL."},
+{"id":35,"domain":"Database","q":"A Bigtable cluster shows hot-spotting and uneven node load. What is the most likely fix?","opts":["Add secondary indexes","Redesign the row key to distribute writes evenly","Enable multi-region replication","Switch to on-demand pricing"],"a":1,"e":"Bigtable performance depends on <b>row-key design</b>. Sequential/monotonic keys cause hotspots; distribute the key to spread load."},
+{"id":36,"domain":"Database","q":"A regional application needs ACID transactions and the team standardizes on SQL Server. Which service?","opts":["Cloud SQL for SQL Server","Spanner","Bigtable","Firestore"],"a":0,"e":"<b>Cloud SQL for SQL Server</b> provides managed, ACID-compliant SQL Server in a single region — Spanner is not needed without global scale."},
+{"id":37,"domain":"Database","q":"A data team wants to train and run simple ML models directly on warehouse data using SQL, without moving data out. Which capability?","opts":["Dataproc MLlib","BigQuery ML (BQML)","Memorystore","Cloud SQL stored procedures"],"a":1,"e":"<b>BigQuery ML</b> lets analysts build and run models with SQL inside BigQuery, avoiding data movement."},
+{"id":38,"domain":"Network","q":"An enterprise needs the highest-bandwidth private connection to Google with traffic that never traverses the public internet. Which option?","opts":["HA VPN","Dedicated Interconnect","Partner Interconnect","Cloud NAT"],"a":1,"e":"<b>Dedicated Interconnect</b> is a direct physical fiber link (10/100 Gbps) to a Google PoP with no internet traversal — highest bandwidth, lowest latency."},
+{"id":39,"domain":"Network","q":"A company cannot physically co-locate at a Google PoP but still wants a private, non-internet path to Google Cloud. Which option?","opts":["Dedicated Interconnect","Partner Interconnect","Classic VPN","Direct Peering only"],"a":1,"e":"When you cannot reach a Google facility, <b>Partner Interconnect</b> connects through an approved provider (50 Mbps–50 Gbps)."},
+{"id":40,"domain":"Network","q":"A team needs a quick, encrypted hybrid link with modest bandwidth and a 99.99% availability SLA. Which option?","opts":["Classic VPN single tunnel","HA VPN","Dedicated Interconnect","Cloud CDN"],"a":1,"e":"<b>HA VPN</b> gives an encrypted IPsec link over the internet with a 99.99% SLA when configured with two tunnels — fast and cheap to set up."},
+{"id":41,"domain":"Network","q":"An organization wants centralized network administration where several team projects share common subnets. Which pattern?","opts":["VPC Peering between every project","Shared VPC with a host project","A separate VPC per project with VPN","Legacy default network"],"a":1,"e":"<b>Shared VPC</b> lets a host project own the network and share subnets with service projects — centralized admin, decentralized workloads."},
+{"id":42,"domain":"Network","q":"VPC-A peers with VPC-B, and VPC-B peers with VPC-C. Can resources in VPC-A reach VPC-C directly?","opts":["Yes, peering is transitive","No, VPC Peering is non-transitive","Only if a Cloud Router is added","Only over the internet"],"a":1,"e":"<b>VPC Peering is non-transitive.</b> A-to-C needs its own peering or a hub design (e.g., Network Connectivity Center)."},
+{"id":43,"domain":"Network","q":"VMs without external IP addresses must call Google APIs such as Cloud Storage privately. Which feature enables this?","opts":["Cloud NAT","Private Google Access","External Application LB","Cloud VPN"],"a":1,"e":"<b>Private Google Access</b> (per-subnet) lets internal-only VMs reach Google APIs without external IPs."},
+{"id":44,"domain":"Network","q":"A security team must ensure that even with valid credentials, data cannot be exfiltrated from BigQuery and Cloud Storage to outside a defined boundary. Which control?","opts":["IAM Deny policies alone","VPC Service Controls","Cloud Armor","Firewall rules"],"a":1,"e":"<b>VPC Service Controls</b> create an API perimeter that blocks data movement outside the boundary, mitigating credential-based exfiltration."},
+{"id":45,"domain":"Network","q":"A public web application needs protection from DDoS attacks and OWASP-style exploits at the global load balancer. Which service?","opts":["Cloud NAT","Cloud Armor","VPC Service Controls","Secret Manager"],"a":1,"e":"<b>Cloud Armor</b> provides WAF rules (OWASP) plus DDoS protection at the edge/global LB."},
+{"id":46,"domain":"Network","q":"Private instances with no external IP need outbound internet access to download OS patches. Which service?","opts":["Cloud NAT","Private Google Access","Cloud CDN","Partner Interconnect"],"a":0,"e":"<b>Cloud NAT</b> provides managed egress to the internet for instances without external IPs."},
+{"id":47,"domain":"Network","q":"A regional service uses a non-HTTP TCP protocol and the backend must see the client's original source IP. Which load balancer?","opts":["Global External Application LB","External Network passthrough Load Balancer","Internal Application LB","SSL Proxy LB"],"a":1,"e":"The <b>External Network (passthrough) LB</b> preserves the client source IP and handles arbitrary TCP/UDP, which Application LBs do not."},
+{"id":48,"domain":"Network","q":"A consumer must privately reach a producer service published in another organization's VPC, without peering the whole networks. Which feature?","opts":["VPC Peering","Private Service Connect","Cloud VPN","Shared VPC"],"a":1,"e":"<b>Private Service Connect</b> exposes a specific service privately across VPCs/orgs without joining the full networks."},
+{"id":49,"domain":"HA/DR","q":"A payments system states it cannot tolerate any data loss on failover (RPO near zero) and needs global reach. Which database configuration?","opts":["Cloud SQL with async cross-region replica","Spanner multi-region with synchronous replication","Nightly Cloud Storage backups","Single-zone Bigtable"],"a":1,"e":"RPO near zero requires <b>synchronous replication</b>; Spanner multi-region provides it globally. Async replicas risk losing recent writes."},
+{"id":50,"domain":"HA/DR","q":"A Cloud SQL database must automatically fail over if its zone goes down. What should be configured?","opts":["Read replica in the same zone","High Availability configuration with a standby in a second zone","Manual export to Cloud Storage","Bigtable replication"],"a":1,"e":"Cloud SQL <b>HA configuration</b> maintains a standby in another zone with automatic failover — read replicas do not provide automatic failover."},
+{"id":51,"domain":"HA/DR","q":"Which metric defines the maximum acceptable downtime after an incident?","opts":["RPO","RTO","SLA","MTBF"],"a":1,"e":"<b>RTO</b> (Recovery Time Objective) is the maximum acceptable downtime; RPO measures acceptable data loss."},
+{"id":52,"domain":"HA/DR","q":"Which metric defines the maximum acceptable amount of data loss, measured in time?","opts":["RTO","RPO","SLO","QPS"],"a":1,"e":"<b>RPO</b> (Recovery Point Objective) is the maximum data loss window; lower RPO needs more frequent/synchronous replication."},
+{"id":53,"domain":"HA/DR","q":"A non-critical internal tool needs the cheapest DR approach and can tolerate hours of downtime and some data loss. Which pattern?","opts":["Hot active-active multi-region","Warm standby","Backup and restore from Cloud Storage","Synchronous multi-region database"],"a":2,"e":"<b>Backup and restore</b> is the lowest-cost DR pattern, accepting higher RTO/RPO — appropriate for non-critical workloads."},
+{"id":54,"domain":"HA/DR","q":"A GKE workload must keep running if a single zone fails, with no manual intervention. How should the cluster be created?","opts":["Zonal cluster with more nodes","Regional cluster spanning three zones","Two separate zonal clusters managed manually","Autopilot in a single zone"],"a":1,"e":"A <b>regional GKE cluster</b> spreads nodes and the control plane across three zones, surviving a zone outage automatically."},
+{"id":55,"domain":"HA/DR","q":"A mission-critical app requires near-zero RTO and cost is a secondary concern. Which DR strategy?","opts":["Backup and restore","Pilot light","Hot / multi-region active-active","Cold standby"],"a":2,"e":"<b>Hot active-active</b> across regions gives near-zero RTO/RPO at the highest cost — justified for mission-critical systems."},
+{"id":56,"domain":"Security","q":"A GitHub Actions pipeline needs to deploy to GCP without storing long-lived service account keys. Which approach?","opts":["Download and store an SA key in the repo secrets","Workload Identity Federation","Use the default Compute Engine service account key","Share a user's credentials"],"a":1,"e":"<b>Workload Identity Federation</b> lets external identities (GitHub, AWS, on-prem) obtain short-lived tokens with no exported keys."},
+{"id":57,"domain":"Security","q":"An application should only read objects from one bucket and nothing more. Which IAM approach follows least privilege?","opts":["Grant roles/editor on the project","Grant the predefined role roles/storage.objectViewer scoped to the bucket","Grant roles/owner","Grant Basic Viewer at the org level"],"a":1,"e":"Prefer a narrowly scoped <b>predefined role</b> (roles/storage.objectViewer). Basic roles like Editor/Owner are far too broad for production."},
+{"id":58,"domain":"Security","q":"Employees must reach an internal web app based on identity and context, without a VPN. Which service?","opts":["Cloud VPN","Identity-Aware Proxy (IAP)","Cloud NAT","Cloud Armor"],"a":1,"e":"<b>Identity-Aware Proxy</b> gates access to apps/VMs by verified identity and context — zero-trust access without a VPN."},
+{"id":59,"domain":"Security","q":"A regulator mandates that encryption keys be generated and stored outside Google Cloud, under the customer's external key manager. Which option?","opts":["Google-managed keys","CMEK with Cloud KMS","Cloud HSM","Cloud External Key Manager (Cloud EKM)"],"a":3,"e":"<b>Cloud EKM</b> keeps keys in a supported third-party/external manager while GCP calls them — maximum separation and control."},
+{"id":60,"domain":"Security","q":"A compliance requirement says the customer must control key rotation and be able to disable keys, but keys can stay in Google's KMS. Which option?","opts":["Google-managed encryption keys","Customer-Managed Encryption Keys (CMEK)","No encryption","Client-side only with no KMS"],"a":1,"e":"<b>CMEK</b> (Cloud KMS) lets the customer manage rotation and disable keys while Google hosts them — the middle tier of control."},
+{"id":61,"domain":"Security","q":"A platform team must ensure only trusted, signed container images can be deployed to GKE. Which control?","opts":["Cloud Armor","Binary Authorization","VPC Service Controls","Secret Manager"],"a":1,"e":"<b>Binary Authorization</b> enforces deploy-time policy so only attested/signed images run on GKE (and Cloud Run)."},
+{"id":62,"domain":"Security","q":"An app must store API keys and passwords centrally with versioning, rotation, and audit logging. Which service?","opts":["Store them in environment variables in code","Secret Manager","Cloud Storage bucket with public access","IAM custom roles"],"a":1,"e":"<b>Secret Manager</b> centralizes secrets with versioning, rotation, IAM, and audit logging — never hardcode secrets."},
+{"id":63,"domain":"Security","q":"Before loading customer data into analytics, the team must find and mask personally identifiable information. Which service?","opts":["Sensitive Data Protection (DLP)","Cloud Armor","Security Command Center","Cloud KMS"],"a":0,"e":"<b>Sensitive Data Protection (formerly DLP)</b> discovers, classifies, and de-identifies PII across data."},
+{"id":64,"domain":"Security","q":"An org wants to enforce that no VM in any project can have an external IP. Which mechanism applies this guardrail hierarchy-wide?","opts":["A firewall rule per project","An Organization Policy constraint","An IAM predefined role","A VPC route"],"a":1,"e":"<b>Organization Policies</b> apply preventive constraints (e.g., restrict external IPs) across the whole resource hierarchy."},
+{"id":65,"domain":"Security","q":"A generative-AI application must be protected from prompt injection and from leaking sensitive data in responses. Which service?","opts":["Cloud Armor","Model Armor","Binary Authorization","Cloud CDN"],"a":1,"e":"<b>Model Armor</b> screens LLM prompts and responses for safety, prompt injection, and data leakage."},
+{"id":66,"domain":"Security","q":"Leadership wants a single place to view security posture, misconfigurations, and active threats across the organization. Which service?","opts":["Cloud Logging","Security Command Center","Cloud Monitoring","Cloud Trace"],"a":1,"e":"<b>Security Command Center</b> is the centralized posture-management and threat-detection platform for GCP."},
+{"id":67,"domain":"Security","q":"To enforce separation of duties, a deploy pipeline must temporarily act as a higher-privileged identity only during deployment. Which mechanism?","opts":["Exported service account keys","Service account impersonation","Sharing the owner role","A shared password"],"a":1,"e":"<b>Service account impersonation</b> lets one principal assume another SA's permissions short-term, supporting separation of duties without static keys."},
+{"id":68,"domain":"Security","q":"A workload requires cryptographic keys protected by hardware certified to FIPS 140-2 Level 3. Which service?","opts":["Cloud KMS software keys","Cloud HSM","Cloud EKM","Secret Manager"],"a":1,"e":"<b>Cloud HSM</b> provides FIPS 140-2 Level 3 hardware-backed keys managed within Google Cloud."},
+{"id":69,"domain":"Ops","q":"Logs from dozens of projects must be centralized into one location for long-term retention and analysis. Which approach?","opts":["Manually download logs weekly","Aggregated Log Sink at the org/folder exporting to BigQuery or Cloud Storage","Enable Data Access logs everywhere","Increase Cloud Monitoring quota"],"a":1,"e":"An <b>aggregated Log Sink</b> exports logs across projects to BigQuery/GCS for centralized retention and querying."},
+{"id":70,"domain":"Ops","q":"A microservices app has intermittent latency and the team must see where time is spent across service calls. Which tool?","opts":["Cloud Profiler","Cloud Trace","Error Reporting","Cloud Logging"],"a":1,"e":"<b>Cloud Trace</b> provides distributed request tracing to pinpoint latency across microservices."},
+{"id":71,"domain":"Ops","q":"An engineering team wants ongoing, low-overhead insight into which functions consume the most CPU and memory in production. Which tool?","opts":["Cloud Trace","Cloud Profiler","Cloud Monitoring uptime checks","VPC Flow Logs"],"a":1,"e":"<b>Cloud Profiler</b> continuously profiles CPU and heap usage in production with minimal overhead."},
+{"id":72,"domain":"Ops","q":"An SRE team must define measurable reliability targets and track how much unreliability budget remains. Which concepts?","opts":["KPIs and OKRs","SLIs, SLOs, and error budgets","RTO and RPO","CapEx and OpEx"],"a":1,"e":"Reliability is managed with <b>SLIs/SLOs and error budgets</b>, the core of the operational-excellence pillar."},
+{"id":73,"domain":"Ops","q":"An auditor needs an immutable record of who performed administrative actions via GCP APIs. Which log type?","opts":["Data Access audit logs","Admin Activity audit logs","VPC Flow Logs","Application logs"],"a":1,"e":"<b>Admin Activity audit logs</b> are always-on and immutable, recording administrative API calls. Data Access logs are opt-in and high-volume."},
+{"id":74,"domain":"Ops","q":"To improve reliability, a team wants to proactively verify the system withstands failures and load before customers are affected. Which practices?","opts":["Only monitor dashboards","Chaos engineering, load testing, and penetration testing","Disable alerting to reduce noise","Increase log retention"],"a":1,"e":"The reliability sub-domain calls for proactive validation via <b>chaos, load, and penetration testing</b>."},
+{"id":75,"domain":"Ops","q":"A GKE platform team wants managed, Prometheus-compatible metrics collection at scale. Which service?","opts":["Cloud Trace","Managed Service for Prometheus","Error Reporting","Cloud Profiler"],"a":1,"e":"<b>Managed Service for Prometheus</b> provides fully managed, Prometheus-compatible metrics for GKE and other workloads."},
+{"id":76,"domain":"Data","q":"A streaming pipeline must ingest high-volume events reliably as its entry point before processing. Which service?","opts":["Cloud Storage","Pub/Sub","BigQuery","Dataproc"],"a":1,"e":"<b>Pub/Sub</b> is the scalable async ingestion entry point for streaming pipelines."},
+{"id":77,"domain":"Data","q":"A greenfield project needs one pipeline that handles both batch and streaming ETL without managing clusters. Which service?","opts":["Dataproc","Dataflow","Cloud Composer","Bigtable"],"a":1,"e":"<b>Dataflow</b> (Apache Beam) is serverless and unifies batch and stream processing — the preferred greenfield choice."},
+{"id":78,"domain":"Data","q":"A company has extensive existing Apache Spark and Hive jobs and wants to move them with minimal rewrite. Which service?","opts":["Dataflow","Dataproc","Pub/Sub","BigQuery"],"a":1,"e":"<b>Dataproc</b> runs managed Spark/Hadoop/Hive, ideal for lifting existing jobs with minimal changes."},
+{"id":79,"domain":"Data","q":"A data team needs to orchestrate a multi-step pipeline with dependencies, retries, and scheduling using Apache Airflow. Which service?","opts":["Cloud Scheduler","Cloud Composer","Workflows","Dataflow"],"a":1,"e":"<b>Cloud Composer</b> is managed Apache Airflow for complex pipeline orchestration."},
+{"id":80,"domain":"Data","q":"Business analysts want to build ETL visually without writing code. Which service?","opts":["Dataflow templates only","Cloud Data Fusion","Dataproc notebooks","Cloud Functions"],"a":1,"e":"<b>Cloud Data Fusion</b> provides a visual, code-free ETL/ELT builder for analysts."},
+{"id":81,"domain":"Data","q":"An organization needs governed, reusable BI dashboards with a shared semantic model on top of BigQuery. Which tool?","opts":["Looker","Cloud Monitoring","Data Studio raw only","Bigtable"],"a":0,"e":"<b>Looker</b> offers a governed semantic model and embedded analytics on BigQuery."},
+{"id":82,"domain":"Data","q":"For an IoT telemetry platform, which end-to-end pipeline order is canonical on the exam?","opts":["BigQuery to Pub/Sub to Dataflow","Pub/Sub to Dataflow to Bigtable and BigQuery","Dataproc to Pub/Sub to Cloud SQL","Cloud SQL to Dataflow to Firestore"],"a":1,"e":"The canonical pattern is <b>Pub/Sub → Dataflow → Bigtable (low-latency serving) + BigQuery (analytics)</b>."},
+{"id":83,"domain":"Data","q":"A company needs unified data governance, cataloging, and lakehouse management across data assets. Which service?","opts":["Dataplex","Memorystore","Cloud CDN","Cloud Armor"],"a":0,"e":"<b>Dataplex</b> provides governance, cataloging, and lakehouse organization across distributed data."},
+{"id":84,"domain":"Migration","q":"A company must move multiple petabytes to Cloud Storage but has limited network bandwidth. Which is fastest?","opts":["gcloud storage cp over the internet","Storage Transfer Service online","Transfer Appliance (offline shipping)","Database Migration Service"],"a":2,"e":"For petabyte-scale data with limited bandwidth, the offline <b>Transfer Appliance</b> is fastest."},
+{"id":85,"domain":"Migration","q":"An ongoing, scheduled transfer of objects from Amazon S3 and on-prem into Cloud Storage is needed. Which service?","opts":["Transfer Appliance","Storage Transfer Service","Datastream","Cloud Composer"],"a":1,"e":"<b>Storage Transfer Service</b> handles scheduled/online transfers from S3, on-prem, and other clouds to Cloud Storage."},
+{"id":86,"domain":"Migration","q":"A team wants to modernize existing VMs into containers running on GKE. Which tool?","opts":["Migrate to Virtual Machines","Migrate to Containers","Database Migration Service","Transfer Appliance"],"a":1,"e":"<b>Migrate to Containers</b> converts VM workloads into containers on GKE."},
+{"id":87,"domain":"Migration","q":"Before a large migration, the team needs automated discovery, dependency mapping, and TCO estimates. Which service?","opts":["Migration Center","Cloud Deploy","Config Connector","Cloud Build"],"a":0,"e":"<b>Migration Center</b> provides discovery, dependency mapping, and TCO estimation to plan migrations."},
+{"id":88,"domain":"Migration","q":"For infrastructure as code, which is the preferred approach now that Deployment Manager is being retired?","opts":["Deployment Manager templates","Terraform / Infrastructure Manager","Manual gcloud scripts","Cloud Shell history"],"a":1,"e":"<b>Terraform</b> (and Google's managed Infrastructure Manager) is the preferred IaC; Deployment Manager is deprecated."},
+{"id":89,"domain":"Cost","q":"A fault-tolerant batch workload should minimize compute cost and can handle interruptions. Which option gives the deepest savings?","opts":["On-demand VMs","Spot VMs (up to ~91% off)","Committed use for 3 years","Sole-tenant nodes"],"a":1,"e":"<b>Spot VMs</b> give the deepest per-hour discount for interruptible, fault-tolerant work."},
+{"id":90,"domain":"Cost","q":"A stable production service runs continuously and the team wants predictable savings via commitment. Which lever?","opts":["Spot VMs","Committed Use Discounts","Sustained Use only","Preemptible only"],"a":1,"e":"<b>Committed Use Discounts</b> reward steady, predictable usage with 1- or 3-year commitments."},
+{"id":91,"domain":"Cost","q":"Storage costs are rising because old data stays in Standard class. What reduces cost automatically?","opts":["Delete the bucket","Object Lifecycle Management to tier to Nearline/Coldline/Archive","Enable versioning","Switch to a multi-region bucket"],"a":1,"e":"<b>Lifecycle policies</b> auto-tier aging objects to colder classes, cutting storage cost without manual work."},
+{"id":92,"domain":"Cost","q":"An architect wants to identify underutilized VMs to downsize and save money. Which tool surfaces this?","opts":["Cloud Armor","Recommender / Active Assist rightsizing recommendations","VPC Flow Logs","Security Command Center"],"a":1,"e":"<b>Recommender (Active Assist)</b> flags idle/underused resources with rightsizing recommendations."},
+{"id":93,"domain":"Cost","q":"Finance wants to be notified before spend exceeds a threshold, though not to hard-stop resources. Which feature?","opts":["Quotas","Budget alerts in Cloud Billing","Committed Use Discounts","Org Policy"],"a":1,"e":"<b>Budget alerts</b> notify when spend approaches/exceeds a threshold; they do not automatically cap usage."},
+{"id":94,"domain":"Cost","q":"A company has heavy, predictable BigQuery analytics and wants cost control versus paying per query. Which approach?","opts":["Always use on-demand pricing","Use BigQuery editions/reservations (capacity-based)","Export to Cloud SQL","Disable caching"],"a":1,"e":"For predictable heavy usage, <b>capacity reservations/editions</b> control cost better than on-demand per-query pricing."},
+{"id":95,"domain":"AI","q":"A company wants a chatbot that answers questions grounded in its internal documents and product catalog. Which approach?","opts":["Train a large model from scratch","Agent Builder with retrieval-augmented generation (RAG)","A prebuilt Vision API","Memorystore lookups"],"a":1,"e":"<b>Agent Builder / Vertex AI Search</b> with RAG grounds a foundation model on your data — far cheaper and faster than training from scratch."},
+{"id":96,"domain":"AI","q":"A team wants to choose from 200+ first- and third-party foundation models without building one. Where do they start?","opts":["Model Garden","Cloud Functions","BigQuery","Dataproc"],"a":0,"e":"<b>Model Garden</b> is the catalog of 200+ models (Gemini, Llama, etc.) to deploy or tune."},
+{"id":97,"domain":"AI","q":"An architect wants in-console AI assistance to design, deploy, and troubleshoot their Google Cloud architecture. Which tool?","opts":["Gemini Cloud Assist","Model Armor","NotebookLM","AI Hypercomputer"],"a":0,"e":"<b>Gemini Cloud Assist</b> helps design, deploy, and troubleshoot cloud architecture directly in the console."},
+{"id":98,"domain":"AI","q":"A research team needs to train very large models at scale using TPUs and GPUs with optimized consumption. Which offering?","opts":["Cloud Run","AI Hypercomputer","App Engine","Cloud SQL"],"a":1,"e":"<b>AI Hypercomputer</b> is the integrated infrastructure for large-scale training/serving across TPUs and GPUs."},
+{"id":99,"domain":"AI","q":"A team needs off-the-shelf image labeling and document text extraction without any ML expertise. Which is best?","opts":["Train a custom model on Agent Platform","Use prebuilt AI APIs (Vision, Document AI)","Deploy an open model on GKE","Use BigQuery ML"],"a":1,"e":"<b>Prebuilt AI APIs</b> (Vision, Document AI, Speech) deliver common capabilities instantly with no ML skills required."},
+{"id":100,"domain":"AI","q":"A domain-specific task has poor accuracy with pretrained models and abundant labeled data is available. What is the right escalation?","opts":["Keep using the prebuilt API","Train or fine-tune a custom model on Gemini Enterprise Agent Platform (Vertex AI)","Switch to Memorystore","Use Cloud Armor"],"a":1,"e":"When prebuilt accuracy is insufficient and you have labeled data, climb the ladder to <b>custom training/fine-tuning on Agent Platform (Vertex AI)</b>."}
+]
+</script>
+
+<script>
+  const DATA = JSON.parse(document.getElementById('qdata').textContent);
+  const KEYS = ['A','B','C','D'];
+  const quiz = document.getElementById('quiz');
+  const chipsEl = document.getElementById('chips');
+  const state = {}; // id -> {answered:bool, correctFirst:bool}
+  let filter = 'All';
+
+  const domains = ['All', ...Array.from(new Set(DATA.map(q=>q.domain)))];
+  domains.forEach(d=>{
+    const c = document.createElement('button');
+    c.className = 'chip' + (d==='All'?' active':'');
+    c.textContent = d==='All' ? 'All (100)' : d + ' (' + DATA.filter(q=>q.domain===d).length + ')';
+    c.onclick = ()=>{ filter=d; [...chipsEl.children].forEach(x=>x.classList.remove('active')); c.classList.add('active'); render(); };
+    chipsEl.appendChild(c);
+  });
+
+  function updateScore(){
+    const answered = Object.values(state).filter(s=>s.answered).length;
+    const correct = Object.values(state).filter(s=>s.correctFirst).length;
+    document.getElementById('answered').textContent = answered;
+    document.getElementById('correct').textContent = correct;
+    const pct = answered ? Math.round(correct/answered*100) : 0;
+    document.getElementById('pct').textContent = pct + '%';
+    document.getElementById('pbar').style.width = (answered/DATA.length*100) + '%';
+  }
+
+  function makeCard(q){
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML =
+      '<div class="qhead"><span class="qnum">Q'+q.id+'</span><span class="qdom">'+q.domain+'</span></div>'+
+      '<p class="qtext">'+q.q+'</p>';
+    const opts = document.createElement('div');
+    opts.className = 'opts';
+    const expl = document.createElement('div');
+    expl.className = 'expl';
+    expl.innerHTML = '<span class="lbl">Explanation — answer '+KEYS[q.a]+'</span>'+q.e;
+
+    const buttons = [];
+    q.opts.forEach((text,i)=>{
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.innerHTML = '<span class="key">'+KEYS[i]+'</span><span>'+text+'</span>';
+      b.onclick = ()=>choose(q,i,buttons,expl,verdict);
+      buttons.push(b);
+      opts.appendChild(b);
+    });
+
+    const actions = document.createElement('div');
+    actions.className = 'actions';
+    const revealBtn = document.createElement('button');
+    revealBtn.className = 'reveal';
+    revealBtn.textContent = 'Reveal answer';
+    revealBtn.onclick = ()=>revealOne(q,buttons,expl,verdict,revealBtn);
+    const verdict = document.createElement('span');
+    verdict.className = 'verdict';
+    actions.appendChild(revealBtn);
+    actions.appendChild(verdict);
+
+    card.appendChild(opts);
+    card.appendChild(actions);
+    card.appendChild(expl);
+    return card;
+  }
+
+  function lock(buttons){ buttons.forEach(b=>{b.classList.add('disabled'); b.disabled=false;}); }
+
+  function choose(q,i,buttons,expl,verdict){
+    if(state[q.id] && state[q.id].answered) return;
+    const correct = i===q.a;
+    buttons.forEach((b,idx)=>{
+      if(idx===q.a) b.classList.add('correct');
+      if(idx===i && !correct) b.classList.add('wrong');
+    });
+    lock(buttons);
+    verdict.textContent = correct ? '✓ Correct' : '✗ Incorrect — answer is '+KEYS[q.a];
+    verdict.className = 'verdict ' + (correct?'ok':'no');
+    expl.classList.add('show');
+    state[q.id] = {answered:true, correctFirst:correct};
+    updateScore();
+  }
+
+  function revealOne(q,buttons,expl,verdict,revealBtn){
+    buttons.forEach((b,idx)=>{ if(idx===q.a) b.classList.add('correct'); });
+    lock(buttons);
+    expl.classList.add('show');
+    if(!(state[q.id] && state[q.id].answered)){
+      verdict.textContent = 'Revealed — answer is '+KEYS[q.a];
+      verdict.className = 'verdict no';
+      state[q.id] = {answered:true, correctFirst:false};
+      updateScore();
+    }
+    revealBtn.style.display='none';
+  }
+
+  function render(){
+    quiz.innerHTML='';
+    const list = DATA.filter(q=>filter==='All'||q.domain===filter);
+    if(!list.length){ quiz.innerHTML='<div class="empty">No questions in this domain.</div>'; return; }
+    list.forEach(q=>quiz.appendChild(makeCard(q)));
+  }
+
+  document.getElementById('revealAll').onclick = ()=>{
+    filter='All'; [...chipsEl.children].forEach((x,i)=>x.classList.toggle('active', i===0));
+    render();
+    DATA.forEach(q=>{ if(!(state[q.id]&&state[q.id].answered)) state[q.id]={answered:true,correctFirst:false}; });
+    document.querySelectorAll('.card').forEach((card,idx)=>{
+      const q = DATA[idx];
+      const btns = card.querySelectorAll('.opt');
+      btns.forEach((b,i)=>{ if(i===q.a) b.classList.add('correct'); b.classList.add('disabled'); });
+      card.querySelector('.expl').classList.add('show');
+      const rb = card.querySelector('.reveal'); if(rb) rb.style.display='none';
+      const v = card.querySelector('.verdict'); v.textContent='Answer '+KEYS[q.a]; v.className='verdict no';
+    });
+    updateScore();
+  };
+
+  document.getElementById('reset').onclick = ()=>{ for(const k in state) delete state[k]; render(); updateScore(); };
+
+  render(); updateScore();
+</script>
+</body>
+</html>

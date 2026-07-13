@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Model Training, Fine-Tuning &amp; Evaluation — 2026 Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A2540;--blueprint:#123A63;--paper:#FBFBF8;--panel:#FFFFFF;
+    --line:#D4DBE4;--grid:rgba(18,58,99,.06);--muted:#5A6B7E;
+    --primary:#7C3AED;--green:#188038;--red:#C5221F;--amber:#B06000;
+    --amber-bg:#FEF7E6;--primary-bg:#F3EEFE;--green-bg:#E6F4EA;--red-bg:#FCE8E6;
+    --teal:#0D9488;--teal-bg:#E0F7F4;--blue:#0369A1;--blue-bg:#E0F2FE;
+    --disp:'Space Grotesk',system-ui,sans-serif;--body:'IBM Plex Sans',system-ui,sans-serif;--mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px;}
+  .sheet{max-width:1120px;margin:0 auto;padding:0 22px 90px}
+  .titleblock{background:linear-gradient(135deg,#1a0f2e 0%,#2d1b54 100%);color:#fff;margin:0 -22px 40px;padding:44px 40px 34px;border-bottom:4px solid var(--primary);position:relative;overflow:hidden}
+  .titleblock::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:22px 22px;pointer-events:none}
+  .tb-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#B794F6;margin:0 0 14px;position:relative}
+  .titleblock h1{font-family:var(--disp);font-weight:700;font-size:clamp(28px,5vw,48px);line-height:1.05;margin:0;letter-spacing:-.02em;position:relative}
+  .titleblock h1 .sub{display:block;font-size:clamp(14px,2.2vw,19px);font-weight:500;color:#C4B5F0;letter-spacing:0;margin-top:10px}
+  nav.toc{position:relative;margin:0 0 42px;padding:18px 20px;background:var(--panel);border:1px solid var(--line);border-radius:4px}
+  nav.toc h4{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+  nav.toc ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 20px}
+  nav.toc a{color:var(--blueprint);text-decoration:none;font-size:13.5px;display:flex;gap:8px;padding:3px 0;border-bottom:1px solid transparent}
+  nav.toc a:hover{border-bottom-color:var(--primary);color:var(--primary)}
+  nav.toc a .n{font-family:var(--mono);color:var(--muted);font-size:12px}
+  section{margin:0 0 54px;scroll-margin-top:16px}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin:0 0 20px;padding-bottom:10px;border-bottom:2px solid var(--ink)}
+  .sec-num{font-family:var(--mono);font-size:13px;font-weight:600;color:#fff;background:var(--ink);padding:4px 10px;border-radius:3px;letter-spacing:.05em;flex:none}
+  .sec-head h2{font-family:var(--disp);font-weight:600;font-size:clamp(20px,3.2vw,27px);margin:0;letter-spacing:-.01em}
+  h3{font-family:var(--disp);font-weight:600;font-size:18px;margin:30px 0 12px;color:var(--blueprint)}
+  h4{font-family:var(--disp);font-weight:600;font-size:15px;margin:22px 0 10px}
+  p{margin:0 0 14px}a{color:var(--primary)}
+  .tw{overflow-x:auto;margin:14px 0 6px;border:1px solid var(--line);border-radius:4px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px}
+  th{background:var(--ink);color:#fff;text-align:left;padding:9px 12px;font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase}
+  td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:rgba(18,58,99,.025)}
+  .svc{font-family:var(--mono);font-size:12.5px;font-weight:500;color:var(--blueprint)}
+  .callout{border-radius:4px;padding:13px 15px 13px 16px;margin:16px 0;font-size:13.5px;border-left:4px solid}
+  .callout .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;display:block;margin-bottom:5px}
+  .callout p{margin:0}
+  .co-trade{background:var(--amber-bg);border-color:var(--amber)}.co-trade .lbl{color:var(--amber)}
+  .co-tip{background:var(--primary-bg);border-color:var(--primary)}.co-tip .lbl{color:var(--primary)}
+  .co-trap{background:var(--red-bg);border-color:var(--red)}.co-trap .lbl{color:var(--red)}
+  .co-key{background:var(--blue-bg);border-color:var(--blue)}.co-key .lbl{color:var(--blue)}
+  .diagram{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:22px;margin:18px 0;overflow-x:auto}
+  .diagram .cap{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:0;margin:12px 0}
+  .flow .step{font-family:var(--mono);font-size:12px;padding:9px 14px;border:1.5px solid var(--line);border-radius:4px;background:#fff;text-align:center}
+  .flow .step.hi{border-color:var(--primary);background:var(--primary-bg);color:#4C1D95;font-weight:600}
+  .flow .step.tl{border-color:var(--teal);background:var(--teal-bg);color:#134E4A;font-weight:600}
+  .flow .step.bl{border-color:var(--blue);background:var(--blue-bg);color:#0C4A6E;font-weight:600}
+  .flow .a{font-family:var(--mono);color:var(--muted);padding:0 8px;font-size:14px}
+  .ladder{display:flex;flex-direction:column;gap:2px}
+  .rung{display:grid;grid-template-columns:160px 1fr auto;gap:14px;align-items:center;padding:10px 14px;background:#fff;border:1px solid var(--line);border-radius:3px}
+  .rung .cls{font-family:var(--mono);font-weight:600;color:var(--blueprint)}
+  .rung .desc{font-size:13px;color:var(--muted)}
+  .rung .tag{font-family:var(--mono);font-size:11px;padding:3px 8px;border-radius:20px;white-space:nowrap}
+  .t1{background:var(--green-bg);color:var(--green)}.t2{background:var(--blue-bg);color:#0C4A6E}.t3{background:var(--amber-bg);color:#92400E}.t4{background:var(--red-bg);color:var(--red)}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+  .split .col{border-radius:4px;padding:13px 15px;font-size:13px}
+  .split .pro{background:var(--green-bg);border:1px solid #B7DFC4}
+  .split .con{background:var(--red-bg);border:1px solid #F3C1BE}
+  .split h5{margin:0 0 8px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+  .split .pro h5{color:var(--green)}.split .con h5{color:var(--red)}
+  .split ul{margin:0;padding-left:17px}.split li{margin-bottom:5px}
+  ul.tick{list-style:none;padding-left:0;margin:12px 0}
+  ul.tick li{padding-left:26px;position:relative;margin-bottom:9px;font-size:13.5px}
+  ul.tick li::before{content:"›";position:absolute;left:6px;top:-1px;color:var(--primary);font-family:var(--mono);font-weight:600;font-size:16px}
+  .tree{display:flex;flex-direction:column;gap:10px}
+  .branch{display:flex;align-items:center;gap:0;flex-wrap:wrap}
+  .branch .q{font-family:var(--body);font-size:13.5px;flex:1 1 300px;padding:9px 13px;background:#fff;border:1px solid var(--line);border-left:3px solid var(--muted);border-radius:3px}
+  .branch .arr{font-family:var(--mono);color:var(--muted);padding:0 12px;font-size:15px;flex:none}
+  .node{font-family:var(--mono);font-size:12.5px;font-weight:500;padding:9px 13px;border-radius:4px;border:1.5px solid var(--blueprint);background:#fff;color:var(--ink);display:inline-block;text-align:center;line-height:1.3}
+  .node.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .node.purple{background:var(--primary-bg);border-color:var(--primary);color:#4C1D95}
+  .node.teal{background:var(--teal-bg);border-color:var(--teal);color:#134E4A}
+  .node.blue{background:var(--blue-bg);border-color:var(--blue);color:#0C4A6E}
+  .node.amber{background:var(--amber-bg);border-color:var(--amber);color:#92400E}
+  footer{margin-top:60px;padding-top:22px;border-top:2px solid var(--ink);font-size:12.5px;color:var(--muted);font-family:var(--mono)}
+  @media (max-width:640px){.split{grid-template-columns:1fr}.rung{grid-template-columns:1fr;gap:6px}}
+  @media print{body{background:#fff;font-size:11pt}.titleblock{-webkit-print-color-adjust:exact;print-color-adjust:exact}nav.toc{display:none}section{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header class="titleblock">
+    <p class="tb-eyebrow">Model Engineering · Training &amp; Evaluation · 2026</p>
+    <h1>Model Training, Fine-Tuning &amp; Evaluation
+      <span class="sub">Techniques, frameworks, data preparation, evaluation harnesses, optimization &amp; the open-weight ecosystem</span>
+    </h1>
+  </header>
+
+  <nav class="toc">
+    <h4>Training path</h4>
+    <ul>
+      <li><a href="#landscape"><span class="n">01</span> The training landscape</a></li>
+      <li><a href="#techniques"><span class="n">02</span> Fine-tuning techniques</a></li>
+      <li><a href="#alignment"><span class="n">03</span> Alignment &amp; preference tuning</a></li>
+      <li><a href="#frameworks"><span class="n">04</span> Training frameworks</a></li>
+      <li><a href="#data"><span class="n">05</span> Data preparation &amp; curation</a></li>
+      <li><a href="#distributed"><span class="n">06</span> Distributed training</a></li>
+      <li><a href="#eval"><span class="n">07</span> Evaluation harnesses &amp; benchmarks</a></li>
+      <li><a href="#optimization"><span class="n">08</span> Model optimization</a></li>
+      <li><a href="#ecosystem"><span class="n">09</span> Open-weight ecosystem</a></li>
+      <li><a href="#workflow"><span class="n">10</span> The complete training workflow</a></li>
+      <li><a href="#cloud"><span class="n">11</span> Cloud training services</a></li>
+      <li><a href="#tradeoffs"><span class="n">12</span> Trade-off master reference</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===================== 01 LANDSCAPE ===================== -->
+  <section id="landscape">
+    <div class="sec-head"><span class="sec-num">01</span><h2>The Training Landscape</h2></div>
+    <p>Model training in 2026 is a <b>stack of stages</b>, each with its own technique, data requirement, and compute profile. Understanding where each stage sits prevents the most common mistake: applying the wrong technique to the wrong problem.</p>
+
+    <div class="diagram">
+      <div class="cap">Fig 01.1 — The model training stack (stages run top → bottom)</div>
+      <div class="ladder">
+        <div class="rung"><span class="cls">Pre-training</span><span class="desc">Train from scratch on massive text corpus (trillions of tokens). Creates the base model. Only done by frontier labs.</span><span class="tag t4">$M+ · months · 1000s GPUs</span></div>
+        <div class="rung"><span class="cls">Continued pre-training</span><span class="desc">Extend the base model with domain-specific corpus (medical, legal, code). Rare — needs large domain data.</span><span class="tag t3">$10K–100K+ · weeks</span></div>
+        <div class="rung"><span class="cls">Supervised fine-tuning (SFT)</span><span class="desc">Train on (instruction, response) pairs to teach specific behavior, format, tone. The most common fine-tuning.</span><span class="tag t2">$100–5K · hours–days</span></div>
+        <div class="rung"><span class="cls">Preference alignment</span><span class="desc">DPO / ORPO / RLHF on (chosen, rejected) pairs to refine quality, safety, style. Usually after SFT.</span><span class="tag t2">$100–5K · hours–days</span></div>
+        <div class="rung"><span class="cls">Post-training optimization</span><span class="desc">Quantization, distillation, pruning to make the model smaller/faster/cheaper for inference.</span><span class="tag t1">$0–100 · minutes–hours</span></div>
+      </div>
+    </div>
+
+    <div class="callout co-key"><span class="lbl">Where you fit in</span><p>Most practitioners work at the <b>SFT + alignment</b> layers. Pre-training and continued pre-training are frontier-lab territory (Anthropic, OpenAI, Meta). Your job as an AI architect is to know which layer solves your problem and which technique to apply at that layer.</p></div>
+  </section>
+
+  <!-- ===================== 02 TECHNIQUES ===================== -->
+  <section id="techniques">
+    <div class="sec-head"><span class="sec-num">02</span><h2>Fine-Tuning Techniques</h2></div>
+    <p>The central question: <b>how many parameters do you actually need to change?</b> The answer determines your compute cost, data requirement, and quality ceiling.</p>
+
+    <div class="tw"><table>
+      <tr><th>Technique</th><th>What it changes</th><th>VRAM</th><th>Data needed</th><th>When to use</th></tr>
+      <tr><td class="svc">Full fine-tuning</td><td>All model weights</td><td>Very high (4x model size)</td><td>10K+ examples</td><td>Deep domain adaptation; rarely needed for most tasks</td></tr>
+      <tr><td class="svc">LoRA</td><td>Small low-rank adapter matrices (0.1–1% of params)</td><td>Moderate (model + adapters)</td><td>500–5K examples</td><td><b>Default for 2026</b> — best quality/cost ratio</td></tr>
+      <tr><td class="svc">QLoRA</td><td>Same as LoRA but base model stays 4-bit quantized</td><td>Low (~50–70% less than LoRA)</td><td>500–5K examples</td><td>Memory-constrained (single GPU, consumer hardware)</td></tr>
+      <tr><td class="svc">DoRA</td><td>LoRA + weight decomposition (magnitude + direction)</td><td>Slightly more than LoRA</td><td>500–5K examples</td><td>When LoRA quality isn't quite enough; marginal improvement</td></tr>
+    </table></div>
+
+    <div class="callout co-key"><span class="lbl">The 2026 default</span><p><b>QLoRA SFT</b> is the starting point for almost every fine-tuning project. LoRA when you have GPU headroom and need maximum throughput. Full fine-tuning only when adapters demonstrably can't close the quality gap (rare). Unsloth's optimized kernels brought QLoRA within ~10–20% of LoRA throughput.</p></div>
+
+    <h3>How LoRA works (the key insight)</h3>
+    <ul class="tick">
+      <li>Instead of updating a huge weight matrix W (billions of params), LoRA freezes W and trains two small matrices A and B such that the update is <b>ΔW = A × B</b>.</li>
+      <li><b>Rank r</b> controls adapter size: r=8 is common, r=16–64 for harder tasks. Higher rank = more capacity but more compute.</li>
+      <li>At inference, merge the adapter into the base model (zero overhead) or keep separate (swap adapters per task).</li>
+      <li>QLoRA adds 4-bit NF4 quantization on the frozen base — gradients flow through dequantized weights during training, but the base never leaves 4-bit in memory.</li>
+    </ul>
+
+    <div class="diagram">
+      <div class="cap">Fig 02.1 — LoRA vs QLoRA vs Full fine-tuning: VRAM for a 70B model</div>
+      <div class="ladder">
+        <div class="rung"><span class="cls">Full fine-tune</span><span class="desc">~280 GB VRAM (4× model size for weights + gradients + optimizer states)</span><span class="tag t4">multi-GPU required</span></div>
+        <div class="rung"><span class="cls">LoRA (16-bit base)</span><span class="desc">~140 GB (base in 16-bit + small adapters + optimizer for adapters only)</span><span class="tag t3">2–4 GPUs</span></div>
+        <div class="rung"><span class="cls">QLoRA (4-bit base)</span><span class="desc">~48 GB (base in 4-bit + adapters in 16-bit)</span><span class="tag t1">single H100 (80GB)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 03 ALIGNMENT ===================== -->
+  <section id="alignment">
+    <div class="sec-head"><span class="sec-num">03</span><h2>Alignment &amp; Preference Tuning</h2></div>
+    <p>After SFT teaches the model <i>what</i> to do, alignment teaches it <i>how well</i> to do it — ranking outputs by human preference.</p>
+
+    <div class="tw"><table>
+      <tr><th>Technique</th><th>How it works</th><th>Data format</th><th>When to use</th></tr>
+      <tr><td class="svc">RLHF</td><td>Train a reward model from preference pairs → optimize LLM with PPO against the reward</td><td>(prompt, chosen, rejected) + reward model</td><td>Frontier alignment; most complex but most expressive. Labs only.</td></tr>
+      <tr><td class="svc">DPO</td><td>Direct Preference Optimization — skips the reward model; optimizes directly on preference pairs</td><td>(prompt, chosen, rejected)</td><td><b>2026 default</b> for preference tuning. Simpler than RLHF, competitive quality.</td></tr>
+      <tr><td class="svc">ORPO</td><td>Merges SFT and DPO into one stage — simplest pipeline</td><td>(prompt, chosen, rejected)</td><td>When you want the simplest possible pipeline and have preference data</td></tr>
+      <tr><td class="svc">KTO</td><td>Kahneman-Tversky Optimization — works with just thumbs-up/thumbs-down (no paired comparisons needed)</td><td>(prompt, response, good/bad label)</td><td>When you have binary feedback, not pairwise preferences</td></tr>
+      <tr><td class="svc">GRPO</td><td>Group Relative Policy Optimization — reward comes from a verifiable function (math, code test pass)</td><td>(prompt, response, verifiable reward)</td><td>Reasoning tasks with checkable answers (math, code, logic)</td></tr>
+      <tr><td class="svc">SimPO / IPO</td><td>Variants of DPO addressing edge cases (length bias, BT-model assumption)</td><td>Same as DPO</td><td>When vanilla DPO produces length-biased or unstable results</td></tr>
+    </table></div>
+
+    <div class="callout co-tip"><span class="lbl">The practical default</span><p>For most fine-tuning projects: <b>SFT alone is enough</b>. Add <b>DPO/ORPO</b> if you have preference pairs and want to refine quality/safety. Reach for <b>GRPO</b> only for reasoning benchmarks with verifiable rewards. RLHF is the frontier lab's tool — most teams don't need it.</p></div>
+
+    <div class="diagram">
+      <div class="cap">Fig 03.1 — Alignment technique decision tree</div>
+      <div class="tree">
+        <div class="branch"><div class="q">Do you have <b>paired preference data</b> (chosen vs rejected)?</div><span class="arr">→ Yes →</span><span class="node purple">DPO (default) or ORPO (simpler)</span></div>
+        <div class="branch"><div class="q">Only <b>binary feedback</b> (thumbs up/down), no pairs?</div><span class="arr">→ Yes →</span><span class="node blue">KTO</span></div>
+        <div class="branch"><div class="q">Task has a <b>verifiable reward function</b> (math, code tests)?</div><span class="arr">→ Yes →</span><span class="node teal">GRPO</span></div>
+        <div class="branch"><div class="q">Need <b>maximum alignment control</b>, budget for reward model training?</div><span class="arr">→ Yes →</span><span class="node dark">RLHF (PPO)</span></div>
+        <div class="branch"><div class="q">No preference data at all?</div><span class="arr">→</span><span class="node amber">SFT only (generate synthetic preferences if needed)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 04 FRAMEWORKS ===================== -->
+  <section id="frameworks">
+    <div class="sec-head"><span class="sec-num">04</span><h2>Training Frameworks &amp; Tools</h2></div>
+
+    <div class="tw"><table>
+      <tr><th>Framework</th><th>What it is</th><th>Best for</th><th>2026 status</th></tr>
+      <tr><td class="svc">HF TRL (v1.0+)</td><td>Hugging Face's unified post-training library: SFTTrainer, DPOTrainer, KTOTrainer, ORPOTrainer, GRPOTrainer, RewardTrainer</td><td>Full control over the training loop; the "standard library" for fine-tuning</td><td>v1.0 (April 2026) — the default</td></tr>
+      <tr><td class="svc">Unsloth</td><td>Optimized kernels for LoRA/QLoRA — 2–5x faster, ~50–70% less VRAM than naive HF + bitsandbytes</td><td>Single-GPU fine-tuning; the fastest path to a working fine-tune</td><td>Integrated into TRL v1.0</td></tr>
+      <tr><td class="svc">Axolotl</td><td>Config-driven (YAML) fine-tuning framework — supports LoRA, QLoRA, full, DPO, GRPO, ORPO, reward modeling</td><td>Multi-GPU pipelines; teams wanting declarative configs over code</td><td>v0.29 (Feb 2026); active community</td></tr>
+      <tr><td class="svc">torchtune</td><td>PyTorch-native fine-tuning library from the PyTorch team</td><td>Teams wanting no HF dependency; pure PyTorch ecosystem</td><td>Growing; good for custom training loops</td></tr>
+      <tr><td class="svc">MLX-LM</td><td>Apple Silicon native — LoRA, QLoRA, DoRA on Mac</td><td>Local fine-tuning on Mac (32 GB → 7–8B; 96 GB → 70B QLoRA)</td><td>Mature for Apple Silicon users</td></tr>
+      <tr><td class="svc">DeepSpeed</td><td>Microsoft's distributed training library — ZeRO stages 1/2/3 for memory optimization</td><td>Multi-GPU/multi-node training; large models that don't fit on one GPU</td><td>Essential for full fine-tuning at scale</td></tr>
+      <tr><td class="svc">FSDP (Fully Sharded Data Parallel)</td><td>PyTorch's native distributed training — shards model across GPUs</td><td>Multi-GPU training without DeepSpeed dependency</td><td>Built into PyTorch; simpler than DeepSpeed</td></tr>
+    </table></div>
+
+    <div class="callout co-key"><span class="lbl">Starter recommendation</span><p><b>Unsloth + TRL</b> for single-GPU QLoRA fine-tuning (fastest, easiest). <b>Axolotl</b> for multi-GPU or when you want YAML configs. <b>DeepSpeed/FSDP</b> when models don't fit on a single GPU. <b>torchtune</b> if you want pure PyTorch without HF abstractions.</p></div>
+
+    <h3>Supporting tools</h3>
+    <div class="tw"><table>
+      <tr><th>Tool</th><th>Function</th></tr>
+      <tr><td class="svc">Hugging Face Transformers</td><td>Model loading, tokenization, inference — the foundation everything else builds on</td></tr>
+      <tr><td class="svc">Hugging Face PEFT</td><td>LoRA/QLoRA/DoRA adapter management (save, load, merge adapters)</td></tr>
+      <tr><td class="svc">bitsandbytes</td><td>4-bit/8-bit quantization for loading large models on limited VRAM</td></tr>
+      <tr><td class="svc">Weights &amp; Biases (W&B)</td><td>Experiment tracking, hyperparameter sweeps, model comparison dashboards</td></tr>
+      <tr><td class="svc">MLflow</td><td>Experiment tracking + model registry (open-source alternative to W&B)</td></tr>
+      <tr><td class="svc">Hugging Face Hub</td><td>Model hosting, sharing, versioning — the "GitHub for models"</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ===================== 05 DATA ===================== -->
+  <section id="data">
+    <div class="sec-head"><span class="sec-num">05</span><h2>Data Preparation &amp; Curation</h2></div>
+    <p>Data quality is the single biggest determinant of fine-tuning success. <b>5K well-curated examples consistently outperform 50K noisy ones.</b></p>
+
+    <h3>Data formats by training type</h3>
+    <div class="tw"><table>
+      <tr><th>Training type</th><th>Data format</th><th>Example</th></tr>
+      <tr><td class="svc">SFT (instruction tuning)</td><td>{"instruction": "...", "response": "..."} or chat format with system/user/assistant turns</td><td>{"instruction": "Summarize this email", "response": "The email discusses..."}</td></tr>
+      <tr><td class="svc">DPO / ORPO</td><td>{"prompt": "...", "chosen": "...", "rejected": "..."}</td><td>Two responses to the same prompt, one preferred</td></tr>
+      <tr><td class="svc">GRPO</td><td>{"prompt": "...", "response": "...", "reward": 0.85}</td><td>Response + verifiable reward score</td></tr>
+      <tr><td class="svc">Continued pre-training</td><td>Raw text documents (no instruction format)</td><td>Domain-specific corpus (medical literature, legal filings)</td></tr>
+    </table></div>
+
+    <h3>Data quality checklist</h3>
+    <ul class="tick">
+      <li><b>Deduplication:</b> remove exact and near-duplicate examples — duplicates cause memorization, not generalization.</li>
+      <li><b>Contamination check:</b> ensure evaluation data is not in the training set. This is the #1 cause of inflated metrics.</li>
+      <li><b>Quality filtering:</b> remove low-quality, off-topic, or contradictory examples. Use an LLM judge to score quality if manual review is impractical.</li>
+      <li><b>Mix base data (5–20%):</b> include general instruction data during domain SFT to prevent catastrophic forgetting — the model losing its general capabilities.</li>
+      <li><b>Balance:</b> ensure class/topic distribution matches what you want the model to learn, not just what's easiest to collect.</li>
+      <li><b>Privacy:</b> PII redaction before training. Differential privacy if fine-tuning on user data.</li>
+    </ul>
+
+    <h3>Synthetic data (the 2026 shortcut)</h3>
+    <p>Use a frontier model (Claude Opus, GPT-4o) to generate training data — instruction-response pairs, preference comparisons, or domain examples. <b>Standard practice in 2026</b>, but requires evaluation: always validate synthetic data quality before training on it.</p>
+    <div class="callout co-trap"><span class="lbl">Common mistake</span><p>Fine-tuning on synthetic data generated by the same model you're fine-tuning → model collapse (the model learns to imitate its own biases). Use a <b>stronger</b> model to generate training data for a <b>weaker</b> model (distillation pattern).</p></div>
+  </section>
+
+  <!-- ===================== 06 DISTRIBUTED ===================== -->
+  <section id="distributed">
+    <div class="sec-head"><span class="sec-num">06</span><h2>Distributed Training</h2></div>
+    <p>When a model doesn't fit on one GPU, or you need faster training, you distribute across multiple GPUs/nodes.</p>
+
+    <div class="tw"><table>
+      <tr><th>Strategy</th><th>What it does</th><th>Use when</th></tr>
+      <tr><td class="svc">Data Parallel (DDP)</td><td>Each GPU has a full model copy; data is split across GPUs. Gradients averaged.</td><td>Model fits on one GPU but you want faster training</td></tr>
+      <tr><td class="svc">FSDP (Fully Sharded)</td><td>Shards model weights, gradients, and optimizer states across GPUs</td><td>Model doesn't fit on one GPU; PyTorch native</td></tr>
+      <tr><td class="svc">DeepSpeed ZeRO-1/2/3</td><td>Progressive memory optimization — ZeRO-3 shards everything</td><td>Very large models; maximum memory efficiency</td></tr>
+      <tr><td class="svc">Tensor Parallelism</td><td>Splits individual layers across GPUs (within a node)</td><td>Very large layers that don't fit on one GPU even sharded</td></tr>
+      <tr><td class="svc">Pipeline Parallelism</td><td>Splits model layers sequentially across GPUs</td><td>Very deep models; used alongside tensor parallelism</td></tr>
+    </table></div>
+
+    <h3>Key training optimizations</h3>
+    <ul class="tick">
+      <li><b>Mixed precision (bf16/fp16):</b> train in half precision — 2x throughput, half memory, minimal quality loss. bf16 preferred (no loss scaling needed).</li>
+      <li><b>Gradient checkpointing:</b> recompute activations during backward pass instead of storing them — saves ~60% memory at ~30% speed cost.</li>
+      <li><b>Flash Attention 2:</b> memory-efficient attention computation — essential for long sequences. Built into most frameworks.</li>
+      <li><b>Gradient accumulation:</b> simulate larger batch sizes by accumulating gradients over multiple micro-batches before updating.</li>
+      <li><b>Checkpointing:</b> save model state regularly during training — critical when using spot/preemptible GPUs that can be interrupted.</li>
+    </ul>
+  </section>
+
+  <!-- ===================== 07 EVAL ===================== -->
+  <section id="eval">
+    <div class="sec-head"><span class="sec-num">07</span><h2>Evaluation Harnesses &amp; Benchmarks</h2></div>
+    <p><b>The eval harness must exist before training starts.</b> Without it, you cannot tell if a checkpoint is better than the last. This is the most under-invested area in most fine-tuning projects.</p>
+
+    <h3>Evaluation frameworks</h3>
+    <div class="tw"><table>
+      <tr><th>Framework</th><th>What it does</th><th>Best for</th></tr>
+      <tr><td class="svc">lm-evaluation-harness (EleutherAI)</td><td>Standardized benchmark suite: MMLU, GSM8K, HumanEval, HellaSwag, 400+ tasks</td><td>Base model benchmarking; academic comparison. No substitute.</td></tr>
+      <tr><td class="svc">DeepEval</td><td>pytest-native LLM eval — 14+ metrics: hallucination, bias, toxicity, RAG faithfulness</td><td>CI/CD integration; broad application eval; quality gates that block deploys</td></tr>
+      <tr><td class="svc">RAGAS</td><td>RAG-specific evaluation: context precision, recall, faithfulness, answer relevance</td><td>RAG pipeline evaluation; the standard for retrieval quality</td></tr>
+      <tr><td class="svc">Promptfoo</td><td>YAML-driven multi-model comparison + red-teaming (500+ adversarial vectors)</td><td>Prompt/model selection; security testing; CLI-first workflow</td></tr>
+      <tr><td class="svc">LLM-as-judge</td><td>Use a stronger model to evaluate a weaker model's output against rubrics</td><td>Scalable proxy for human eval; runs on 5–10% of production traces</td></tr>
+      <tr><td class="svc">Human evaluation</td><td>Domain experts rate outputs on rubrics (accuracy, helpfulness, safety)</td><td>Gold standard; expensive; use for final validation</td></tr>
+    </table></div>
+
+    <div class="callout co-key"><span class="lbl">The evaluation stack for fine-tuning</span><p>Before training: <b>lm-evaluation-harness</b> baseline on the base model. After each checkpoint: <b>task-specific metrics</b> (exact match, JSON validity, tool-call accuracy) + <b>LLM-as-judge</b> (faithfulness, instruction following, tone). Before production: <b>human eval</b> on a sample + <b>Promptfoo red-teaming</b>. In production: <b>RAGAS</b> for RAG quality + <b>DeepEval</b> as CI gate.</p></div>
+
+    <h3>Key benchmarks to know</h3>
+    <div class="tw"><table>
+      <tr><th>Benchmark</th><th>What it measures</th></tr>
+      <tr><td class="svc">MMLU</td><td>Broad knowledge across 57 subjects (the headline general capability metric)</td></tr>
+      <tr><td class="svc">GSM8K</td><td>Grade-school math reasoning</td></tr>
+      <tr><td class="svc">HumanEval / MBPP</td><td>Code generation and programming ability</td></tr>
+      <tr><td class="svc">MTEB</td><td>Embedding model quality (the benchmark for RAG embedding models)</td></tr>
+      <tr><td class="svc">MT-Bench</td><td>Multi-turn conversation quality (LLM-as-judge scored)</td></tr>
+      <tr><td class="svc">IFEval</td><td>Instruction following accuracy (does the model do exactly what you asked?)</td></tr>
+      <tr><td class="svc">TruthfulQA</td><td>Hallucination resistance — does the model say "I don't know" when it should?</td></tr>
+    </table></div>
+    <div class="callout co-trap"><span class="lbl">Eval traps to avoid</span><p>
+      ✗ Evaluating only on the task you fine-tuned for — check for <b>catastrophic forgetting</b> on general benchmarks too.<br>
+      ✗ Training data contaminating eval set — always hold out eval data <i>before</i> any training begins.<br>
+      ✗ Trusting a single metric — use task metrics + LLM judge + human eval together.<br>
+      ✗ Evaluating once — evaluate at every checkpoint and after every data change.
+    </p></div>
+  </section>
+
+  <!-- ===================== 08 OPTIMIZATION ===================== -->
+  <section id="optimization">
+    <div class="sec-head"><span class="sec-num">08</span><h2>Model Optimization (Post-Training)</h2></div>
+    <p>After training, make the model <b>smaller, faster, and cheaper</b> for inference.</p>
+
+    <div class="tw"><table>
+      <tr><th>Technique</th><th>What it does</th><th>Speed-up</th><th>Quality impact</th></tr>
+      <tr><td class="svc">Quantization (INT8)</td><td>Reduce weight precision from 16-bit to 8-bit</td><td>~2x throughput, ~50% memory</td><td>Minimal (< 1% accuracy loss typically)</td></tr>
+      <tr><td class="svc">Quantization (INT4 / GPTQ / AWQ)</td><td>Reduce to 4-bit with calibration</td><td>~4x throughput, ~75% memory</td><td>Slight (~1–3% loss); good enough for most production</td></tr>
+      <tr><td class="svc">GGUF (llama.cpp format)</td><td>Optimized quantized format for CPU/local inference</td><td>Runs on CPU/Mac</td><td>Varies by quant level (Q4_K_M is the sweet spot)</td></tr>
+      <tr><td class="svc">Distillation</td><td>Train a small model to mimic a large model's outputs</td><td>10–100x smaller/faster</td><td>Depends on task; can retain 90%+ of quality on narrow domains</td></tr>
+      <tr><td class="svc">Pruning</td><td>Remove unnecessary weights/neurons</td><td>1.5–3x faster</td><td>Moderate; less common than quantization in 2026</td></tr>
+      <tr><td class="svc">Speculative decoding</td><td>Small model drafts tokens, large model verifies — net faster generation</td><td>2–3x generation speed</td><td>Identical output (verification ensures quality)</td></tr>
+    </table></div>
+
+    <div class="callout co-trade"><span class="lbl">Trade-off — quantization level</span><p><b>INT8:</b> nearly lossless, 2x savings — the safe default. <b>INT4 (GPTQ/AWQ):</b> 4x savings with slight quality loss — production-viable for most tasks. <b>Aggressive (2-3 bit):</b> large quality drop — only for latency-critical, accuracy-tolerant use cases. Always evaluate your specific task after quantization — generic benchmarks don't predict domain-specific impact.</p></div>
+  </section>
+
+  <!-- ===================== 09 ECOSYSTEM ===================== -->
+  <section id="ecosystem">
+    <div class="sec-head"><span class="sec-num">09</span><h2>Open-Weight Ecosystem</h2></div>
+    <p>The base models you'll fine-tune. "Open weights" means you download the weights and run/fine-tune them yourself.</p>
+
+    <div class="tw"><table>
+      <tr><th>Family</th><th>Provider</th><th>Sizes</th><th>Strengths</th><th>License</th></tr>
+      <tr><td class="svc">Llama 4</td><td>Meta</td><td>Scout (109B MoE), Maverick (400B+ MoE)</td><td>Best open-weight general capability; huge ecosystem</td><td>Llama Community</td></tr>
+      <tr><td class="svc">Llama 3.3</td><td>Meta</td><td>70B</td><td>Dense model; well-tested; huge fine-tuning ecosystem</td><td>Llama Community</td></tr>
+      <tr><td class="svc">Qwen 3</td><td>Alibaba</td><td>0.6B–235B (MoE + dense)</td><td>Strong multilingual; competitive embeddings; thinking mode</td><td>Apache 2.0</td></tr>
+      <tr><td class="svc">Gemma 3</td><td>Google</td><td>1B–27B</td><td>Efficient; multimodal (vision); strong for size</td><td>Gemma (permissive)</td></tr>
+      <tr><td class="svc">Mistral</td><td>Mistral AI</td><td>Small/Medium/Large</td><td>EU-hosted; multilingual; fast inference</td><td>Apache 2.0 (some)</td></tr>
+      <tr><td class="svc">DeepSeek-R1 / V3</td><td>DeepSeek</td><td>R1 (671B MoE), V3 (671B MoE)</td><td>Reasoning; cost-efficient; MoE architecture</td><td>MIT</td></tr>
+      <tr><td class="svc">Phi-4</td><td>Microsoft</td><td>14B</td><td>Small but punches above weight; good for edge</td><td>MIT</td></tr>
+    </table></div>
+    <div class="callout co-tip"><span class="lbl">How to choose a base model for fine-tuning</span><p><b>Start with the smallest model that does well on your task with good prompting.</b> Fine-tuning a 7B model is 10x cheaper and faster than fine-tuning a 70B. If 7B SFT isn't good enough, try 14B before jumping to 70B. Benchmark the base model with prompting first — if it's already 90% there, fine-tuning the last 10% is much cheaper than starting from a weak base.</p></div>
+  </section>
+
+  <!-- ===================== 10 WORKFLOW ===================== -->
+  <section id="workflow">
+    <div class="sec-head"><span class="sec-num">10</span><h2>The Complete Training Workflow</h2></div>
+    <div class="diagram">
+      <div class="cap">Fig 10.1 — End-to-end fine-tuning workflow</div>
+      <div class="flow">
+        <span class="step">1. Define task<br><small>+ success metrics</small></span><span class="a">→</span>
+        <span class="step hi">2. Build eval harness<br><small>BEFORE training</small></span><span class="a">→</span>
+        <span class="step">3. Curate data<br><small>500–5K examples</small></span><span class="a">→</span>
+        <span class="step">4. Baseline<br><small>eval base model</small></span><span class="a">→</span>
+        <span class="step tl">5. SFT (QLoRA)<br><small>train + checkpoint</small></span><span class="a">→</span>
+        <span class="step hi">6. Evaluate<br><small>vs baseline</small></span>
+      </div>
+      <div class="flow" style="margin-top:4px">
+        <span class="step">7. Alignment?<br><small>DPO if preference data</small></span><span class="a">→</span>
+        <span class="step hi">8. Evaluate again<br><small>+ catastrophic forget check</small></span><span class="a">→</span>
+        <span class="step bl">9. Merge adapter<br><small>+ quantize (INT4/8)</small></span><span class="a">→</span>
+        <span class="step">10. Deploy<br><small>vLLM / cloud endpoint</small></span><span class="a">→</span>
+        <span class="step hi">11. Monitor<br><small>drift + quality</small></span><span class="a">→</span>
+        <span class="step">⤴ Retrain</span>
+      </div>
+    </div>
+    <div class="callout co-key"><span class="lbl">The golden rule</span><p>Steps 2 and 6 (evaluation) are the most important. Training without evaluation is like flying without instruments — you have no idea if you're improving or crashing. Build the eval harness <b>before</b> you write a single line of training code.</p></div>
+  </section>
+
+  <!-- ===================== 11 CLOUD ===================== -->
+  <section id="cloud">
+    <div class="sec-head"><span class="sec-num">11</span><h2>Cloud Training Services</h2></div>
+    <div class="tw"><table>
+      <tr><th>Service</th><th>Provider</th><th>Best for</th></tr>
+      <tr><td class="svc">SageMaker Training</td><td>AWS</td><td>Managed training jobs + HyperPod for fault-tolerant large runs; deepest GPU selection</td></tr>
+      <tr><td class="svc">Vertex AI Training</td><td>GCP</td><td>Managed training + TPU access; tight BigQuery integration</td></tr>
+      <tr><td class="svc">Azure ML Compute</td><td>Azure</td><td>Managed training; ND-series GPUs; Enterprise Agreement pricing</td></tr>
+      <tr><td class="svc">Lambda Cloud / RunPod / Vast.ai</td><td>GPU clouds</td><td>Cheapest GPU hourly rates; no managed MLOps (you manage everything)</td></tr>
+      <tr><td class="svc">Google Colab Pro</td><td>Google</td><td>Quick experiments; T4/A100 access for prototyping; not for production training</td></tr>
+      <tr><td class="svc">Managed fine-tuning APIs</td><td>Together, Fireworks, Anyscale</td><td>Upload data → get fine-tuned model endpoint; zero infra management</td></tr>
+    </table></div>
+    <div class="callout co-trade"><span class="lbl">Trade-off — managed fine-tuning API vs self-managed</span><p><b>Managed API</b> (Together, Fireworks, OpenAI fine-tuning) = upload data, get model, zero infra — but limited control over hyperparameters, training loop, and model architecture. <b>Self-managed</b> (Unsloth on cloud GPU) = full control, cheaper per hour — but you own the entire training stack. Start with managed for validation; switch to self-managed for production optimization.</p></div>
+  </section>
+
+  <!-- ===================== 12 TRADEOFFS ===================== -->
+  <section id="tradeoffs">
+    <div class="sec-head"><span class="sec-num">12</span><h2>Trade-off Master Reference</h2></div>
+    <div class="tw"><table>
+      <tr><th>Decision</th><th>Option A</th><th>Option B</th><th>Default</th></tr>
+      <tr><td>Fine-tuning method</td><td>QLoRA (memory-efficient)</td><td>LoRA (higher throughput)</td><td>QLoRA unless you have GPU headroom</td></tr>
+      <tr><td>Full fine-tune vs adapter</td><td>Full (all params)</td><td>LoRA/QLoRA (adapters only)</td><td>Adapters unless proven insufficient</td></tr>
+      <tr><td>Alignment technique</td><td>DPO (pairs needed)</td><td>SFT only (no pairs)</td><td>SFT alone; add DPO if you have preference data</td></tr>
+      <tr><td>Training framework</td><td>Unsloth + TRL (easiest)</td><td>Axolotl (YAML, multi-GPU)</td><td>Unsloth for single-GPU; Axolotl for multi-GPU</td></tr>
+      <tr><td>Data quality vs quantity</td><td>5K curated examples</td><td>50K noisy examples</td><td>Quality wins — always curate first</td></tr>
+      <tr><td>Base model size</td><td>7B (cheapest to fine-tune)</td><td>70B (most capable)</td><td>Smallest model that works on your task</td></tr>
+      <tr><td>Quantization level</td><td>INT8 (nearly lossless)</td><td>INT4 (more savings)</td><td>INT8 default; INT4 if memory/cost critical</td></tr>
+      <tr><td>Synthetic vs real data</td><td>Synthetic (frontier-generated)</td><td>Real (human-created)</td><td>Mix both; always validate synthetic quality</td></tr>
+      <tr><td>Eval approach</td><td>Automated (LLM judge)</td><td>Human evaluation</td><td>Automated for iteration; human for final validation</td></tr>
+      <tr><td>Distributed strategy</td><td>FSDP (PyTorch native)</td><td>DeepSpeed ZeRO</td><td>FSDP for simplicity; DeepSpeed for maximum memory efficiency</td></tr>
+      <tr><td>Open weights vs API fine-tuning</td><td>Self-hosted (full control)</td><td>API (Together/Fireworks/OpenAI)</td><td>API for validation; self-hosted for production control</td></tr>
+      <tr><td>Training hardware</td><td>Cloud GPU (H100)</td><td>Cloud TPU (v5e)</td><td>GPU for flexibility; TPU for large-scale cost efficiency</td></tr>
+    </table></div>
+  </section>
+
+  <footer>
+    <p>Model Training, Fine-Tuning &amp; Evaluation — 2026 Guide · Built from current frameworks, research papers, and production practice.<br>
+    Independent reference — not affiliated with any vendor. Framework versions and model availability change rapidly; verify before starting a training run.</p>
+  </footer>
+
+</div>
+</body>
+</html>
