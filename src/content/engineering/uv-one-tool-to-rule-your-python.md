@@ -7,7 +7,7 @@ tags: ["python", "uv", "tooling", "developer-productivity"]
 
 Every Python developer eventually accumulates the same tool zoo: pyenv to install Python versions, venv to isolate projects, pip to install packages, pip-tools to lock them, pipx to run CLI tools, and maybe Poetry to hold the whole thing together. Each tool is fine. The *pile* is not — six tools, six config styles, six ways for CI to differ from your laptop.
 
-[uv](https://github.com/astral-sh/uv), from Astral (the makers of ruff), replaces the pile with one tool, written in Rust, and it is *fast* — dependency resolution and installs are routinely 10–100× quicker than pip. This post covers what it replaces, how to start, and how to migrate incrementally. (It pairs well with my tour of [what's new in Python 3.13 and 3.14](/engineering/python-313-314-whats-new/).)
+[uv](https://github.com/astral-sh/uv), from Astral (the makers of ruff), replaces the pile with one tool, written in Rust, and it is *fast* — dependency resolution and installs are routinely 10–100× quicker than pip with a warm cache. This post covers what it replaces, how to start, and how to migrate incrementally. (It pairs well with my tour of [what's new in Python 3.13 and 3.14](/engineering/python-313-314-whats-new/).)
 
 ## What uv actually is
 
@@ -97,7 +97,7 @@ You don't need a big-bang migration. This is the sequence I recommend:
 
 - uv is developed at a rapid pace — pin the uv version in CI (`uv self version` locally, a pinned installer version in pipelines) so a tool upgrade never surprises a deploy.
 - Some Poetry-specific workflows (custom plugins, some dynamic-versioning setups) need rework rather than translation.
-- Corporate proxies and private indexes work well (`UV_INDEX_URL`, `[[tool.uv.index]]`), but test them in your pilot before rolling out broadly.
+- Corporate proxies and private indexes work well (`UV_DEFAULT_INDEX` / `UV_INDEX`, or `[[tool.uv.index]]` in `pyproject.toml`), but test them in your pilot before rolling out broadly.
 
 The bottom line: uv consolidates pyenv, venv, pip, pip-tools, pipx, and most of Poetry into a single fast, coherent utility. Of everything that's happened in Python tooling in the past few years, this is the change with the highest payoff-to-effort ratio — the pilot costs you an afternoon, and it's the rare tool that's simultaneously simpler *and* faster than what it replaces.
 

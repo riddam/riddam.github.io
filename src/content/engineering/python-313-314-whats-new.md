@@ -17,7 +17,7 @@ This post is a plain-language tour of what changed and what it means in practice
 4. 3.14 makes **type annotations lazy** (deferred evaluation), improving startup time and killing a whole class of annotation workarounds.
 5. **Subinterpreters** — multiple isolated Python interpreters in one process — are now usable from Python code, giving you another concurrency option.
 6. **Template strings (t-strings)** in 3.14 make dynamic content — HTML, SQL — safer to build than f-strings.
-7. The **incremental garbage collector** reduces pause times in large, long-running applications.
+7. The **incremental garbage collector** shipped in 3.14.0 to reduce pause times in large, long-running applications — but it was **reverted in 3.14.5 (June 2026)** back to the 3.13-style generational GC after memory-pressure regressions, with possible reintroduction in a later release. (Accurate at publication; corrected since.)
 8. **Zstandard (zstd) compression** is now in the standard library — faster and tighter than gzip for most workloads.
 9. **Live-process debugging**: 3.14 lets you attach a debugger to a *running* Python process — including, carefully, in production.
 10. Both releases **removed long-deprecated modules** — the "dead batteries" cleanup — so legacy code needs a checkup before upgrading.
@@ -77,7 +77,7 @@ This is the foundation for injection-safe HTML templating and SQL building in li
 ### Debugging, memory, and compression
 
 - **Attach to a live process** (PEP 768): a zero-overhead-when-idle interface lets debuggers safely attach to a running Python program — `pdb` can now connect to a live PID. For diagnosing a wedged production process, this is gold.
-- **Incremental garbage collection**: shorter GC pauses, smoother latency profiles for large heaps.
+- **Incremental garbage collection**: 3.14.0 introduced an incremental collector for shorter GC pauses and smoother latency on large heaps. **Update:** this was **reverted in 3.14.5 (June 2026)** — memory-pressure regressions led the core team to restore the 3.13-style generational collector, with the incremental approach possibly returning in a future release. This post was accurate when published in January 2026; on current 3.14 (3.14.5+) you're back on the generational GC. See the [discussion on reverting the incremental GC](https://discuss.python.org/t/reverting-the-incremental-gc-in-python-3-14-and-3-15/107014).
 - **`compression.zstd`** (PEP 784): Zstandard in the stdlib — dramatically faster than gzip at comparable or better ratios, with `tarfile`/`zipfile`/`shutil` integration.
 - **The REPL got syntax highlighting**, and error messages got another round of polish.
 
@@ -94,7 +94,7 @@ This is the foundation for injection-safe HTML templating and SQL building in li
 
 - Code importing removed "dead battery" modules (`cgi`, `telnetlib`, `imghdr`, …) breaks on 3.13 — most have drop-in PyPI replacements.
 - Tools that poke at frame locals (custom debuggers, profilers) may need updates for the PEP 667 semantics.
-- Custom GC tuning (`gc.set_threshold` calls tuned for the old collector) deserves a re-benchmark on the incremental collector.
+- Custom GC tuning (`gc.set_threshold` calls) deserves a re-benchmark after any upgrade. Note that the incremental collector added in 3.14.0 was reverted in 3.14.5, so current 3.14 is back on the generational collector — if you tuned for the brief incremental window, re-check against generational behavior.
 - The free-threaded build requires compatible wheels — a dependency without a `cp314t` wheel means compiling from source or waiting.
 
 Both releases reward the same habit: upgrade early in a branch, run the tests loudly, and read the ["What's New" documents](https://docs.python.org/3/whatsnew/3.14.html) — they're genuinely well-written.

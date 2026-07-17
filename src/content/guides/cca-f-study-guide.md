@@ -1,6 +1,6 @@
 ---
-title: "CCA-F: Claude Certified Architect Foundations — 2026 Blueprint"
-description: "An exam-day reference for the CCA-F certification covering all five domains, the six exam scenarios, anti-patterns, trade-offs, and scenario triggers."
+title: "CCAR-F: Claude Certified Architect Foundations — 2026 Blueprint"
+description: "An exam-day reference for the CCAR-F certification covering all five domains, the six exam scenarios, anti-patterns, trade-offs, and scenario triggers."
 pubDate: 2026-07-04
 tags: ["claude", "certification", "study-guide", "ai-architecture"]
 ---
@@ -13,7 +13,7 @@ tags: ["claude", "certification", "study-guide", "ai-architecture"]
 
 ## Exam Format & Domains
 
-Launched March 12, 2026, the CCA-F is Anthropic's first proctored technical certification. It validates that you can **design and ship production-grade Claude applications at enterprise scale**. Every question is scenario-based — a realistic production system with a problem, and you pick the architecturally correct fix among plausible alternatives. No simple recall questions.
+Launched March 12, 2026, the CCAR-F (sometimes informally written CCA-F) is Anthropic's first proctored technical certification. It validates that you can **design and ship production-grade Claude applications at enterprise scale**. Every question is scenario-based — a realistic production system with a problem, and you pick the architecturally correct fix among plausible alternatives. No simple recall questions.
 
 ### Five domains & weighting
 
@@ -22,8 +22,8 @@ Launched March 12, 2026, the CCA-F is Anthropic's first proctored technical cert
 | **1.** Agentic Architecture & Orchestration | 27% | Agentic loop, stop_reason, hub-and-spoke, subagents, hooks, task decomposition, session state |
 | **2.** Tool Design & MCP Integration | 18% | MCP servers (resources/tools/prompts), JSON Schema, stdio vs SSE, tool descriptions, tool_choice |
 | **3.** Claude Code Configuration & Workflows | 20% | CLAUDE.md hierarchy, skills, slash commands, plan mode, path-specific rules, CI/CD (-p flag) |
-| **4.** Prompt Engineering & Structured Output | 20% | PRECISE framework, few-shot, XML tags, JSON schemas, tool_use for extraction, validation-retry, Batch API |
-| **5.** Context Management & Reliability | 15% | Context window, prompt caching, token budgets, CALM, escalation, error propagation, human-in-the-loop |
+| **4.** Prompt Engineering & Structured Output | 20% | PRECISE (community mnemonic), few-shot, XML tags, JSON schemas, tool_use for extraction, validation-retry, Batch API |
+| **5.** Context Management & Reliability | 15% | Context window, prompt caching, token budgets, CALM (informal study aid), escalation, error propagation, human-in-the-loop |
 
 > **Scoring:** Scaled 100–1000, pass at **720**. Domain-weighted — you can't pass by acing one domain and ignoring others. 4 of 6 published scenarios are randomly selected per exam; each provides the context for ~15 questions.
 
@@ -166,6 +166,7 @@ Tests your ability to design tool interfaces, write schemas Claude can reliably 
 - HTTP-based, works across network boundaries
 - Supports real-time streaming
 - Best for remote/cloud servers, team sharing
+- **Note:** the standalone HTTP+SSE transport is **deprecated in favor of Streamable HTTP**, which is now the recommended remote transport. Treat "SSE" here as shorthand for HTTP-based remote transport.
 
 > **Scenario trigger:** "Stream large file contents across a network" → **SSE**. "Local subprocess, same machine" → **stdio**. "Share MCP server across a team" → **SSE** (or Streamable HTTP).
 
@@ -224,9 +225,9 @@ Tests your ability to configure **Claude Code** (Anthropic's agentic CLI/IDE too
 
 ## §4 — Prompt Engineering & Structured Output (20%)
 
-### The PRECISE framework
+### The PRECISE mnemonic
 
-A structured approach to designing system prompts. Know the acronym and what each component does:
+A community mnemonic — not official Anthropic terminology — for a structured approach to designing system prompts. Know the acronym and what each component does:
 
 | Letter | Component | What it does |
 |---|---|---|
@@ -271,7 +272,7 @@ The lightest domain by weight but consistently underestimated. These questions a
 
 ### Context window fundamentals
 
-- **Context window = input tokens + output tokens.** Know the model limits: Opus/Sonnet = 200K input; Haiku = 200K input.
+- **Context window = input tokens + output tokens.** Know the model limits: Opus (4.6/4.7/4.8), Sonnet (4.6/5), and Fable 5 = 1M-token context; only Haiku 4.5 = 200K.
 - System prompt + conversation history + tool definitions + tool results all consume input tokens. They add up fast in agentic loops.
 - **Progressive summarization:** as conversation grows, periodically summarize older turns and replace the raw history → keeps context under budget without losing critical information.
 - **Conversation compaction:** similar idea, applied at the system level — compress older context to make room for new.
@@ -280,14 +281,14 @@ The lightest domain by weight but consistently underestimated. These questions a
 
 - Use `cache_control` breakpoints on large, static content blocks (system prompts, reference docs, tool definitions) that don't change between turns.
 - **Cached reads are 90% cheaper** than uncached — massive savings in multi-turn agentic loops where the system prompt is repeated every turn.
-- Cache has a **5-minute TTL** — if the next request comes within 5 minutes, you get the cached price.
+- Cache has a **5-minute TTL by default**, with a **1-hour TTL option** also available — if the next request comes within the TTL window, you get the cached price.
 - Trade-off: write cost to populate cache is 25% more than a normal read, so caching only pays off if you're making multiple requests against the same prefix.
 
 > **Trade-off — when caching pays off:** Cache if: multi-turn conversation, repeated system prompt, agentic loop (many iterations). Don't cache if: one-shot request with unique content. The break-even is roughly **2+ requests** with the same cached prefix within 5 minutes.
 
-### The CALM framework
+### The CALM mnemonic
 
-**Context-Aware LLM Management** — a structured approach to managing what goes into the context window:
+**Context-Aware LLM Management** — an informal study aid, not an official Anthropic concept — for managing what goes into the context window:
 
 - **Curate:** only include information Claude actually needs for this turn.
 - **Arrange:** put the most important information at the start and end of context (primacy/recency bias).
@@ -367,11 +368,11 @@ Decisions the exam tests repeatedly. Know the trigger phrase → right answer.
 - **Context isolation is a theme.** Any time a subagent gets "too much" context, or a coordinator shares everything, it's the wrong answer.
 - **Structured > unstructured.** Passing structured JSON between agents beats plain text. tool_use extraction beats prompting for JSON. Schema-validated output beats unvalidated.
 - **Right-size the model.** Using Opus for classification or Haiku for complex reasoning are both wrong in scenario questions.
-- **Prompt caching math:** 90% cheaper reads, 25% more expensive writes, 5-min TTL, break-even at ~2 requests. Know this for cost-optimization questions.
+- **Prompt caching math:** 90% cheaper reads, 25% more expensive writes, 5-min default TTL (1-hour option available), break-even at ~2 requests. Know this for cost-optimization questions.
 - **2 min/question average.** Don't overthink — recognize the pattern (it maps to one of the anti-patterns or trade-offs above), pick the answer, and move on. Flag and return if unsure.
 
-> **Preparation resources (free):** **Anthropic Academy** (anthropic.skilljar.com): 13+ free courses covering all domains. Key courses: *Building Applications with the Claude API* (8+ hrs), *Claude Code in Action*, *Introduction to MCP*, *AI Fluency Framework*. Also: the official **Exam Guide PDF** (12 sample questions with explanations) and the official **60-question practice exam** on Skilljar. Score 850+ on the practice before booking the real exam.
+> **Preparation resources (free):** **Anthropic Academy** (anthropic.skilljar.com): 13+ free courses covering all domains. Key courses: *Building Applications with the Claude API* (8+ hrs), *Claude Code in Action*, *Introduction to MCP*, *AI Fluency Framework*. Also: the official **Exam Guide PDF** (12 sample questions with explanations) and the official **60-question practice exam** on Skilljar. Score 850+ on the practice before booking the real exam. Note: Anthropic Academy remains the home for training courses, but as of mid-2026 the real exam is **scheduled and proctored via Pearson VUE (OnVUE)** — not booked through Skilljar/Anthropic Academy.
 
 ---
 
-*Claude Certified Architect — Foundations (CCA-F), 2026 Blueprint. Built from the official exam guide, Anthropic Academy materials, and community sources. Independent study aid — not affiliated with or endorsed by Anthropic. Verify current exam details at anthropic.skilljar.com.*
+*Claude Certified Architect — Foundations (CCAR-F), 2026 Blueprint. Built from the official exam guide, Anthropic Academy materials, and community sources. Independent study aid — not affiliated with or endorsed by Anthropic. Verify current exam details at anthropic.skilljar.com.*

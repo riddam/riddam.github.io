@@ -24,20 +24,24 @@ The PCA is Google Cloud's flagship architect credential. It rewards **architectu
 | Length | 2 hours | 1 hour |
 | Fee | $200 | $100 |
 | Questions | 50–60 MC & multi-select | 25 MC & multi-select |
-| Case studies | 2 (from a pool of 4), 20–30% | 1, gen-AI focused, 90–100% |
+| Case studies | 2 (from a pool of 4), 20–30% | 2 available, gen-AI focused, 90–100% |
 | Who | First-timers / expired certs | Active cert, within renewal window |
 | Languages | English, Japanese | English, Japanese |
 
 ### Six domains & weighting (2026 guide)
 
-| Domain | Weight | Watch for |
+> **⚠ Weightings are unofficial estimates — Google does not publish per-domain weightings for this exam.** The percentages below are community/author estimates to help you prioritize study time; treat all six domains as testable and don't rely on these numbers.
+
+| Domain | Weight (est.*) | Watch for |
 |---|---|---|
-| **1.** Designing & planning a cloud solution architecture | ~25% | Business→technical mapping, trade-offs, HA/DR, Gemini Cloud Assist |
-| **2.** Managing & provisioning solution infrastructure | ~17.5% | Network topology, storage/compute config, Agent Platform ML workflows |
-| **3.** Designing for security & compliance | ~17.5% | IAM hierarchy, KMS, VPC-SC, **Securing AI** (Model Armor) |
-| **4.** Analyzing & optimizing processes | ~15% | SDLC, CI/CD, cost (CapEx/OpEx), stakeholder mgmt |
-| **5.** Managing implementation | ~12.5% | Apigee, IaC/Terraform, `gcloud`/`gsutil`/`bq`, emulators |
-| **6.** Ensuring solution & operations excellence | ~12.5% | Cloud Observability, SLO/alerting, chaos/load testing |
+| **1.** Designing & planning a cloud solution architecture | ~25%* | Business→technical mapping, trade-offs, HA/DR, Gemini Cloud Assist |
+| **2.** Managing & provisioning solution infrastructure | ~17.5%* | Network topology, storage/compute config, Agent Platform ML workflows |
+| **3.** Designing for security & compliance | ~17.5%* | IAM hierarchy, KMS, VPC-SC, **Securing AI** (Model Armor) |
+| **4.** Analyzing & optimizing processes | ~15%* | SDLC, CI/CD, cost (CapEx/OpEx), stakeholder mgmt |
+| **5.** Managing implementation | ~12.5%* | Apigee, IaC/Terraform, `gcloud`/`gsutil`/`bq`, emulators |
+| **6.** Ensuring solution and operations reliability | ~12.5%* | Cloud Observability, SLO/alerting, chaos/load testing |
+
+> *\* Estimated — Google doesn't publish official per-domain weightings.*
 
 > **Read this first:** The case studies are **published in advance**. Read all four cold before exam day — know each company's existing tech, business goals, constraints and compliance needs so you don't burn time reading during the exam.
 
@@ -433,7 +437,7 @@ Pub/Sub → Dataflow (transform) → Bigtable (low-latency serving) + BigQuery (
 
 ## 14 — Business, Process & Governance
 
-Domain §4 (~15%) is **not about services** — it tests architect judgment: stakeholders, process maturity, buy-vs-build, and how responsibility is shared. These questions have no product in the answer; they reward the option that reflects sound engineering-organization practice.
+Domain §4 (~15%, unofficial estimate — Google doesn't publish weightings) is **not about services** — it tests architect judgment: stakeholders, process maturity, buy-vs-build, and how responsibility is shared. These questions have no product in the answer; they reward the option that reflects sound engineering-organization practice.
 
 ### People & process
 
@@ -566,7 +570,7 @@ Generative AI is now explicitly in scope and the exam is moving from the **Verte
 
 ### Standard vs renewal exam?
 
-First-timers and expired certs take the **standard** exam (2 hrs, $200, 50–60 questions, 2 case studies). If you hold an active cert within the renewal window, you can take the shorter **renewal** exam (1 hr, $100, 25 questions, 1 gen-AI case study making up 90–100% of it).
+First-timers and expired certs take the **standard** exam (2 hrs, $200, 50–60 questions, 2 case studies). If you hold an active cert within the renewal window, you can take the shorter **renewal** exam (1 hr, $100, 25 questions, with 2 gen-AI case studies available and case-study-weighted questions making up 90–100% of it).
 
 ## Appendix A1 — CLI Quick Reference
 

@@ -280,7 +280,7 @@ For high-stakes areas — legacy modules, complex CDK stacks, IAM logic. Ideal m
 
 Avoid inline for multi-file logic or anything security-sensitive.
 
-**💬 Chat (Ask mode)** — the researcher. `@workspace /explain` for repo architecture, stack-trace root-causing from `#terminal`, planning before touching code.
+**💬 Chat (Ask mode)** — the researcher. `@workspace /explain` for repo architecture (in current VS Code, `#codebase` is the newer inline equivalent), stack-trace root-causing from `#terminal`, planning before touching code.
 
 **🤖 Agent & Plan modes** — the executors. Plan researches and drafts a step-by-step TODO list; Agent applies edits, runs commands, and fixes its own errors.
 

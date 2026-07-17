@@ -7,7 +7,7 @@ tags: ["book-notes", "leadership", "management"]
 
 > "Leadership is not about you. It's about those you lead." — Gary Burnison
 
-Leadership isn't a destination — it's a journey of self-awareness, growth, and continuous learning. Whether you're leading a team, aspiring to take on more responsibility, or simply looking to improve your influence, *The Leadership Journey* by Gary Burnison offers a roadmap to becoming a leader who inspires, empowers, and drives results. 🚀
+Leadership isn't a destination — it's a journey of self-awareness, growth, and continuous learning. Whether you're leading a team, aspiring to take on more responsibility, or simply looking to improve your influence, *The Leadership Journey: How to Master the Four Critical Areas of Being a Great Leader* by Gary Burnison (Korn Ferry's CEO), with a foreword by Ken Blanchard, offers a roadmap to becoming a leader who inspires, empowers, and drives results. 🚀
 
 ## 🛤️ The four essential stages of leadership growth
 

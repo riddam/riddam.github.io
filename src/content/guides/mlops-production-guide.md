@@ -111,7 +111,7 @@ Organized by function. Pick one tool per row — don't try to use all of them.
 | LLM observability | Langfuse, LangSmith, Arize Phoenix, Helicone | Langfuse (open-source, self-host); LangSmith (LangChain teams); Arize (RAG debugging) |
 | LLM gateway / proxy | LiteLLM, Portkey, TrueFoundry Gateway, custom | Multi-provider routing, failover, cost tracking, rate limiting |
 | Prompt management | Langfuse, PromptLayer, Humanloop, Agenta | Version prompts like code; A/B test prompt variants |
-| LLM evaluation | DeepEval, RAGAS, Confident AI, custom judges | DeepEval / RAGAS for RAG eval; LLM-as-judge for generation quality |
+| LLM evaluation | DeepEval / Confident AI (its managed platform), RAGAS, custom judges | DeepEval / RAGAS for RAG eval; LLM-as-judge for generation quality |
 | Vector database | Qdrant, Pinecone, Weaviate, Chroma, pgvector | Qdrant (greenfield); pgvector (existing Postgres); Pinecone (managed) |
 
 > **Starter stack (if you're choosing today):** **Git + GitHub Actions + Docker + Terraform + MLflow + Evidently + vLLM + Langfuse + Qdrant** covers 90% of production needs for both traditional ML and LLM systems. Add Kubernetes and Feast as you scale. Avoid tool sprawl — one tool per function.
@@ -274,7 +274,7 @@ Prompt versioning (track + A/B test)
 | Quantization | 2–4x throughput | INT8/INT4 quantization reduces model size; slight accuracy trade-off |
 | Token budgets | Variable | Set per-user/per-team/per-project token limits; alert on anomalies |
 | Progressive summarization | Variable | Compress older conversation turns; reduces per-request token count |
-| Committed/reserved capacity | 30–64% | SageMaker Savings Plans, GCP CUDs, Azure EA for steady-state workloads |
+| Committed/reserved capacity | 30–70% | SageMaker Savings Plans, GCP CUDs, Azure EA for steady-state workloads |
 | Auto-scaling + scale-to-zero | Variable | Serverless inference for dev/staging; autoscale production endpoints |
 
 > **Measure cost per outcome, not cost per token:** A cheaper model that gets the answer wrong 30% of the time costs *more* than an expensive model that's right 95% of the time — because you pay for retries, escalations, and lost customers. Track **cost per successful resolution**, not just token spend.
@@ -289,7 +289,7 @@ Prompt versioning (track + A/B test)
 - **Supply chain security:** scan model weights for trojans (backdoors injected during training). Don't download untrusted models from the internet without verification. Use SafeTensors format, not pickle.
 - **Prompt injection defense:** input validation + output verification + separation of trusted/untrusted content + guardrail hooks.
 
-> **The EU AI Act (2024–2026):** High-risk AI systems must demonstrate: transparency, explainability, human oversight, data governance, accuracy/robustness testing, and a conformity assessment. MLOps pipelines that version, test, monitor, and audit are how you demonstrate compliance. **If your pipeline can't reproduce a training run and explain a prediction, you're not EU AI Act compliant.**
+> **The EU AI Act:** High-risk AI systems (Annex III) must demonstrate: transparency, explainability, human oversight, data governance, accuracy/robustness testing, and a conformity assessment. Note the timeline has shifted — the May 2026 "Digital Omnibus" postponed the high-risk (Annex III) obligations from August 2, 2026 to December 2, 2027, so the near-term compliance deadline is no longer 2026. That's more runway, not a reprieve: building MLOps pipelines that version, test, monitor, and audit is how you demonstrate compliance, and it's far easier to bake in now than to retrofit later. **If your pipeline can't reproduce a training run and explain a prediction, you won't be EU AI Act compliant when the obligations land.**
 
 ## 13 — Trade-off Master Reference
 

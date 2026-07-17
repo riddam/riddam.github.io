@@ -29,7 +29,7 @@ The central question: **how many parameters do you actually need to change?** Th
 
 | Technique | What it changes | VRAM | Data needed | When to use |
 |---|---|---|---|---|
-| Full fine-tuning | All model weights | Very high (4x model size) | 10K+ examples | Deep domain adaptation; rarely needed for most tasks |
+| Full fine-tuning | All model weights | Very high (~16 bytes/param ≈ 8× fp16 model size) | 10K+ examples | Deep domain adaptation; rarely needed for most tasks |
 | LoRA | Small low-rank adapter matrices (0.1–1% of params) | Moderate (model + adapters) | 500–5K examples | **Default for 2026** — best quality/cost ratio |
 | QLoRA | Same as LoRA but base model stays 4-bit quantized | Low (~50–70% less than LoRA) | 500–5K examples | Memory-constrained (single GPU, consumer hardware) |
 | DoRA | LoRA + weight decomposition (magnitude + direction) | Slightly more than LoRA | 500–5K examples | When LoRA quality isn't quite enough; marginal improvement |
@@ -47,7 +47,7 @@ The central question: **how many parameters do you actually need to change?** Th
 
 | Method | VRAM | Hardware |
 |---|---|---|
-| Full fine-tune | ~280 GB VRAM (4× model size for weights + gradients + optimizer states) | Multi-GPU required |
+| Full fine-tune | ~1.1 TB VRAM (mixed-precision Adam ≈ 16 bytes/param — 2 weights + 2 grads + 8 optimizer + 4 fp32 master ≈ 8× fp16 size); ~16+ H100s, or ~400–600 GB with ZeRO-3/offload | Multi-GPU required |
 | LoRA (16-bit base) | ~140 GB (base in 16-bit + small adapters + optimizer for adapters only) | 2–4 GPUs |
 | QLoRA (4-bit base) | ~48 GB (base in 4-bit + adapters in 16-bit) | Single H100 (80GB) |
 
@@ -61,10 +61,10 @@ After SFT teaches the model *what* to do, alignment teaches it *how well* to do 
 | DPO | Direct Preference Optimization — skips the reward model; optimizes directly on preference pairs | (prompt, chosen, rejected) | **2026 default** for preference tuning. Simpler than RLHF, competitive quality. |
 | ORPO | Merges SFT and DPO into one stage — simplest pipeline | (prompt, chosen, rejected) | When you want the simplest possible pipeline and have preference data |
 | KTO | Kahneman-Tversky Optimization — works with just thumbs-up/thumbs-down (no paired comparisons needed) | (prompt, response, good/bad label) | When you have binary feedback, not pairwise preferences |
-| GRPO | Group Relative Policy Optimization — reward comes from a verifiable function (math, code test pass) | (prompt, response, verifiable reward) | Reasoning tasks with checkable answers (math, code, logic) |
+| GRPO | Group Relative Policy Optimization — critic-free RL (introduced in DeepSeekMath, the method behind DeepSeek R1) using group-relative advantages; works with learned reward models *or* verifiable functions | (prompt, group of responses, reward) | General RL post-training; reasoning tasks. RLVR (verifiable rewards — math, code, logic) is one common application, not the only one |
 | SimPO / IPO | Variants of DPO addressing edge cases (length bias, BT-model assumption) | Same as DPO | When vanilla DPO produces length-biased or unstable results |
 
-> **The practical default:** For most fine-tuning projects, **SFT alone is enough**. Add **DPO/ORPO** if you have preference pairs and want to refine quality/safety. Reach for **GRPO** only for reasoning benchmarks with verifiable rewards. RLHF is the frontier lab's tool — most teams don't need it.
+> **The practical default:** For most fine-tuning projects, **SFT alone is enough**. Add **DPO/ORPO** if you have preference pairs and want to refine quality/safety. Reach for **GRPO** for critic-free RL post-training — most commonly reasoning tasks with verifiable rewards (RLVR), though it also works with a learned reward model. RLHF is the frontier lab's tool — most teams don't need it.
 
 **Alignment technique decision tree:**
 
@@ -72,7 +72,7 @@ After SFT teaches the model *what* to do, alignment teaches it *how well* to do 
 |---|---|
 | Do you have **paired preference data** (chosen vs rejected)? | → DPO (default) or ORPO (simpler) |
 | Only **binary feedback** (thumbs up/down), no pairs? | → KTO |
-| Task has a **verifiable reward function** (math, code tests)? | → GRPO |
+| Want **critic-free RL** — a verifiable reward function (math, code tests) or a learned reward model? | → GRPO |
 | Need **maximum alignment control**, budget for reward model training? | → RLHF (PPO) |
 | No preference data at all? | → SFT only (generate synthetic preferences if needed) |
 
@@ -125,7 +125,7 @@ Data quality is the single biggest determinant of fine-tuning success. **5K well
 
 ### Synthetic data (the 2026 shortcut)
 
-Use a frontier model (Claude Opus, GPT-4o) to generate training data — instruction-response pairs, preference comparisons, or domain examples. **Standard practice in 2026**, but requires evaluation: always validate synthetic data quality before training on it.
+Use a frontier model (Claude Opus 4.8, GPT-5) to generate training data — instruction-response pairs, preference comparisons, or domain examples. **Standard practice in 2026**, but requires evaluation: always validate synthetic data quality before training on it.
 
 > **Common mistake:** Fine-tuning on synthetic data generated by the same model you're fine-tuning → model collapse (the model learns to imitate its own biases). Use a **stronger** model to generate training data for a **weaker** model (distillation pattern).
 
@@ -145,7 +145,7 @@ When a model doesn't fit on one GPU, or you need faster training, you distribute
 
 - **Mixed precision (bf16/fp16):** train in half precision — 2x throughput, half memory, minimal quality loss. bf16 preferred (no loss scaling needed).
 - **Gradient checkpointing:** recompute activations during backward pass instead of storing them — saves ~60% memory at ~30% speed cost.
-- **Flash Attention 2:** memory-efficient attention computation — essential for long sequences. Built into most frameworks.
+- **Flash Attention (2/3):** memory-efficient attention computation — essential for long sequences. Built into most frameworks. In 2026, **Flash Attention 3** is the default on Hopper (H100) with FP8 support, and **FA4** is emerging for next-gen hardware.
 - **Gradient accumulation:** simulate larger batch sizes by accumulating gradients over multiple micro-batches before updating.
 - **Checkpointing:** save model state regularly during training — critical when using spot/preemptible GPUs that can be interrupted.
 
@@ -170,7 +170,7 @@ When a model doesn't fit on one GPU, or you need faster training, you distribute
 
 | Benchmark | What it measures |
 |---|---|
-| MMLU | Broad knowledge across 57 subjects (the headline general capability metric) |
+| MMLU | Broad knowledge across 57 subjects. Historically the headline general-capability metric, but largely **saturated by 2026** — prefer **MMLU-Pro** and **GPQA** as more discriminating successors |
 | GSM8K | Grade-school math reasoning |
 | HumanEval / MBPP | Code generation and programming ability |
 | MTEB | Embedding model quality (the benchmark for RAG embedding models) |
