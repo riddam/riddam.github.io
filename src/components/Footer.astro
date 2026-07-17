@@ -1,12 +1,14 @@
 ---
-import { SITE_TITLE, GITHUB_URL } from '../consts';
+import { SITE_TITLE, GITHUB_URL, LINKEDIN_URL } from '../consts';
 const year = new Date().getFullYear();
 ---
 
 <footer>
   <p>
     © {year} {SITE_TITLE} ·
+    <a href={LINKEDIN_URL}>LinkedIn</a> ·
     <a href={GITHUB_URL}>GitHub</a> ·
+    <a href="/tags/">Tags</a> ·
     <a href="/rss.xml">RSS</a>
   </p>
 </footer>

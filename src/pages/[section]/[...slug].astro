@@ -22,6 +22,43 @@ const { Content, headings } = await render(entry);
 
 const words = (entry.body ?? '').split(/\s+/).filter(Boolean).length;
 const minutesRead = Math.max(1, Math.round(words / 220));
+
+// Gather every published post across sections, tagged with its section label.
+const labelFor = (id: string) => SECTIONS.find((s) => s.id === id)!.label;
+const all = [];
+for (const s of SECTIONS) {
+  const entries = await getCollection(s.id, ({ data }) => !data.draft);
+  for (const e of entries) {
+    all.push({
+      id: e.id,
+      sectionId: s.id,
+      href: `/${s.id}/${e.id}/`,
+      title: e.data.title,
+      description: e.data.description,
+      pubDate: e.data.pubDate,
+      tags: e.data.tags ?? [],
+      sectionLabel: s.label,
+    });
+  }
+}
+
+const currentTags = new Set(entry.data.tags ?? []);
+const candidates = all.filter(
+  (p) => !(p.sectionId === section.id && p.id === entry.id)
+);
+
+// Rank by shared tags, then same section, then recency.
+const related = candidates
+  .map((p) => ({
+    ...p,
+    score:
+      p.tags.filter((t) => currentTags.has(t)).length * 10 +
+      (p.sectionId === section.id ? 3 : 0),
+  }))
+  .sort(
+    (a, b) => b.score - a.score || b.pubDate.valueOf() - a.pubDate.valueOf()
+  )
+  .slice(0, 3);
 ---
 
 <Post
@@ -33,6 +70,8 @@ const minutesRead = Math.max(1, Math.round(words / 220));
   section={section}
   minutesRead={minutesRead}
   headings={headings}
+  ogImage={`/og/${section.id}/${entry.id}.png`}
+  related={related}
 >
   <Content />
 </Post>

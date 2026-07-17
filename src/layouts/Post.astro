@@ -1,7 +1,24 @@
 ---
 import Base from './Base.astro';
+import PostList from '../components/PostList.astro';
+import {
+  SITE_TITLE,
+  AUTHOR_ROLE,
+  AUTHOR_LOCATION,
+  AUTHOR_BLURB,
+  LINKEDIN_URL,
+  GITHUB_URL,
+} from '../consts';
 import type { Section } from '../consts';
 import type { MarkdownHeading } from 'astro';
+
+interface RelatedPost {
+  href: string;
+  title: string;
+  description: string;
+  pubDate: Date;
+  sectionLabel?: string;
+}
 
 interface Props {
   title: string;
@@ -12,6 +29,8 @@ interface Props {
   section: Section;
   minutesRead?: number;
   headings?: MarkdownHeading[];
+  ogImage?: string;
+  related?: RelatedPost[];
 }
 
 const {
@@ -23,6 +42,8 @@ const {
   section,
   minutesRead,
   headings = [],
+  ogImage,
+  related = [],
 } = Astro.props;
 
 const tocItems = headings.filter((h) => h.depth === 2);
@@ -32,13 +53,22 @@ const formatDate = (d: Date) =>
   d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 
-<Base title={title} description={description} wide={showToc}>
+<Base
+  title={title}
+  description={description}
+  wide={showToc}
+  ogImage={ogImage}
+  article={{ pubDate, updatedDate, tags }}
+>
   <div class:list={['post-grid', { 'has-toc': showToc }]}>
     <article>
       <div class="post-header">
         <a href={`/${section.id}/`} class="section-badge">{section.label}</a>
         <h1>{title}</h1>
         <p class="post-description">{description}</p>
+        <p class="byline">
+          By <a href="/about/">{SITE_TITLE}</a> · {AUTHOR_ROLE}
+        </p>
         <p class="post-meta">
           <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
           {
@@ -62,7 +92,9 @@ const formatDate = (d: Date) =>
           tags.length > 0 && (
             <div class="tags">
               {tags.map((tag) => (
-                <span class="tag">{tag}</span>
+                <a class="tag" href={`/tags/${tag}/`}>
+                  {tag}
+                </a>
               ))}
             </div>
           )
@@ -70,6 +102,28 @@ const formatDate = (d: Date) =>
       </div>
       <hr />
       <slot />
+
+      <footer class="author-card">
+        <p class="author-name">{SITE_TITLE}</p>
+        <p class="author-role">{AUTHOR_ROLE} · {AUTHOR_LOCATION}</p>
+        <p class="author-blurb">{AUTHOR_BLURB} If this was useful, let's connect.</p>
+        <p class="author-links">
+          <a href={LINKEDIN_URL}>LinkedIn</a>
+          <span class="dot">·</span>
+          <a href={GITHUB_URL}>GitHub</a>
+          <span class="dot">·</span>
+          <a href="/about/">About</a>
+        </p>
+      </footer>
+
+      {
+        related.length > 0 && (
+          <section class="related">
+            <h2>Keep reading</h2>
+            <PostList posts={related} />
+          </section>
+        )
+      }
     </article>
 
     {

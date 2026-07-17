@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import { SECTIONS } from '../consts';
+---
+
+<Base title="Page not found" description="This page doesn't exist — here's your way back.">
+  <h1>404 — page not found</h1>
+  <p class="muted">
+    That page wandered off. It happens to the best of us. Here's your way back:
+  </p>
+  <ul>
+    <li><a href="/">Home</a></li>
+    {SECTIONS.map((s) => <li><a href={`/${s.id}/`}>{s.label}</a></li>)}
+    <li><a href="/about/">About</a></li>
+    <li><a href="/tags/">Browse by tag</a></li>
+  </ul>
+</Base>
