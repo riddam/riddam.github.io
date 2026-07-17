@@ -1,0 +1,40 @@
+---
+import Base from './Base.astro';
+import type { Section } from '../consts';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  tags: string[];
+  section: Section;
+}
+
+const { title, description, pubDate, updatedDate, tags, section } = Astro.props;
+
+const formatDate = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<Base title={title} description={description}>
+  <article>
+    <a href={`/${section.id}/`} class="section-badge">{section.label}</a>
+    <h1>{title}</h1>
+    <p class="post-meta">
+      {formatDate(pubDate)}
+      {updatedDate && <span> · Updated {formatDate(updatedDate)}</span>}
+    </p>
+    {
+      tags.length > 0 && (
+        <p class="post-meta">
+          {tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </p>
+      )
+    }
+    <hr />
+    <slot />
+  </article>
+</Base>
