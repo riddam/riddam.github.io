@@ -1,7 +1,7 @@
 ---
 title: "Making AI Coding Assistants Reliable: My Playbook"
 description: "A practical guide to getting dependable, secure, low-regret results from GitHub Copilot and AI coding agents — prompting frameworks, model selection, context hygiene, and safety rules."
-pubDate: 2026-02-24
+pubDate: 2026-06-04
 tags: ["ai-assisted-coding", "github-copilot", "prompting", "developer-productivity"]
 ---
 

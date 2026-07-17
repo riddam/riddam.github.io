@@ -1,7 +1,7 @@
 ---
 title: "MLOps & AI Production Operations: The 2026 Guide"
 description: "An end-to-end guide to CI/CD and production operations for AI systems, covering the MLOps pipeline, tooling, cloud infrastructure, deployment and release patterns, monitoring, drift, LLMOps, cost optimization, and governance."
-pubDate: 2026-07-17
+pubDate: 2026-06-04
 tags: ["mlops", "ci-cd", "llmops", "cloud-infrastructure"]
 ---
 
