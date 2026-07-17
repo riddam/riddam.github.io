@@ -734,3 +734,127 @@ a.section-badge:hover { opacity: 0.8; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* ============================================================
+   Editorial refinements
+   ============================================================ */
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 24%, transparent);
+  color: var(--text);
+}
+
+h1, h2, h3 { text-wrap: balance; }
+article p, .excerpt, .hero p, .author-blurb, .post-description { text-wrap: pretty; }
+
+/* Anchor jumps land below the sticky header */
+article h2, article h3, article h4 { scroll-margin-top: 5.5rem; }
+
+/* Heading anchor links */
+.heading-anchor {
+  margin-left: 0.4rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 400;
+  opacity: 0;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+article h2:hover .heading-anchor,
+article h3:hover .heading-anchor,
+article h4:hover .heading-anchor,
+.heading-anchor:focus-visible { opacity: 1; }
+.heading-anchor:hover { color: var(--accent); }
+.heading-anchor svg { width: 0.95rem; height: 0.95rem; vertical-align: middle; }
+@media (hover: none) {
+  .heading-anchor { opacity: 1; color: var(--border-strong); }
+}
+
+/* Post-header divider stays a clean rule */
+hr.post-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.5rem 0 2rem;
+}
+
+/* In-content section breaks become an editorial ornament */
+article hr:not(.post-divider) {
+  border: none;
+  height: auto;
+  text-align: center;
+  margin: 3rem 0;
+}
+article hr:not(.post-divider)::before {
+  content: '⁂';
+  color: var(--text-muted);
+  font-size: 1.3rem;
+  letter-spacing: 0.2em;
+}
+
+kbd {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  padding: 0.05em 0.4em;
+}
+
+/* Back-to-top */
+.back-to-top {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  width: 2.6rem;
+  height: 2.6rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--bg-elev);
+  color: var(--text-secondary);
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, color 0.15s ease,
+    border-color 0.15s ease;
+  z-index: 40;
+}
+.back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.back-to-top:hover { color: var(--accent); border-color: var(--accent); }
+.back-to-top svg { width: 1.15rem; height: 1.15rem; }
+
+/* ---------- Print (clean study-guide printouts) ---------- */
+@media print {
+  header, footer, .toc, .reading-progress, .theme-toggle,
+  .back-to-top, .copy-btn, .author-card, .related, .skip-link,
+  .heading-anchor {
+    display: none !important;
+  }
+  body { background: #fff; color: #000; font-size: 11pt; line-height: 1.5; }
+  main, main.wide { max-width: 100%; padding: 0; }
+  .post-grid.has-toc { display: block; }
+  a { color: #000; text-decoration: underline; }
+  article a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.82em;
+    color: #444;
+    word-break: break-all;
+  }
+  pre.astro-code {
+    border: 1px solid #ccc;
+    box-shadow: none;
+    background: #fafafa !important;
+    white-space: pre-wrap;
+  }
+  pre.astro-code span { color: #111 !important; }
+  h1, h2, h3 { page-break-after: avoid; }
+  pre, blockquote, table, figure { page-break-inside: avoid; }
+}

@@ -113,6 +113,27 @@ const jsonLd: Record<string, unknown> = article
     </main>
     <Footer />
 
+    <button id="back-to-top" class="back-to-top" type="button" aria-label="Back to top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 19V5M5 12l7-7 7 7" />
+      </svg>
+    </button>
+
+    <script>
+      // Show a back-to-top button once the reader has scrolled down.
+      const toTop = document.getElementById('back-to-top');
+      if (toTop) {
+        const onScroll = () => {
+          toTop.classList.toggle('visible', window.scrollY > 700);
+        };
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        toTop.addEventListener('click', () =>
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        );
+      }
+    </script>
+
     <script>
       // Render mermaid diagrams only on pages that contain them; the library
       // is code-split and never downloaded otherwise.
