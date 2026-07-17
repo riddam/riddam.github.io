@@ -1,7 +1,7 @@
 ---
 title: "What's Actually New in Python 3.13 and 3.14"
 description: "A plain-language tour of the two most consequential Python releases in years — free-threading, JIT compilation, subinterpreters, t-strings, deferred annotations, and what to do about them."
-pubDate: 2026-07-17
+pubDate: 2026-01-10
 tags: ["python", "python-3-14", "free-threading", "release-notes"]
 ---
 

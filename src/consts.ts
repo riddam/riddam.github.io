@@ -1,6 +1,6 @@
 export const SITE_TITLE = 'Riddam Jain';
 export const SITE_DESCRIPTION =
-  'Writing on engineering, books, leadership, and certification study guides.';
+  'Cloud and application architecture, AI, books, and leadership — field notes from a staff engineer, written to share.';
 export const GITHUB_URL = 'https://github.com/riddam';
 export const LINKEDIN_URL = 'https://www.linkedin.com/in/riddam/';
 
@@ -14,21 +14,23 @@ export const SECTIONS: Section[] = [
   {
     id: 'engineering',
     label: 'Engineering',
-    description: 'Technical deep dives and implementation write-ups from real projects.',
+    description:
+      'Deep dives and write-ups from real work — cloud and application architecture, and the reasoning behind the decisions.',
   },
   {
     id: 'book-notes',
     label: 'Book Notes',
-    description: 'Notes and takeaways from books worth remembering.',
+    description: 'What I took away from books worth remembering, in my own words.',
   },
   {
     id: 'leadership',
     label: 'Leadership',
-    description: 'Thoughts on leading teams, growing engineers, and working well.',
+    description: 'On leading teams, growing engineers, and doing the work well.',
   },
   {
     id: 'guides',
-    label: 'Study Guides',
-    description: 'In-depth study guides and cheat sheets for certifications and core topics.',
+    label: 'Playbooks',
+    description:
+      "In-depth references and blueprints I've built for certifications, architecture, and core topics — the material I share with the engineers I work with.",
   },
 ];

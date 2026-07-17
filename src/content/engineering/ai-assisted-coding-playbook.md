@@ -1,7 +1,7 @@
 ---
 title: "Making AI Coding Assistants Reliable: My Playbook"
 description: "A practical guide to getting dependable, secure, low-regret results from GitHub Copilot and AI coding agents — prompting frameworks, model selection, context hygiene, and safety rules."
-pubDate: 2026-07-17
+pubDate: 2026-02-24
 tags: ["ai-assisted-coding", "github-copilot", "prompting", "developer-productivity"]
 ---
 
@@ -17,7 +17,7 @@ The goal of this playbook is simple: make AI coding assistance **reliable, secur
 - Default workflow: **Ask → Plan → Agent → Review → Test**
 - Rule: small diffs, explicit constraints, always add or verify tests
 
-**Model ladder** (as of mid-2026 — revisit quarterly, this changes fast)
+**Model ladder** (as of 2026 — revisit quarterly, this changes fast)
 
 - Quick tiny edits → **Claude Haiku 4.5** or your provider's fast tier (e.g. Gemini Flash)
 - Most coding tasks → **Claude Sonnet 5**
@@ -116,7 +116,7 @@ Think of the context window as working memory: if *you'd* be overwhelmed by 30 o
 
 The current generation of models is optimized for agentic workflows and long-horizon coding, not just chat. Use a ladder to balance cost, speed, and accuracy — and expect this table to age; revisit whatever your tool offers every quarter.
 
-| Situation | My pick (mid-2026) | Why |
+| Situation | My pick (2026) | Why |
 | --- | --- | --- |
 | Default daily driver | **Claude Sonnet 5** | Near-frontier quality on coding and agentic work at mid-tier cost. Handles most planning and implementation. |
 | Quick tasks / tiny edits | **Claude Haiku 4.5** / fast tier | Surgical for scoped edits, boilerplate tests, renames, and docs — at a fraction of the cost. |
@@ -428,4 +428,4 @@ Automate the tail end by ending agent prompts with:
 
 ---
 
-*This playbook is a snapshot of mid-2026. The models will change; the discipline — anchor, constrain, verify, never blind-merge — won't.*
+*This playbook is a snapshot of 2026. The models will change; the discipline — anchor, constrain, verify, never blind-merge — won't.*

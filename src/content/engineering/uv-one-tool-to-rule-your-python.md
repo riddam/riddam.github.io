@@ -1,7 +1,7 @@
 ---
 title: "uv: One Tool to Rule Your Python Workflow"
 description: "How uv replaces pyenv, venv, pip, pip-tools, pipx, and most of Poetry with a single fast tool — with a quick-start, a migration path, and a replacement cheat sheet."
-pubDate: 2026-07-17
+pubDate: 2026-01-11
 tags: ["python", "uv", "tooling", "developer-productivity"]
 ---
 

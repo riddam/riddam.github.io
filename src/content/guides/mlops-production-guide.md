@@ -5,7 +5,7 @@ pubDate: 2026-07-17
 tags: ["mlops", "ci-cd", "llmops", "cloud-infrastructure"]
 ---
 
-End-to-end pipeline from code commit to production monitoring — infrastructure, tooling, deployment patterns & observability.
+*How I think about taking AI from a working notebook to something that runs reliably in production — the full path from commit to monitoring, and the decisions that matter along the way.*
 
 ## 01 — DevOps vs MLOps: What's Different
 

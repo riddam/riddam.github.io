@@ -1,11 +1,11 @@
 ---
 title: "AI Architecture Master Guide 2026"
 description: "A practitioner's blueprint covering every layer of modern AI systems — foundation model selection, RAG, fine-tuning, agentic patterns, LLMOps, safety, cloud platforms, and the trade-offs behind each decision."
-pubDate: 2026-07-17
+pubDate: 2026-07-11
 tags: ["ai-architecture", "llm", "rag", "agents"]
 ---
 
-*From foundation models to enterprise multi-agent systems — every pattern, trade-off and decision framework an AI architect needs.*
+*This is the guide I wish I'd had when I first started designing AI systems: every layer, pattern, and trade-off in one place. I keep it current and reach for it whenever I'm helping someone architect something new.*
 
 ## 01 — The AI Architecture Landscape
 

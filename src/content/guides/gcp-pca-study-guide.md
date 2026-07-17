@@ -1,11 +1,11 @@
 ---
 title: "GCP Professional Cloud Architect — 2026 Blueprint"
 description: "A last-minute review guide for the Google Cloud Professional Cloud Architect exam covering the format, all six domains, service trade-offs, scenario triggers, HA/DR, cost optimization, and the new 2026 AI focus."
-pubDate: 2026-07-17
+pubDate: 2026-06-20
 tags: ["gcp", "cloud-architect", "certification", "study-guide"]
 ---
 
-A last-minute review — format, all domains, service trade-offs, scenario triggers, HA/DR, cost & the new AI focus.
+*The review I'd hand an engineer the week before their GCP Professional Cloud Architect exam: all six domains, the service trade-offs that actually decide questions, and the reasoning I want them to carry in.*
 
 | Questions | Duration | Fee | Validity | Case studies | Pass mark |
 |---|---|---|---|---|---|

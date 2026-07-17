@@ -1,11 +1,11 @@
 ---
 title: "CCA-F: Claude Certified Architect Foundations — 2026 Blueprint"
 description: "An exam-day reference for the CCA-F certification covering all five domains, the six exam scenarios, anti-patterns, trade-offs, and scenario triggers."
-pubDate: 2026-07-17
+pubDate: 2026-07-04
 tags: ["claude", "certification", "study-guide", "ai-architecture"]
 ---
 
-**CCA-F exam-day reference — all 5 domains, 6 scenarios, anti-patterns, trade-offs & scenario triggers.**
+*Everything I'd want a teammate to walk into the Claude Certified Architect exam knowing — the five domains, the scenarios that trip people up, and the reasoning behind each answer.*
 
 | Questions | Duration | Fee | Pass mark | Scenarios | Proctored |
 |---|---|---|---|---|---|
