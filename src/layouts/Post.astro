@@ -1,6 +1,7 @@
 ---
 import Base from './Base.astro';
 import type { Section } from '../consts';
+import type { MarkdownHeading } from 'astro';
 
 interface Props {
   title: string;
@@ -10,51 +11,111 @@ interface Props {
   tags: string[];
   section: Section;
   minutesRead?: number;
+  headings?: MarkdownHeading[];
 }
 
-const { title, description, pubDate, updatedDate, tags, section, minutesRead } =
-  Astro.props;
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  tags,
+  section,
+  minutesRead,
+  headings = [],
+} = Astro.props;
+
+const tocItems = headings.filter((h) => h.depth === 2);
+const showToc = tocItems.length >= 3;
 
 const formatDate = (d: Date) =>
   d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 
-<Base title={title} description={description}>
-  <article>
-    <div class="post-header">
-      <a href={`/${section.id}/`} class="section-badge">{section.label}</a>
-      <h1>{title}</h1>
-      <p class="post-description">{description}</p>
-      <p class="post-meta">
-        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+<Base title={title} description={description} wide={showToc}>
+  <div class:list={['post-grid', { 'has-toc': showToc }]}>
+    <article>
+      <div class="post-header">
+        <a href={`/${section.id}/`} class="section-badge">{section.label}</a>
+        <h1>{title}</h1>
+        <p class="post-description">{description}</p>
+        <p class="post-meta">
+          <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+          {
+            updatedDate && (
+              <>
+                <span class="dot">·</span>
+                <span>Updated {formatDate(updatedDate)}</span>
+              </>
+            )
+          }
+          {
+            minutesRead && (
+              <>
+                <span class="dot">·</span>
+                <span>{minutesRead} min read</span>
+              </>
+            )
+          }
+        </p>
         {
-          updatedDate && (
-            <>
-              <span class="dot">·</span>
-              <span>Updated {formatDate(updatedDate)}</span>
-            </>
+          tags.length > 0 && (
+            <div class="tags">
+              {tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
           )
         }
-        {
-          minutesRead && (
-            <>
-              <span class="dot">·</span>
-              <span>{minutesRead} min read</span>
-            </>
-          )
-        }
-      </p>
-      {
-        tags.length > 0 && (
-          <div class="tags">
-            {tags.map((tag) => (
-              <span class="tag">{tag}</span>
-            ))}
-          </div>
-        )
-      }
-    </div>
-    <hr />
-    <slot />
-  </article>
+      </div>
+      <hr />
+      <slot />
+    </article>
+
+    {
+      showToc && (
+        <aside class="toc" aria-label="Table of contents">
+          <nav>
+            <p class="toc-title">On this page</p>
+            <ul>
+              {tocItems.map((h) => (
+                <li>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </aside>
+      )
+    }
+  </div>
 </Base>
+
+<script>
+  // Highlight the TOC entry for the section currently in view.
+  const toc = document.querySelector('.toc');
+  if (toc) {
+    const links = new Map(
+      [...toc.querySelectorAll('a')].map((a) => [
+        decodeURIComponent(a.hash.slice(1)),
+        a,
+      ])
+    );
+    const headings = [...links.keys()]
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            links.forEach((a) => a.classList.remove('active'));
+            links.get(entry.target.id)?.classList.add('active');
+          }
+        }
+      },
+      { rootMargin: '-80px 0px -70% 0px' }
+    );
+    headings.forEach((h) => observer.observe(h));
+  }
+</script>

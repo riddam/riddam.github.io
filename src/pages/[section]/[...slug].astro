@@ -18,7 +18,7 @@ export async function getStaticPaths() {
 }
 
 const { entry, section } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
 
 const words = (entry.body ?? '').split(/\s+/).filter(Boolean).length;
 const minutesRead = Math.max(1, Math.round(words / 220));
@@ -32,6 +32,7 @@ const minutesRead = Math.max(1, Math.round(words / 220));
   tags={entry.data.tags}
   section={section}
   minutesRead={minutesRead}
+  headings={headings}
 >
   <Content />
 </Post>

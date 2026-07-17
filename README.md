@@ -29,6 +29,35 @@ draft: false        # optional — true hides the post
 Post body in Markdown, starting at ## headings.
 ```
 
+### Images
+
+Put images in `src/assets/` and reference them relatively — Astro optimizes
+them at build time:
+
+```markdown
+![Alt text describing the image](../../assets/my-diagram.png)
+*Optional caption as an italic line right under the image.*
+```
+
+Files dropped in `public/images/` are served unprocessed at `/images/...`.
+
+### Diagrams
+
+Write [Mermaid](https://mermaid.js.org) diagrams directly in Markdown — they
+render as SVGs in the browser (flowcharts, sequence, ER, state diagrams…):
+
+````markdown
+```mermaid
+flowchart LR
+  A[Client] --> B[API] --> C[(Database)]
+```
+````
+
+### Table of contents
+
+Posts with three or more `##` headings automatically get a sticky
+"On this page" sidebar on screens wider than 1100px.
+
 Push to `main` and GitHub Actions builds and deploys automatically
 (`.github/workflows/deploy.yml`).
 

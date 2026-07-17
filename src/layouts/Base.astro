@@ -9,9 +9,10 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description: string;
+  wide?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, wide = false } = Astro.props;
 const pageTitle = title ? `${title} · ${SITE_TITLE}` : SITE_TITLE;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -39,9 +40,25 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     <Header />
-    <main>
+    <main class:list={[{ wide }]}>
       <slot />
     </main>
     <Footer />
+
+    <script>
+      // Render mermaid diagrams only on pages that contain them; the library
+      // is code-split and never downloaded otherwise.
+      const blocks = document.querySelectorAll('pre.mermaid');
+      if (blocks.length > 0) {
+        const { default: mermaid } = await import('mermaid');
+        const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: dark ? 'dark' : 'neutral',
+          fontFamily: "'Inter Variable', sans-serif",
+        });
+        await mermaid.run({ nodes: blocks });
+      }
+    </script>
   </body>
 </html>
