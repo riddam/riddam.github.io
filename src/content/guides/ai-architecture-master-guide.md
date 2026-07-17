@@ -126,43 +126,50 @@ RAG (Retrieval-Augmented Generation) is the **dominant enterprise AI pattern in 
 
 **Fig 05.2 — Hybrid RAG pipeline (production baseline)**
 
-```
-User query → Embed query (embedding model)
-           → Vector search (dense retrieval) + Keyword search (BM25 / sparse)
-           → Reranker (cross-encoder)
-           → Top-K chunks
-           → LLM generates (prompt + context)
-           → Answer + citations
+```mermaid
+flowchart LR
+    A["User query"] --> B["Embed query<br/>(embedding model)"]
+    B --> C["Vector search<br/>(dense retrieval)"]
+    A --> D["Keyword search<br/>(BM25 / sparse)"]
+    C --> E["Reranker<br/>(cross-encoder)"]
+    D --> E
+    E --> F["Top-K chunks"]
+    F --> G["LLM generates<br/>(prompt + context)"]
+    G --> H["Answer + citations"]
 ```
 
 **Fig 05.3 — Agentic RAG (most capable)**
 
-```
-Complex query → Agent decomposes into sub-queries
-             → Retrieves from multiple sources
-             → Evaluates results (enough context?)
-             → Re-retrieves if gaps remain
-             → Synthesizes grounded answer
+```mermaid
+flowchart TD
+    A["Complex query"] --> B["Agent decomposes<br/>into sub-queries"]
+    B --> C["Retrieves from<br/>multiple sources"]
+    C --> D{"Enough context?"}
+    D -->|"gaps remain"| C
+    D -->|"yes"| E["Synthesizes<br/>grounded answer"]
 ```
 
 **Fig 05.4 — Graph RAG (relationship reasoning)**
 
-```
-Query about connected entities → Knowledge graph (entity + relation lookup)
-                               + Vector search (supporting docs)
-                               → Multi-hop reasoning (traverse relationships)
-                               → Answer with relationship chain
+```mermaid
+flowchart TD
+    A["Query about<br/>connected entities"] --> B["Knowledge graph<br/>(entity + relation lookup)"]
+    A --> C["Vector search<br/>(supporting docs)"]
+    B --> D["Multi-hop reasoning<br/>(traverse relationships)"]
+    C --> D
+    D --> E["Answer with<br/>relationship chain"]
 ```
 
 ### RAG pipeline components
 
 **Fig 05.5 — Document ingestion pipeline (offline / indexing)**
 
-```
-Source docs (PDF, HTML, DB) → Parse / extract (text + tables + images)
-                            → Chunk (semantic / recursive)
-                            → Embed (embedding model)
-                            → Store (vector DB + metadata)
+```mermaid
+flowchart LR
+    A["Source docs<br/>(PDF, HTML, DB)"] --> B["Parse / extract<br/>(text + tables + images)"]
+    B --> C["Chunk<br/>(semantic / recursive)"]
+    C --> D["Embed<br/>(embedding model)"]
+    D --> E["Store<br/>(vector DB + metadata)"]
 ```
 
 | Component | Options (2026) | Decision |
@@ -210,11 +217,12 @@ Fine-tuning changes the model's **weights** — it's the most powerful customiza
 
 **Fig 06.1 — The hybrid production pattern**
 
-```
-User request → Prompt engineering (system prompt + guardrails)
-            → RAG retrieval (current knowledge)
-            → Fine-tuned model (domain behavior)
-            → Response (grounded + on-brand)
+```mermaid
+flowchart LR
+    A["User request"] --> B["Prompt engineering<br/>(system prompt + guardrails)"]
+    B --> C["RAG retrieval<br/>(current knowledge)"]
+    C --> D["Fine-tuned model<br/>(domain behavior)"]
+    D --> E["Response<br/>(grounded + on-brand)"]
 ```
 
 ## 07 — Agentic AI Patterns
@@ -274,35 +282,43 @@ When a single agent isn't enough, you coordinate multiple specialized agents. He
 
 **Fig 08.1 — Router pattern (classifier → specialists)**
 
-```
-User request → Router / classifier (Haiku — fast, cheap)
-             ↙        ↓        ↘
-   Billing agent  Tech support agent  Returns agent
+```mermaid
+flowchart TD
+    A["User request"] --> B["Router / classifier<br/>(Haiku — fast, cheap)"]
+    B --> C["Billing agent"]
+    B --> D["Tech support agent"]
+    B --> E["Returns agent"]
 ```
 
 **Fig 08.2 — Planner-executor pattern**
 
-```
-Goal → Planner agent (decomposes into steps)
-     → Step 1 executor → Step 2 executor → Step N executor
-     → Planner synthesizes
+```mermaid
+flowchart LR
+    A["Goal"] --> B["Planner agent<br/>(decomposes into steps)"]
+    B --> C["Step 1 executor"]
+    C --> D["Step 2 executor"]
+    D --> E["Step N executor"]
+    E --> F["Planner synthesizes"]
 ```
 
 **Fig 08.3 — Generator-critic (quality gate)**
 
-```
-Task → Generator agent (produces output)
-     → Critic agent (evaluates / verifies)
-     → Pass? Ship ✓ / Fail? → Revise ↩
+```mermaid
+flowchart TD
+    A["Task"] --> B["Generator agent<br/>(produces output)"]
+    B --> C["Critic agent<br/>(evaluates / verifies)"]
+    C -->|"pass"| D["Ship"]
+    C -->|"fail"| E["Revise"]
+    E --> B
 ```
 
 **Fig 08.4 — Supervisor-workers (enterprise)**
 
-```
-        Supervisor (owns goal + synthesizes)
-        ↙            ↓            ↘
-Worker A         Worker B         Worker C
-(subtask 1)      (subtask 2)      (subtask 3)
+```mermaid
+flowchart TD
+    S["Supervisor<br/>(owns goal + synthesizes)"] --> A["Worker A<br/>(subtask 1)"]
+    S --> B["Worker B<br/>(subtask 2)"]
+    S --> C["Worker C<br/>(subtask 3)"]
 ```
 
 - **Context isolation:** each agent gets only the context it needs — never share the coordinator's full history (prevents context pollution).
@@ -460,10 +476,13 @@ Knowing the patterns (§03–§08) is half the job. The other half is knowing **
 
 **Fig 15.1 — Cloud AI training & inference pipeline (generic, all clouds)**
 
-```
-Data (lake / warehouse) → Feature store (prep + versioning)
-→ Training job (GPU/TPU cluster) → Model registry (versioning + metadata)
-→ Serving endpoint (real-time / batch) → Monitoring (drift + performance)
+```mermaid
+flowchart LR
+    A["Data<br/>(lake / warehouse)"] --> B["Feature store<br/>(prep + versioning)"]
+    B --> C["Training job<br/>(GPU/TPU cluster)"]
+    C --> D["Model registry<br/>(versioning + metadata)"]
+    D --> E["Serving endpoint<br/>(real-time / batch)"]
+    E --> F["Monitoring<br/>(drift + performance)"]
 ```
 
 ### Platform selection decision tree
@@ -510,11 +529,12 @@ Data (lake / warehouse) → Feature store (prep + versioning)
 
 **Fig 15.3 — Multi-cloud AI gateway pattern**
 
-```
-Application → AI Gateway (routing · failover · budget)
-            ↙              ↓              ↘
-   AWS Bedrock      GCP Vertex AI      Azure OpenAI
-  (Claude · Llama)  (Gemini · Gemma)   (GPT-4o · o3)
+```mermaid
+flowchart TD
+    A["Application"] --> G["AI Gateway<br/>(routing, failover, budget)"]
+    G --> B["AWS Bedrock<br/>(Claude, Llama)"]
+    G --> C["GCP Vertex AI<br/>(Gemini, Gemma)"]
+    G --> D["Azure OpenAI<br/>(GPT-4o, o3)"]
 ```
 
 ## 16 — Trade-off Master Reference
@@ -621,13 +641,22 @@ Organized as a reading path — start at the foundation and work up. Each book i
 
 **Fig 17.1 — Learning path (follow the arrows)**
 
-```
-1. Raschka (LLM internals) → 2. Chip Huyen (AI Engineering)
-→ 3. LLM Eng Handbook (production depth) → 4. Dibia (agents)
-→ 5. Arsanjani (multi-agent)
-
-Parallel reads:  Berryman (prompting) · Kleppmann (infra) · Reis (data eng)
-Platform depth:  Gift & Deza (MLOps) · Ping (ML Solutions Arch) · Cloud-specific (GCP/AWS/Azure)
+```mermaid
+flowchart LR
+    A["1. Raschka<br/>(LLM internals)"] --> B["2. Chip Huyen<br/>(AI Engineering)"]
+    B --> C["3. LLM Eng Handbook<br/>(production depth)"]
+    C --> D["4. Dibia<br/>(agents)"]
+    D --> E["5. Arsanjani<br/>(multi-agent)"]
+    subgraph SG1["Parallel reads"]
+        P1["Berryman<br/>(prompting)"]
+        P2["Kleppmann<br/>(infra)"]
+        P3["Reis<br/>(data eng)"]
+    end
+    subgraph SG2["Platform depth"]
+        Q1["Gift and Deza<br/>(MLOps)"]
+        Q2["Ping<br/>(ML Solutions Arch)"]
+        Q3["Cloud-specific<br/>(GCP/AWS/Azure)"]
+    end
 ```
 
 > **The learning principle:** Reading is necessary but not sufficient. **Pair each book with a real project:** build a RAG chatbot after the RAG chapters, fine-tune a model after the fine-tuning chapters, deploy an agent after the agent chapters. The combination of strong mental models from books and hands-on experience building real systems is what separates architects from tutorial-watchers.
