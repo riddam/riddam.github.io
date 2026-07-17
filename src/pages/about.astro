@@ -1,0 +1,74 @@
+---
+import Base from '../layouts/Base.astro';
+import { LINKEDIN_URL } from '../consts';
+---
+
+<Base
+  title="About"
+  description="Riddam Jain — engineering leader in Rotterdam writing about cloud, AI, books, and leading teams."
+>
+  <h1>Hi, I'm Riddam 👋</h1>
+
+  <p class="lead">
+    I'm an engineering leader based in Rotterdam, working at Coolblue. I spend my
+    days somewhere between the technical and the human side of building software —
+    designing systems, growing engineers, and trying to keep both moving in the
+    same direction.
+  </p>
+
+  <p>
+    Most of my hands-on work lives around <strong>cloud and AI</strong> — building
+    and operating systems on GCP and AWS, wrangling data and ML pipelines, and
+    figuring out how to make AI genuinely useful in production rather than just
+    impressive in a demo. I care a lot about the unglamorous parts: reliability,
+    security, cost, and code that the next person can actually maintain.
+  </p>
+
+  <p>
+    This blog is where I write things down. Partly to share what I've learned, and
+    partly because writing is how I figure out what I actually think. You'll find a
+    few different threads here:
+  </p>
+
+  <ul>
+    <li>
+      <a href="/engineering/"><strong>Engineering</strong></a> — deep dives and
+      write-ups from real work: cloud architecture, AI-assisted development,
+      tooling, and the occasional hard-won lesson.
+    </li>
+    <li>
+      <a href="/book-notes/"><strong>Book Notes</strong></a> — takeaways from books
+      worth remembering, in my own words.
+    </li>
+    <li>
+      <a href="/leadership/"><strong>Leadership</strong></a> — thoughts on leading
+      teams, growing engineers, and doing the job well.
+    </li>
+    <li>
+      <a href="/guides/"><strong>Study Guides</strong></a> — in-depth references
+      I've built for certifications and core topics.
+    </li>
+  </ul>
+
+  <p>
+    If any of that resonates — or if you just want to disagree with me about
+    something — I'd love to hear from you.
+  </p>
+
+  <p class="connect">
+    <a href={LINKEDIN_URL}>Connect with me on LinkedIn →</a>
+  </p>
+</Base>
+
+<style>
+  .lead {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+  .connect {
+    margin-top: 2rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+</style>

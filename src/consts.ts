@@ -2,6 +2,7 @@ export const SITE_TITLE = 'Riddam Jain';
 export const SITE_DESCRIPTION =
   'Writing on engineering, books, leadership, and certification study guides.';
 export const GITHUB_URL = 'https://github.com/riddam';
+export const LINKEDIN_URL = 'https://www.linkedin.com/in/riddam/';
 
 export interface Section {
   id: 'engineering' | 'book-notes' | 'leadership' | 'guides';
