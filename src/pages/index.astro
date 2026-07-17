@@ -20,18 +20,52 @@ const posts = (
 )
   .flat()
   .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+const [featured, ...rest] = posts;
+
+const formatDate = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 ---
 
 <Base description={SITE_DESCRIPTION}>
   <div class="hero">
-    <h1>Hi, I'm Riddam 👋</h1>
+    <h1>Hi, I'm Riddam.</h1>
     <p>
       Staff engineer in Amsterdam, working in cloud and application architecture.
-      I write about the systems I build, the books I read, and leading engineers —
-      and I share the references I put together along the way.
+      I build systems, read books worth remembering, think about leading engineers —
+      and write it all down here.
     </p>
   </div>
 
+  {
+    featured && (
+      <>
+        <p class="home-heading">Latest</p>
+        <a class="featured" href={featured.href}>
+          <p class="list-meta">
+            <time datetime={featured.pubDate.toISOString()}>
+              {formatDate(featured.pubDate)}
+            </time>
+            <span>·</span>
+            <span class="section-badge">{featured.sectionLabel}</span>
+          </p>
+          <h3>{featured.title}</h3>
+          <p>{featured.description}</p>
+        </a>
+      </>
+    )
+  }
+
+  {
+    rest.length > 0 && (
+      <>
+        <p class="home-heading">More writing</p>
+        <PostList posts={rest} />
+      </>
+    )
+  }
+
+  <p class="home-heading">Explore</p>
   <ul class="section-grid">
     {
       SECTIONS.map((section) => (
@@ -44,7 +78,4 @@ const posts = (
       ))
     }
   </ul>
-
-  <h2>Latest posts</h2>
-  <PostList posts={posts} />
 </Base>

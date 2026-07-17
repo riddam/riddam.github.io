@@ -24,9 +24,21 @@ export default defineConfig({
     remarkPlugins: [remarkMermaid],
     shikiConfig: {
       themes: {
-        light: 'github-light',
-        dark: 'github-dark-dimmed',
+        light: 'vitesse-light',
+        dark: 'vitesse-dark',
       },
+      defaultColor: false,
+      transformers: [
+        {
+          name: 'language-label',
+          pre(node) {
+            const lang = this.options.lang;
+            if (lang && !['text', 'plaintext', 'ansi', 'plain'].includes(lang)) {
+              node.properties['data-language'] = lang;
+            }
+          },
+        },
+      ],
     },
   },
 });

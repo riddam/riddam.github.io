@@ -60,6 +60,7 @@ const formatDate = (d: Date) =>
   ogImage={ogImage}
   article={{ pubDate, updatedDate, tags }}
 >
+  <div class="reading-progress" id="reading-progress"></div>
   <div class:list={['post-grid', { 'has-toc': showToc }]}>
     <article>
       <div class="post-header">
@@ -144,6 +145,22 @@ const formatDate = (d: Date) =>
     }
   </div>
 </Base>
+
+<script>
+  // Reading progress bar tied to scroll position.
+  const bar = document.getElementById('reading-progress');
+  if (bar) {
+    const update = () => {
+      const h = document.documentElement;
+      const max = h.scrollHeight - h.clientHeight;
+      const pct = max > 0 ? (h.scrollTop / max) * 100 : 0;
+      bar.style.width = pct + '%';
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+  }
+</script>
 
 <script>
   // Highlight the TOC entry for the section currently in view.

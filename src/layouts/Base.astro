@@ -8,6 +8,7 @@ import {
   LINKEDIN_URL,
   AUTHOR_ROLE,
 } from '../consts';
+import '@fontsource-variable/fraunces';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
@@ -67,6 +68,11 @@ const jsonLd: Record<string, unknown> = article
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      // Apply saved theme before paint to avoid a flash.
+      const t = localStorage.getItem('theme');
+      if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+    </script>
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <meta name="author" content={SITE_TITLE} />
@@ -113,13 +119,31 @@ const jsonLd: Record<string, unknown> = article
       const blocks = document.querySelectorAll('pre.mermaid');
       if (blocks.length > 0) {
         const { default: mermaid } = await import('mermaid');
-        const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const themeAttr = document.documentElement.dataset.theme;
+        const dark = themeAttr
+          ? themeAttr === 'dark'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches;
         mermaid.initialize({
           startOnLoad: false,
           theme: dark ? 'dark' : 'neutral',
           fontFamily: "'Inter Variable', sans-serif",
         });
         await mermaid.run({ nodes: blocks });
+      }
+    </script>
+
+    <script>
+      // Theme toggle — flips between light and dark, persists the choice.
+      const toggle = document.getElementById('theme-toggle');
+      if (toggle) {
+        const effective = () =>
+          document.documentElement.dataset.theme ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        toggle.addEventListener('click', () => {
+          const next = effective() === 'dark' ? 'light' : 'dark';
+          document.documentElement.dataset.theme = next;
+          localStorage.setItem('theme', next);
+        });
       }
     </script>
 
