@@ -9,9 +9,11 @@ interface Props {
   updatedDate?: Date;
   tags: string[];
   section: Section;
+  minutesRead?: number;
 }
 
-const { title, description, pubDate, updatedDate, tags, section } = Astro.props;
+const { title, description, pubDate, updatedDate, tags, section, minutesRead } =
+  Astro.props;
 
 const formatDate = (d: Date) =>
   d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -19,21 +21,39 @@ const formatDate = (d: Date) =>
 
 <Base title={title} description={description}>
   <article>
-    <a href={`/${section.id}/`} class="section-badge">{section.label}</a>
-    <h1>{title}</h1>
-    <p class="post-meta">
-      {formatDate(pubDate)}
-      {updatedDate && <span> · Updated {formatDate(updatedDate)}</span>}
-    </p>
-    {
-      tags.length > 0 && (
-        <p class="post-meta">
-          {tags.map((tag) => (
-            <span class="tag">{tag}</span>
-          ))}
-        </p>
-      )
-    }
+    <div class="post-header">
+      <a href={`/${section.id}/`} class="section-badge">{section.label}</a>
+      <h1>{title}</h1>
+      <p class="post-description">{description}</p>
+      <p class="post-meta">
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        {
+          updatedDate && (
+            <>
+              <span class="dot">·</span>
+              <span>Updated {formatDate(updatedDate)}</span>
+            </>
+          )
+        }
+        {
+          minutesRead && (
+            <>
+              <span class="dot">·</span>
+              <span>{minutesRead} min read</span>
+            </>
+          )
+        }
+      </p>
+      {
+        tags.length > 0 && (
+          <div class="tags">
+            {tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        )
+      }
+    </div>
     <hr />
     <slot />
   </article>

@@ -21,11 +21,19 @@ const formatDate = (d: Date) =>
   {
     posts.map((post) => (
       <li>
-        {post.sectionLabel && <span class="section-badge">{post.sectionLabel}</span>}
+        <p class="list-meta">
+          <time datetime={post.pubDate.toISOString()}>{formatDate(post.pubDate)}</time>
+          {post.sectionLabel && (
+            <>
+              <span>·</span>
+              <span class="section-badge">{post.sectionLabel}</span>
+            </>
+          )}
+        </p>
         <div class="post-title">
           <a href={post.href}>{post.title}</a>
         </div>
-        <p>{formatDate(post.pubDate)} — {post.description}</p>
+        <p class="excerpt">{post.description}</p>
       </li>
     ))
   }

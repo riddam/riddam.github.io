@@ -23,11 +23,26 @@ const posts = (
 ---
 
 <Base description={SITE_DESCRIPTION}>
-  <h1>Hi, I'm Riddam 👋</h1>
-  <p class="muted">
-    I write about engineering work I've done, notes from books I read, thoughts on
-    leadership, and in-depth study guides for certifications.
-  </p>
+  <div class="hero">
+    <h1>Hi, I'm Riddam 👋</h1>
+    <p>
+      I write about engineering work I've done, notes from books worth reading,
+      thoughts on leadership, and in-depth study guides.
+    </p>
+  </div>
+
+  <ul class="section-grid">
+    {
+      SECTIONS.map((section) => (
+        <li>
+          <a href={`/${section.id}/`} class="section-card">
+            <strong>{section.label}</strong>
+            <span>{section.description}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
 
   <h2>Latest posts</h2>
   <PostList posts={posts} />
