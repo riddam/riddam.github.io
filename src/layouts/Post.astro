@@ -28,6 +28,7 @@ interface Props {
   tags: string[];
   section: Section;
   minutesRead?: number;
+  wordCount?: number;
   headings?: MarkdownHeading[];
   ogImage?: string;
   related?: RelatedPost[];
@@ -41,6 +42,7 @@ const {
   tags,
   section,
   minutesRead,
+  wordCount,
   headings = [],
   ogImage,
   related = [],
@@ -58,7 +60,14 @@ const formatDate = (d: Date) =>
   description={description}
   wide={showToc}
   ogImage={ogImage}
-  article={{ pubDate, updatedDate, tags }}
+  article={{
+    pubDate,
+    updatedDate,
+    tags,
+    section: section.label,
+    sectionId: section.id,
+    wordCount,
+  }}
 >
   <div class="reading-progress" id="reading-progress"></div>
   <div class:list={['post-grid', { 'has-toc': showToc }]}>
@@ -109,9 +118,9 @@ const formatDate = (d: Date) =>
         <p class="author-role">{AUTHOR_ROLE} · {AUTHOR_LOCATION}</p>
         <p class="author-blurb">{AUTHOR_BLURB} If this was useful, let's connect.</p>
         <p class="author-links">
-          <a href={LINKEDIN_URL}>LinkedIn</a>
+          <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">LinkedIn</a>
           <span class="dot">·</span>
-          <a href={GITHUB_URL}>GitHub</a>
+          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">GitHub</a>
           <span class="dot">·</span>
           <a href="/about/">About</a>
         </p>
@@ -163,7 +172,9 @@ const formatDate = (d: Date) =>
 </script>
 
 <script>
-  // Highlight the TOC entry for the section currently in view.
+  // Highlight the TOC entry for the section currently in view. Driven by scroll
+  // position (last heading above the offset) so it stays correct scrolling both
+  // down and up — an intersection-only approach leaves stale/no active entry.
   const toc = document.querySelector('.toc');
   if (toc) {
     const links = new Map(
@@ -176,17 +187,18 @@ const formatDate = (d: Date) =>
       .map((id) => document.getElementById(id))
       .filter((el): el is HTMLElement => el !== null);
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            links.forEach((a) => a.classList.remove('active'));
-            links.get(entry.target.id)?.classList.add('active');
-          }
-        }
-      },
-      { rootMargin: '-80px 0px -70% 0px' }
-    );
-    headings.forEach((h) => observer.observe(h));
+    const OFFSET = 100; // account for the sticky header
+    const setActive = () => {
+      let currentId = headings[0]?.id;
+      for (const h of headings) {
+        if (h.getBoundingClientRect().top - OFFSET <= 0) currentId = h.id;
+        else break;
+      }
+      links.forEach((a, id) => a.classList.toggle('active', id === currentId));
+    };
+
+    setActive();
+    window.addEventListener('scroll', setActive, { passive: true });
+    window.addEventListener('resize', setActive);
   }
 </script>

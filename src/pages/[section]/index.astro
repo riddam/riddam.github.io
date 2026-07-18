@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
 import { SECTIONS } from '../../consts';
+import { readingStats } from '../../utils/reading-time';
 
 export function getStaticPaths() {
   return SECTIONS.map((section) => ({
@@ -20,6 +21,7 @@ const posts = entries
     title: entry.data.title,
     description: entry.data.description,
     pubDate: entry.data.pubDate,
+    minutesRead: readingStats(entry.body ?? '').minutes,
   }))
   .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
 ---

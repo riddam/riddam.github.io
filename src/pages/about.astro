@@ -1,13 +1,41 @@
 ---
 import Base from '../layouts/Base.astro';
-import { LINKEDIN_URL } from '../consts';
+import {
+  SITE_TITLE,
+  AUTHOR_ROLE,
+  AUTHOR_LOCATION,
+  GITHUB_URL,
+  LINKEDIN_URL,
+  SECTIONS,
+} from '../consts';
+
+const focus = [
+  'Cloud architecture',
+  'GCP & AWS',
+  'AI / ML',
+  'MLOps',
+  'Mentoring',
+];
 ---
 
 <Base
   title="About"
   description="Riddam Jain — staff engineer in Amsterdam, writing about cloud and application architecture, AI, books, and leading engineers."
 >
-  <h1>Hi, I'm Riddam 👋</h1>
+  <header class="about-header">
+    <div class="avatar" aria-hidden="true">RJ</div>
+    <div class="about-intro">
+      <h1>Hi, I'm Riddam <span class="wave">👋</span></h1>
+      <p class="about-meta">
+        <span>{AUTHOR_ROLE}</span>
+        <span class="dot">·</span>
+        <span>{AUTHOR_LOCATION}</span>
+      </p>
+      <ul class="focus" aria-label="What I work on">
+        {focus.map((f) => <li>{f}</li>)}
+      </ul>
+    </div>
+  </header>
 
   <p class="lead">
     I'm a staff engineer at Coolblue, based in Amsterdam. Over the last ten years —
@@ -28,48 +56,172 @@ import { LINKEDIN_URL } from '../consts';
     A big part of the staff role is multiplying other people — mentoring, setting
     technical direction, and writing things down so a lesson only has to be learned
     once. This blog is part of that. It's where I share what I've learned, and
-    honestly, where I figure out what I actually think. A few threads run through it:
+    honestly, where I figure out what I actually think.
   </p>
 
-  <ul>
-    <li>
-      <a href="/engineering/"><strong>Engineering</strong></a> — deep dives and
-      write-ups from real work: cloud and application architecture, AI-assisted
-      development, tooling, and hard-won lessons.
-    </li>
-    <li>
-      <a href="/book-notes/"><strong>Book Notes</strong></a> — takeaways from books
-      worth remembering, in my own words.
-    </li>
-    <li>
-      <a href="/leadership/"><strong>Leadership</strong></a> — on leading teams,
-      growing engineers, and doing the work well.
-    </li>
-    <li>
-      <a href="/guides/"><strong>Playbooks</strong></a> — in-depth references and
-      blueprints I've built for certifications, architecture, and core topics.
-    </li>
+  <h2 class="start-heading">Where to start</h2>
+  <ul class="section-grid">
+    {
+      SECTIONS.map((section) => (
+        <li>
+          <a href={`/${section.id}/`} class="section-card">
+            <strong>{section.label}</strong>
+            <span>{section.description}</span>
+          </a>
+        </li>
+      ))
+    }
   </ul>
 
-  <p>
-    If any of this resonates — or if you just want to disagree with me about
-    something — I'd love to hear from you.
-  </p>
-
-  <p class="connect">
-    <a href={LINKEDIN_URL}>Connect with me on LinkedIn →</a>
-  </p>
+  <div class="connect-card">
+    <p class="connect-text">
+      If any of this resonates — or you just want to disagree with me about
+      something — I'd love to hear from you.
+    </p>
+    <div class="connect-actions">
+      <a class="btn btn-primary" href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">
+        Connect on LinkedIn
+      </a>
+      <a class="btn" href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+        GitHub
+      </a>
+    </div>
+  </div>
 </Base>
 
 <style>
+  .about-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 1rem 0 2rem;
+  }
+  .avatar {
+    flex-shrink: 0;
+    width: 5.5rem;
+    height: 5.5rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border: 1px solid var(--border-strong);
+    box-shadow: var(--shadow);
+  }
+  .about-intro {
+    min-width: 0;
+  }
+  .about-intro h1 {
+    margin: 0 0 0.4rem;
+    line-height: 1.1;
+  }
+  .wave {
+    display: inline-block;
+  }
+  .about-meta {
+    margin: 0 0 0.85rem;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .about-meta .dot {
+    opacity: 0.5;
+  }
+  .focus {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .focus li {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.18rem 0.65rem;
+  }
+
   .lead {
     font-size: 1.15rem;
     color: var(--text-secondary);
     line-height: 1.65;
   }
-  .connect {
-    margin-top: 2rem;
-    font-size: 1.05rem;
+
+  .start-heading {
+    margin-top: 2.75rem;
+  }
+
+  .connect-card {
+    margin-top: 2.75rem;
+    padding: 1.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .connect-text {
+    margin: 0 0 1.25rem;
+    color: var(--text-secondary);
+  }
+  .connect-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .btn {
+    display: inline-block;
+    padding: 0.55rem 1.15rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-elev);
+    color: var(--text);
+    font-size: 0.95rem;
     font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .btn:hover {
+    transform: translateY(-1px);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-lift);
+  }
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
+  }
+  /* Dark theme's accent is light, so switch to dark text for contrast. */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) .btn-primary {
+      color: #16130e;
+    }
+  }
+  :root[data-theme='dark'] .btn-primary {
+    color: #16130e;
+  }
+  :root[data-theme='light'] .btn-primary {
+    color: #fff;
+  }
+
+  @media (max-width: 34rem) {
+    .about-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
   }
 </style>

@@ -5,6 +5,7 @@ interface PostItem {
   description: string;
   pubDate: Date;
   sectionLabel?: string;
+  minutesRead?: number;
 }
 
 interface Props {
@@ -27,6 +28,12 @@ const formatDate = (d: Date) =>
             <>
               <span>·</span>
               <span class="section-badge">{post.sectionLabel}</span>
+            </>
+          )}
+          {post.minutesRead && (
+            <>
+              <span>·</span>
+              <span>{post.minutesRead} min read</span>
             </>
           )}
         </p>

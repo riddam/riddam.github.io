@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://riddam.github.io/sitemap-index.xml

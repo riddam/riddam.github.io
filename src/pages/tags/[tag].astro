@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
 import { SECTIONS } from '../../consts';
+import { readingStats } from '../../utils/reading-time';
 
 export async function getStaticPaths() {
   const all = [];
@@ -16,6 +17,7 @@ export async function getStaticPaths() {
         pubDate: e.data.pubDate,
         sectionLabel: s.label,
         tags: e.data.tags ?? [],
+        minutesRead: readingStats(e.body ?? '').minutes,
       });
     }
   }

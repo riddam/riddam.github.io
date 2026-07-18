@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import PostList from '../components/PostList.astro';
 import { SITE_DESCRIPTION, SECTIONS } from '../consts';
+import { readingStats } from '../utils/reading-time';
 
 const posts = (
   await Promise.all(
@@ -14,6 +15,7 @@ const posts = (
         description: entry.data.description,
         pubDate: entry.data.pubDate,
         sectionLabel: section.label,
+        minutesRead: readingStats(entry.body ?? '').minutes,
       }));
     })
   )
@@ -48,6 +50,12 @@ const formatDate = (d: Date) =>
             </time>
             <span>·</span>
             <span class="section-badge">{featured.sectionLabel}</span>
+            {featured.minutesRead && (
+              <>
+                <span>·</span>
+                <span>{featured.minutesRead} min read</span>
+              </>
+            )}
           </p>
           <h3>{featured.title}</h3>
           <p>{featured.description}</p>

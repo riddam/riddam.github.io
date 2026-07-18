@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Post from '../../layouts/Post.astro';
 import { SECTIONS } from '../../consts';
+import { readingStats } from '../../utils/reading-time';
 
 export async function getStaticPaths() {
   const paths = [];
@@ -20,11 +21,9 @@ export async function getStaticPaths() {
 const { entry, section } = Astro.props;
 const { Content, headings } = await render(entry);
 
-const words = (entry.body ?? '').split(/\s+/).filter(Boolean).length;
-const minutesRead = Math.max(1, Math.round(words / 220));
+const { words, minutes: minutesRead } = readingStats(entry.body ?? '');
 
 // Gather every published post across sections, tagged with its section label.
-const labelFor = (id: string) => SECTIONS.find((s) => s.id === id)!.label;
 const all = [];
 for (const s of SECTIONS) {
   const entries = await getCollection(s.id, ({ data }) => !data.draft);
@@ -38,6 +37,7 @@ for (const s of SECTIONS) {
       pubDate: e.data.pubDate,
       tags: e.data.tags ?? [],
       sectionLabel: s.label,
+      minutesRead: readingStats(e.body ?? '').minutes,
     });
   }
 }
@@ -69,6 +69,7 @@ const related = candidates
   tags={entry.data.tags}
   section={section}
   minutesRead={minutesRead}
+  wordCount={words}
   headings={headings}
   ogImage={`/og/${section.id}/${entry.id}.png`}
   related={related}
