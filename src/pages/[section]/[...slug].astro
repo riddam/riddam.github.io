@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Post from '../../layouts/Post.astro';
-import { SECTIONS } from '../../consts';
+import { SECTIONS, SERIES } from '../../consts';
 import { readingStats } from '../../utils/reading-time';
 
 export async function getStaticPaths() {
@@ -59,6 +59,37 @@ const related = candidates
     (a, b) => b.score - a.score || b.pubDate.valueOf() - a.pubDate.valueOf()
   )
   .slice(0, 3);
+
+// If this post belongs to a curated series, build ordered navigation for it.
+const seriesDef = SERIES.find(
+  (s) => s.sectionId === section.id && s.slugs.includes(entry.id)
+);
+const series = seriesDef
+  ? {
+      title: seriesDef.title,
+      current: seriesDef.slugs.indexOf(entry.id) + 1,
+      total: seriesDef.slugs.length,
+      items: seriesDef.slugs.map((slug, i) => ({
+        order: i + 1,
+        href: `/${seriesDef.sectionId}/${slug}/`,
+        title:
+          all.find((p) => p.sectionId === seriesDef.sectionId && p.id === slug)
+            ?.title ?? slug,
+        current: slug === entry.id,
+      })),
+    }
+  : undefined;
+
+// Previous / next within the same section, ordered oldest → newest.
+const sectionPosts = all
+  .filter((p) => p.sectionId === section.id)
+  .sort((a, b) => a.pubDate.valueOf() - b.pubDate.valueOf());
+const idx = sectionPosts.findIndex((p) => p.id === entry.id);
+const olderPost = idx > 0 ? sectionPosts[idx - 1] : undefined;
+const newerPost =
+  idx >= 0 && idx < sectionPosts.length - 1 ? sectionPosts[idx + 1] : undefined;
+const toNav = (p?: (typeof sectionPosts)[number]) =>
+  p ? { href: p.href, title: p.title } : undefined;
 ---
 
 <Post
@@ -73,6 +104,10 @@ const related = candidates
   headings={headings}
   ogImage={`/og/${section.id}/${entry.id}.png`}
   related={related}
+  series={series}
+  olderPost={toNav(olderPost)}
+  newerPost={toNav(newerPost)}
+  cover={entry.data.cover}
 >
   <Content />
 </Post>
