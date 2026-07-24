@@ -11,7 +11,7 @@ Almost every infrastructure incident I have had to clean up traced back to the s
 
 One pattern fixed most of that class of problem for me: **treat configuration as data, and infrastructure code as a generic engine that consumes it.** The stacks stop knowing anything about "production" or "testing." They know how to *build a network* or *build a database*, and they read every environment-specific number from a validated config file.
 
-This post is the anchor for a small series on the practices that grew out of running this pattern in anger — it pairs closely with [safe rollouts for stateful infrastructure](/engineering/safe-rollouts-for-stateful-cloud-infrastructure/) and [path-filtered CI/CD for infra monorepos](/engineering/path-filtered-ci-cd-for-infra-monorepos/). None of it exposes anything internal; the whole point is that the *pattern* is the reusable part.
+This post is the anchor for a small series on the practices that grew out of running this pattern in anger — it pairs closely with [safe rollouts for stateful infrastructure](/engineering/safe-rollouts-for-stateful-cloud-infrastructure/) and [path-filtered CI/CD for infra monorepos](/engineering/path-filtered-ci-cd-for-infra-monorepos/). The whole point is that the *pattern* is the reusable part.
 
 ## The Core Rule
 
@@ -143,17 +143,6 @@ Even when time is tight, these are the ones that come back to bite:
 - Copy-pasted config with no schema validation.
 
 Every one of them reintroduces the exact drift the pattern exists to kill.
-
-## Writing About This Safely
-
-This whole series came out of real work, which raises the obvious question: how do you publish the lessons without publishing the topology? The checklist I use before any infrastructure write-up goes public:
-
-- Strip account IDs, tenant IDs, ARNs, OCIDs, and hostnames.
-- Replace exact CIDRs with illustrative examples unless they are already public.
-- Avoid provider-specific names that map back to your org's inventory.
-- Share the decision framework, never the deployment manifest.
-
-The reassuring part is that the *valuable* content — the patterns, the validation rules, the rollout mechanics — is exactly the content that carries no secrets. (The other posts in this series point back here rather than repeat the checklist.)
 
 ## Further Reading
 

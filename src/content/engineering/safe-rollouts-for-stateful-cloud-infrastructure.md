@@ -102,10 +102,6 @@ The point of the principles above is to make decisions consistent *under pressur
 
 It turns "is this scary?" from a gut call into a lookup — which is exactly what you want at 4pm on a Friday.
 
-## Writing About This Safely
-
-The transferable content here — rollout sequencing, risk classification, validation checklists, approval workflows — is all process, and process carries no secrets. What stays internal is the inventory: account and tenancy identifiers, production naming conventions, and topology details. The full anonymization checklist lives in the [config-as-data post](/engineering/config-as-data-for-infrastructure-repos/#writing-about-this-safely).
-
 ## Further Reading
 
 Authoritative references on the DR strategies and retention defaults above:

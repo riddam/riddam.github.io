@@ -116,10 +116,6 @@ Anything ambiguous here shows up later as a handoff nobody owns.
 
 Fix these before you scale up contributors, not after.
 
-## Writing About This Safely
-
-The delivery *pattern* — directory-to-pipeline mapping, gate criteria, stage sequencing — carries no secrets and is the genuinely useful part to share. What stays internal is the inventory: account numbers, private endpoint names, and real production topology diagrams. I keep the full anonymization checklist in the [config-as-data post](/engineering/config-as-data-for-infrastructure-repos/#writing-about-this-safely).
-
 ## Further Reading
 
 How the major CI systems implement path-based triggering:

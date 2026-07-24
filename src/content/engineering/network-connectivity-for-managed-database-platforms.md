@@ -121,10 +121,6 @@ Phase 2  apply routes in the producer network
 
 Make that barrier a poll, not a guessed sleep: wait until the peering actually reports *active*, then apply the routes. Treating peering creation and route updates as *separate* approvals also keeps the blast radius small — a bad route change can be rolled back without tearing down the peering underneath it.
 
-## Writing About This Safely
-
-Connectivity posts are easy to over-share, because the interesting details *are* the sensitive ones. Everything above is deliberately structural — decision criteria, ownership model, rollout ordering, troubleshooting heuristics. What never belongs in a public write-up: exact private CIDRs, account and tenant identifiers, internal DNS zones, and production routing-table inventory. I keep a fuller anonymization checklist in the [config-as-data post](/engineering/config-as-data-for-infrastructure-repos/#writing-about-this-safely).
-
 ## Further Reading
 
 Official documentation for the primitives behind these patterns:

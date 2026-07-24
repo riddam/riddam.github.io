@@ -38,16 +38,16 @@ Start by being ruthless about *why*. There are good reasons and expensive-cargo-
 
 ### What this looks like in practice
 
-One estate I've worked on is a deliberate best-of-breed split across four providers:
+A deliberate best-of-breed split might look like this — illustrative, not a prescription:
 
 | Workload | Cloud | Why there |
 |---|---|---|
 | Analytics | **GCP** | BigQuery and the data stack around it |
-| User identity | **Azure** | Entra ID — where the enterprise directory already lived |
-| Application infrastructure | **AWS** | The broadest service catalog for the app tier |
-| Primary database | **Oracle Cloud (OCI)** | The best home for the database workload |
+| Identity | **Azure** | where the enterprise directory already lives |
+| Application tier | **AWS** | the broadest service catalog for the app tier |
+| Primary database | **a managed-database provider** | placed where the engine runs best, not where the app happens to live |
 
-Four clouds, but not chaos: each was chosen because it was the best home for that specific job, and each workload stays coherent inside its own provider. That's the "best-of-breed" pattern working as intended — multi-cloud by deliberate selection, not by accident. The cost is that you now need *one* consistent way to provision and observe all four, which is the whole reason the IaC choice below matters so much.
+Several clouds, but not chaos: each workload is placed where it runs best, and each stays coherent inside its own provider. That's the "best-of-breed" pattern working as intended — multi-cloud by deliberate selection, not by accident. The cost is that you now need *one* consistent way to provision and observe all of them, which is the whole reason the IaC choice below matters so much.
 
 My default advice: **aim for "portfolio" and reach for the heavier patterns only when a concrete requirement forces you there.** Whatever you pick, the thing that keeps multi-cloud from rotting into chaos is a single, consistent way to define and change infrastructure — which is where IaC earns its keep.
 
@@ -78,12 +78,12 @@ Both still speak **HCL**, share the state format, and have the deepest provider 
 
 ## Part 4 — Pulumi: infrastructure in a language you already know
 
-Pulumi takes the other road. Instead of a DSL, you define infrastructure in **general-purpose languages** — TypeScript, Python, Go, C#, Java, or YAML — against the same underlying cloud providers (including GCP, Azure, AWS, and OCI, so it genuinely spans a four-cloud estate). It's **Apache-2.0 open source**. State can live in **Pulumi Cloud** (managed, versioned, locked, with per-value secret encryption), or in a **self-managed backend** — in my case an **S3 bucket for state**, with **AWS Secrets Manager** holding the secrets. You're not forced onto a hosted service to use it.
+Pulumi takes the other road. Instead of a DSL, you define infrastructure in **general-purpose languages** — TypeScript, Python, Go, C#, Java, or YAML — against the same underlying cloud providers (GCP, Azure, AWS, and others), so it genuinely spans a multi-cloud estate. It's **Apache-2.0 open source**. State can live in **Pulumi Cloud** (managed, versioned, locked, with per-value secret encryption), or in a **self-managed backend** — for example an object-storage bucket for state, with a cloud secrets manager holding the secrets. You're not forced onto a hosted service to use it.
 
 What that buys you:
 
 - **Real language constructs** — loops, conditionals, functions, classes, types — without HCL's expression gymnastics.
-- **Lower onboarding cost.** Engineers who already write Python or TypeScript can read, understand, and contribute to infrastructure without first learning a separate DSL. In a four-cloud estate that's a genuine force-multiplier: the app and data engineers who need to touch infra can *understand the setup* because it's written in a language they already think in, so onboarding someone onto the infra is a matter of hours, not weeks spent learning HCL.
+- **Lower onboarding cost.** Engineers who already write Python or TypeScript can read, understand, and contribute to infrastructure without first learning a separate DSL. In a multi-cloud estate that's a genuine force-multiplier: the app and data engineers who need to touch infra can *understand the setup* because it's written in a language they already think in, so onboarding someone onto the infra is a matter of hours, not weeks spent learning HCL.
 - **Testability** — you can unit-test infrastructure with the frameworks you already use (pytest, Jest, Go's testing), mock provider calls, and run integration tests.
 - **Embedding IaC in software** — the **Automation API** lets you drive Pulumi programmatically, which is why it's a strong fit for building an internal developer platform.
 - **Secrets and config** — **Pulumi ESC** (Environments, Secrets, Configuration), GA since 2025, centralizes secrets across AWS Secrets Manager, Vault, Azure Key Vault, GCP Secret Manager, and more, with logged access.
@@ -115,7 +115,7 @@ A head-to-head, condensed:
 | Secrets | Vault / cloud stores; OpenTofu adds state encryption | ESC + per-value state encryption by default |
 | Best fit | Ops/platform teams standardizing on config | App-dev teams, platform engineering, IDPs |
 
-> **What I actually run:** across the four-cloud estate above, the IaC is **Pulumi in Python and TypeScript**, with **state in an S3 backend** and **secrets in AWS Secrets Manager**. Real languages let the data and application engineers contribute to infrastructure in the languages they already use — onboarding a developer onto the infra takes hours rather than weeks of learning a DSL, and they can genuinely *understand* how the setup works because it's written in a language they know. One tool spans GCP, Azure, AWS, and OCI without four dialects to context-switch between. It's not the only right answer — but for a team that lives in code, it's the one that stuck.
+> **Where I land:** for a multi-cloud estate whose team lives in application code, I reach for **Pulumi in a general-purpose language** (Python or TypeScript), with a **self-managed state backend** and a **dedicated secrets manager**. Real languages let the data and application engineers contribute to infrastructure in the languages they already use — onboarding a developer onto the infra takes hours rather than weeks of learning a DSL, and they can genuinely *understand* how the setup works because it's written in a language they know. One tool spans every provider without a separate dialect per cloud to context-switch between. It's not the only right answer — but for a team that lives in code, it's the one that tends to stick.
 
 ## Part 6 — The part that matters more than the tool
 
@@ -126,25 +126,25 @@ Here's what I'd tell anyone going multi-cloud: **the tool is the smallest decisi
 - **Policy-as-code.** Sentinel (Terraform) or OPA/Conftest (anywhere) to enforce least-privilege, tagging, and region rules *before* apply — across every provider.
 - **Secrets, centralized.** ESC or Vault, never in state you can read, never in the repo.
 - **CI/CD with plan-review gates.** Every change is a reviewed diff; nobody applies from a laptop.
-- **Observability as code, and centralized.** Telemetry can't live in four separate cloud consoles. Standardize on one observability plane — I use **Datadog** — and manage its monitors, dashboards, and SLOs *as code* too. Datadog ships both a **Pulumi provider and a Terraform provider**, so the same review-and-apply flow that provisions the infrastructure also provisions what watches it, across every cloud.
+- **Observability as code, and centralized.** Telemetry can't live in separate cloud consoles per provider. Standardize on one observability plane — Datadog, for instance — and manage its monitors, dashboards, and SLOs *as code* too. The major observability platforms ship both a **Pulumi provider and a Terraform provider**, so the same review-and-apply flow that provisions the infrastructure also provisions what watches it, across every cloud.
 
 Get those right and Terraform, OpenTofu, and Pulumi all work. Get them wrong and no tool saves you.
 
 ## Part 7 — From image to running infra: the delivery pipeline
 
-Choosing the IaC tool is only half of "automation." The other half is how images get built and how changes actually ship — and in a four-cloud estate, that pipeline is what keeps things reproducible instead of hand-crafted.
+Choosing the IaC tool is only half of "automation." The other half is how images get built and how changes actually ship — and in a multi-cloud estate, that pipeline is what keeps things reproducible instead of hand-crafted.
 
-**Immutable images, built once, deployed as versions.** Rather than mutating running servers, bake versioned images and replace instances wholesale. The estate above builds those images two ways:
+**Immutable images, built once, deployed as versions.** Rather than mutating running servers, bake versioned images and replace instances wholesale. Two common ways to build those images:
 
-- **Packer** for golden images across clouds — one set of templates produces the AWS AMI, the Azure image, the GCP image, and the OCI custom image from a shared definition, which is exactly the leverage you want when you support four providers. (Worth knowing: Packer, like Terraform, is now BUSL-licensed — the same license consideration applies.)
+- **Packer** for golden images across clouds — one set of templates produces the AMI, the Azure image, the GCP image, and so on from a shared definition, which is exactly the leverage you want when you support several providers. (Worth knowing: Packer, like Terraform, is now BUSL-licensed — the same license consideration applies.)
 - **Cloud-native image builders** (EC2 Image Builder, Azure VM Image Builder, and equivalents) where a provider-managed pipeline fits a workload better than a portable one.
-- **Salt** for configuration — the "what's actually inside the image" layer: packages, hardening, and config applied at build time, so a running instance is fully defined rather than hand-tweaked after boot.
+- **A configuration-management tool** (Salt, Ansible, or similar) for the "what's actually inside the image" layer: packages, hardening, and config applied at build time, so a running instance is fully defined rather than hand-tweaked after boot.
 
-That gives a clean separation of stages: **build the image (Packer / image builder + Salt) → version it → let Pulumi reference the image ID → provision and deploy.** Each stage is independently versioned and reviewable, which is what makes a change traceable across four clouds.
+That gives a clean separation of stages: **build the image (Packer / image builder + config management) → version it → let the IaC tool reference the image ID → provision and deploy.** Each stage is independently versioned and reviewable, which is what makes a change traceable across clouds.
 
-**CI/CD ties it together.** The Pulumi runs live in a mix of **on-prem TeamCity and GitHub Actions** — on-prem runners earn their place for pipelines that need to sit inside the network or reach systems that shouldn't touch the public internet; GitHub Actions handles the rest. Either way the flow is the same: **`pulumi preview` on the pull request** (the reviewed diff), **`pulumi up` on merge**, pulling secrets from AWS Secrets Manager and state from the S3 backend, with policy checks gating the apply. Image builds run on the same backbone, publishing new versioned images that later infra changes pick up.
+**CI/CD ties it together.** The IaC runs live in CI — often a mix of self-hosted runners and a hosted CI service. Self-hosted runners earn their place for pipelines that need to sit inside the network or reach systems that shouldn't touch the public internet; the hosted service handles the rest. Either way the flow is the same: **`pulumi preview` (or `terraform plan`) on the pull request** — the reviewed diff — and **apply on merge**, pulling secrets from a secrets manager and state from the backend, with policy checks gating the apply. Image builds run on the same backbone, publishing new versioned images that later infra changes pick up.
 
-The through-line: **image build, configuration, and provisioning are three distinct, versioned, reviewable stages** — not one big manual dance. That discipline is what lets a four-cloud, multi-language estate stay reproducible.
+The through-line: **image build, configuration, and provisioning are three distinct, versioned, reviewable stages** — not one big manual dance. That discipline is what lets a multi-cloud, multi-language estate stay reproducible.
 
 ## Final thoughts
 
