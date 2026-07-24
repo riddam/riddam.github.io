@@ -22,6 +22,8 @@ const posts = entries
     description: entry.data.description,
     pubDate: entry.data.pubDate,
     minutesRead: readingStats(entry.body ?? '').minutes,
+    cover: entry.data.cover,
+    sectionId: section.id,
   }))
   .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
 ---

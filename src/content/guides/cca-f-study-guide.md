@@ -3,7 +3,7 @@ title: "CCAR-F: Claude Certified Architect Foundations — 2026 Blueprint"
 description: "An exam-day reference for the CCAR-F certification covering all five domains, the six exam scenarios, anti-patterns, trade-offs, and scenario triggers."
 pubDate: 2026-07-04
 tags: ["claude", "certification", "study-guide", "ai-architecture"]
-cover: code
+cover: agent
 ---
 
 *Everything I'd want a teammate to walk into the Claude Certified Architect exam knowing — the five domains, the scenarios that trip people up, and the reasoning behind each answer.*

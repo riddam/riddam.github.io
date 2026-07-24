@@ -23,6 +23,12 @@ const postSchema = z.object({
       'personas',
       'pyramid',
       'steps',
+      'assist',
+      'training',
+      'speed',
+      'agent',
+      'scales',
+      'cycle',
     ])
     .optional(),
 });

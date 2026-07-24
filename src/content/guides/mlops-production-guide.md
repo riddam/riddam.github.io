@@ -3,7 +3,7 @@ title: "MLOps & AI Production Operations: The 2026 Guide"
 description: "An end-to-end guide to CI/CD and production operations for AI systems, covering the MLOps pipeline, tooling, cloud infrastructure, deployment and release patterns, monitoring, drift, LLMOps, cost optimization, and governance."
 pubDate: 2026-06-04
 tags: ["mlops", "ci-cd", "llmops", "cloud-infrastructure"]
-cover: pipeline
+cover: cycle
 ---
 
 *How I think about taking AI from a working notebook to something that runs reliably in production — the full path from commit to monitoring, and the decisions that matter along the way.*

@@ -1,11 +1,37 @@
 ---
+import Cover from './Cover.astro';
+
+type Motif =
+  | 'config'
+  | 'network'
+  | 'pipeline'
+  | 'rollout'
+  | 'cloud'
+  | 'ai'
+  | 'code'
+  | 'book'
+  | 'leadership'
+  | 'personas'
+  | 'pyramid'
+  | 'steps'
+  | 'assist'
+  | 'training'
+  | 'speed'
+  | 'agent'
+  | 'scales'
+  | 'cycle';
+
+type SectionId = 'engineering' | 'book-notes' | 'leadership' | 'guides';
+
 interface PostItem {
   href: string;
   title: string;
   description: string;
   pubDate: Date;
   sectionLabel?: string;
+  sectionId?: SectionId;
   minutesRead?: number;
+  cover?: Motif;
 }
 
 interface Props {
@@ -21,26 +47,33 @@ const formatDate = (d: Date) =>
 <ul class="post-list">
   {
     posts.map((post) => (
-      <li>
-        <p class="list-meta">
-          <time datetime={post.pubDate.toISOString()}>{formatDate(post.pubDate)}</time>
-          {post.sectionLabel && (
-            <>
-              <span>·</span>
-              <span class="section-badge">{post.sectionLabel}</span>
-            </>
-          )}
-          {post.minutesRead && (
-            <>
-              <span>·</span>
-              <span>{post.minutesRead} min read</span>
-            </>
-          )}
-        </p>
-        <div class="post-title">
-          <a href={post.href}>{post.title}</a>
+      <li class:list={{ 'has-thumb': post.cover }}>
+        {post.cover && (
+          <a class="post-thumb-link" href={post.href} tabindex="-1" aria-hidden="true">
+            <Cover motif={post.cover} tint={post.sectionId} class="post-thumb" />
+          </a>
+        )}
+        <div class="post-list-body">
+          <p class="list-meta">
+            <time datetime={post.pubDate.toISOString()}>{formatDate(post.pubDate)}</time>
+            {post.sectionLabel && (
+              <>
+                <span>·</span>
+                <span class="section-badge">{post.sectionLabel}</span>
+              </>
+            )}
+            {post.minutesRead && (
+              <>
+                <span>·</span>
+                <span>{post.minutesRead} min read</span>
+              </>
+            )}
+          </p>
+          <div class="post-title">
+            <a href={post.href}>{post.title}</a>
+          </div>
+          <p class="excerpt">{post.description}</p>
         </div>
-        <p class="excerpt">{post.description}</p>
       </li>
     ))
   }

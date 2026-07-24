@@ -16,8 +16,10 @@ export async function getStaticPaths() {
         description: e.data.description,
         pubDate: e.data.pubDate,
         sectionLabel: s.label,
+        sectionId: s.id,
         tags: e.data.tags ?? [],
         minutesRead: readingStats(e.body ?? '').minutes,
+        cover: e.data.cover,
       });
     }
   }

@@ -68,6 +68,26 @@
   --shadow-lift: 0 6px 24px rgba(0, 0, 0, 0.5);
 }
 
+/* ---------- Cover art section tints ----------
+   Each section recolors its cover art via --cover-accent (see Cover.astro).
+   All four stay within the lavender family — a gentle indigo→violet→orchid
+   spread — so the palette reads as one, motif does the heavy lifting. */
+.cover.tint-engineering { --cover-accent: #6d45c7; } /* violet (base) */
+.cover.tint-guides      { --cover-accent: #5348c9; } /* indigo-violet */
+.cover.tint-book-notes  { --cover-accent: #9850c5; } /* orchid-violet */
+.cover.tint-leadership  { --cover-accent: #7d68cf; } /* soft periwinkle */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .cover.tint-engineering { --cover-accent: #b598f2; }
+  :root:not([data-theme='light']) .cover.tint-guides      { --cover-accent: #a29cf4; }
+  :root:not([data-theme='light']) .cover.tint-book-notes  { --cover-accent: #cf9bea; }
+  :root:not([data-theme='light']) .cover.tint-leadership  { --cover-accent: #bcb0f3; }
+}
+:root[data-theme='dark'] .cover.tint-engineering { --cover-accent: #b598f2; }
+:root[data-theme='dark'] .cover.tint-guides      { --cover-accent: #a29cf4; }
+:root[data-theme='dark'] .cover.tint-book-notes  { --cover-accent: #cf9bea; }
+:root[data-theme='dark'] .cover.tint-leadership  { --cover-accent: #bcb0f3; }
+
 * {
   box-sizing: border-box;
 }
@@ -614,6 +634,40 @@ a.section-badge:hover { opacity: 0.8; }
 }
 .post-list li:last-child { border-bottom: none; }
 
+/* Rows with cover art: thumbnail beside the text. */
+.post-list li.has-thumb {
+  display: grid;
+  grid-template-columns: 12.5rem 1fr;
+  gap: 1.4rem;
+  align-items: center;
+}
+.post-list .post-thumb-link {
+  display: block;
+  line-height: 0;
+}
+/* Override Cover's banner sizing for the compact list thumbnail. */
+.post-list .post-thumb {
+  aspect-ratio: 16 / 10;
+  box-shadow: none;
+  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+.post-list li.has-thumb:hover .post-thumb {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift);
+}
+.post-list .post-list-body { min-width: 0; }
+
+@media (max-width: 34rem) {
+  .post-list li.has-thumb {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+  }
+  .post-list .post-thumb {
+    aspect-ratio: 1200 / 380;
+  }
+}
+
 .post-list .post-title {
   font-family: var(--font-serif);
   font-size: 1.4rem;
@@ -708,15 +762,21 @@ a.section-badge:hover { opacity: 0.8; }
 
 .section-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  /* Exactly two columns → the four sections form a tidy 2×2 block instead of
+     an auto-fit layout that orphans and stretches the fourth card. */
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.9rem;
   margin: 0.75rem 0 1rem;
   padding: 0;
   list-style: none;
 }
+@media (max-width: 34rem) {
+  .section-grid { grid-template-columns: 1fr; }
+}
 
 .section-card {
-  display: block;
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 1.1rem 1.25rem;

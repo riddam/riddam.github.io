@@ -38,6 +38,7 @@ for (const s of SECTIONS) {
       tags: e.data.tags ?? [],
       sectionLabel: s.label,
       minutesRead: readingStats(e.body ?? '').minutes,
+      cover: e.data.cover,
     });
   }
 }

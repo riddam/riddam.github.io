@@ -19,6 +19,26 @@ interface RelatedPost {
   description: string;
   pubDate: Date;
   sectionLabel?: string;
+  sectionId?: 'engineering' | 'book-notes' | 'leadership' | 'guides';
+  cover?:
+    | 'config'
+    | 'network'
+    | 'pipeline'
+    | 'rollout'
+    | 'cloud'
+    | 'ai'
+    | 'code'
+    | 'book'
+    | 'leadership'
+    | 'personas'
+    | 'pyramid'
+    | 'steps'
+    | 'assist'
+    | 'training'
+    | 'speed'
+    | 'agent'
+    | 'scales'
+    | 'cycle';
 }
 
 interface SeriesNav {
@@ -55,7 +75,13 @@ interface Props {
     | 'leadership'
     | 'personas'
     | 'pyramid'
-    | 'steps';
+    | 'steps'
+    | 'assist'
+    | 'training'
+    | 'speed'
+    | 'agent'
+    | 'scales'
+    | 'cycle';
 }
 
 const {
@@ -126,7 +152,7 @@ const liShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encode
         </div>
       </aside>
       <div class="post-header">
-        {cover && <Cover motif={cover} class="post-cover" />}
+        {cover && <Cover motif={cover} tint={section.id} class="post-cover" />}
         <a href={`/${section.id}/`} class="section-badge">{section.label}</a>
         <h1>{title}</h1>
         <p class="post-description">{description}</p>

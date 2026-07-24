@@ -3,7 +3,7 @@ title: "Making AI Coding Assistants Reliable: My Playbook"
 description: "The working discipline I've settled on for getting dependable, secure, low-regret results from AI coding assistants — prompting frameworks, model selection, context hygiene, and safety rules, learned the hard way."
 pubDate: 2026-06-04
 tags: ["ai-assisted-coding", "github-copilot", "prompting", "developer-productivity"]
-cover: ai
+cover: assist
 ---
 
 Over the last couple of years I've gone from occasionally accepting an autocomplete to running multi-file agents against real codebases every day. Along the way these tools have saved me genuine hours — and, on the days I got sloppy, handed me confident, subtly wrong code that cost me more hours than they saved. This post is the working discipline I've settled on to get the upside without the regret. It's the guide I'd give a version of myself two years ago.
