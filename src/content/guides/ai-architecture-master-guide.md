@@ -3,6 +3,7 @@ title: "AI Architecture: A Practitioner's Field Guide (2026)"
 description: "A practitioner's blueprint covering every layer of modern AI systems — foundation model selection, RAG, fine-tuning, agentic patterns, LLMOps, safety, cloud platforms, and the trade-offs behind each decision."
 pubDate: 2026-07-11
 tags: ["ai-architecture", "llm", "rag", "agents"]
+cover: ai
 ---
 
 *This is the guide I wish I'd had when I first started designing AI systems: every layer, pattern, and trade-off in one place. I keep it current and reach for it whenever I'm helping someone architect something new.*
@@ -91,17 +92,17 @@ The single most important strategic decision: **how do you make a general model 
 | Few-shot examples | Show 2–5 input/output pairs to anchor behavior | Inconsistent output; need specific tone/format/length |
 | XML/structured tags | Wrap context in tags (`<document>`, `<instructions>`) | Complex prompts with multiple context sources |
 | Chain-of-thought | Ask model to reason step-by-step before answering | Complex reasoning, math, multi-step logic |
-| Prefilled response | Start the assistant's response to steer format | Force JSON, force a specific opening structure |
+| Prefilled response *(legacy)* | Start the assistant's response to steer its format | Older models only — most 2026 frontier models reject assistant prefill; use structured outputs instead |
 | Self-critique / reflection | Model evaluates its own output, then revises | High-quality generation; catch hallucinations |
 
 ### The PRECISE framework (community mnemonic)
 
-**P**ersona · **R**ole · **E**xplicit instructions · **C**ontext · **I**nstructions · **S**teps · **E**xamples — a community mnemonic (not an official Anthropic framework) for structuring system prompts. It lines up well with Anthropic's actual published guidance: give clear and direct instructions, use multishot examples, wrap context in XML tags, let the model reason with chain-of-thought, and prefill the response to steer format. The **Examples** component is the single most impactful lever: without examples, the model guesses format and tone from pretraining.
+**P**ersona · **R**ole · **E**xplicit instructions · **C**ontext · **I**nstructions · **S**teps · **E**xamples — a community mnemonic (not an official Anthropic framework) for structuring system prompts. It lines up well with Anthropic's actual published guidance: give clear and direct instructions, use multishot examples, wrap context in XML tags, let the model reason with chain-of-thought, and constrain the output with a schema. (Prefilling the assistant's reply to force a format was a common older trick, but most current frontier models reject a prefilled turn — reach for structured outputs instead.) The **Examples** component is the single most impactful lever: without examples, the model guesses format and tone from pretraining.
 
 ### Structured output patterns
 
 - **Tool-use extraction:** define a "tool" whose input schema matches your desired JSON structure, force Claude to "call" it → schema-validated output. Production-grade.
-- **JSON mode:** some APIs support `response_format: { type: "json_object" }` — simpler but less validation.
+- **Schema-constrained output:** point the model at a full JSON Schema the response must satisfy (a `response_format` / `output_config.format` field). Guarantees parseable, schema-valid output — the modern replacement for prefilling a `{` to coax JSON. Older "JSON mode" only guarantees valid-JSON-*shaped* text, not *your* schema.
 - **Validation-retry loop:** parse output → validate against schema → if invalid, send error back to model with the original input → retry (cap at 2–3).
 
 > **Trade-off — strict schema vs free-form:** **Structured (tool_use / JSON Schema):** deterministic, parseable, production-safe — but constrains the model. **Free-form text:** more natural, flexible — but requires post-processing and can't be reliably parsed. Default to structured for any machine-consumed output.
@@ -254,6 +255,19 @@ An **agent** is an LLM that operates in a loop — observe, think, act, repeat �
 - `stop_reason === "tool_use"` → execute tools → loop back.
 - `stop_reason === "end_turn"` → terminate. This is the **only reliable** termination signal.
 - Every iteration: append the assistant response and tool results to conversation history, so the model can reason about the cumulative state.
+
+### What's new in agent loops (2026)
+
+That hand-written loop still describes what happens under the hood, but in 2026 you rarely write it yourself. Four shifts changed how loops are built:
+
+- **Managed loop runners.** SDKs now ship a "tool runner" that owns the observe → act → loop cycle: you supply the tool functions, it calls the model, executes tools, feeds results back, and stops on `end_turn`. You keep per-iteration hooks — approval gates, logging, result rewriting — without hand-rolling control flow.
+- **Budget-aware loops.** Instead of an unbounded loop, hand the agent a **token budget** for the whole task. The model sees a running countdown and paces itself — prioritizing, then wrapping up gracefully — rather than being cut off mid-thought. This is distinct from a hard per-response cap the model can't see.
+- **Context management inside the loop.** Long loops overflow the context window. Two complementary tools keep them alive: **context editing** prunes stale tool results and reasoning from the transcript, and **compaction** summarizes earlier turns into a compact block. Together they let an agent run for hours without hitting the limit.
+- **Server-managed agents.** The newest option removes the loop from your code entirely: the provider runs the agent loop *and* hosts a sandboxed container where the tools execute (bash, files, code). You define the agent once, stream events, and answer any custom-tool calls — the right fit for long-running, scheduled, or stateful agents.
+
+One loop mechanic worth knowing regardless: when a **server-side tool** (web search, code execution) runs many internal iterations, a turn can stop with a *pause* signal instead of finishing. That is a checkpoint, not a termination — you resume by sending the conversation back unchanged.
+
+> **Rule of thumb:** reach for the managed runner first; add budgets and context management when loops get long; graduate to a server-managed agent only when you need hosted execution or persistence.
 
 ### Agent frameworks (2026)
 

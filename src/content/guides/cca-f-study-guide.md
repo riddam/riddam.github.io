@@ -3,6 +3,7 @@ title: "CCAR-F: Claude Certified Architect Foundations — 2026 Blueprint"
 description: "An exam-day reference for the CCAR-F certification covering all five domains, the six exam scenarios, anti-patterns, trade-offs, and scenario triggers."
 pubDate: 2026-07-04
 tags: ["claude", "certification", "study-guide", "ai-architecture"]
+cover: code
 ---
 
 *Everything I'd want a teammate to walk into the Claude Certified Architect exam knowing — the five domains, the scenarios that trip people up, and the reasoning behind each answer.*
@@ -80,6 +81,7 @@ The agentic loop lifecycle:
 
 - `stop_reason === "tool_use"` → Claude wants to call tools → execute them → append results → loop back.
 - `stop_reason === "end_turn"` → Claude is finished → **terminate the loop**.
+- `stop_reason === "pause_turn"` → a long **server-side-tool** turn (web search, code execution) checkpointed instead of finishing → re-send the conversation unchanged to resume. It's a checkpoint, not a termination — don't treat it as "done."
 - The `stop_reason` field is a **structured API signal** — the *only* reliable termination mechanism.
 
 > **Anti-patterns (exam favorites):**
@@ -246,7 +248,7 @@ A community mnemonic — not official Anthropic terminology — for a structured
 - **Few-shot prompting:** 2–3 input/output examples to anchor behavior. Place them after the instructions, before the actual task.
 - **XML tags** for context structure: `<document>`, `<instructions>`, `<example>` — Claude respects these boundaries for parsing and retrieval.
 - **Chain-of-thought / extended thinking:** for complex reasoning, let Claude think step-by-step before producing the final answer.
-- **Prefilled assistant responses:** start the assistant turn with a partial response to steer format/structure.
+- **Prefilled assistant responses:** start the assistant turn with a partial response to steer format/structure. *Note: most current frontier Claude models (Opus 4.6+, Sonnet 4.6+, Fable 5) reject a prefilled assistant turn — prefer schema-constrained structured outputs there.*
 
 ### Structured output via tool_use
 
@@ -320,7 +322,7 @@ The lightest domain by weight but consistently underestimated. These questions a
 
 - **Messages API:** the core endpoint. Send a list of messages (system, user, assistant), receive a response with `content` blocks and `stop_reason`.
 - **Streaming:** `stream: true` for real-time token delivery. Use for user-facing responses.
-- **Extended thinking:** `thinking` blocks that let Claude reason before responding. Useful for complex tasks; costs extra tokens.
+- **Extended thinking:** `thinking` blocks that let Claude reason before responding. On current models this is **adaptive** (`thinking: {type: "adaptive"}` plus an `effort` level) rather than a fixed token budget. Useful for complex tasks; costs extra tokens.
 - **System / Operator / User hierarchy:** operator instructions (set by the app developer) can restrict what user prompts can override. Users can't elevate their own permissions beyond what the operator allows.
 
 ## Anti-Pattern Master List
