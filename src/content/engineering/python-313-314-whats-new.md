@@ -3,6 +3,7 @@ title: "What's Actually New in Python 3.13 and 3.14"
 description: "A plain-language tour of the two most consequential Python releases in years — free-threading, JIT compilation, subinterpreters, t-strings, deferred annotations, and what to do about them."
 pubDate: 2026-01-10
 tags: ["python", "python-3-14", "free-threading", "release-notes"]
+cover: code
 ---
 
 Python 3.13 (October 2024) and 3.14 (October 2025) are the two most consequential releases the language has had in years. Between them, they touch the thing people have complained about for two decades — the Global Interpreter Lock — and quietly modernize half of the daily developer experience: the REPL, error messages, type annotations, string templating, debugging, and compression.

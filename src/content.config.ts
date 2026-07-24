@@ -8,6 +8,23 @@ const postSchema = z.object({
   updatedDate: z.coerce.date().optional(),
   tags: z.array(z.string()).default([]),
   draft: z.boolean().default(false),
+  /** Abstract cover-art motif (see src/components/Cover.astro). Optional. */
+  cover: z
+    .enum([
+      'config',
+      'network',
+      'pipeline',
+      'rollout',
+      'cloud',
+      'ai',
+      'code',
+      'book',
+      'leadership',
+      'personas',
+      'pyramid',
+      'steps',
+    ])
+    .optional(),
 });
 
 const makeCollection = (name: string) =>

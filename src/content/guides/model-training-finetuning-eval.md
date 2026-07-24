@@ -3,6 +3,7 @@ title: "Model Training, Fine-Tuning & Evaluation — 2026 Guide"
 description: "A practical 2026 reference covering fine-tuning techniques, alignment methods, training frameworks, data curation, distributed training, evaluation harnesses, model optimization, and the open-weight ecosystem."
 pubDate: 2026-07-11
 tags: ["fine-tuning", "llm-training", "evaluation", "machine-learning"]
+cover: ai
 ---
 
 *A practical map of the model training and fine-tuning landscape — the techniques, tools, and trade-offs I reach for, minus the hype.*

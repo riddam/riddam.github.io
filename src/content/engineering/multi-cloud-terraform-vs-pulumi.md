@@ -3,6 +3,7 @@ title: "Multi-Cloud, Done Deliberately: Strategy, and Choosing Between Terraform
 description: "When multi-cloud is worth it (and when it isn't), and how to pick the tool that automates it — a practitioner's take on Terraform, OpenTofu, and Pulumi in 2026."
 pubDate: 2026-07-17
 tags: ["multi-cloud", "terraform", "pulumi", "infrastructure-as-code"]
+cover: cloud
 draft: false
 ---
 
