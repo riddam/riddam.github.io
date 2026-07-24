@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import PostList from '../components/PostList.astro';
+import Cover from '../components/Cover.astro';
 import { SITE_DESCRIPTION, SECTIONS } from '../consts';
 import { readingStats } from '../utils/reading-time';
 
@@ -16,6 +17,7 @@ const posts = (
         pubDate: entry.data.pubDate,
         sectionLabel: section.label,
         minutesRead: readingStats(entry.body ?? '').minutes,
+        cover: entry.data.cover,
       }));
     })
   )
@@ -34,8 +36,8 @@ const formatDate = (d: Date) =>
     <h1>Hi, I'm Riddam.</h1>
     <p>
       Staff engineer in Amsterdam, working in cloud and application architecture.
-      I build systems, read books worth remembering, think about leading engineers —
-      and write it all down here.
+      I build systems that hold up in production, read books worth remembering, and
+      think about how to lead engineers well — and I write it all down here.
     </p>
   </div>
 
@@ -44,6 +46,7 @@ const formatDate = (d: Date) =>
       <>
         <p class="home-heading">Latest</p>
         <a class="featured" href={featured.href}>
+          {featured.cover && <Cover motif={featured.cover} class="featured-cover" />}
           <p class="list-meta">
             <time datetime={featured.pubDate.toISOString()}>
               {formatDate(featured.pubDate)}
@@ -87,3 +90,9 @@ const formatDate = (d: Date) =>
     }
   </ul>
 </Base>
+
+<style>
+  .featured-cover {
+    margin-bottom: 1.1rem;
+  }
+</style>

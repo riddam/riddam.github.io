@@ -3,7 +3,7 @@ export const SITE_DESCRIPTION =
   'Cloud and application architecture, AI, books, and leadership — field notes from a staff engineer, written to share.';
 export const GITHUB_URL = 'https://github.com/riddam';
 export const LINKEDIN_URL = 'https://www.linkedin.com/in/riddam/';
-export const AUTHOR_ROLE = 'Staff Engineer at Coolblue';
+export const AUTHOR_ROLE = 'Staff Engineer';
 export const AUTHOR_LOCATION = 'Amsterdam';
 export const AUTHOR_BLURB =
   "I write about cloud and application architecture, AI, and leading engineers.";
@@ -13,6 +13,26 @@ export interface Section {
   label: string;
   description: string;
 }
+
+export interface Series {
+  title: string;
+  sectionId: Section['id'];
+  /** Post slugs in reading order. */
+  slugs: string[];
+}
+
+export const SERIES: Series[] = [
+  {
+    title: 'Running stateful cloud infrastructure',
+    sectionId: 'engineering',
+    slugs: [
+      'config-as-data-for-infrastructure-repos',
+      'path-filtered-ci-cd-for-infra-monorepos',
+      'network-connectivity-for-managed-database-platforms',
+      'safe-rollouts-for-stateful-cloud-infrastructure',
+    ],
+  },
+];
 
 export const SECTIONS: Section[] = [
   {
