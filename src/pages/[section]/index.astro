@@ -27,7 +27,50 @@ const posts = entries
 ---
 
 <Base title={section.label} description={section.description}>
-  <h1>{section.label}</h1>
+  <div class="section-head">
+    <h1>{section.label}</h1>
+    <a class="section-rss" href={`/${section.id}/rss.xml`} aria-label={`Subscribe to the ${section.label} RSS feed`}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+      <span>RSS</span>
+    </a>
+  </div>
   <p class="muted">{section.description}</p>
   {posts.length > 0 ? <PostList posts={posts} /> : <p>Nothing here yet — coming soon.</p>}
 </Base>
+
+<style>
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .section-head h1 {
+    margin-bottom: 0;
+  }
+  .section-rss {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.25rem 0.7rem;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .section-rss:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .section-rss svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+</style>
