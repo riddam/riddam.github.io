@@ -18,6 +18,16 @@ const isActive = (href: string) =>
         ))
       }
       <a href="/about/" class:list={[{ active: isActive('/about') }]}>About</a>
+      <a
+        href="/search/"
+        class:list={['search-link', { active: isActive('/search') }]}
+        aria-label="Search"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <path d="M21 21l-4.3-4.3" />
+        </svg>
+      </a>
       <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle theme">
         <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
@@ -75,5 +85,13 @@ const isActive = (href: string) =>
   }
   .links a:hover {
     color: var(--accent);
+  }
+  .search-link {
+    display: inline-flex;
+    align-items: center;
+  }
+  .search-link svg {
+    width: 1.05rem;
+    height: 1.05rem;
   }
 </style>

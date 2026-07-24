@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Search" description="Search the writing on this site.">
+  <h1>Search</h1>
+  <p class="muted">
+    Find posts across engineering, playbooks, book notes, and leadership.
+  </p>
+
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  <div id="search" class="pf"></div>
+  <noscript><p class="muted">Search requires JavaScript.</p></noscript>
+</Base>
+
+<script is:inline src="/pagefind/pagefind-ui.js"></script>
+<script is:inline>
+  window.addEventListener('DOMContentLoaded', () => {
+    const el = document.getElementById('search');
+    if (window.PagefindUI) {
+      new window.PagefindUI({
+        element: '#search',
+        showSubResults: true,
+        showImages: false,
+        pageSize: 8,
+      });
+    } else if (el) {
+      // The index only exists after a production build, not in `astro dev`.
+      el.innerHTML =
+        '<p class="muted">The search index is generated at build time. Run <code>npm run build &amp;&amp; npm run preview</code> to try it locally.</p>';
+    }
+  });
+</script>
+
+<style is:global>
+  /* Theme the Pagefind UI with the site's lavender tokens. */
+  .pf {
+    --pagefind-ui-scale: 1;
+    --pagefind-ui-primary: var(--accent);
+    --pagefind-ui-text: var(--text);
+    --pagefind-ui-background: var(--bg-elev);
+    --pagefind-ui-border: var(--border);
+    --pagefind-ui-tag: var(--surface);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: var(--radius);
+    --pagefind-ui-font: var(--font-sans);
+    margin-top: 1.5rem;
+  }
+  .pf .pagefind-ui__result-title a {
+    color: var(--text);
+  }
+  .pf .pagefind-ui__result-title a:hover {
+    color: var(--accent);
+  }
+</style>
