@@ -38,7 +38,6 @@ const person = {
   '@type': 'Person',
   name: SITE_TITLE,
   jobTitle: AUTHOR_ROLE,
-  worksFor: { '@type': 'Organization', name: 'Coolblue' },
   url: Astro.site?.href,
   sameAs: [LINKEDIN_URL, GITHUB_URL],
 };
@@ -100,7 +99,7 @@ const jsonLd = article ? [articleLd, breadcrumbLd].filter(Boolean) : websiteLd;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" id="meta-theme-color" content="#faf6ee" />
+    <meta name="theme-color" id="meta-theme-color" content="#f7f5fc" />
     <script is:inline>
       // Apply saved theme before paint to avoid a flash, and match the mobile
       // browser chrome (theme-color) to the effective theme.
@@ -114,7 +113,7 @@ const jsonLd = article ? [articleLd, breadcrumbLd].filter(Boolean) : websiteLd;
             : 'light';
       document
         .getElementById('meta-theme-color')
-        ?.setAttribute('content', effective === 'dark' ? '#16130e' : '#faf6ee');
+        ?.setAttribute('content', effective === 'dark' ? '#161221' : '#f7f5fc');
     </script>
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
@@ -212,10 +211,57 @@ const jsonLd = article ? [articleLd, breadcrumbLd].filter(Boolean) : websiteLd;
             el.removeAttribute('data-processed');
             el.innerHTML = sources[i];
           });
+          const dark = isDark();
+          const themeVariables = dark
+            ? {
+                primaryColor: '#2a2340',
+                primaryBorderColor: '#b598f2',
+                primaryTextColor: '#e9e3f5',
+                lineColor: '#9b8fc4',
+                secondaryColor: '#241d38',
+                tertiaryColor: '#1e1830',
+                clusterBkg: '#201a30',
+                clusterBorder: '#3a3253',
+                titleColor: '#e9e3f5',
+                edgeLabelBackground: '#201a30',
+                fontFamily: "'Inter Variable', sans-serif",
+                fontSize: '15px',
+              }
+            : {
+                primaryColor: '#efe9fb',
+                primaryBorderColor: '#6d45c7',
+                primaryTextColor: '#201b2e',
+                lineColor: '#9585bb',
+                secondaryColor: '#e7dffb',
+                tertiaryColor: '#f7f5fc',
+                clusterBkg: '#f2edfb',
+                clusterBorder: '#d4cae9',
+                titleColor: '#201b2e',
+                edgeLabelBackground: '#f2edfb',
+                fontFamily: "'Inter Variable', sans-serif",
+                fontSize: '15px',
+              };
           mermaid.initialize({
             startOnLoad: false,
-            theme: isDark() ? 'dark' : 'neutral',
+            theme: 'base',
+            themeVariables,
             fontFamily: "'Inter Variable', sans-serif",
+            flowchart: {
+              curve: 'basis',
+              htmlLabels: true,
+              padding: 14,
+              nodeSpacing: 48,
+              rankSpacing: 56,
+              useMaxWidth: true,
+            },
+            themeCSS: [
+              '.node rect,.node polygon,.node path{rx:10px;ry:10px}',
+              '.cluster rect{rx:14px;ry:14px}',
+              '.edgePath .path,.flowchart-link{stroke-width:1.5px}',
+              '.marker{stroke-width:1.2px}',
+              '.nodeLabel,.edgeLabel,.cluster-label{font-weight:500;letter-spacing:-0.005em}',
+              '.edgeLabel{padding:1px 5px;border-radius:5px}',
+            ].join(''),
           });
           await mermaid.run({ nodes: blocks });
         };
@@ -237,7 +283,7 @@ const jsonLd = article ? [articleLd, breadcrumbLd].filter(Boolean) : websiteLd;
           localStorage.setItem('theme', next);
           document
             .getElementById('meta-theme-color')
-            ?.setAttribute('content', next === 'dark' ? '#16130e' : '#faf6ee');
+            ?.setAttribute('content', next === 'dark' ? '#161221' : '#f7f5fc');
           window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: next } }));
         });
       }
