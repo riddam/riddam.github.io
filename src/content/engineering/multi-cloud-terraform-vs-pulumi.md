@@ -44,8 +44,8 @@ A deliberate best-of-breed split might look like this — illustrative, not a pr
 |---|---|---|
 | Analytics | **GCP** | BigQuery and the data stack around it |
 | Identity | **Azure** | where the enterprise directory already lives |
-| Application tier | **AWS** | the broadest service catalog for the app tier |
-| Primary database | **a managed-database provider** | placed where the engine runs best, not where the app happens to live |
+| Application tier | **AWS** | the broadest service catalog |
+| Primary database | **a dedicated database cloud** | placed where the engine runs best — kept separate from the app tier on purpose |
 
 Several clouds, but not chaos: each workload is placed where it runs best, and each stays coherent inside its own provider. That's the "best-of-breed" pattern working as intended — multi-cloud by deliberate selection, not by accident. The cost is that you now need *one* consistent way to provision and observe all of them, which is the whole reason the IaC choice below matters so much.
 
@@ -86,7 +86,7 @@ What that buys you:
 - **Lower onboarding cost.** Engineers who already write Python or TypeScript can read, understand, and contribute to infrastructure without first learning a separate DSL. In a multi-cloud estate that's a genuine force-multiplier: the app and data engineers who need to touch infra can *understand the setup* because it's written in a language they already think in, so onboarding someone onto the infra is a matter of hours, not weeks spent learning HCL.
 - **Testability** — you can unit-test infrastructure with the frameworks you already use (pytest, Jest, Go's testing), mock provider calls, and run integration tests.
 - **Embedding IaC in software** — the **Automation API** lets you drive Pulumi programmatically, which is why it's a strong fit for building an internal developer platform.
-- **Secrets and config** — **Pulumi ESC** (Environments, Secrets, Configuration), GA since 2025, centralizes secrets across AWS Secrets Manager, Vault, Azure Key Vault, GCP Secret Manager, and more, with logged access.
+- **Secrets and config** — **Pulumi ESC** (Environments, Secrets, Configuration), GA since 2024, centralizes secrets across AWS Secrets Manager, Vault, Azure Key Vault, GCP Secret Manager, and more, with logged access.
 - **A hedge on the HCL question** — as of January 2026 Pulumi added **native HCL support via a Terraform bridge**, so it can interpret existing HCL. That lowers the switching cost if you're coming from Terraform.
 
 The trade-off: general-purpose languages give you power *and* enough rope to build genuinely over-engineered infrastructure. HCL's constraints are sometimes a feature — they keep configuration boring and legible. Pulumi shines when your team is application-developer-heavy or you're building a platform; it can feel like overkill for a small, stable estate a couple of HCL modules would cover.
