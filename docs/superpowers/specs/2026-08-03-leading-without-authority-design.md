@@ -25,7 +25,7 @@ other.
 
 ```yaml
 title: "Leading Without Authority: Lessons from the Staff Engineer's Chair"
-description: "What it takes to lead engineers when you have no reports — earning a mandate, writing ADRs that land, seeking out unlike minds, spending your vetoes, and encoding influence into defaults."
+description: "What it takes to lead engineers when you have no reports — earning a mandate, writing ADRs that land, building a bench of complementary working styles, spending your vetoes, and encoding influence into defaults."
 pubDate: 2026-08-03
 tags: ["leadership", "staff-engineer", "influence", "communication"]
 cover: lever
@@ -36,17 +36,22 @@ the tag graph wires this post into the book-notes cluster without any manual lin
 `leadership` connects it to the sister post and the Lencioni and Burnison notes.
 `staff-engineer` and `influence` are new to the vocabulary.
 
-Target length ~1,500 words — longer than the 900-word principles post, in line with the
-engineering pieces. Original writing, so **no** Medium provenance footer.
+Target length ~1,900 words — longer than the 900-word principles post, in line with the
+engineering pieces. Nine sections at 1,500 words would average under 170 words each,
+which is too thin to carry an anchor story per section. Original writing, so **no** Medium
+provenance footer.
 
 ## Structure
 
-Opening pull-quote as a `>` blockquote, then eight emoji-prefixed numbered `##`
+Opening pull-quote as a `>` blockquote, then nine emoji-prefixed numbered `##`
 sections, closing with "Final thoughts" and the LinkedIn call to action. Body starts at
-`##` — no H1. Eight H2s means the site's automatic table of contents renders.
+`##` — no H1. The site renders its automatic table of contents at three or more H2s
+(`src/layouts/Post.astro:74`), so nine easily qualifies.
 
-Eight sections rather than seven mirroring the sister post: sections 6 and 8 are the two
-most useful and neither survives being folded into the other.
+Nine sections rather than seven mirroring the sister post. Sections 7 and 9 are the two
+most useful and neither survives being folded into the other; sections 5 and 6 are both
+about people but answer different questions (who is on the team vs. who gets a given
+piece of work).
 
 ### 1. 🧭 Authority is a shortcut you no longer have
 
@@ -111,7 +116,37 @@ reader what to actually do.
 
 Links to the *Never Split the Difference* notes on tactical empathy.
 
-### 5. 🪜 Take the work that matters, then go find the people who can do it
+### 5. 🧩 Build the bench, not just the headcount
+
+Distinct from section 4: that section is about whose objections you seek at decision
+time, this one is about who is on the team at all. It matters most when you are losing
+people and backfilling, because that is the moment you can either rebuild the shape you
+had or rebuild the shape you need.
+
+The argument: a team of one archetype fails predictably, so recruit for complementary
+working styles.
+
+- **People who will just try it.** High risk appetite, fast to move. They are who you
+  want running a proof of concept, and who you want in an outage, where a decided-now
+  answer beats a perfect one.
+- **People who want to plan before they act.** They are who turns a proof of concept into
+  a product without gaps in the flow or half-finished paths — which matters most in
+  customer-facing systems, where an incomplete implementation is visible to the customer.
+- **Translators.** People who convert high-level to low-level design, or business
+  requirements into technical ones. This is a distinct and scarce skill, not a junior
+  version of design.
+- **Steady executors**, who reliably deliver a well-defined scope without relitigating
+  it, and **explorers**, who go and find what nobody asked them to look for.
+
+State plainly that the steady-executor archetype is not a lower rung. Predictable
+throughput is a strength, and a team of nothing but explorers ships nothing. Keep the
+whole section on working-style axes, consistent with section 4 — no demographics.
+
+The leadership content: you rarely get to pick your team, but you almost always get
+input on the next hire, and that input is one of the highest-leverage things an engineer
+without authority actually controls.
+
+### 6. 🪜 Take the work that matters, then go find the people who can do it
 
 Take on what is genuinely important — what moves customer satisfaction or the financial
 picture — even when it sits outside your expertise. You are not required to know
@@ -134,7 +169,7 @@ pairs with giving the credit away.
 
 Links to the *Five Dysfunctions of a Team* notes — trust is the base of the pyramid.
 
-### 6. ⚔️ Pick the hill, then actually die on it
+### 7. ⚔️ Pick the hill, then actually die on it
 
 You get a handful of vetoes a year. Senior engineers get tuned out by spending them on
 everything.
@@ -143,7 +178,7 @@ everything.
 between a newer Redis version and Valkey was worth reviewing properly and worth
 committing to. Product names stay — they are the subject matter, not employer stack.
 
-### 7. 🔁 Make the good path the easy path
+### 8. 🔁 Make the good path the easy path
 
 Influence encoded into defaults, templates, and CI outlives any meeting.
 
@@ -155,7 +190,7 @@ feature work.
 Links to `config-as-data-for-infrastructure-repos` and
 `path-filtered-ci-cd-for-infra-monorepos`.
 
-### 8. 🧯 When you get overruled anyway
+### 9. 🧯 When you get overruled anyway
 
 The section most posts skip.
 
