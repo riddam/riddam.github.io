@@ -2,6 +2,7 @@
 title: "MLOps & AI Production Operations: The 2026 Guide"
 description: "An end-to-end guide to CI/CD and production operations for AI systems, covering the MLOps pipeline, tooling, cloud infrastructure, deployment and release patterns, monitoring, drift, LLMOps, cost optimization, and governance."
 pubDate: 2026-06-04
+updatedDate: 2026-08-03
 tags: ["mlops", "ci-cd", "llmops", "cloud-infrastructure"]
 cover: cycle
 ---
@@ -271,7 +272,7 @@ Prompt versioning (track + A/B test)
 | Lever | Savings | How |
 |---|---|---|
 | Model right-sizing | 60–80% | Use Haiku for routing, Sonnet for main work, Opus only for hardest tasks |
-| Prompt caching | 90% on cached reads | Cache static system prompts, tool definitions, reference docs; 5-min TTL |
+| Prompt caching | 90% on cached reads | Cache static system prompts, tool definitions, reference docs. Default TTL is 5 minutes; a longer option exists at a higher write premium, which pays off only for traffic bursty enough to otherwise let the cache expire |
 | Batch API | 50% | Async processing for non-real-time workloads (24-hr window) |
 | Spot/preemptible GPUs | 60–91% | For training jobs with checkpointing; not for serving |
 | Quantization | 2–4x throughput | INT8/INT4 quantization reduces model size; slight accuracy trade-off |

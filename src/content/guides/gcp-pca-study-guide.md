@@ -2,6 +2,7 @@
 title: "GCP Professional Cloud Architect — 2026 Blueprint"
 description: "A last-minute review guide for the Google Cloud Professional Cloud Architect exam covering the format, all six domains, service trade-offs, scenario triggers, HA/DR, cost optimization, and the new 2026 AI focus."
 pubDate: 2026-06-20
+updatedDate: 2026-08-03
 tags: ["gcp", "cloud-architect", "certification", "study-guide"]
 cover: cloud
 ---
@@ -104,13 +105,16 @@ Questions may use either name. These are the renames and deprecations most likel
 
 ## 03 — AI & ML — the 2026 Focus Area
 
-AI now appears across **design (§1.3), provisioning (§2.4/2.5), and security (§3.1)**. Almost everything routes through the **Gemini Enterprise Agent Platform (Vertex AI)**. Learn the stack and how the pieces fit. The exam wants the Google service names; if you want the vendor-neutral reasoning underneath them, that's [the AI architecture field guide](/guides/ai-architecture-master-guide/).
+AI now appears across **design (§1.3), provisioning (§2.4/2.5), and security (§3.1)**. Almost everything routes through the **Gemini Enterprise Agent Platform (Vertex AI)**. Learn the stack and how the pieces fit.
+
+This is more than a rename: Google has stated that Vertex AI services and roadmap are delivered **exclusively** through the Agent Platform rather than as a standalone service. In current docs and console the platform is organised under five top-level areas — **Studio**, **Agents**, **Models**, **Notebooks**, and **CodeMender** — so expect either vocabulary on exam questions and don't be thrown when a stem says "Vertex AI" and the answer options say "Agent Platform". The exam wants the Google service names; if you want the vendor-neutral reasoning underneath them, that's [the AI architecture field guide](/guides/ai-architecture-master-guide/).
 
 **Fig 03.1 — Gemini Enterprise Agent Platform stack**
 
 | Layer | Components |
 |---|---|
-| Assist & agents (business value) | Gemini Cloud Assist · Agent Builder · Gemini Enterprise / AI Agents · NotebookLM · Code Assist |
+| Assist & agents (business value) | Gemini Cloud Assist · Agent Builder / Agent Studio · Gemini Enterprise / AI Agents · NotebookLM · Code Assist |
+| Agent operations (new with the platform) | Agent-to-agent orchestration · Agent Registry · Agent Identity · Agent Gateway · Agent Observability |
 | Models & APIs (build with) | Gemini LLMs · Model Garden (200+ models) · Search · Conversation · Vision · Image · Video · Audio (Speech) |
 | MLOps (operate) | Agent Platform Pipelines (Vertex Pipelines) · Feature Store · Model Registry · Endpoints / serving |
 | Infrastructure (train & serve) | AI Hypercomputer · GPUs · TPUs · Cloud Run functions |
