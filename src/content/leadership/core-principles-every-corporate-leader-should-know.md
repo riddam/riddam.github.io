@@ -2,6 +2,7 @@
 title: "Core Principles Every Corporate Leader Should Know"
 description: "Seven leadership principles — influence over authority, emotional intelligence, vision, communication, adaptability, empowering teams, and integrity — with examples from leaders who lived them."
 pubDate: 2025-04-17
+updatedDate: 2026-08-03
 tags: ["leadership", "management", "emotional-intelligence"]
 cover: leadership
 ---
@@ -13,6 +14,8 @@ In today's fast-paced corporate world, leadership isn't just a title — it's a 
 True leadership isn't about bossing people around — it's about inspiring action. Think of a great leader you admire. Maybe it's a CEO who transformed a company, or a manager who always had your back. They didn't demand respect; they earned it by setting an example, listening, and creating a vision people wanted to follow.
 
 > **Example:** Consider Satya Nadella, CEO of Microsoft. Instead of pushing orders, he embraced empathy and innovation, steering Microsoft into a new era of growth by focusing on people, culture, and vision.
+
+The harder version of this principle is leading when you have no authority to fall back on at all — which is the everyday reality of the senior individual-contributor track. I've written up what actually works there in [Leading Without Authority](/leadership/leading-without-authority/).
 
 ## 2. Emotional intelligence is your superpower
 

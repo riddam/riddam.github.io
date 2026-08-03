@@ -475,6 +475,32 @@ const { motif, tint, class: className } = Astro.props;
         </g>
       )
     }
+
+    {
+      motif === 'lever' && (
+        <g>
+          {/* Kept within x 350–845: the 16/10 list thumbnail slices to x 296–904. */}
+          <g fill="none" stroke="var(--cover-accent)" stroke-width="2.5" stroke-linecap="round">
+            {/* the beam, pivoting well off-centre: long effort arm, short load arm */}
+            <path d="M360 248 L840 152" stroke-opacity="0.75" />
+            {/* where the beam swings to — force applied without force */}
+            <path d="M353 196 L842 168" stroke-opacity="0.3" stroke-dasharray="7 12" />
+            {/* fulcrum */}
+            <path d="M730 172 L770 254 H690 Z" stroke-opacity="0.7" />
+            <path d="M662 256 H798" stroke-opacity="0.45" />
+            {/* the small effort at the far end of the long arm */}
+            <path d="M360 200 V236" stroke-opacity="0.6" />
+            <path d="M352 228 L360 238 L368 228" stroke-opacity="0.6" />
+          </g>
+          <g fill="var(--cover-accent)" stroke="none">
+            {/* the load: heavy, close in, barely has to move */}
+            <rect x="771" y="114" width="58" height="44" rx="7" fill-opacity="0.5" />
+            <circle cx="360" cy="248" r="12" fill-opacity="0.8" />
+            <circle cx="730" cy="172" r="7" fill-opacity="0.85" />
+          </g>
+        </g>
+      )
+    }
   </svg>
 </div>
 
