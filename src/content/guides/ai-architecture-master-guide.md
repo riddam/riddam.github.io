@@ -185,7 +185,7 @@ flowchart LR
 
 ## 06 — Fine-Tuning
 
-Fine-tuning changes the model's **weights** — it's the most powerful customization but the most expensive and slowest to iterate. Use it only when prompt engineering + RAG can't achieve the behavior you need.
+Fine-tuning changes the model's **weights** — it's the most powerful customization but the most expensive and slowest to iterate. Use it only when prompt engineering + RAG can't achieve the behavior you need. (This section is the architectural summary; I go through the methods, data requirements, and evaluation in detail in [model training, fine-tuning and evaluation](/guides/model-training-finetuning-eval/).)
 
 ### When to fine-tune (and when not to)
 
@@ -363,7 +363,7 @@ An open standard for connecting AI models to external tools and data sources —
 
 ## 10 — LLMOps & Evaluation
 
-LLMOps is the discipline of deploying, monitoring, and improving LLM-based systems in production. It's MLOps adapted for the non-deterministic, prompt-driven world.
+LLMOps is the discipline of deploying, monitoring, and improving LLM-based systems in production. It's MLOps adapted for the non-deterministic, prompt-driven world — which I cover as its own subject in [MLOps and AI production operations](/guides/mlops-production-guide/).
 
 ### The LLMOps lifecycle
 

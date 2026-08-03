@@ -10,7 +10,7 @@ cover: cycle
 
 ## 01 — DevOps vs MLOps: What's Different
 
-MLOps extends DevOps principles to machine learning — but ML systems have fundamentally different properties that traditional CI/CD wasn't built for.
+MLOps extends DevOps principles to machine learning — but ML systems have fundamentally different properties that traditional CI/CD wasn't built for. Everything here assumes the architecture upstream of it is already settled; that groundwork is [the AI architecture field guide](/guides/ai-architecture-master-guide/).
 
 | | Traditional DevOps | MLOps |
 |---|---|---|
@@ -220,6 +220,8 @@ ML monitoring has **four layers** — each catches different failure modes.
 | Prediction drift | Output distribution changes | Model suddenly predicts mostly one class | Monitor output distribution (class balance, score histogram) |
 
 ### Retraining strategies
+
+Whichever trigger you pick, what actually runs is a training job — the techniques, data curation, and eval gates behind it are in [model training, fine-tuning and evaluation](/guides/model-training-finetuning-eval/).
 
 | Strategy | When to use |
 |---|---|

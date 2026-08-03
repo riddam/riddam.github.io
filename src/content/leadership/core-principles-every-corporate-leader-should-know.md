@@ -46,7 +46,7 @@ A leader is only as strong as their team. The best leaders create an environment
 
 ## 7. Integrity: the non-negotiable leadership trait
 
-Trust is the currency of leadership. A leader's words and actions must align. If people can't trust you, they won't follow you.
+Trust is the currency of leadership. A leader's words and actions must align. If people can't trust you, they won't follow you. It's also the base of the pyramid in [my notes on *The Five Dysfunctions of a Team*](/book-notes/five-dysfunctions-of-a-team-lencioni/) — every other dysfunction stacks on top of an absence of trust.
 
 > **Example:** Warren Buffett built Berkshire Hathaway on ethical decision-making and transparency. His reputation for integrity is a cornerstone of his success.
 

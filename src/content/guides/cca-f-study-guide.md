@@ -64,7 +64,7 @@ You get **4 of these 6** on exam day — randomly selected. Study all six so you
 
 ## §1 — Agentic Architecture & Orchestration (27%)
 
-The heaviest domain and the one most candidates find hardest. It covers the full lifecycle of the **agentic loop**, multi-agent coordination, hooks, task decomposition, and session management.
+The heaviest domain and the one most candidates find hardest. It covers the full lifecycle of the **agentic loop**, multi-agent coordination, hooks, task decomposition, and session management. What follows is scoped to what the exam asks; for the same patterns treated as design decisions rather than answers, see [the AI architecture field guide](/guides/ai-architecture-master-guide/).
 
 ### The agentic loop — the single most important concept
 

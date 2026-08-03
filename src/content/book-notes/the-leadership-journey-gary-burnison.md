@@ -141,7 +141,7 @@ Think of planting a tree — the shade you provide will benefit generations that
 
 ## Leadership is a continuous journey
 
-The best leaders never stop learning. They stay curious, adaptable, and open to growth. As Burnison emphasizes, leadership isn't about power — it's about serving and elevating others.
+The best leaders never stop learning. They stay curious, adaptable, and open to growth. As Burnison emphasizes, leadership isn't about power — it's about serving and elevating others. Much of what he arrives at by the fourth stage overlaps with [the core principles I keep coming back to](/leadership/core-principles-every-corporate-leader-should-know/), reached from a different direction.
 
 Leadership isn't about having all the answers. It's about guiding others toward success and leaving a lasting impact.
 
@@ -154,6 +154,7 @@ Which stage of the journey are you in right now? I'd love to hear — [find me o
 For deeper insight into each principle, the book itself is well worth your time — it provides rich context and actionable strategies. If *The Leadership Journey* resonated, these pair well with it:
 
 - **Leaders Eat Last** — Simon Sinek — building trust and collaboration in teams.
+- **The Five Dysfunctions of a Team** — Patrick Lencioni — why an absence of trust undermines everything above it; [my notes](/book-notes/five-dysfunctions-of-a-team-lencioni/).
 - **Dare to Lead** — Brené Brown — embracing vulnerability and courageous leadership.
 - **The 5 Levels of Leadership** — John C. Maxwell — a step-by-step guide to leadership development.
 - **The Coaching Habit** — Michael Bungay Stanier — mastering the art of coaching your team.

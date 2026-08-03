@@ -10,7 +10,7 @@ cover: training
 
 ## 01 — The Training Landscape
 
-Model training in 2026 is a **stack of stages**, each with its own technique, data requirement, and compute profile. Understanding where each stage sits prevents the most common mistake: applying the wrong technique to the wrong problem.
+Model training in 2026 is a **stack of stages**, each with its own technique, data requirement, and compute profile. Understanding where each stage sits prevents the most common mistake: applying the wrong technique to the wrong problem. Training is one layer of a larger system, and [the AI architecture field guide](/guides/ai-architecture-master-guide/) is where I work out when to reach for it at all rather than prompting or RAG.
 
 **The model training stack (stages run top → bottom):**
 
@@ -232,6 +232,8 @@ The base models you'll fine-tune. "Open weights" means you download the weights 
 9. **Merge adapter** — and quantize (INT4/8)
 10. **Deploy** — vLLM / cloud endpoint
 11. **Monitor** — drift + quality → retrain as needed
+
+Steps 10 and 11 are where this guide hands off: serving, drift detection, and the retraining loop are the subject of [MLOps and AI production operations](/guides/mlops-production-guide/).
 
 > **The golden rule:** Steps 2 and 6 (evaluation) are the most important. Training without evaluation is like flying without instruments — you have no idea if you're improving or crashing. Build the eval harness **before** you write a single line of training code.
 

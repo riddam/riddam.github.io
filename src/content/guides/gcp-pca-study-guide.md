@@ -104,7 +104,7 @@ Questions may use either name. These are the renames and deprecations most likel
 
 ## 03 — AI & ML — the 2026 Focus Area
 
-AI now appears across **design (§1.3), provisioning (§2.4/2.5), and security (§3.1)**. Almost everything routes through the **Gemini Enterprise Agent Platform (Vertex AI)**. Learn the stack and how the pieces fit.
+AI now appears across **design (§1.3), provisioning (§2.4/2.5), and security (§3.1)**. Almost everything routes through the **Gemini Enterprise Agent Platform (Vertex AI)**. Learn the stack and how the pieces fit. The exam wants the Google service names; if you want the vendor-neutral reasoning underneath them, that's [the AI architecture field guide](/guides/ai-architecture-master-guide/).
 
 **Fig 03.1 — Gemini Enterprise Agent Platform stack**
 
