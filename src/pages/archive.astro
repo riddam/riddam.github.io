@@ -1,0 +1,104 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { SECTIONS } from '../consts';
+
+const posts = (
+  await Promise.all(
+    SECTIONS.map(async (section) => {
+      const entries = await getCollection(section.id, ({ data }) => !data.draft);
+      return entries.map((entry) => ({
+        href: `/${section.id}/${entry.id}/`,
+        title: entry.data.title,
+        pubDate: entry.data.pubDate,
+        sectionLabel: section.label,
+        sectionId: section.id,
+      }));
+    })
+  )
+)
+  .flat()
+  .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+
+// Group by year, newest first. Posts are already sorted, so inserting in
+// order gives descending years.
+const byYear = new Map<number, typeof posts>();
+for (const p of posts) {
+  const y = p.pubDate.getFullYear();
+  if (!byYear.has(y)) byYear.set(y, []);
+  byYear.get(y)!.push(p);
+}
+
+const formatDate = (d: Date) =>
+  d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+---
+
+<Base title="Archive" description="Every post on the site, newest first.">
+  <h1>Archive</h1>
+  <p class="muted">All {posts.length} posts, newest first.</p>
+
+  {
+    [...byYear.entries()].map(([year, items]) => (
+      <section class="year">
+        <h2>{year}</h2>
+        <ul class="archive-list">
+          {items.map((p) => (
+            <li>
+              <time datetime={p.pubDate.toISOString()}>{formatDate(p.pubDate)}</time>
+              <a href={p.href}>{p.title}</a>
+              <span class="section-badge">{p.sectionLabel}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</Base>
+
+<style>
+  .year h2 {
+    font-size: 1.3rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.35rem;
+    margin-top: 2.75rem;
+  }
+  .archive-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.75rem 0 0;
+  }
+  .archive-list li {
+    display: grid;
+    grid-template-columns: 4.25rem 1fr auto;
+    gap: 0.5rem 0.9rem;
+    align-items: baseline;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .archive-list li:last-child {
+    border-bottom: none;
+  }
+  .archive-list time {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .archive-list a {
+    color: var(--text);
+    font-family: var(--font-serif);
+    font-size: 1.02rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .archive-list a:hover {
+    color: var(--accent);
+  }
+  @media (max-width: 34rem) {
+    .archive-list li {
+      grid-template-columns: 4.25rem 1fr;
+    }
+    .archive-list .section-badge {
+      grid-column: 2;
+    }
+  }
+</style>

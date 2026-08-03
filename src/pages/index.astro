@@ -28,6 +28,10 @@ const posts = (
 
 const [featured, ...rest] = posts;
 
+const HOME_LIMIT = 8;
+const recent = rest.slice(0, HOME_LIMIT);
+const hasMore = rest.length > HOME_LIMIT;
+
 const formatDate = (d: Date) =>
   d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 ---
@@ -69,10 +73,15 @@ const formatDate = (d: Date) =>
   }
 
   {
-    rest.length > 0 && (
+    recent.length > 0 && (
       <>
         <p class="home-heading">More writing</p>
-        <PostList posts={rest} />
+        <PostList posts={recent} />
+        {hasMore && (
+          <p class="home-more">
+            <a href="/archive/">Browse all {posts.length} posts →</a>
+          </p>
+        )}
       </>
     )
   }
@@ -95,5 +104,10 @@ const formatDate = (d: Date) =>
 <style>
   .featured-cover {
     margin-bottom: 1.1rem;
+  }
+  .home-more {
+    margin: 1.5rem 0 0;
+    font-size: 0.95rem;
+    font-weight: 600;
   }
 </style>
