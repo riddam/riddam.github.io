@@ -63,9 +63,12 @@ but the pieces that mattered were incomplete under proof-of-concept. Weighed aga
 migration effort, billing, the security posture that required on-premises hosting, and
 bundling with products the business already licensed, the answer was to stay put.
 
-The lesson is the mandate: the recommendation carried because the costing, the POC, and
-the migration estimate existed — not because the author preferred an outcome. And the
-verdict was "don't migrate," which is the recommendation nobody makes to look impressive.
+The lesson is the mandate: the author ran the calculations, and the recommendation
+carried because the costing, the POC, and the migration estimate existed — not because
+anyone preferred an outcome. Write it in those terms; "I did the numbers that decided it"
+is the claim, and it is a different and stronger claim than having had an opinion in the
+room. And the verdict was "don't migrate," which is the recommendation nobody makes to
+look impressive.
 
 ### 2. 🔍 Do the reading nobody else did
 
@@ -116,8 +119,18 @@ everything; you are required to close the gap. Sometimes that means recruiting a
 domain expert, and sometimes it means a junior who wants to explore and will learn it
 faster than you would.
 
-**Anchor:** observability and monitoring work, with no vendor named. This is where trust
-is minted, and it pairs with giving the credit away.
+**Anchor — observability and monitoring, no vendor named.** The delegation split is the
+substance here, and it was not arbitrary: the *migration* went to domain experts, while
+*exploring the platform's feature surface* went to fast-learning juniors so they could
+build the expertise. That is the principle worth stating plainly — match the work to the
+consequence of getting it wrong. A migration is risky and largely one-way, so it goes to
+people who have done one. Feature exploration is low-risk and high-learning, so it is the
+best thing you can hand someone who wants to grow, and hoarding it is how seniors
+accidentally starve their teams.
+
+Stating that split is what keeps the section from collapsing into "delegate to experts,"
+which is the most clichéd advice available. This is also where trust is minted, and it
+pairs with giving the credit away.
 
 Links to the *Five Dysfunctions of a Team* notes — trust is the base of the pyramid.
 
@@ -162,7 +175,9 @@ meta-commentary about sanitisation** — the generic writing must simply stand o
 Applied here:
 - The incumbent CI server is never named. GitHub Actions and GitLab CI are named as
   evaluated market options (agreed 2026-08-03).
-- No vendor named for the observability work.
+- No vendor named for the observability work. The platform in question is on the standing
+  banned-fingerprint list, and it occupies the same role there as the unnamed CI
+  incumbent does in §1 — the thing the organisation runs. Same rule, same treatment.
 - Redis and Valkey stay — public industry subject matter, not an internal stack reveal.
 - "The organisation" / "a team", never the employer.
 - The career arc (development → testing → DevOps) stays: it is a public professional
