@@ -2,6 +2,7 @@
 title: "CCAR-F: Claude Certified Architect Foundations — 2026 Blueprint"
 description: "An exam-day reference for the CCAR-F certification covering all five domains, the six exam scenarios, anti-patterns, trade-offs, and scenario triggers."
 pubDate: 2026-07-04
+updatedDate: 2026-08-03
 tags: ["claude", "certification", "study-guide", "ai-architecture"]
 cover: agent
 ---
@@ -14,7 +15,9 @@ cover: agent
 
 ## Exam Format & Domains
 
-Launched March 12, 2026, the CCAR-F (sometimes informally written CCA-F) is Anthropic's first proctored technical certification. It validates that you can **design and ship production-grade Claude applications at enterprise scale**. Every question is scenario-based — a realistic production system with a problem, and you pick the architecturally correct fix among plausible alternatives. No simple recall questions.
+Launched March 12, 2026, **Claude Certified Architect — Foundations (CCAR-F)** was Anthropic's first proctored technical certification. (Early coverage widely wrote it *CCA-F*; **CCAR-F** is the official code, and it now sits alongside an Associate, a Developer, and a Professional-tier Architect exam.) It validates that you can **design and ship production-grade Claude applications at enterprise scale**. Every question is scenario-based — a realistic production system with a problem, and you pick the architecturally correct fix among plausible alternatives. No simple recall questions.
+
+> **Before you plan around this:** the certification is offered through the **Claude Partner Network** — registration runs via the Anthropic **Partner Academy**, which validates partner credentials at login. Confirm your organization's eligibility before budgeting exam time.
 
 ### Five domains & weighting
 
@@ -373,8 +376,8 @@ Decisions the exam tests repeatedly. Know the trigger phrase → right answer.
 - **Prompt caching math:** 90% cheaper reads, 25% more expensive writes, 5-min default TTL (1-hour option available), break-even at ~2 requests. Know this for cost-optimization questions.
 - **2 min/question average.** Don't overthink — recognize the pattern (it maps to one of the anti-patterns or trade-offs above), pick the answer, and move on. Flag and return if unsure.
 
-> **Preparation resources (free):** **Anthropic Academy** (anthropic.skilljar.com): 13+ free courses covering all domains. Key courses: *Building Applications with the Claude API* (8+ hrs), *Claude Code in Action*, *Introduction to MCP*, *AI Fluency Framework*. Also: the official **Exam Guide PDF** (12 sample questions with explanations) and the official **60-question practice exam** on Skilljar. Score 850+ on the practice before booking the real exam. Note: Anthropic Academy remains the home for training courses, but as of mid-2026 the real exam is **scheduled and proctored via Pearson VUE (OnVUE)** — not booked through Skilljar/Anthropic Academy.
+> **Preparation resources (free):** **Anthropic Academy** (anthropic.skilljar.com): 13+ free courses covering all domains. Key courses: *Building Applications with the Claude API* (8+ hrs), *Claude Code in Action*, *Introduction to MCP*, *AI Fluency Framework*. Also: the official **Exam Guide PDF** (12 sample questions with explanations) and the official **60-question practice exam** on Skilljar. Score 850+ on the practice before booking the real exam. Note the three-way split as of mid-2026: the public Academy hosts the **free training courses**, registration goes through the **Partner Academy** (anthropic-partners.skilljar.com, partner login required), and the exam itself is **scheduled and proctored via Pearson VUE (OnVUE)**. Retakes are capped at 4 attempts per rolling 12 months, with waiting periods that lengthen after each failure (14 days, then 30, then 90).
 
 ---
 
-*Claude Certified Architect — Foundations (CCAR-F), 2026 Blueprint. Built from the official exam guide, Anthropic Academy materials, and community sources. Independent study aid — not affiliated with or endorsed by Anthropic. Verify current exam details at anthropic.skilljar.com.*
+*Claude Certified Architect — Foundations (CCAR-F), 2026 Blueprint. Built from the official exam guide, Anthropic Academy materials, and community sources. Independent study aid — not affiliated with or endorsed by Anthropic. Exam format, fees, and scheduling change; verify current details on Pearson VUE's Anthropic certification page before booking.*
