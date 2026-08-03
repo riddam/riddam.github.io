@@ -1,27 +1,6 @@
 ---
 import Cover from './Cover.astro';
-
-type Motif =
-  | 'config'
-  | 'network'
-  | 'pipeline'
-  | 'rollout'
-  | 'cloud'
-  | 'ai'
-  | 'code'
-  | 'book'
-  | 'leadership'
-  | 'personas'
-  | 'pyramid'
-  | 'steps'
-  | 'assist'
-  | 'training'
-  | 'speed'
-  | 'agent'
-  | 'scales'
-  | 'cycle';
-
-type SectionId = 'engineering' | 'book-notes' | 'leadership' | 'guides';
+import type { Motif, SectionId } from '../motifs';
 
 interface PostItem {
   href: string;

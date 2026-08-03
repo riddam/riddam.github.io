@@ -2,28 +2,12 @@
 // Abstract, theme-aware SVG cover art. Each motif is drawn with the site's
 // lavender CSS variables, so it adapts to light/dark automatically and needs
 // no external image assets. Decorative only (aria-hidden).
+import type { Motif, SectionId } from '../motifs';
+
 interface Props {
-  motif:
-    | 'config'
-    | 'network'
-    | 'pipeline'
-    | 'rollout'
-    | 'cloud'
-    | 'ai'
-    | 'code'
-    | 'book'
-    | 'leadership'
-    | 'personas'
-    | 'pyramid'
-    | 'steps'
-    | 'assist'
-    | 'training'
-    | 'speed'
-    | 'agent'
-    | 'scales'
-    | 'cycle';
+  motif: Motif;
   /** Section id — tints the art with that section's accent hue. Optional. */
-  tint?: 'engineering' | 'book-notes' | 'leadership' | 'guides';
+  tint?: SectionId;
   class?: string;
 }
 const { motif, tint, class: className } = Astro.props;

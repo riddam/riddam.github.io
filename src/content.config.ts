@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { COVER_MOTIFS } from './motifs';
 
 const postSchema = z.object({
   title: z.string(),
@@ -9,28 +10,7 @@ const postSchema = z.object({
   tags: z.array(z.string()).default([]),
   draft: z.boolean().default(false),
   /** Abstract cover-art motif (see src/components/Cover.astro). Optional. */
-  cover: z
-    .enum([
-      'config',
-      'network',
-      'pipeline',
-      'rollout',
-      'cloud',
-      'ai',
-      'code',
-      'book',
-      'leadership',
-      'personas',
-      'pyramid',
-      'steps',
-      'assist',
-      'training',
-      'speed',
-      'agent',
-      'scales',
-      'cycle',
-    ])
-    .optional(),
+  cover: z.enum(COVER_MOTIFS).optional(),
 });
 
 const makeCollection = (name: string) =>

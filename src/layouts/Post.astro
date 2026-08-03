@@ -11,6 +11,7 @@ import {
   GITHUB_URL,
 } from '../consts';
 import type { Section } from '../consts';
+import type { Motif, SectionId } from '../motifs';
 import type { MarkdownHeading } from 'astro';
 
 interface RelatedPost {
@@ -19,26 +20,8 @@ interface RelatedPost {
   description: string;
   pubDate: Date;
   sectionLabel?: string;
-  sectionId?: 'engineering' | 'book-notes' | 'leadership' | 'guides';
-  cover?:
-    | 'config'
-    | 'network'
-    | 'pipeline'
-    | 'rollout'
-    | 'cloud'
-    | 'ai'
-    | 'code'
-    | 'book'
-    | 'leadership'
-    | 'personas'
-    | 'pyramid'
-    | 'steps'
-    | 'assist'
-    | 'training'
-    | 'speed'
-    | 'agent'
-    | 'scales'
-    | 'cycle';
+  sectionId?: SectionId;
+  cover?: Motif;
 }
 
 interface SeriesNav {
@@ -63,25 +46,7 @@ interface Props {
   series?: SeriesNav;
   olderPost?: { href: string; title: string };
   newerPost?: { href: string; title: string };
-  cover?:
-    | 'config'
-    | 'network'
-    | 'pipeline'
-    | 'rollout'
-    | 'cloud'
-    | 'ai'
-    | 'code'
-    | 'book'
-    | 'leadership'
-    | 'personas'
-    | 'pyramid'
-    | 'steps'
-    | 'assist'
-    | 'training'
-    | 'speed'
-    | 'agent'
-    | 'scales'
-    | 'cycle';
+  cover?: Motif;
 }
 
 const {
