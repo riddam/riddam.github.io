@@ -1,6 +1,6 @@
 import { getCollection } from 'astro:content';
 import { OGImageRoute } from 'astro-og-canvas';
-import { SITE_TITLE, SITE_DESCRIPTION, AUTHOR_ROLE, SECTIONS } from '../../consts';
+import { SITE_TITLE, SITE_DESCRIPTION, SECTIONS } from '../../consts';
 
 // Build one entry per published post, keyed by "<section>/<id>".
 const pages: Record<string, { title: string; description: string }> = {
@@ -24,21 +24,25 @@ export const { getStaticPaths, GET } = await OGImageRoute({
     title: page.title,
     description: page.description,
     logo: undefined,
+    // Lavender ink, matching the site theme's dark palette: --bg (#161221)
+    // into --border-strong (#2a2340), edged with the dark-mode accent.
     bgGradient: [
-      [17, 21, 26],
-      [26, 33, 41],
+      [22, 18, 33],
+      [42, 35, 64],
     ],
-    border: { color: [15, 98, 196], width: 24, side: 'inline-start' },
+    border: { color: [181, 152, 242], width: 24, side: 'inline-start' },
     padding: 70,
     font: {
       title: {
-        color: [235, 238, 242],
+        // --text (dark)
+        color: [233, 227, 245],
         size: 62,
         weight: 'Bold',
         lineHeight: 1.15,
       },
       description: {
-        color: [154, 164, 174],
+        // A muted lavender a clear step below the title, as --text-muted is.
+        color: [155, 145, 179],
         size: 30,
         lineHeight: 1.4,
       },

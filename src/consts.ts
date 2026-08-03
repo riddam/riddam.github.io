@@ -32,6 +32,18 @@ export const SERIES: Series[] = [
       'safe-rollouts-for-stateful-cloud-infrastructure',
     ],
   },
+  {
+    // Design it, build the model, then run it in production. The two exam
+    // guides (CCA-F, GCP PCA) sit outside the arc — they're reference prep,
+    // not steps, and tag-based "Keep reading" already connects them.
+    title: 'Building and running AI systems',
+    sectionId: 'guides',
+    slugs: [
+      'ai-architecture-master-guide',
+      'model-training-finetuning-eval',
+      'mlops-production-guide',
+    ],
+  },
 ];
 
 export const SECTIONS: Section[] = [

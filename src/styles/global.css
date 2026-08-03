@@ -15,7 +15,9 @@
   --bg-header: rgba(247, 245, 252, 0.82);
   --text: #201b2e;
   --text-secondary: #4a4359;
-  --text-muted: #857d97;
+  /* Clears WCAG AA (4.5:1) on every light surface — bg, surface, code-bg —
+     since muted text runs as small as 0.72rem (meta, tags, eyebrows). */
+  --text-muted: #6f6683;
   --accent: #6d45c7;
   --accent-strong: #5a35ad;
   --accent-soft: rgba(109, 69, 199, 0.09);
