@@ -8,48 +8,55 @@ import Base from '../layouts/Base.astro';
     Find posts across engineering, playbooks, book notes, and leadership.
   </p>
 
-  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
-  <div id="search" class="pf"></div>
+  <link rel="stylesheet" href="/pagefind/pagefind-component-ui.css" />
+  <script is:inline type="module" src="/pagefind/pagefind-component-ui.js"></script>
+
+  <div class="pf">
+    <pagefind-searchbox></pagefind-searchbox>
+  </div>
+
   <noscript><p class="muted">Search requires JavaScript.</p></noscript>
+  <p class="muted pf-hint" hidden id="pf-hint">
+    The search index is generated at build time. Run <code>npm run build</code> then
+    <code>npm run preview</code> to try it locally.
+  </p>
 </Base>
 
-<script is:inline src="/pagefind/pagefind-ui.js"></script>
 <script is:inline>
+  // In `astro dev` there is no /pagefind/ index, so the component never
+  // upgrades. Surface why instead of showing an inert box.
   window.addEventListener('DOMContentLoaded', () => {
-    const el = document.getElementById('search');
-    if (window.PagefindUI) {
-      new window.PagefindUI({
-        element: '#search',
-        showSubResults: true,
-        showImages: false,
-        pageSize: 8,
-      });
-    } else if (el) {
-      // The index only exists after a production build, not in `astro dev`.
-      el.innerHTML =
-        '<p class="muted">The search index is generated at build time. Run <code>npm run build &amp;&amp; npm run preview</code> to try it locally.</p>';
-    }
+    setTimeout(() => {
+      if (!window.customElements.get('pagefind-searchbox')) {
+        document.querySelector('.pf')?.setAttribute('hidden', '');
+        document.getElementById('pf-hint')?.removeAttribute('hidden');
+      }
+    }, 600);
   });
 </script>
 
 <style is:global>
-  /* Theme the Pagefind UI with the site's lavender tokens. */
+  /* Map the Component UI onto the site's lavender tokens. Both themes are
+     covered automatically because these all resolve to theme-aware vars. */
   .pf {
-    --pagefind-ui-scale: 1;
-    --pagefind-ui-primary: var(--accent);
-    --pagefind-ui-text: var(--text);
-    --pagefind-ui-background: var(--bg-elev);
-    --pagefind-ui-border: var(--border);
-    --pagefind-ui-tag: var(--surface);
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: var(--radius);
-    --pagefind-ui-font: var(--font-sans);
+    --pf-font: var(--font-sans);
+    --pf-background: var(--bg-elev);
+    --pf-text: var(--text);
+    --pf-text-secondary: var(--text-secondary);
+    --pf-text-muted: var(--text-muted);
+    --pf-border: var(--border);
+    --pf-border-focus: var(--accent);
+    --pf-border-radius: var(--radius);
+    --pf-hover: var(--surface);
+    /* Pagefind renders <mark> as `background: transparent` + `color:
+       var(--pf-mark)`, so this is a text colour, not a highlight wash.
+       --accent clears AA on --bg-elev: 6.18:1 light, 7.11:1 dark. */
+    --pf-mark: var(--accent);
+    --pf-outline-focus: var(--accent);
+    --pf-shadow-sm: var(--shadow);
+    --pf-shadow-md: var(--shadow);
+    --pf-shadow-lg: var(--shadow-lift);
+    --pf-searchbox-max-width: 100%;
     margin-top: 1.5rem;
-  }
-  .pf .pagefind-ui__result-title a {
-    color: var(--text);
-  }
-  .pf .pagefind-ui__result-title a:hover {
-    color: var(--accent);
   }
 </style>
