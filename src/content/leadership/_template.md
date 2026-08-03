@@ -2,6 +2,7 @@
 title: "Post template — copy me"
 description: "Duplicate this file, rename it, and set draft to false when ready."
 pubDate: 2026-07-17
+# updatedDate: 2026-01-01   # uncomment when materially revising a published post
 tags: []
 draft: true
 ---

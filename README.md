@@ -56,10 +56,21 @@ flowchart LR
 ### Table of contents
 
 Posts with three or more `##` headings automatically get a sticky
-"On this page" sidebar on screens wider than 1100px.
+"On this page" sidebar on screens wider than 1100px. `###` headings appear
+in it too, indented one level — the threshold still counts `##` only, so a
+post with one `##` and several `###` gets no sidebar.
 
 Push to `main` and GitHub Actions builds and deploys automatically
 (`.github/workflows/deploy.yml`).
+
+## Revising a published post
+
+Set `updatedDate` in the frontmatter when you materially change a post that is
+already live (new content, corrected facts, refreshed API details) — not for
+typos. It drives four things at once: the "Updated <date>" line in the post
+header, `dateModified` in the BlogPosting JSON-LD, `article:modified_time`, and
+`lastmod` in the sitemap. Leave it off and search engines assume the post has
+not moved since `pubDate`.
 
 ## Local development
 
@@ -67,7 +78,20 @@ Push to `main` and GitHub Actions builds and deploys automatically
 npm install
 npm run dev        # http://localhost:4321
 npm run build      # production build into dist/
+npm run preview    # serve dist/ — the only way to test search locally
+npm test           # unit tests
 ```
+
+`npm run dev` does not generate the Pagefind index, so `/search/` is inert
+there. Deploys must use `npm run build` (`astro build && pagefind --site
+dist`) — a bare `astro build` silently omits the index.
+
+## Tests
+
+`npm test` runs the unit tests via Node's built-in test runner (no dependency).
+Currently covers `src/utils/reading-time.ts`. Everything else is verified by
+building and asserting against `dist/` — see
+`docs/superpowers/plans/2026-08-03-blog-audit-remediation.md`.
 
 ## Notes
 
