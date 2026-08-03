@@ -475,6 +475,13 @@ details[open] summary { margin-bottom: 0.5rem; }
   }
   .toc ul { list-style: none; margin: 0; padding: 0; }
   .toc li { margin: 0.45rem 0; }
+  .toc li.toc-d3 {
+    margin: 0.3rem 0 0.3rem 0.85rem;
+    font-size: 0.96em;
+  }
+  .toc li.toc-d3 a { color: color-mix(in srgb, var(--text-muted) 88%, transparent); }
+  .toc li.toc-d3 a:hover,
+  .toc li.toc-d3 a.active { color: var(--accent); }
   .toc a { color: var(--text-muted); display: block; }
   .toc a:hover { color: var(--accent); }
   .toc a.active { color: var(--accent); font-weight: 600; }

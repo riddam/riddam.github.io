@@ -67,8 +67,11 @@ const {
   cover,
 } = Astro.props;
 
-const tocItems = headings.filter((h) => h.depth === 2);
-const showToc = tocItems.length >= 3;
+// h2 + h3: the long guides carry their real structure at depth 3.
+const tocItems = headings.filter((h) => h.depth === 2 || h.depth === 3);
+// Still gate on top-level sections, so a post with one h2 and four h3s
+// doesn't sprout a sidebar.
+const showToc = tocItems.filter((h) => h.depth === 2).length >= 3;
 
 const formatDate = (d: Date) =>
   d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -252,7 +255,7 @@ const liShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encode
             <p class="toc-title">On this page</p>
             <ul>
               {tocItems.map((h) => (
-                <li>
+                <li class:list={[`toc-d${h.depth}`]}>
                   <a href={`#${h.slug}`}>{h.text}</a>
                 </li>
               ))}
@@ -575,7 +578,16 @@ const liShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encode
         if (h.getBoundingClientRect().top - OFFSET <= 0) currentId = h.id;
         else break;
       }
-      links.forEach((a, id) => a.classList.toggle('active', id === currentId));
+      links.forEach((a, id) => {
+        const on = id === currentId;
+        a.classList.toggle('active', on);
+        if (on && a.scrollIntoView) {
+          // Scrolls only the nearest scrollable ancestor (the sticky .toc nav)
+          // and is a no-op when already visible, so it won't fight the page
+          // scroll. No `behavior: 'smooth'` — this fires on every scroll event.
+          a.scrollIntoView({ block: 'nearest' });
+        }
+      });
     };
 
     setActive();
