@@ -430,6 +430,35 @@ const { motif, tint, class: className } = Astro.props;
     }
 
     {
+      motif === 'mirror' && (
+        <g>
+          {/* Two sides of a negotiation, each echoing the other. Kept inside
+              x 330-870 so nothing clips at the 16/10 list-thumbnail crop,
+              which only shows x 296-904 of this viewBox. */}
+          <g fill="var(--cover-accent)" stroke="none">
+            <rect x="330" y="138" width="200" height="96" rx="18" fill-opacity="0.45" />
+            <rect x="670" y="138" width="200" height="96" rx="18" fill-opacity="0.28" />
+            <path d="M366 234 L350 270 L398 234" fill-opacity="0.45" />
+            <path d="M834 234 L850 270 L802 234" fill-opacity="0.28" />
+          </g>
+          <g fill="none" stroke="var(--cover-accent)" stroke-width="2.5" stroke-linecap="round">
+            {/* the line they talk across */}
+            <path d="M600 108 V272" stroke-opacity="0.25" stroke-dasharray="7 13" />
+            {/* nested echo arcs, each side mirroring the other about x=600 */}
+            <g stroke-opacity="0.5">
+              <path d="M548 172 A 34 34 0 0 1 548 238" />
+              <path d="M652 172 A 34 34 0 0 0 652 238" />
+            </g>
+            <g stroke-opacity="0.28">
+              <path d="M548 152 A 56 56 0 0 1 548 258" />
+              <path d="M652 152 A 56 56 0 0 0 652 258" />
+            </g>
+          </g>
+        </g>
+      )
+    }
+
+    {
       motif === 'cycle' && (
         <g>
           <g fill="none" stroke="var(--cover-accent)" stroke-width="4" stroke-opacity="0.72" stroke-linecap="round" stroke-linejoin="round">

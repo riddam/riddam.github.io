@@ -3,7 +3,7 @@ title: "Never Split the Difference: Negotiation Lessons from an FBI Hostage Nego
 description: "Notes on Chris Voss's Never Split the Difference — tactical empathy, calibrated questions, mirroring, and the psychology of getting to \"that's right\", with examples for salary, vendor, and everyday negotiations."
 pubDate: 2025-03-06
 tags: ["book-notes", "negotiation", "communication", "leadership"]
-cover: scales
+cover: mirror
 ---
 
 Chris Voss's *Never Split the Difference* is a negotiation book built on the techniques he used as the FBI's lead international hostage negotiator — where there is no splitting the difference and no walking away. What makes it useful outside of hostage situations is that the same techniques apply to salary conversations, vendor pricing, and everyday disagreements.

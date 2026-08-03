@@ -24,6 +24,7 @@ export const COVER_MOTIFS = [
   'agent',
   'scales',
   'cycle',
+  'mirror',
 ] as const;
 
 export type Motif = (typeof COVER_MOTIFS)[number];
