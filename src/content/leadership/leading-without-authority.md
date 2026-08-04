@@ -20,7 +20,7 @@ A manager can spend authority. Not often, and not for free, but the option exist
 
 A CI/CD platform decision taught me this better than anything else. The organization ran a self-hosted CI server, and the question was whether to move to a hosted platform. We looked seriously at GitHub Actions and GitLab CI. I ran the numbers.
 
-What came back, in 2021, was that Actions got expensive quickly under per-minute billing at our volume, and the security and dependency-scanning capabilities we cared about were still immature. GitLab CI had a genuinely broad feature set, but under proof of concept the specific pieces we needed turned out to be incomplete. Set against migration effort, billing, a security posture that pointed to on-premises hosting, and the fact that the incumbent bundled with products the business already licensed — the answer was to stay where we were.
+What came back, in 2021, was that Actions got expensive quickly under per-minute billing at our volume. The security and dependency-scanning story was subtler: the capabilities weren't missing, they were priced separately. Code scanning and secret scanning on private repositories sat behind Advanced Security, licensed per committer on top of everything else — so every time we solved the feature question, the cost question reopened. GitLab CI had a genuinely broad feature set, but under proof of concept the specific pieces we needed turned out to be incomplete. Set against migration effort, billing, a security posture that pointed to on-premises hosting, and the fact that the incumbent bundled with products the business already licensed — the answer was to stay where we were.
 
 > **The mandate came from the arithmetic, not the argument.** I wasn't the most senior person in that decision. But I was the one holding the cost model, the POC results, and the migration estimate, and that is very difficult to out-talk.
 
@@ -99,6 +99,10 @@ This is where trust gets built, and trust is the base of the pyramid — everyth
 You get a small number of vetoes. Senior engineers lose theirs by spending one on everything — naming, formatting, library choice, the shape of a function — until "they always object" becomes the summary of your opinion and people route around you.
 
 Save them for decisions that are expensive to reverse. When the licensing landscape around our in-memory cache shifted, the choice between moving to a newer Redis version and moving to Valkey was worth real review time and worth committing to properly, because the cost of changing your mind later lands on every service that touches the cache.
+
+Then the ground moved again: in May 2025, Redis added AGPLv3 back as a licensing option, after the fork it had triggered. It would be easy to read that as the review having been wasted effort. It's the opposite. A decision reached in an afternoon on licensing sentiment alone gives you nothing to think with when the situation changes — whereas the work of actually understanding your exposure, your upgrade path, and what every dependent service would need is exactly what you reuse to evaluate the next shift.
+
+> **One-way doors are worth real review time precisely because the landscape keeps moving.** The analysis outlives the decision it was built for.
 
 Reversible decisions deserve a quick opinion. One-way doors deserve a fight. Knowing which one you're looking at is most of the skill.
 
