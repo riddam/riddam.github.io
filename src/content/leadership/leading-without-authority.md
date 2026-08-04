@@ -10,7 +10,7 @@ cover: lever
 
 I've written before that [leadership is influence rather than authority](/leadership/core-principles-every-corporate-leader-should-know/). That's easy to say and easy to agree with. It's also the kind of claim usually illustrated with chief executives — people who had plenty of authority and chose to lead with something better.
 
-The senior individual-contributor track is where the claim gets tested honestly. You're promoted for impact across an organisation and given nobody to direct. Nobody's performance review is in your hands. You can't reassign anyone, you can't set anyone's priorities, and when you're right and get ignored, there is no lever to pull.
+The senior individual-contributor track is where the claim gets tested honestly. You're promoted for impact across an organization and given nobody to direct. Nobody's performance review is in your hands. You can't reassign anyone, you can't set anyone's priorities, and when you're right and get ignored, there is no lever to pull.
 
 Here's what I've found actually works.
 
@@ -18,7 +18,7 @@ Here's what I've found actually works.
 
 A manager can spend authority. Not often, and not for free, but the option exists. Without it, you earn a mandate one decision at a time — and the way you earn it is by doing the work that makes the answer hard to argue with.
 
-A CI/CD platform decision taught me this better than anything else. The organisation ran a self-hosted CI server, and the question was whether to move to a hosted platform. We looked seriously at GitHub Actions and GitLab CI. I ran the numbers.
+A CI/CD platform decision taught me this better than anything else. The organization ran a self-hosted CI server, and the question was whether to move to a hosted platform. We looked seriously at GitHub Actions and GitLab CI. I ran the numbers.
 
 What came back, in 2021, was that Actions got expensive quickly under per-minute billing at our volume, and the security and dependency-scanning capabilities we cared about were still immature. GitLab CI had a genuinely broad feature set, but under proof of concept the specific pieces we needed turned out to be incomplete. Set against migration effort, billing, a security posture that pointed to on-premises hosting, and the fact that the incumbent bundled with products the business already licensed — the answer was to stay where we were.
 
@@ -26,16 +26,16 @@ What came back, in 2021, was that Actions got expensive quickly under per-minute
 
 But staying on the same platform was never the same as doing nothing, and that's the half that made the recommendation defensible rather than lazy. The tool wasn't the problem. The legacy setup around it was — and a migration would have carried every one of those gaps onto a new platform, with a migration bill on top. So the plan was to keep the tool and rebuild everything around it:
 
-- **Containerised deployments**, instead of builds quietly depending on whatever happened to be installed on a long-lived agent.
+- **Containerized deployments**, instead of builds quietly depending on whatever happened to be installed on a long-lived agent.
 - **Pipeline as code.** Versioned, reviewable, reproducible — rather than assembled by clicking through a UI, where the only record of why something works is that it currently works.
 - **Automation absorbing the setup complexity**, so teams stopped hand-rolling the same pipeline scaffolding over and over.
-- **The CI/CD platform's own infrastructure run from a different system** — GitHub Actions, deliberately not the platform itself. If the thing that rebuilds your pipeline system *is* your pipeline system, you have a circular dependency, and you find that out on the worst possible day.
+- **The CI/CD platform's own infrastructure run from a different system** — GitHub Actions, deliberately not the platform itself. If the thing that rebuilds your pipeline system *is* your pipeline system, you have a circular dependency, and you find that out on the worst possible day. Note that this doesn't contradict the cost finding above: that objection scaled with volume, and this is a handful of infrastructure pipelines rather than thousands of application builds. The right tool for ten runs a month isn't the right tool for ten thousand.
 - **Spot instances for non-critical deployments**, because build capacity is bursty and paying on-demand rates for retryable work is a choice, not a requirement.
 - **A real upgrade strategy**, so the version gap that made migrating look attractive in the first place couldn't quietly reopen.
 
 > **"Keep the tool, fix the setup" is only credible if you actually do the second half.** Otherwise it's deferral with a cost model stapled to it.
 
-Note also what the headline recommendation was: *don't migrate.* Nobody proposes that to look impressive. If your analysis only ever concludes that the organisation should do something large and new, that's worth noticing about your analysis.
+Note also what the headline recommendation was: *don't migrate.* Nobody proposes that to look impressive. If your analysis only ever concludes that the organization should do something large and new, that's worth noticing about your analysis.
 
 ## 2. 🔍 Do the reading nobody else did
 
@@ -63,7 +63,7 @@ Most decision records fail for the same three reasons:
 
 The design review is not where you should first hear the serious objection. By then it's expensive — for the proposal and for you.
 
-So go find it beforehand, deliberately, from people who don't think like you. People differ along lines you can actually observe: some want to try it on Monday, others need the plan from stage one to stage *n*; some optimise for speed and some for completeness; some have been burned by this exact class of change and some never have.
+So go find it beforehand, deliberately, from people who don't think like you. People differ along lines you can actually observe: some want to try it on Monday, others need the plan from stage one to stage *n*; some optimize for speed and some for completeness; some have been burned by this exact class of change and some never have.
 
 That last group is the one worth hunting down. The objection you cannot generate yourself is the one that kills the project six months in. This is tactical empathy applied to engineering — much the same instinct as the [calibrated questions in *Never Split the Difference*](/book-notes/never-split-the-difference-voss/): you're not trying to win the conversation, you're trying to find out what you're missing while it's still cheap to be wrong.
 
@@ -108,7 +108,7 @@ Everything above is retail influence — one room, one decision, one document at
 
 I try to make standards and guidelines so easy to use that developers never notice they're on a track at all. In an automation framework, that means absorbing the hard operational setup and abstracting it away, so product teams stay on feature work instead of learning the infrastructure underneath. The same instinct runs through how I think about [configuration as data](/engineering/config-as-data-for-infrastructure-repos/) and [path-filtered CI for infra monorepos](/engineering/path-filtered-ci-cd-for-infra-monorepos/): put the correct choice in the default, the template, the pipeline.
 
-> A guideline nobody reads and everybody follows is worth more than a policy everybody has read and nobody follows.
+> **A guideline nobody reads and everybody follows beats a policy everybody has read and nobody follows.** The first is built into the tooling. The second is built into a wiki.
 
 Influence encoded into a default keeps working while you're on holiday. Influence that lives in your advocacy stops the moment you're busy.
 
