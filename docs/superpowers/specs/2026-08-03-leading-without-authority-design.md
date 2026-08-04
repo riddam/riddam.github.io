@@ -75,6 +75,21 @@ is the claim, and it is a different and stronger claim than having had an opinio
 room. And the verdict was "don't migrate," which is the recommendation nobody makes to
 look impressive.
 
+**Staying put was not doing nothing — this half is what keeps the section from reading as
+inertia.** The tool was not the problem; the legacy setup around it was, and a migration
+would have carried those gaps onto a new platform with a migration bill on top. The
+rebuild that came with the recommendation: containerised deployments rather than builds
+depending on what happened to be installed on a long-lived agent; pipeline as code
+instead of pipelines clicked together in a UI; automation absorbing the setup complexity
+so teams stop hand-rolling scaffolding; **the CI/CD platform's own infrastructure run
+from a separate system (GitHub Actions), specifically to avoid the circular dependency of
+using the pipeline system to rebuild the pipeline system**; spot instances for
+non-critical deployments, since build load is bursty and retryable; and a real upgrade
+strategy so the version gap that made migrating attractive cannot quietly reopen.
+
+Close on the pull-quote that "keep the tool, fix the setup" is only credible if the second
+half actually happens — otherwise it is deferral with a cost model attached.
+
 ### 2. 🔍 Do the reading nobody else did
 
 The cheapest durable influence is being the only person in the room who actually read

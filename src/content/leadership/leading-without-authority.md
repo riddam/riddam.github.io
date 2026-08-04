@@ -24,7 +24,18 @@ What came back, in 2021, was that Actions got expensive quickly under per-minute
 
 > **The mandate came from the arithmetic, not the argument.** I wasn't the most senior person in that decision. But I was the one holding the cost model, the POC results, and the migration estimate, and that is very difficult to out-talk.
 
-Note also what the recommendation was: *don't migrate.* Nobody proposes that to look impressive. If your analysis only ever concludes that the organisation should do something large and new, that's worth noticing about your analysis.
+But staying on the same platform was never the same as doing nothing, and that's the half that made the recommendation defensible rather than lazy. The tool wasn't the problem. The legacy setup around it was — and a migration would have carried every one of those gaps onto a new platform, with a migration bill on top. So the plan was to keep the tool and rebuild everything around it:
+
+- **Containerised deployments**, instead of builds quietly depending on whatever happened to be installed on a long-lived agent.
+- **Pipeline as code.** Versioned, reviewable, reproducible — rather than assembled by clicking through a UI, where the only record of why something works is that it currently works.
+- **Automation absorbing the setup complexity**, so teams stopped hand-rolling the same pipeline scaffolding over and over.
+- **The CI/CD platform's own infrastructure run from a different system** — GitHub Actions, deliberately not the platform itself. If the thing that rebuilds your pipeline system *is* your pipeline system, you have a circular dependency, and you find that out on the worst possible day.
+- **Spot instances for non-critical deployments**, because build capacity is bursty and paying on-demand rates for retryable work is a choice, not a requirement.
+- **A real upgrade strategy**, so the version gap that made migrating look attractive in the first place couldn't quietly reopen.
+
+> **"Keep the tool, fix the setup" is only credible if you actually do the second half.** Otherwise it's deferral with a cost model stapled to it.
+
+Note also what the headline recommendation was: *don't migrate.* Nobody proposes that to look impressive. If your analysis only ever concludes that the organisation should do something large and new, that's worth noticing about your analysis.
 
 ## 2. 🔍 Do the reading nobody else did
 
