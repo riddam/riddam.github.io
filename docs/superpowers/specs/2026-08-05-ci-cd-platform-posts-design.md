@@ -146,6 +146,16 @@ internal wiki links embedded in the source's error strings are all absent. Inter
 names from the schema (for example the grouping field) are described by role rather than
 reproduced. Verified by scan.
 
+## Publication order
+
+Dated so the CI/CD work reads as the earlier material and the leadership piece as the
+current thinking: post A 2026-08-03, post B 2026-08-04, the leadership post 2026-08-05.
+That puts the leadership post at the top of the site and runs the series ascending in
+reading order, matching the existing "Running stateful cloud infrastructure" series
+(part 1 oldest). In newest-first listings the two parts therefore appear B then A, which
+is the established behaviour for series on this site, and the series nav carries the
+reading order.
+
 ## Leadership post changes
 
 Section 1's six-bullet rebuild list compresses to one short paragraph plus a forward

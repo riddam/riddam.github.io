@@ -1,7 +1,7 @@
 ---
 title: "Leading Without Authority: Lessons from the Staff Engineer's Chair"
 description: "What it takes to lead engineers when you have no reports — earning a mandate, writing ADRs that land, building a bench of complementary working styles, spending your vetoes, and encoding influence into defaults."
-pubDate: 2026-08-03
+pubDate: 2026-08-05
 tags: ["leadership", "staff-engineer", "influence", "communication"]
 cover: lever
 ---

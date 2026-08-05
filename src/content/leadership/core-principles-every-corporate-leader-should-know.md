@@ -2,7 +2,7 @@
 title: "Core Principles Every Corporate Leader Should Know"
 description: "Seven leadership principles — influence over authority, emotional intelligence, vision, communication, adaptability, empowering teams, and integrity — with examples from leaders who lived them."
 pubDate: 2025-04-17
-updatedDate: 2026-08-03
+updatedDate: 2026-08-05
 tags: ["leadership", "management", "emotional-intelligence"]
 cover: leadership
 ---
