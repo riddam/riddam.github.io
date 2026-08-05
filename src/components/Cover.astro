@@ -501,6 +501,37 @@ const { motif, tint, class: className } = Astro.props;
         </g>
       )
     }
+
+    {
+      motif === 'bootstrap' && (
+        <g>
+          {/* Kept within x 350–845: the 16/10 list thumbnail slices to x 296–904. */}
+          <g fill="none" stroke="var(--cover-accent)" stroke-width="2.5" stroke-linecap="round">
+            {/* the loop that would deploy itself — deliberately left open.
+                Four quarter arcs (small-arc flag 0) rather than one large arc, so the
+                centre is unambiguous at 110,110 around (660,190). */}
+            <path
+              d="M557 152 A110 110 0 0 1 660 80 A110 110 0 0 1 770 190 A110 110 0 0 1 660 300 A110 110 0 0 1 557 228"
+              stroke-opacity="0.7"
+            />
+            {/* fed from outside the loop instead */}
+            <path d="M404 190 H536" stroke-opacity="0.6" />
+            <path d="M527 182 L537 190 L527 198" stroke-opacity="0.6" />
+          </g>
+          <g fill="var(--cover-accent)" stroke="none">
+            {/* the separate system doing the applying */}
+            <rect x="352" y="168" width="52" height="44" rx="8" fill-opacity="0.5" />
+            {/* stages around the loop */}
+            <circle cx="660" cy="80" r="11" fill-opacity="0.6" />
+            <circle cx="770" cy="190" r="11" fill-opacity="0.6" />
+            <circle cx="660" cy="300" r="11" fill-opacity="0.6" />
+            {/* the open ends of the loop */}
+            <circle cx="557" cy="152" r="7" fill-opacity="0.85" />
+            <circle cx="557" cy="228" r="7" fill-opacity="0.85" />
+          </g>
+        </g>
+      )
+    }
   </svg>
 </div>
 

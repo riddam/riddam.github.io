@@ -26,12 +26,9 @@ What came back, in 2021, was that Actions got expensive quickly under per-minute
 
 But staying on the same platform was never the same as doing nothing, and that's the half that made the recommendation defensible rather than lazy. The tool wasn't the problem. The legacy setup around it was — and a migration would have carried every one of those gaps onto a new platform, with a migration bill on top. So the plan was to keep the tool and rebuild everything around it:
 
-- **Containerized deployments**, instead of builds quietly depending on whatever happened to be installed on a long-lived agent.
-- **Pipeline as code.** Versioned, reviewable, reproducible — rather than assembled by clicking through a UI, where the only record of why something works is that it currently works.
-- **Automation absorbing the setup complexity**, so teams stopped hand-rolling the same pipeline scaffolding over and over.
-- **The CI/CD platform's own infrastructure run from a different system** — GitHub Actions, deliberately not the platform itself. If the thing that rebuilds your pipeline system *is* your pipeline system, you have a circular dependency, and you find that out on the worst possible day. Note that this doesn't contradict the cost finding above: that objection scaled with volume, and this is a handful of infrastructure pipelines rather than thousands of application builds. The right tool for ten runs a month isn't the right tool for ten thousand.
-- **Spot instances for non-critical deployments**, because build capacity is bursty and paying on-demand rates for retryable work is a choice, not a requirement.
-- **A real upgrade strategy**, so the version gap that made migrating look attractive in the first place couldn't quietly reopen.
+Containerized builds instead of long-lived agents carrying hand-installed toolchains. Pipelines as code rather than clicked together in a UI. Automation absorbing the setup so teams stopped hand-rolling the same scaffolding. Build capacity on spot, because builds are short and retryable. The server's state moved off the server, so upgrades became instance replacements. And the platform's own infrastructure deployed from a *different* system — because if the thing that rebuilds your pipeline system *is* your pipeline system, you have a circular dependency, and you discover it on the worst possible day.
+
+I've written that rebuild up properly in [Rebuilding CI/CD Without Changing Platforms](/engineering/rebuilding-ci-cd-without-changing-platforms/), including the parts I'd do differently.
 
 What that bought, on both sides of the fence: developers got real control of their own build setup, including their own container images, without having to understand how any of it reached the cloud. And from the platform side, hardcoded credentials went away in favor of short-lived, per-environment ones — while moving the server's state off the server itself, into a managed database cluster and shared storage, turned upgrades from an event into an instance replacement.
 
