@@ -14,7 +14,7 @@ The senior individual-contributor track is where the claim gets tested honestly.
 
 Here's what I've found actually works.
 
-## 1. 🧭 Authority is a shortcut you no longer have
+## 1. Authority is a shortcut you no longer have
 
 A manager can spend authority. Not often, and not for free, but the option exists. Without it, you earn a mandate one decision at a time — and the way you earn it is by doing the work that makes the answer hard to argue with.
 
@@ -36,7 +36,7 @@ What that bought, on both sides of the fence: developers got real control of the
 
 Note also what the headline recommendation was: *don't migrate.* Nobody proposes that to look impressive. If your analysis only ever concludes that the organization should do something large and new, that's worth noticing about your analysis.
 
-## 2. 🌱 Start where you're the missing piece
+## 2. Start where you're the missing piece
 
 All of that assumes people already listen to you, which is not much help if you've just arrived. Influence comes from a track record, and a track record needs influence to get started. So how do you begin?
 
@@ -52,7 +52,7 @@ Only after that did I start putting opinions into the roadmap. And by then I'd u
 
 > **Do it, then teach it, then steer it.** Reverse that order and you're just the new person with opinions.
 
-## 3. 🔍 Do the reading nobody else did
+## 3. Do the reading nobody else did
 
 The cheapest durable influence available to you is being the only person in the room who actually read the thing. The incident timeline. The contract. The code.
 
@@ -60,7 +60,7 @@ I came up through development, then testing, then DevOps and operations. Same sy
 
 That breadth is what lets you name the blocker two quarters before it arrives. And naming it early, correctly, once, is what makes people turn to you the next time. Being right in public is a slow way to build influence, but it compounds and it doesn't decay.
 
-## 4. 📝 Write it down so it travels without you
+## 4. Write it down so it travels without you
 
 You cannot attend every meeting where your work is discussed. A written decision record can.
 
@@ -74,7 +74,7 @@ Most decision records fail for the same three reasons:
 
 > **A record that argues the other side honestly beats one that pretends there was no trade-off.** The first survives contact with the engineer who inherits it. The second gets rewritten from scratch.
 
-## 5. 🤝 Go and collect the perspectives you don't have
+## 5. Go and collect the perspectives you don't have
 
 The design review is not where you should first hear the serious objection. By then it's expensive — for the proposal and for you.
 
@@ -82,7 +82,7 @@ So go find it beforehand, deliberately, from people who don't think like you. Pe
 
 That last group is the one worth hunting down. The objection you cannot generate yourself is the one that kills the project six months in. This is tactical empathy applied to engineering — much the same instinct as the [calibrated questions in *Never Split the Difference*](/book-notes/never-split-the-difference-voss/): you're not trying to win the conversation, you're trying to find out what you're missing while it's still cheap to be wrong.
 
-## 6. 🧩 Build the bench, not just the headcount
+## 6. Build the bench, not just the headcount
 
 You rarely get to choose your team. But you almost always get input on the next hire — and when people leave, you get a rare chance to rebuild the shape you *need* rather than the shape you had.
 
@@ -97,7 +97,7 @@ A team of one archetype fails predictably. The mix I look for:
 
 Notice that all of these are working styles — how someone approaches a problem. They're observable, they're the thing that actually predicts fit, and they have nothing to do with who anyone is.
 
-## 7. 🪜 Take the work that matters, then go find the people who can do it
+## 7. Take the work that matters, then go find the people who can do it
 
 Take on what genuinely matters — the thing that moves customer satisfaction or the financial picture — even when it sits outside your expertise. You're not required to know everything. You're required to close the gap.
 
@@ -113,7 +113,7 @@ It worked better than I planned. One of those juniors grew into the domain exper
 
 This is where trust gets built, and trust is the base of the pyramid — everything in [*The Five Dysfunctions of a Team*](/book-notes/five-dysfunctions-of-a-team-lencioni/) stacks on top of it.
 
-## 8. ⚔️ Pick the hill, then carry what it costs
+## 8. Pick the hill, then carry what it costs
 
 You get a small number of vetoes. Senior engineers lose theirs by spending one on everything — naming, formatting, library choice, the shape of a function — until "they always object" becomes the summary of your opinion and people route around you.
 
@@ -137,7 +137,7 @@ Then the ground moved again: in May 2025, Redis added AGPLv3 back as a licensing
 
 Reversible decisions deserve a quick opinion. One-way doors deserve a fight. Knowing which one you're looking at is most of the skill.
 
-## 9. 🔁 Make the good path the easy path
+## 9. Make the good path the easy path
 
 Everything above is retail influence — one room, one decision, one document at a time. This is the wholesale version, and it's the only one that scales past you.
 
@@ -147,7 +147,7 @@ I try to make standards and guidelines so easy to use that developers never noti
 
 Influence encoded into a default keeps working while you're on holiday. Influence that lives in your advocacy stops the moment you're busy.
 
-## 10. 🩹 Your estimate measures what you don't know yet
+## 10. Your estimate measures what you don't know yet
 
 Everything so far is about being right in ways that earn attention. Here's the other half, because you won't always be right — and how you handle that determines whether anyone trusts the next number you give them.
 
@@ -165,7 +165,7 @@ Two and a half times over is a bad miss. But an estimate that's wrong and revise
 
 That migration is also where I stopped being a developer who worked on infrastructure and became a platform engineer — not because of the OS, but because it was the first time I had to hold the entire estate in my head at once, every application and runtime and dependency together, instead of one codebase at a time.
 
-## 11. 🧯 When you get overruled anyway
+## 11. When you get overruled anyway
 
 Sometimes you do all of this and the decision still goes the other way. This is the part most leadership writing skips, and it's the part you'll need most.
 
