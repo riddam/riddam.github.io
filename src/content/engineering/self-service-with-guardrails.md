@@ -25,7 +25,7 @@ A team wanting a pipeline opens a pull request adding a few lines. That's the wh
 
 What matters is that the registry is *the* source of truth and not a description of one. Which means something has to continuously make reality match it — and something has to refuse entries that would break it.
 
-The scale this operates at is 1,383 active projects and 2,452 build configurations. At that size, nobody is going to notice a hand-made exception, which is the real argument for the registry: not elegance, but the fact that no human review process survives four figures.
+The scale this operates at is roughly 1,400 projects and around 2,400 build configurations. At that size, nobody is going to notice a hand-made exception, which is the real argument for the registry: not elegance, but the fact that no human review process survives four figures.
 
 ## Validate before you touch anything
 

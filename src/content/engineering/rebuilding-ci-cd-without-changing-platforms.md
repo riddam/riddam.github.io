@@ -12,7 +12,7 @@ Migrating platforms doesn't fix any of that. It relocates it, and adds a migrati
 
 I've written about [the decision not to migrate](/leadership/leading-without-authority/) and how you make that case credibly. This is the other half — what the rebuild actually consisted of, and which parts of it I'd do the same way again.
 
-For a sense of scale, what this now carries is 1,383 active projects and 2,452 build configurations, with another 44 configurations archived. That's the number worth holding in mind through the rest of this, because most of the decisions below only start to matter somewhere in the high hundreds.
+For a sense of scale, what this now carries is roughly 1,400 projects and around 2,400 build configurations, with a few dozen more archived. That's worth holding in mind through the rest of this, because most of the decisions below only start to matter somewhere in the high hundreds.
 
 ## Two agent tiers, and why
 
