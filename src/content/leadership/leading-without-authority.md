@@ -33,11 +33,29 @@ But staying on the same platform was never the same as doing nothing, and that's
 - **Spot instances for non-critical deployments**, because build capacity is bursty and paying on-demand rates for retryable work is a choice, not a requirement.
 - **A real upgrade strategy**, so the version gap that made migrating look attractive in the first place couldn't quietly reopen.
 
+What that bought, on both sides of the fence: developers got real control of their own build setup, including their own container images, without having to understand how any of it reached the cloud. And from the platform side, hardcoded credentials went away in favor of short-lived profiles for cloud access, while the high-availability setup turned upgrades from an event into routine work.
+
 > **"Keep the tool, fix the setup" is only credible if you actually do the second half.** Otherwise it's deferral with a cost model stapled to it.
 
 Note also what the headline recommendation was: *don't migrate.* Nobody proposes that to look impressive. If your analysis only ever concludes that the organization should do something large and new, that's worth noticing about your analysis.
 
-## 2. 🔍 Do the reading nobody else did
+## 2. 🌱 Start where you're the missing piece
+
+All of that assumes people already listen to you, which is not much help if you've just arrived. Influence comes from a track record, and a track record needs influence to get started. So how do you begin?
+
+You look for the thing the team demonstrably doesn't have, and you bring that.
+
+When I joined a platform team, I came from a development background, and the gap was visible almost immediately. The team was strong on infrastructure, stability, and security — genuinely strong. But design patterns and modular architecture weren't part of the working vocabulary, because they'd never needed to be.
+
+So my first project wasn't a proposal. I took one of the automation tools and refactored it into something reusable and maintainable. Not as a critique of anyone's work — as a worked example of what the alternative looked like in our own codebase, on a tool people already used.
+
+Then I made it repeatable rather than personal: training on Python and development practices, and documentation so the ideas didn't depend on me being in the room.
+
+Only after that did I start putting opinions into the roadmap. And by then I'd understood something I'd have gotten wrong on day one — that platform engineers and product developers are optimizing for genuinely different things. Platform thinking starts from infrastructure stability and security. Development thinking starts from performance and customer experience. Neither is the correct one. But turn up with the wrong set of instincts and confident opinions, and you'll be the new person who doesn't understand how things work here.
+
+> **Do it, then teach it, then steer it.** Reverse that order and you're just the new person with opinions.
+
+## 3. 🔍 Do the reading nobody else did
 
 The cheapest durable influence available to you is being the only person in the room who actually read the thing. The incident timeline. The contract. The code.
 
@@ -45,7 +63,7 @@ I came up through development, then testing, then DevOps and operations. Same sy
 
 That breadth is what lets you name the blocker two quarters before it arrives. And naming it early, correctly, once, is what makes people turn to you the next time. Being right in public is a slow way to build influence, but it compounds and it doesn't decay.
 
-## 3. 📝 Write it down so it travels without you
+## 4. 📝 Write it down so it travels without you
 
 You cannot attend every meeting where your work is discussed. A written decision record can.
 
@@ -59,7 +77,7 @@ Most decision records fail for the same three reasons:
 
 > **A record that argues the other side honestly beats one that pretends there was no trade-off.** The first survives contact with the engineer who inherits it. The second gets rewritten from scratch.
 
-## 4. 🤝 Go and collect the perspectives you don't have
+## 5. 🤝 Go and collect the perspectives you don't have
 
 The design review is not where you should first hear the serious objection. By then it's expensive — for the proposal and for you.
 
@@ -67,7 +85,7 @@ So go find it beforehand, deliberately, from people who don't think like you. Pe
 
 That last group is the one worth hunting down. The objection you cannot generate yourself is the one that kills the project six months in. This is tactical empathy applied to engineering — much the same instinct as the [calibrated questions in *Never Split the Difference*](/book-notes/never-split-the-difference-voss/): you're not trying to win the conversation, you're trying to find out what you're missing while it's still cheap to be wrong.
 
-## 5. 🧩 Build the bench, not just the headcount
+## 6. 🧩 Build the bench, not just the headcount
 
 You rarely get to choose your team. But you almost always get input on the next hire — and when people leave, you get a rare chance to rebuild the shape you *need* rather than the shape you had.
 
@@ -82,7 +100,7 @@ A team of one archetype fails predictably. The mix I look for:
 
 Notice that all of these are working styles — how someone approaches a problem. They're observable, they're the thing that actually predicts fit, and they have nothing to do with who anyone is.
 
-## 6. 🪜 Take the work that matters, then go find the people who can do it
+## 7. 🪜 Take the work that matters, then go find the people who can do it
 
 Take on what genuinely matters — the thing that moves customer satisfaction or the financial picture — even when it sits outside your expertise. You're not required to know everything. You're required to close the gap.
 
@@ -92,9 +110,13 @@ That split wasn't arbitrary, and it's the part I'd pass on. Match the work to th
 
 Senior engineers hoard exactly that second category, usually without meaning to, because it's the fun part. It's also the part that grows people. Give it away.
 
+It worked better than I planned. One of those juniors grew into the domain expert — mid-level now, the person everyone goes to for that platform, picking up user stories in it independently. I don't oversee that area at all any more; I just hand it over.
+
+> **The delegation worked at the point I became unnecessary.** If you're still the bottleneck a year later, you didn't delegate the work — you lent it out.
+
 This is where trust gets built, and trust is the base of the pyramid — everything in [*The Five Dysfunctions of a Team*](/book-notes/five-dysfunctions-of-a-team-lencioni/) stacks on top of it.
 
-## 7. ⚔️ Pick the hill, then carry what it costs
+## 8. ⚔️ Pick the hill, then carry what it costs
 
 You get a small number of vetoes. Senior engineers lose theirs by spending one on everything — naming, formatting, library choice, the shape of a function — until "they always object" becomes the summary of your opinion and people route around you.
 
@@ -108,7 +130,7 @@ The development teams didn't want another migration. They were fluent in the Red
 
 That's the part worth generalizing. **When people resist a decision you're confident about, the objection is usually cost rather than merit — and unlike merit, cost is something you can actually move.** Arguing harder does nothing to it.
 
-So I ran the migration as an [AI-assisted workflow](/engineering/ai-assisted-coding-playbook/): Copilot agents generated the changes and opened them as pull requests, so the teams reviewed and merged instead of migrating. Their share of the work went from weeks of project time to an afternoon of code review.
+So I ran the migration as an [AI-assisted workflow](/engineering/ai-assisted-coding-playbook/): Copilot agents generated the changes and opened them as pull requests, so the teams reviewed and merged instead of migrating. Around 180 cache stacks moved that way. Their share of the work went from weeks of project time to an afternoon of code review.
 
 > **Spending a veto means taking on the work it creates.** Win the argument and hand someone else the bill, and you haven't led anything — you've added to their backlog with extra steps.
 
@@ -118,7 +140,7 @@ Then the ground moved again: in May 2025, Redis added AGPLv3 back as a licensing
 
 Reversible decisions deserve a quick opinion. One-way doors deserve a fight. Knowing which one you're looking at is most of the skill.
 
-## 8. 🔁 Make the good path the easy path
+## 9. 🔁 Make the good path the easy path
 
 Everything above is retail influence — one room, one decision, one document at a time. This is the wholesale version, and it's the only one that scales past you.
 
@@ -128,7 +150,7 @@ I try to make standards and guidelines so easy to use that developers never noti
 
 Influence encoded into a default keeps working while you're on holiday. Influence that lives in your advocacy stops the moment you're busy.
 
-## 9. 🧯 When you get overruled anyway
+## 10. 🧯 When you get overruled anyway
 
 Sometimes you do all of this and the decision still goes the other way. This is the part most leadership writing skips, and it's the part you'll need most.
 
