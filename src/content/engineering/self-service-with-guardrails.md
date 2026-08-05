@@ -25,6 +25,8 @@ A team wanting a pipeline opens a pull request adding a few lines. That's the wh
 
 What matters is that the registry is *the* source of truth and not a description of one. Which means something has to continuously make reality match it — and something has to refuse entries that would break it.
 
+The scale this operates at is 1,383 active projects and 2,452 build configurations. At that size, nobody is going to notice a hand-made exception, which is the real argument for the registry: not elegance, but the fact that no human review process survives four figures.
+
 ## Validate before you touch anything
 
 The validation step runs first, and it exits non-zero on the first problem. Nothing reaches the CI server until every check passes.
@@ -70,6 +72,10 @@ The compliance checks run across every declared repository and answer a fixed se
 Reporting first does two things. It tells you how bad the situation actually is, which is almost never what you assumed. And it gives teams a chance to fix things before non-compliance starts failing their builds — which is the difference between a platform team that raised the bar and a platform team that broke everyone's Tuesday.
 
 Once the report is mostly green, turning individual checks into gates is uncontroversial. Turning them into gates first is how platform tooling gets a reputation.
+
+The enforcement did arrive, and where it landed is the part I'd repeat: inside the pipelines teams already own, rather than in a central gatekeeper. Policy-as-code for the rules that have to hold organization-wide, template linting for infrastructure definitions, language-specific linters and code-quality checks, and test pipelines that actually gate a merge.
+
+> The same check feels like part of your build when it runs in your pipeline, and like an audit when it runs in someone else's cron job. Identical logic, opposite reception.
 
 ## Retirement is part of the lifecycle
 

@@ -12,6 +12,8 @@ Migrating platforms doesn't fix any of that. It relocates it, and adds a migrati
 
 I've written about [the decision not to migrate](/leadership/leading-without-authority/) and how you make that case credibly. This is the other half — what the rebuild actually consisted of, and which parts of it I'd do the same way again.
 
+For a sense of scale, what this now carries is 1,383 active projects and 2,452 build configurations, with another 44 configurations archived. That's the number worth holding in mind through the rest of this, because most of the decisions below only start to matter somewhere in the high hundreds.
+
 ## Two agent tiers, and why
 
 The instinct is one kind of build agent, uniformly configured. That breaks on the first job that needs Docker inside Docker.
@@ -35,7 +37,11 @@ CPU utilization is the wrong signal here — it's a lagging proxy for demand. Th
 
 Two things follow from this that are worth stating plainly. Idle cost approaches zero, because at three in the morning there are no agents running at all. And the scale-down timer is a real tuning decision, not a default to accept: too aggressive and you pay the cold-start cost on every commit during working hours; too lax and you're paying for idle agents all afternoon. An hour of idle tolerance turned out to be a reasonable balance, but it's the kind of number worth revisiting against your own commit patterns rather than inheriting from a blog post.
 
-Build capacity also runs on spot. Builds are the ideal spot workload — they're short, they're retryable, and nobody is holding a session open against them.
+Build capacity also runs on spot, and *which* workload gets the spot capacity is where the actual thinking went. Pull request inspection is the obvious candidate: it generates by far the deepest queue, every run is short, and every run is safe to repeat. So that's where spot points.
+
+Which makes interruption handling much less interesting than it sounds, and deliberately so. When spot capacity gets reclaimed, the container tier absorbs the work — runners spin up there and the queue drains a little slower rather than stalling. That's a better answer than clever retry logic, because it requires no coordination and no new moving parts: the fallback is a capacity type that was already running everything else.
+
+> The cheapest way to handle a failure mode is to arrange for something else to already be able to do the work.
 
 ## Don't let the CI system deploy itself
 
@@ -71,6 +77,18 @@ The staggering is the part that's easy to skip and shouldn't be. Refreshing ever
 
 > Nothing about this is clever. It's a scheduled job that keeps a number in sync with another number. That's exactly why it works — and why the five-week version of my week-two estimate never has to happen again.
 
+## Scan the images, and mean it
+
+The VM side of the fleet has drift handled. The container side has a different problem: an agent image is a supply chain, and it's one you're pulling into a system that holds deployment credentials.
+
+Container agent images come out of a managed image-build pipeline into a registry with scanning enabled, and they're exercised in a test phase *after* the build rather than trusted on the strength of having built successfully. A green build says the Dockerfile is valid. It says nothing about whether the result works or what it now contains.
+
+The part that matters is what happens on a critical finding: the image is removed before it is used for any deployment. Not flagged for triage, not added to a backlog with a due date — deleted, under a policy that doesn't negotiate about it.
+
+> A scanner whose findings you triage at leisure is a compliance artifact. A scanner that can delete an artifact before it ships is a control.
+
+That distinction is worth being honest about, because scanning is one of the easiest things to install and one of the easiest to render meaningless. Almost everyone has scanning. Far fewer have a rule that stops a flagged image from being used, and the rule is the entire value.
+
 ## Make the server disposable
 
 The server was the thing nobody wanted to touch, which is how you end up years behind on versions.
@@ -99,11 +117,9 @@ The direction to keep heading is federated identity, where the CI system proves 
 
 ## What's still unfinished
 
-Two honest edges.
+One honest edge, and it's the one with our name on it.
 
-**Image builds aren't self-service yet.** Agent images are built centrally, which means a team wanting a new toolchain files a request and waits for us. That's a bottleneck with our name on it, and the platform-shaped answer is teams building their own images against a policy rather than asking permission — the same pattern that already works for [pipelines and repositories](/engineering/self-service-with-guardrails/).
-
-**Spot interruption handling is coarser than I'd like.** Builds are retryable, which covers most of it, but "retry the whole thing" is a blunt response to losing an instance eight minutes into a twelve-minute job. There's better available here.
+**Image builds aren't self-service yet.** Agent images are built centrally, so a team wanting a new toolchain files a request and waits for us. The scanning and deletion policy above is exactly the sort of guardrail that makes handing that over safe — teams build their own images against a policy rather than asking permission, which is the pattern that already works for [pipelines and repositories](/engineering/self-service-with-guardrails/). The guardrail exists. The self-service hasn't been built on top of it yet.
 
 ## What I'd keep
 
