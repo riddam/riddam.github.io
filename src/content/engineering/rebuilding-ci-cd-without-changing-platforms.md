@@ -12,6 +12,8 @@ Migrating platforms doesn't fix any of that. It relocates it, and adds a migrati
 
 I've written about [the decision not to migrate](/leadership/leading-without-authority/) and how you make that case credibly. This is the other half — what the rebuild actually consisted of, and which parts of it I'd do the same way again.
 
+This post is about hosting the platform: agents, scaling, upgrades, and the things that quietly rot. The pipelines-as-code half of that list — how teams declare a pipeline instead of clicking one together — is [its own post](/engineering/self-service-with-guardrails/).
+
 For a sense of scale, what this now carries is roughly 1,400 projects and around 2,400 build configurations, with a few dozen more archived. That's worth holding in mind through the rest of this, because most of the decisions below only start to matter somewhere in the high hundreds.
 
 ## Two agent tiers, and why
@@ -23,7 +25,7 @@ Nested container workloads need privileges a managed container platform won't gr
 - **VM agents** for anything needing Docker-in-Docker, privileged operations, or a full machine. They cost more and start slower.
 - **Container agents** for everything else, which is the large majority of builds.
 
-The container tier runs framework-specific images — one for Python, one for TypeScript, one for .NET — rather than a single image carrying every toolchain any team might want. A fat image is appealing for about a month, until it takes eleven minutes to pull, and every team's dependency upgrade becomes everyone's problem. Narrow images fail independently, which is the property you want.
+The container tier runs framework-specific images — one for Python, one for TypeScript, one for .NET — rather than a single image carrying every toolchain any team might want. A fat image is appealing for about a month, until the pull time starts dominating short builds and every team's dependency upgrade becomes everyone's problem. Narrow images fail independently, which is the property you want.
 
 The VM tier is deliberately heterogeneous too: general-purpose x86 for most work, ARM instances where the workload benefits, compute-optimized shapes for the heavy jobs, and Mac metal for mobile builds, because iOS builds leave you no choice.
 
@@ -31,13 +33,13 @@ The VM tier is deliberately heterogeneous too: general-purpose x86 for most work
 
 ## Scale on the queue, not on CPU
 
-Build capacity is bursty in a way that defeats ordinary autoscaling. Nothing for two hours, then forty jobs land because a release branch merged.
+Build capacity is bursty in a way that defeats ordinary autoscaling. Nothing for two hours, then dozens of jobs land at once because a release branch merged.
 
 CPU utilization is the wrong signal here — it's a lagging proxy for demand. The build queue *is* the demand signal: it knows exactly how much work is waiting and what kind of agent each job needs. So agents provision in response to queue depth, and scale back down after an idle period.
 
 Two things follow from this that are worth stating plainly. Idle cost approaches zero, because at three in the morning there are no agents running at all. And the scale-down timer is a real tuning decision, not a default to accept: too aggressive and you pay the cold-start cost on every commit during working hours; too lax and you're paying for idle agents all afternoon. An hour of idle tolerance turned out to be a reasonable balance, but it's the kind of number worth revisiting against your own commit patterns rather than inheriting from a blog post.
 
-Build capacity also runs on spot, and *which* workload gets the spot capacity is where the actual thinking went. Pull request inspection is the obvious candidate: it generates by far the deepest queue, every run is short, and every run is safe to repeat. So that's where spot points.
+Build capacity also runs on spot, and *which* workload gets it is the decision that matters. Pull request inspection is where it points: that generates by far the deepest queue, every run is short, and every run is safe to repeat.
 
 Which makes interruption handling much less interesting than it sounds, and deliberately so. When spot capacity gets reclaimed, the container tier absorbs the work — runners spin up there and the queue drains a little slower rather than stalling. That's a better answer than clever retry logic, because it requires no coordination and no new moving parts: the fallback is a capacity type that was already running everything else.
 

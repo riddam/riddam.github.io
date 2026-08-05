@@ -1,5 +1,5 @@
 ---
-title: "Self-Service With Guardrails: Managing Repos and Pipelines as Data"
+title: "Self-Service With Guardrails: Repositories and Pipelines as Data"
 description: "How to let teams own their repositories and pipelines without the platform team becoming a ticket queue — declarative registries, validation that runs first, reconciliation with drift detection, and a lifecycle that includes retirement."
 pubDate: 2026-08-05
 tags: ["platform-engineering", "developer-productivity", "cicd", "tooling"]
@@ -8,7 +8,7 @@ cover: gate
 
 There's a stage every platform team hits. You've built something good, teams want to use it, and now you spend your week creating repositories, adding people to groups, wiring webhooks, and setting up pipelines. You've become a ticket queue with extra steps.
 
-The obvious fix is to give teams access and let them do it themselves. That works right up until you have a few hundred repositories, no two configured the same way, and no way to answer "which of these have branch protection?" without opening several hundred browser tabs.
+The obvious fix is to give teams access and let them do it themselves. That works right up until you have a thousand-odd repositories, no two configured the same way, and no way to answer "which of these have branch protection?" without opening a thousand browser tabs.
 
 Self-service and consistency look like opposites. They aren't — but getting both means the thing teams edit has to be *data*, not a UI.
 
@@ -81,7 +81,7 @@ The enforcement did arrive, and where it landed is the part I'd repeat: inside t
 
 Almost all platform tooling creates things. Very little of it retires them, which is why every organization accumulates repositories nobody has touched in three years and nobody is willing to delete.
 
-So the same tooling detects staleness — no commits for a configurable window, excluding already-archived repositories — and sorts by how long it's been, with a recommendation attached based on whether anything is still open against it. A repository with no commits in two years and no open work is a different case from one with no commits and fourteen open pull requests.
+So the same tooling detects staleness — no commits for a configurable window, excluding already-archived repositories — and sorts by how long it's been, with a recommendation attached based on whether anything is still open against it. A repository with no commits in two years and no open work is a different case from one with no commits and a stack of open pull requests nobody closed.
 
 And when something is retired, there's an actual sequence rather than a single archive call: close the open issues, close the open pull requests, remove branch protection, and leave a note in the README explaining what happened and where the work went. Archiving without that leaves a repository that looks abandoned rather than deliberately closed — and the person who finds it in two years can't tell the difference.
 
@@ -93,7 +93,7 @@ Three things that no design document ever includes and every real system needs.
 
 **An audit log.** Every action records who ran it, what it targeted, what changed, whether it was a dry run, and whether it succeeded — as structured JSON, with the notable actions also posted to a chat channel. When someone asks why a webhook changed last Thursday, you want an answer that isn't archaeology. Recording the dry-run flag matters too, so a rehearsal is never mistaken for the real thing.
 
-**Rate-limit awareness.** Anything that walks several hundred repositories through a provider API will hit rate limits. Knowing your remaining budget before starting a long reconciliation is the difference between a clean run and a job that dies two-thirds through having done two-thirds of the work.
+**Rate-limit awareness.** Anything that walks four figures of repositories through a provider API will hit rate limits. Knowing your remaining budget before starting a long reconciliation is the difference between a clean run and a job that dies two-thirds through having done two-thirds of the work.
 
 **Account hygiene.** Enforcing multi-factor authentication and pruning outside collaborators are the least interesting features here and probably the highest-value per line of code. They're also the checks nobody performs manually, because doing so means reading a members list — which is exactly the sort of task that only ever happens if something scheduled does it.
 
