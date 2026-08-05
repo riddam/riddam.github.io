@@ -101,7 +101,7 @@ The direction to keep heading is federated identity, where the CI system proves 
 
 Two honest edges.
 
-**Image builds aren't self-service yet.** Agent images are built centrally, which means a team wanting a new toolchain files a request and waits for us. That's a bottleneck with our name on it, and the platform-shaped answer is teams building their own images against a policy rather than asking permission.
+**Image builds aren't self-service yet.** Agent images are built centrally, which means a team wanting a new toolchain files a request and waits for us. That's a bottleneck with our name on it, and the platform-shaped answer is teams building their own images against a policy rather than asking permission — the same pattern that already works for [pipelines and repositories](/engineering/self-service-with-guardrails/).
 
 **Spot interruption handling is coarser than I'd like.** Builds are retryable, which covers most of it, but "retry the whole thing" is a blunt response to losing an instance eight minutes into a twelve-minute job. There's better available here.
 

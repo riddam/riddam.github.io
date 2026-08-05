@@ -33,6 +33,16 @@ export const SERIES: Series[] = [
     ],
   },
   {
+    // Host the platform, then let teams drive it themselves. The infrastructure
+    // has to be sound before self-service is safe, so the order matters.
+    title: 'Rebuilding a CI/CD platform',
+    sectionId: 'engineering',
+    slugs: [
+      'rebuilding-ci-cd-without-changing-platforms',
+      'self-service-with-guardrails',
+    ],
+  },
+  {
     // Design it, build the model, then run it in production. The two exam
     // guides (CCA-F, GCP PCA) sit outside the arc — they're reference prep,
     // not steps, and tag-based "Keep reading" already connects them.

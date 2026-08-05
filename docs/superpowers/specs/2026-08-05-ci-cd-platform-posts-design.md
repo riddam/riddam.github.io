@@ -93,15 +93,58 @@ scanning policy for team-supplied images. Section 8 covers the first and third h
 as open edges. **No fabricated numbers** — the post ships without them rather than
 guessing, and they can be added later.
 
-## Post B — "Guardrails That Scale" (working title, outline only)
+## Post B — "Self-Service With Guardrails: Managing Repos and Pipelines as Data"
 
-Material exists in the automation repository but has only been skimmed. Needs a proper
-read before specifying: pipeline synchronisation (reconciling repository-declared
-pipelines against server state, create vs. update), compliance and stale detection, PR
-and repository validation, release management, cookiecutter-based scaffolding, Slack and
-GitHub integration, audit logging. The through-line is likely self-service with
-guardrails — teams own their pipelines, the platform owns the invariants — which pairs
-with section 8 of the leadership post.
+Slug `self-service-with-guardrails`, in `engineering/`. Same house style as post A: plain
+`##` headers, no emoji, no numbering. ~1,700 words. New cover motif `gate`.
+
+Tags `["platform-engineering", "developer-productivity", "cicd", "tooling"]` — all
+pre-existing.
+
+The through-line: self-service and consistency are only opposites while the thing teams
+edit is a UI. Make it data and you get both.
+
+### Sections
+
+1. **The ticket-queue stage.** A platform team that succeeds becomes a bottleneck; opening
+   access without structure produces several hundred snowflake repositories.
+2. **Two registries, one source of truth.** A pipeline registry and a repository registry
+   in version control. Links to the config-as-data post — the same argument applied to
+   organisational structure rather than environments.
+3. **Validate before you touch anything.** Schema conformance and duplicate rejection are
+   the obvious ones. The two worth porting anywhere: **enforced alphabetical ordering**,
+   which eliminates a class of merge conflict rather than being fussiness, and **the
+   owning team must already exist**, without which the ownership field decays into free
+   text. Plus the point that a guardrail must tell the author how to fix it.
+4. **Reconcile, don't create.** Pipelines reconcile by set difference over identifiers
+   derived from the declaration, so there is no mapping table to drift. Repositories need
+   a per-concern drift check (teams, webhooks, branch protection) so runs are quiet when
+   nothing changed and loud when something did.
+5. **Dry run is a feature, not a flag.** It is why anyone permits tooling with this blast
+   radius to run at all. Must be the same code path with writes suppressed at the
+   boundary — a separate path will diverge and lie.
+6. **Compliance as a report before a gate.** Seven checks, table and JSON output. Report
+   first so teams can fix things before non-compliance fails their builds.
+7. **Retirement is part of the lifecycle.** Stale detection with recommendations weighted
+   by open work, and a real archive sequence rather than a bare archive call.
+8. **The unglamorous parts.** Structured audit log including the dry-run flag,
+   rate-limit awareness before long reconciliations, and account hygiene.
+9. **What it buys.** Self-service is the visible win; a queryable estate is the larger
+   one. Closes with the build order — registry, validation, dry run, reconciliation,
+   reporting, and only then gating — because each step makes the next safe.
+
+### Series
+
+Posts A and B are registered as a two-part series "Rebuilding a CI/CD platform" in
+`src/consts.ts`, A first: the infrastructure has to be sound before self-service is safe.
+They also cross-link in the body — A from its unfinished-edges section, B from its intro.
+
+### Anonymisation applied
+
+The CI product, the employer, internal hostnames, the code-quality service, and the
+internal wiki links embedded in the source's error strings are all absent. Internal field
+names from the schema (for example the grouping field) are described by role rather than
+reproduced. Verified by scan.
 
 ## Leadership post changes
 

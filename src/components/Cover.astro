@@ -532,6 +532,32 @@ const { motif, tint, class: className } = Astro.props;
         </g>
       )
     }
+
+    {
+      motif === 'gate' && (
+        <g>
+          {/* Kept within x 370–800: the 16/10 list thumbnail slices to x 296–904. */}
+          <g fill="none" stroke="var(--cover-accent)" stroke-width="2.5" stroke-linecap="round">
+            {/* the checkpoint everything has to clear */}
+            <path d="M620 95 V285" stroke-opacity="0.5" stroke-dasharray="8 11" />
+            {/* two that pass */}
+            <path d="M370 140 H796" stroke-opacity="0.65" />
+            <path d="M370 195 H796" stroke-opacity="0.65" />
+            <path d="M787 132 L797 140 L787 148" stroke-opacity="0.65" />
+            <path d="M787 187 L797 195 L787 203" stroke-opacity="0.65" />
+            {/* one turned away at the gate */}
+            <path d="M370 250 H596" stroke-opacity="0.45" />
+            <path d="M596 250 Q556 252 528 306" stroke-opacity="0.35" stroke-dasharray="7 9" />
+          </g>
+          <g fill="var(--cover-accent)" stroke="none">
+            <circle cx="370" cy="140" r="9" fill-opacity="0.7" />
+            <circle cx="370" cy="195" r="9" fill-opacity="0.7" />
+            <circle cx="370" cy="250" r="9" fill-opacity="0.45" />
+            <circle cx="524" cy="312" r="8" fill-opacity="0.3" />
+          </g>
+        </g>
+      )
+    }
   </svg>
 </div>
 
