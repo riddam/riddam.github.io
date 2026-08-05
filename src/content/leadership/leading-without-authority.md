@@ -150,7 +150,25 @@ I try to make standards and guidelines so easy to use that developers never noti
 
 Influence encoded into a default keeps working while you're on holiday. Influence that lives in your advocacy stops the moment you're busy.
 
-## 10. 🧯 When you get overruled anyway
+## 10. 🩹 Your estimate measures what you don't know yet
+
+Everything so far is about being right in ways that earn attention. Here's the other half, because you won't always be right — and how you handle that determines whether anyone trusts the next number you give them.
+
+I estimated two weeks to migrate from Amazon Linux 2 to Amazon Linux 2023. It took five.
+
+The migration itself was never the problem. What I'd missed was everything sitting on top of it. AL2023 is a substantially different base: OpenSSL moves from the 1.0.2 and 1.1.1 era to OpenSSL 3, Python 2 is gone entirely, and the default versions for Python, .NET, PHP, and Node all jump forward. Our applications were running well behind those versions — years of deferred maintenance nobody had needed to confront, because the old base image kept quietly supporting them.
+
+So the moment the OS moved, everything above it broke at once. I hadn't estimated an OS migration. I'd unknowingly estimated a maintenance backlog I had never counted.
+
+> **A platform migration estimate is really an estimate of how current everything above the platform is.** Skip that measurement and you haven't estimated anything — you've guessed with confidence.
+
+The fix isn't "add buffer." It's the thing section three argues for and I simply hadn't done: read the estate first. An inventory of runtime versions and library dependencies across the applications would have taken a few days, and would have turned a wrong number into a right one before anyone was relying on it.
+
+Two and a half times over is a bad miss. But an estimate that's wrong and revised early is a planning problem, while an estimate that's wrong and defended quietly is a trust problem. Only one of those follows you around.
+
+That migration is also where I stopped being a developer who worked on infrastructure and became a platform engineer — not because of the OS, but because it was the first time I had to hold the entire estate in my head at once, every application and runtime and dependency together, instead of one codebase at a time.
+
+## 11. 🧯 When you get overruled anyway
 
 Sometimes you do all of this and the decision still goes the other way. This is the part most leadership writing skips, and it's the part you'll need most.
 
@@ -164,10 +182,12 @@ The recurring ones, in my experience, are smaller than you'd expect: naming conv
 
 ## Final thoughts
 
-Leading without authority is slower than leading with it. You don't get to shortcut anything, every mandate is earned per decision, and your influence is only ever as good as your last piece of analysis.
+Leading without authority is slower than leading with it. You don't get to shortcut anything, and every mandate is earned one decision at a time.
 
 But it's more durable, because it isn't attached to a title. It moves with you between teams, companies, and roles, and it works on people who don't report to you — which, as you get more senior, is nearly everyone who matters.
 
-If you're on this track: do the reading, write the record, spend your vetoes carefully, and put your best thinking into the defaults rather than the debates.
+At the top of this post I said that when you're right and get ignored, there's no lever to pull. That's true on your first day. Everything since has been about building one: the analysis nobody else did, the record that keeps working in rooms you're not in, the people you grew past needing you, the default that makes the right thing effortless. None of it requires anyone's permission.
+
+If you're on this track: do the reading, write the record, spend your vetoes carefully, say so early when your number was wrong, and put your best thinking into the defaults rather than the debates.
 
 What's worked for you? I'd genuinely like to hear it — [find me on LinkedIn](https://www.linkedin.com/in/riddam/).
