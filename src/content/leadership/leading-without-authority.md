@@ -33,7 +33,7 @@ But staying on the same platform was never the same as doing nothing, and that's
 - **Spot instances for non-critical deployments**, because build capacity is bursty and paying on-demand rates for retryable work is a choice, not a requirement.
 - **A real upgrade strategy**, so the version gap that made migrating look attractive in the first place couldn't quietly reopen.
 
-What that bought, on both sides of the fence: developers got real control of their own build setup, including their own container images, without having to understand how any of it reached the cloud. And from the platform side, hardcoded credentials went away in favor of short-lived profiles for cloud access, while the high-availability setup turned upgrades from an event into routine work.
+What that bought, on both sides of the fence: developers got real control of their own build setup, including their own container images, without having to understand how any of it reached the cloud. And from the platform side, hardcoded credentials went away in favor of short-lived, per-environment ones — while moving the server's state off the server itself, into a managed database cluster and shared storage, turned upgrades from an event into an instance replacement.
 
 > **"Keep the tool, fix the setup" is only credible if you actually do the second half.** Otherwise it's deferral with a cost model stapled to it.
 
