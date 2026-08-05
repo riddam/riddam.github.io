@@ -94,11 +94,23 @@ Senior engineers hoard exactly that second category, usually without meaning to,
 
 This is where trust gets built, and trust is the base of the pyramid — everything in [*The Five Dysfunctions of a Team*](/book-notes/five-dysfunctions-of-a-team-lencioni/) stacks on top of it.
 
-## 7. ⚔️ Pick the hill, then actually die on it
+## 7. ⚔️ Pick the hill, then carry what it costs
 
 You get a small number of vetoes. Senior engineers lose theirs by spending one on everything — naming, formatting, library choice, the shape of a function — until "they always object" becomes the summary of your opinion and people route around you.
 
-Save them for decisions that are expensive to reverse. When the licensing landscape around our in-memory cache shifted, the choice between moving to a newer Redis version and moving to Valkey was worth real review time and worth committing to properly, because the cost of changing your mind later lands on every service that touches the cache.
+Save them for decisions that are expensive to reverse. When the licensing landscape around our in-memory cache shifted, the choice between moving to a newer Redis version and moving to Valkey was worth real review time, because the cost of changing your mind later lands on every service that touches the cache.
+
+Technically, the two had diverged more than the shared ancestry suggests. Redis was putting its energy into AI and vector capabilities; Valkey was putting its energy into the core caching path. And on the managed-service side, AWS had moved decisively toward Valkey on the back of the licensing change, which mattered a great deal for anything we ran managed.
+
+So the technical answer came out reasonably clear. The opposition wasn't technical at all.
+
+The development teams didn't want another migration. They were fluent in the Redis way of working, they had features to ship, and from where they sat, a licensing dispute they had no part in was arriving as their sprint work. That isn't obstruction. It's an accurate read of who pays.
+
+That's the part worth generalizing. **When people resist a decision you're confident about, the objection is usually cost rather than merit — and unlike merit, cost is something you can actually move.** Arguing harder does nothing to it.
+
+So I ran the migration as an [AI-assisted workflow](/engineering/ai-assisted-coding-playbook/): Copilot agents generated the changes and opened them as pull requests, so the teams reviewed and merged instead of migrating. Their share of the work went from weeks of project time to an afternoon of code review.
+
+> **Spending a veto means taking on the work it creates.** Win the argument and hand someone else the bill, and you haven't led anything — you've added to their backlog with extra steps.
 
 Then the ground moved again: in May 2025, Redis added AGPLv3 back as a licensing option, after the fork it had triggered. It would be easy to read that as the review having been wasted effort. It's the opposite. A decision reached in an afternoon on licensing sentiment alone gives you nothing to think with when the situation changes — whereas the work of actually understanding your exposure, your upgrade path, and what every dependent service would need is exactly what you reuse to evaluate the next shift.
 
