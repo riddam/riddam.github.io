@@ -1,4 +1,4 @@
-# Running AI on infrastructure you control — a four-post series
+# Running AI beyond one cloud — a four-post series
 
 **Date:** 2026-08-11
 **Status:** design for review, not yet approved
@@ -70,7 +70,7 @@ already establishes.
   // Where AI runs, as opposed to what it does. The existing AI arc assumes a
   // managed cloud underneath; this one removes that assumption. Post 2 is the
   // centre of gravity -- hybrid and on-prem appear nowhere else on the site.
-  title: 'Running AI on infrastructure you control',
+  title: 'Running AI beyond one cloud',
   sectionId: 'guides',
   slugs: [
     'portable-ai-platform-contract',
@@ -286,7 +286,7 @@ than for everything else combined.
 
 ```yaml
 ---
-title: "Connecting Cloud and On-Premises: The Part That Actually Takes the Time"
+title: "Connecting Cloud and On-Premises Without Firewall Tickets"
 description: "Hybrid AI platforms fail at the network boundary, not the model layer — outbound-only architecture, CIDR planning, choosing between Cilium Cluster Mesh, Istio and no mesh at all, and portable identity across the edge."
 pubDate: 2026-08-11
 tags: ["hybrid-cloud", "kubernetes", "networking", "on-premises"]
@@ -374,7 +374,7 @@ B's opening table is the best structural idea in either document.
 
 ```yaml
 ---
-title: "When the Workload Isn't Chat: Document Extraction on a Portable Platform"
+title: "Document Extraction at Scale: When the Workload Isn't Chat"
 description: "What changes when AI work is throughput rather than conversation — the parser is the swappable seam instead of the model, queues replace serving, and residency gets enforced by queue topology rather than application code."
 pubDate: 2026-08-11
 tags: ["document-extraction", "ai-platform", "kubernetes", "postgres"]
@@ -681,7 +681,7 @@ Then, per post:
 ```bash
 P=dist/guides/<slug>/index.html
 ls $P dist/og/guides/<slug>.png
-grep -o 'Running AI on infrastructure you control' $P | head -1   # series nav matched the slug
+grep -o 'Running AI beyond one cloud' $P | head -1   # series nav matched the slug
 grep -c 'mermaid' $P                                              # diagrams present
 grep -c '<item>' dist/guides/rss.xml
 grep -nP '[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}]' src/content/guides/<slug>.md || echo "no emoji"
@@ -713,7 +713,7 @@ Two checks specific to this series:
 
 ## Open questions
 
-1. **Series title.** "Running AI on infrastructure you control" — or something shorter.
+1. ~~**Series title.**~~ **Resolved 2026-08-11:** `Running AI beyond one cloud`. Matches the gerund-plus-noun-phrase, sentence-case shape of the three existing series entries, and does not presuppose the build -- which matters, since post 1 spends a section arguing most readers should not.
 2. **Three posts or four?** See the first risk. My recommendation is four, with post 1 written last
    so its final scope is set by what posts 2–4 actually needed.
 3. **Is post 3's domain specificity acceptable?** See "Anonymization", final paragraph.

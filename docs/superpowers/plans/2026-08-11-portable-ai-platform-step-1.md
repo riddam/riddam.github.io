@@ -18,9 +18,9 @@ But Task 1 first fixes a real bug found while planning: series navigation does n
 
 ## Decisions needed before starting
 
-**1. Series title.** The spec proposes `'Running AI on infrastructure you control'`. It appears in the series nav box on every post in the series. It is one string in `src/consts.ts` and changing it later is a one-line edit with no URL impact, so this is safe to proceed on. **Proceeding with the spec's title unless told otherwise.**
+**1. ~~Series title~~ — resolved 2026-08-11.** `Running AI beyond one cloud`, confirmed by Riddam. Use it verbatim; it appears in the series nav box on every post in the series and is asserted by the test in Task 1 Step 1.
 
-**2. Post 2's slug is final once published.** `connecting-cloud-and-on-premises`. Changing it after publishing breaks the URL. Confirm the wording now rather than later.
+**2. ~~Post 2's slug~~ — resolved 2026-08-11.** `connecting-cloud-and-on-premises`, confirmed. The title changed after this plan was first written (see below) but the slug did not, so nothing about the plumbing moves.
 
 Open questions 2 (three posts or four) and 3 (post 3's domain specificity) do not affect this plan at all — both concern posts 1 and 3.
 
@@ -148,7 +148,7 @@ test('series nav filters slugs that have no published post', () => {
 });
 
 test('the portable AI platform series is registered', () => {
-  const series = SERIES.find((s) => s.title === 'Running AI on infrastructure you control');
+  const series = SERIES.find((s) => s.title === 'Running AI beyond one cloud');
   assert.ok(series, 'portable AI platform series missing');
   assert.equal(series.sectionId, 'guides');
   assert.equal(series.slugs.length, 4, 'the series is four posts');
@@ -217,7 +217,7 @@ Behaviour for the three existing complete series is unchanged: every slug resolv
     // centre of gravity -- hybrid and on-prem appear nowhere else on the site.
     // Post 1 is written last: de-duplication against the three AI guides sets
     // its scope, so it can only be sized once 2-4 exist.
-    title: 'Running AI on infrastructure you control',
+    title: 'Running AI beyond one cloud',
     sectionId: 'guides',
     slugs: [
       'portable-ai-platform-contract',
@@ -298,7 +298,7 @@ Post 2 is the lowest-overlap post in the series, but it is not zero. Two collisi
 
 ```markdown
 ---
-title: "Connecting Cloud and On-Premises: The Part That Actually Takes the Time"
+title: "Connecting Cloud and On-Premises Without Firewall Tickets"
 description: "Hybrid AI platforms fail at the network boundary, not the model layer — outbound-only architecture, CIDR planning, choosing between Cilium Cluster Mesh, Istio and no mesh at all, and portable identity across the edge."
 pubDate: 2026-08-11
 tags: ["hybrid-cloud", "kubernetes", "networking", "on-premises"]
@@ -309,6 +309,8 @@ cover: network
 ```
 
 The italic intro should say plainly that this is the section of a hybrid project that consumes more time than everything above it combined, and that the constraint driving the whole design — no inbound connectivity — turns out to be a feature.
+
+**The intro now carries that effort claim alone.** An earlier draft title ended "The Part That Actually Takes the Time"; the published title promises an outcome instead, so the "this is where the time goes" argument has no other home. Do not drop it.
 
 - [ ] **Step 3: Write sections 01–05**
 
@@ -427,7 +429,7 @@ P=dist/guides/connecting-cloud-and-on-premises/index.html
 ls $P dist/og/guides/connecting-cloud-and-on-premises.png
 grep -o 'On this page' $P | head -1
 grep -c 'mermaid' $P
-grep -o 'Running AI on infrastructure you control' $P | head -1
+grep -o 'Running AI beyond one cloud' $P | head -1
 grep -o 'Part [0-9] of [0-9]' $P
 grep -c 'series-item' $P
 grep -c '<item>' dist/guides/rss.xml
