@@ -20,6 +20,7 @@ export async function getStaticPaths() {
         tags: e.data.tags ?? [],
         minutesRead: readingStats(e.body ?? '').minutes,
         cover: e.data.cover,
+        coverVariant: e.data.coverVariant,
       });
     }
   }

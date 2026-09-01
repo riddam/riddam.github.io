@@ -491,7 +491,9 @@ details[open] summary { margin-bottom: 0.5rem; }
 
 pre.mermaid {
   display: flex;
-  justify-content: center;
+  /* `safe` keeps the diagram centred while it fits and pins it to the start
+     edge once it overflows, so a wide diagram stays scrollable from its left. */
+  justify-content: safe center;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -500,7 +502,9 @@ pre.mermaid {
   overflow-x: auto;
   font-family: inherit;
 }
-pre.mermaid svg { max-width: 100%; height: auto; }
+/* Diagrams keep their natural size and scroll inside this box rather than
+   scaling down to fit -- see the mermaid config in Base.astro. */
+pre.mermaid svg { max-width: none; height: auto; flex: 0 0 auto; }
 
 article img + em {
   display: block;

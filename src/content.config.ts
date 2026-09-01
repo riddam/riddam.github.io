@@ -11,6 +11,12 @@ const postSchema = z.object({
   draft: z.boolean().default(false),
   /** Abstract cover-art motif (see src/components/Cover.astro). Optional. */
   cover: z.enum(COVER_MOTIFS).optional(),
+  /**
+   * Which rendering of that motif to use. Every motif is now used by more than
+   * one post; set this to 2 on the second so the pair does not render as the
+   * same picture. Defaults to 1.
+   */
+  coverVariant: z.union([z.literal(1), z.literal(2)]).optional(),
 });
 
 const makeCollection = (name: string) =>

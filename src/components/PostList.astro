@@ -11,6 +11,7 @@ interface PostItem {
   sectionId?: SectionId;
   minutesRead?: number;
   cover?: Motif;
+  coverVariant?: 1 | 2;
 }
 
 interface Props {
@@ -29,7 +30,7 @@ const formatDate = (d: Date) =>
       <li class:list={{ 'has-thumb': post.cover }}>
         {post.cover && (
           <a class="post-thumb-link" href={post.href} tabindex="-1" aria-hidden="true">
-            <Cover motif={post.cover} tint={post.sectionId} class="post-thumb" />
+            <Cover motif={post.cover} tint={post.sectionId} variant={post.coverVariant} class="post-thumb" />
           </a>
         )}
         <div class="post-list-body">

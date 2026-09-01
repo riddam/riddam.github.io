@@ -246,14 +246,21 @@ const jsonLd = article ? [articleLd, breadcrumbLd].filter(Boolean) : websiteLd;
             theme: 'base',
             themeVariables,
             fontFamily: "'Inter Variable', sans-serif",
+            // useMaxWidth:false keeps diagrams at their natural size instead of
+            // shrinking them to the container -- a wide flowchart scaled to fit a
+            // phone renders its labels at ~3px. The container scrolls instead
+            // (see pre.mermaid in global.css).
             flowchart: {
               curve: 'basis',
               htmlLabels: true,
               padding: 14,
               nodeSpacing: 48,
               rankSpacing: 56,
-              useMaxWidth: true,
+              useMaxWidth: false,
             },
+            er: { useMaxWidth: false },
+            sequence: { useMaxWidth: false },
+            class: { useMaxWidth: false },
             themeCSS: [
               '.node rect,.node polygon,.node path{rx:10px;ry:10px}',
               '.cluster rect{rx:14px;ry:14px}',

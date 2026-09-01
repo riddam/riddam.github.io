@@ -23,6 +23,7 @@ const posts = entries
     pubDate: entry.data.pubDate,
     minutesRead: readingStats(entry.body ?? '').minutes,
     cover: entry.data.cover,
+    coverVariant: entry.data.coverVariant,
     sectionId: section.id,
   }))
   .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());

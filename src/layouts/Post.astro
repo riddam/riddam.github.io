@@ -22,6 +22,7 @@ interface RelatedPost {
   sectionLabel?: string;
   sectionId?: SectionId;
   cover?: Motif;
+  coverVariant?: 1 | 2;
 }
 
 interface SeriesNav {
@@ -47,6 +48,7 @@ interface Props {
   olderPost?: { href: string; title: string };
   newerPost?: { href: string; title: string };
   cover?: Motif;
+  coverVariant?: 1 | 2;
 }
 
 const {
@@ -65,6 +67,7 @@ const {
   olderPost,
   newerPost,
   cover,
+  coverVariant,
 } = Astro.props;
 
 // h2 + h3: the long guides carry their real structure at depth 3.
@@ -120,7 +123,7 @@ const liShareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encode
         </div>
       </aside>
       <div class="post-header">
-        {cover && <Cover motif={cover} tint={section.id} class="post-cover" />}
+        {cover && <Cover motif={cover} tint={section.id} variant={coverVariant} class="post-cover" />}
         <a href={`/${section.id}/`} class="section-badge">{section.label}</a>
         <h1>{title}</h1>
         <p class="post-description">{description}</p>
