@@ -150,4 +150,6 @@ The through-line: **image build, configuration, and provisioning are three disti
 
 Go multi-cloud because a specific requirement makes it the better architecture — best-of-breed services, real regulatory needs, genuine resilience economics — not because "lock-in" sounds scary in the abstract. Then automate it with the tool that fits your team: **OpenTofu** if you want open, HCL-based IaC without license risk; **Terraform** if you're buying into HashiCorp's enterprise platform; **Pulumi** if your people think in code and you're building infrastructure as a product. And whichever you pick, spend your real effort on state, boundaries, policy, and secrets — the discipline outlives the tool.
 
+*For what this looks like when the workload is AI and one of the sites is your own datacenter, see [Connecting Cloud and On-Premises](/guides/connecting-cloud-and-on-premises/).*
+
 *What's your multi-cloud setup — deliberate, or accidental? I'd love to compare notes — [find me on LinkedIn](https://www.linkedin.com/in/riddam/).*

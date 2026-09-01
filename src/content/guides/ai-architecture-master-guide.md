@@ -551,6 +551,8 @@ flowchart TD
     G --> D["Azure OpenAI<br/>(GPT-5)"]
 ```
 
+*The on-premises and hybrid case gets its own treatment in [Connecting Cloud and On-Premises](/guides/connecting-cloud-and-on-premises/), including what happens when a site accepts no inbound connections at all.*
+
 ## 16 — Trade-off Master Reference
 
 Every architectural decision an AI architect makes, in one table.

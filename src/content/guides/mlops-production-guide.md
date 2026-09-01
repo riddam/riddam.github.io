@@ -151,6 +151,8 @@ Organized by function. Pick one tool per row — don't try to use all of them.
 
 > **Trade-off — managed vs self-hosted serving:** **Managed endpoint** (SageMaker/Vertex/Azure ML) = autoscaling, monitoring, blue-green deployment built in — but higher per-hour cost and less control. **Self-hosted** (vLLM on K8s) = cheapest at scale, full control over batching/quantization — but you build your own scaling, health checks, and rollback. Start managed; migrate to self-hosted when monthly inference spend exceeds ~$10K and you have dedicated ops capacity.
 
+*This section assumes a managed cloud underneath. For the hybrid and on-premises case — outbound-only delivery, cross-cluster connectivity, air-gapped installs — see [Connecting Cloud and On-Premises](/guides/connecting-cloud-and-on-premises/).*
+
 ## 06 — Model Deployment Patterns
 
 The model packaging and deployment pipeline:
