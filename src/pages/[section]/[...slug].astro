@@ -39,6 +39,7 @@ for (const s of SECTIONS) {
       sectionLabel: s.label,
       minutesRead: readingStats(e.body ?? '').minutes,
       cover: e.data.cover,
+      coverVariant: e.data.coverVariant,
     });
   }
 }
@@ -62,21 +63,33 @@ const related = candidates
   .slice(0, 3);
 
 // If this post belongs to a curated series, build ordered navigation for it.
+// Slugs may be listed ahead of their posts, so filter to what actually exists --
+// otherwise the nav renders links to 404s titled with the raw slug.
 const seriesDef = SERIES.find(
   (s) => s.sectionId === section.id && s.slugs.includes(entry.id)
 );
+const seriesLive = seriesDef
+  ? seriesDef.slugs
+      .filter((slug) =>
+        all.some((p) => p.sectionId === seriesDef.sectionId && p.id === slug)
+      )
+      .map((slug) => ({
+        slug,
+        title: all.find(
+          (p) => p.sectionId === seriesDef.sectionId && p.id === slug
+        )!.title,
+      }))
+  : [];
 const series = seriesDef
   ? {
       title: seriesDef.title,
-      current: seriesDef.slugs.indexOf(entry.id) + 1,
-      total: seriesDef.slugs.length,
-      items: seriesDef.slugs.map((slug, i) => ({
+      current: seriesLive.findIndex((s) => s.slug === entry.id) + 1,
+      total: seriesLive.length,
+      items: seriesLive.map((s, i) => ({
         order: i + 1,
-        href: `/${seriesDef.sectionId}/${slug}/`,
-        title:
-          all.find((p) => p.sectionId === seriesDef.sectionId && p.id === slug)
-            ?.title ?? slug,
-        current: slug === entry.id,
+        href: `/${seriesDef.sectionId}/${s.slug}/`,
+        title: s.title,
+        current: s.slug === entry.id,
       })),
     }
   : undefined;
@@ -109,6 +122,7 @@ const toNav = (p?: (typeof sectionPosts)[number]) =>
   olderPost={toNav(olderPost)}
   newerPost={toNav(newerPost)}
   cover={entry.data.cover}
+  coverVariant={entry.data.coverVariant}
 >
   <Content />
 </Post>

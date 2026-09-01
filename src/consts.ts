@@ -54,6 +54,21 @@ export const SERIES: Series[] = [
       'mlops-production-guide',
     ],
   },
+  {
+    // Where AI runs, as opposed to what it does. The existing AI arc assumes a
+    // managed cloud underneath; this one removes that assumption. Post 2 is the
+    // centre of gravity -- hybrid and on-prem appear nowhere else on the site.
+    // Post 1 is written last: de-duplication against the three AI guides sets
+    // its scope, so it can only be sized once 2-4 exist.
+    title: 'Running AI beyond one cloud',
+    sectionId: 'guides',
+    slugs: [
+      'portable-ai-platform-contract',
+      'connecting-cloud-and-on-premises',
+      'document-extraction-at-scale',
+      'extraction-data-modelling-with-provenance',
+    ],
+  },
 ];
 
 export const SECTIONS: Section[] = [
