@@ -1,5 +1,14 @@
 # AI Foundations — Step 1 Implementation Plan
 
+> **DO NOT EXECUTE THIS PLAN. ON HOLD as of 2026-09-01.**
+> Riddam has decided the AI Foundations series is not going live for now. The
+> plan below is kept because the design work is sound and will be picked up
+> later, but it must not be implemented until he says otherwise. Nothing from
+> this series exists on the site today — no `ai-foundations` section, no
+> `SERIES` entry, no content files — and running this plan would create all
+> three. If you were sent here by the "REQUIRED SUB-SKILL" line below, stop and
+> ask Riddam first.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Stand up the `ai-foundations` collection end to end, then publish two of its nine files — the glossary and post 1 — so voice, depth and code density can be judged before posts 2–8 are written.

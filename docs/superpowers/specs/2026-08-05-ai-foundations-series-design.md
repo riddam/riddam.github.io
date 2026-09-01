@@ -1,7 +1,14 @@
 # AI Foundations — an eight-post series from zero to production
 
 **Date:** 2026-08-05
-**Status:** approved design, ready for implementation planning
+**Status:** ON HOLD -- do not publish. Riddam's decision, 2026-09-01: the AI
+Foundations series is not going live for now. The design below stands and is
+still approved on its merits; what is withdrawn is permission to ship it.
+Nothing from it exists on the site -- no section, no `SERIES` entry, no content
+files -- and it should stay that way until Riddam says otherwise. Do not execute
+`docs/superpowers/plans/2026-08-11-ai-foundations-step-1.md`.
+
+**Original status:** approved design, ready for implementation planning
 
 ## Problem
 
