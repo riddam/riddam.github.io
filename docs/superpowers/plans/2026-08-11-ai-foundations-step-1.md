@@ -194,7 +194,7 @@ with:
   },
 ```
 
-Note: seven of these eight files do not exist until Step 2 of the spec. `[section]/[...slug].astro:65-77` builds series nav by looking each slug up in the collection and skips misses, so a partially written series renders only the posts that exist. This is why the `SERIES` entry can land now.
+Note: seven of these eight files do not exist until Step 2 of the spec. **Corrected 2026-08-31:** an earlier version of this note claimed the nav builder "skips misses, so a partially written series renders only the posts that exist". That was wrong at the time -- it mapped over every slug and fell back to the raw slug for a missing post's title, so an eight-slug entry with one post would have shipped seven links to 404s. It is true now: the filter was added in commit `044d74e` while publishing the portable-AI-platform series incrementally, and `src/consts.test.ts` pins it. So the `SERIES` entry can land now -- but for a different reason than this plan originally gave.
 
 - [ ] **Step 5: Add the `SECTIONS` entry**
 

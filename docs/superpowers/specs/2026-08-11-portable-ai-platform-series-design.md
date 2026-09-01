@@ -1,7 +1,7 @@
 # Running AI beyond one cloud — a four-post series
 
 **Date:** 2026-08-11
-**Status:** design for review, not yet approved
+**Status:** implemented 2026-08-31 -- all four posts written, reviewed and committed (unpushed)
 **Sources:** `_originals/portable-ai-platform-guide.md` (6,050 words), `_originals/doc-extraction-platform-gcp-azure-onprem.md` (3,750 words)
 
 ## Problem
@@ -539,11 +539,13 @@ presupposes a specific reader's environment.
 | "your documents", "your corpus", "your likely volume" | "the corpus", "representative documents", "at volume" |
 | "If on-prem has no GPUs" (as a known fact about the reader) | Reframed as the branch it is — Addition 6 |
 
-**One judgment call for Riddam.** The combination of document extraction, GCP plus Azure plus
-on-premises, and Postgres is specific enough to read as a real project. Framing post 3 as a worked
-design rather than a case study handles this — the guides are already written as teaching material
-("the guide I wish I'd had"), not as "what I built" — and I would keep GCP and Azure named, since
-they are the obvious non-AWS pair and it reads as instruction. Flagging it rather than deciding it.
+**~~One judgment call for Riddam.~~ Resolved 2026-08-11.** The combination of document extraction,
+GCP plus Azure plus on-premises, and Postgres is specific enough to read as a real project.
+**Riddam's decision: keep GCP and Azure named, and frame post 3 as a worked design rather than a
+case study.** The guides are already written as teaching material ("the guide I wish I'd had"), not
+as "what I built", and GCP plus Azure is the obvious non-AWS pair, so it reads as instruction. The
+rewrite table above still applies in full — the decision is about naming the clouds, not about
+keeping source B's second person.
 
 ## Tools and further reading
 
@@ -714,8 +716,12 @@ Two checks specific to this series:
 ## Open questions
 
 1. ~~**Series title.**~~ **Resolved 2026-08-11:** `Running AI beyond one cloud`. Matches the gerund-plus-noun-phrase, sentence-case shape of the three existing series entries, and does not presuppose the build -- which matters, since post 1 spends a section arguing most readers should not.
-2. **Three posts or four?** See the first risk. My recommendation is four, with post 1 written last
-   so its final scope is set by what posts 2–4 actually needed.
-3. **Is post 3's domain specificity acceptable?** See "Anonymization", final paragraph.
-4. **Queue position.** AI Foundations is eight posts spec'd, one planned, none written. This is four
-   more. Which goes first is a scheduling call, not a design one.
+2. ~~**Three posts or four?**~~ **Resolved 2026-08-31:** four. Post 1 was written last as
+   recommended, and the risk that it would not survive its own de-duplication did not materialise --
+   it carries the "should you even do this" argument and the adoption ladder, which appear nowhere
+   else in the series. The fallback of folding it into post 2 was not needed.
+3. ~~**Is post 3's domain specificity acceptable?**~~ **Resolved 2026-08-11:** yes -- name GCP and
+   Azure, and frame post 3 as a worked design rather than a case study. See "Anonymization", final
+   paragraph.
+4. ~~**Queue position.**~~ **Resolved by events 2026-08-31:** this series went first and is
+   complete. AI Foundations remains eight posts spec'd, one planned, none written.
