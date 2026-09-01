@@ -1,7 +1,7 @@
 ---
 title: "Rebuilding CI/CD Without Changing Platforms"
 description: "What it takes to host a self-hosted CI platform properly — two agent tiers, queue-driven scaling, breaking the bootstrap dependency, stopping base-image drift, and making the server disposable."
-pubDate: 2026-08-03
+pubDate: 2026-08-01
 tags: ["cicd", "platform-engineering", "infrastructure-as-code", "aws-cdk"]
 cover: bootstrap
 ---

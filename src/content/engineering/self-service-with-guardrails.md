@@ -1,7 +1,7 @@
 ---
 title: "Self-Service With Guardrails: Repositories and Pipelines as Data"
 description: "How to let teams own their repositories and pipelines without the platform team becoming a ticket queue — declarative registries, validation that runs first, reconciliation with drift detection, and a lifecycle that includes retirement."
-pubDate: 2026-08-04
+pubDate: 2026-08-02
 tags: ["platform-engineering", "developer-productivity", "cicd", "tooling"]
 cover: gate
 ---
