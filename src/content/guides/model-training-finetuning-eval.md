@@ -2,7 +2,7 @@
 title: "Model Training, Fine-Tuning & Evaluation — 2026 Guide"
 description: "A practical 2026 reference covering fine-tuning techniques, alignment methods, training frameworks, data curation, distributed training, evaluation harnesses, model optimization, and the open-weight ecosystem."
 pubDate: 2026-07-11
-updatedDate: 2026-08-03
+updatedDate: 2026-09-27
 tags: ["fine-tuning", "llm-training", "evaluation", "machine-learning"]
 cover: training
 ---
@@ -36,7 +36,7 @@ The central question: **how many parameters do you actually need to change?** Th
 | QLoRA | Same as LoRA but base model stays 4-bit quantized | Low (~50–70% less than LoRA) | 500–5K examples | Memory-constrained (single GPU, consumer hardware) |
 | DoRA | LoRA + weight decomposition (magnitude + direction) | Slightly more than LoRA | 500–5K examples | When LoRA quality isn't quite enough; marginal improvement |
 
-> **The 2026 default:** **QLoRA SFT** is the starting point for almost every fine-tuning project. LoRA when you have GPU headroom and need maximum throughput. Full fine-tuning only when adapters demonstrably can't close the quality gap (rare). Unsloth's optimized kernels brought QLoRA within ~10–20% of LoRA throughput.
+> **The 2026 default:** **QLoRA SFT** is the starting point for almost every fine-tuning project. LoRA when you have GPU headroom and need maximum throughput. Full fine-tuning only when adapters demonstrably can't close the quality gap (rare). Unsloth's optimized kernels make QLoRA only slightly slower than LoRA while using about 4x less VRAM.
 
 ### How LoRA works (the key insight)
 
@@ -82,15 +82,15 @@ After SFT teaches the model *what* to do, alignment teaches it *how well* to do 
 
 | Framework | What it is | Best for | 2026 status |
 |---|---|---|---|
-| HF TRL (v1.0+) | Hugging Face's unified post-training library: SFTTrainer, DPOTrainer, KTOTrainer, ORPOTrainer, GRPOTrainer, RewardTrainer | Full control over the training loop; the "standard library" for fine-tuning | v1.0 (April 2026) — the default |
-| Unsloth | Optimized kernels for LoRA/QLoRA — 2–5x faster, ~50–70% less VRAM than naive HF + bitsandbytes | Single-GPU fine-tuning; the fastest path to a working fine-tune | Integrated into TRL v1.0 |
-| Axolotl | Config-driven (YAML) fine-tuning framework — supports LoRA, QLoRA, full, DPO, GRPO, ORPO, reward modeling | Multi-GPU pipelines; teams wanting declarative configs over code | v0.29 (Feb 2026); active community |
-| torchtune | PyTorch-native fine-tuning library from the PyTorch team | Teams wanting no HF dependency; pure PyTorch ecosystem | Growing; good for custom training loops |
-| MLX-LM | Apple Silicon native — LoRA, QLoRA, DoRA on Mac | Local fine-tuning on Mac (32 GB → 7–8B; 96 GB → 70B QLoRA) | Mature for Apple Silicon users |
-| DeepSpeed | Microsoft's distributed training library — ZeRO stages 1/2/3 for memory optimization | Multi-GPU/multi-node training; large models that don't fit on one GPU | Essential for full fine-tuning at scale |
-| FSDP (Fully Sharded Data Parallel) | PyTorch's native distributed training — shards model across GPUs | Multi-GPU training without DeepSpeed dependency | Built into PyTorch; simpler than DeepSpeed |
+| HF TRL (v1.0+) | Hugging Face's unified post-training library: SFTTrainer, DPOTrainer, GRPOTrainer, KTOTrainer, RLOOTrainer, RewardTrainer (ORPO sits in trl.experimental) | Full control over the training loop; the "standard library" for fine-tuning | v1.x (v1.0 shipped March 2026) — the default |
+| Unsloth | Optimized kernels for LoRA/QLoRA — about 2x faster with up to ~70–80% less VRAM than a standard HF setup (vendor figures) | Single-GPU fine-tuning; the fastest path to a working fine-tune | Separate library that plugs into TRL's trainers |
+| Axolotl | Config-driven (YAML) fine-tuning framework — supports LoRA, QLoRA, full, DPO, GRPO, ORPO, reward modeling | Multi-GPU pipelines; teams wanting declarative configs over code | v0.19 (Sep 2026); active community |
+| torchtitan | PyTorch-native platform for training generative models, from the PyTorch team (pre-training plus SFT) | Teams wanting no HF dependency; pure PyTorch ecosystem | Where PyTorch is consolidating LLM training; torchtune stopped active development in 2025 |
+| MLX-LM | Apple Silicon native — LoRA, QLoRA, DoRA on Mac | Local fine-tuning on Mac (a 7B model fits in 32 GB; bigger models need proportionally more unified memory) | Mature for Apple Silicon users |
+| DeepSpeed | Distributed training library (from Microsoft, now a PyTorch Foundation project) — ZeRO stages 1/2/3 for memory optimization | Multi-GPU/multi-node training; large models that don't fit on one GPU | Essential for full fine-tuning at scale |
+| FSDP (Fully Sharded Data Parallel) | PyTorch's native distributed training — shards model across GPUs; FSDP2 (fully_shard) is the current API | Multi-GPU training without DeepSpeed dependency | Built into PyTorch; simpler than DeepSpeed |
 
-> **Starter recommendation:** **Unsloth + TRL** for single-GPU QLoRA fine-tuning (fastest, easiest). **Axolotl** for multi-GPU or when you want YAML configs. **DeepSpeed/FSDP** when models don't fit on a single GPU. **torchtune** if you want pure PyTorch without HF abstractions.
+> **Starter recommendation:** **Unsloth + TRL** for single-GPU QLoRA fine-tuning (fastest, easiest). **Axolotl** for multi-GPU or when you want YAML configs. **DeepSpeed/FSDP** when models don't fit on a single GPU. **torchtitan** if you want pure PyTorch without HF abstractions.
 
 ### Supporting tools
 
@@ -127,7 +127,7 @@ Data quality is the single biggest determinant of fine-tuning success. **5K well
 
 ### Synthetic data (the 2026 shortcut)
 
-Use a frontier model (Claude Opus 5, GPT-5) to generate training data — instruction-response pairs, preference comparisons, or domain examples. **Standard practice in 2026**, but requires evaluation: always validate synthetic data quality before training on it.
+Use a frontier model (Claude Opus 5.5, GPT-6 Astra) to generate training data — instruction-response pairs, preference comparisons, or domain examples. **Standard practice in 2026**, but requires evaluation: always validate synthetic data quality before training on it.
 
 > **Common mistake:** Fine-tuning on synthetic data generated by the same model you're fine-tuning → model collapse (the model learns to imitate its own biases). Use a **stronger** model to generate training data for a **weaker** model (distillation pattern).
 
@@ -146,8 +146,8 @@ When a model doesn't fit on one GPU, or you need faster training, you distribute
 ### Key training optimizations
 
 - **Mixed precision (bf16/fp16):** train in half precision — 2x throughput, half memory, minimal quality loss. bf16 preferred (no loss scaling needed).
-- **Gradient checkpointing:** recompute activations during backward pass instead of storing them — saves ~60% memory at ~30% speed cost.
-- **Flash Attention (2/3):** memory-efficient attention computation — essential for long sequences. Built into most frameworks. In 2026, **Flash Attention 3** is the default on Hopper (H100) with FP8 support, and **FA4** is emerging for next-gen hardware.
+- **Gradient checkpointing:** recompute activations during backward pass instead of storing them — saves a large share of activation memory at roughly a 20% speed cost.
+- **Flash Attention (2/3/4):** memory-efficient attention computation — essential for long sequences. Built into most frameworks. **FlashAttention-2** is still the stable default; **FlashAttention-3** (Hopper, FP8 forward pass) and **FlashAttention-4** (Hopper and Blackwell) are the newer kernels, both still in beta.
 - **Gradient accumulation:** simulate larger batch sizes by accumulating gradients over multiple micro-batches before updating.
 - **Checkpointing:** save model state regularly during training — critical when using spot/preemptible GPUs that can be interrupted.
 
@@ -159,10 +159,10 @@ When a model doesn't fit on one GPU, or you need faster training, you distribute
 
 | Framework | What it does | Best for |
 |---|---|---|
-| lm-evaluation-harness (EleutherAI) | Standardized benchmark suite: MMLU, GSM8K, HumanEval, HellaSwag, 400+ tasks | Base model benchmarking; academic comparison. No substitute. |
-| DeepEval | pytest-native LLM eval — 14+ metrics: hallucination, bias, toxicity, RAG faithfulness | CI/CD integration; broad application eval; quality gates that block deploys |
-| RAGAS | RAG-specific evaluation: context precision, recall, faithfulness, answer relevance | RAG pipeline evaluation; the standard for retrieval quality |
-| Promptfoo | YAML-driven multi-model comparison + red-teaming (500+ adversarial vectors) | Prompt/model selection; security testing; CLI-first workflow |
+| lm-evaluation-harness (EleutherAI) | Standardized benchmark suite: MMLU, GSM8K, HumanEval, HellaSwag — 60+ benchmarks with hundreds of subtasks | Base model benchmarking; academic comparison. No substitute. |
+| DeepEval | pytest-native LLM eval — 50+ metrics: hallucination, bias, toxicity, RAG faithfulness, agentic and multi-turn | CI/CD integration; broad application eval; quality gates that block deploys |
+| RAGAS | RAG-specific evaluation: context precision, context recall, faithfulness, response relevancy | RAG pipeline evaluation; a widely used choice for retrieval quality |
+| Promptfoo | YAML-driven multi-model comparison + red-teaming (150+ attack plugins); now part of OpenAI, still MIT open source | Prompt/model selection; security testing; CLI-first workflow |
 | LLM-as-judge | Use a stronger model to evaluate a weaker model's output against rubrics | Scalable proxy for human eval; runs on 5–10% of production traces |
 | Human evaluation | Domain experts rate outputs on rubrics (accuracy, helpfulness, safety) | Gold standard; expensive; use for final validation |
 
@@ -172,13 +172,13 @@ When a model doesn't fit on one GPU, or you need faster training, you distribute
 
 | Benchmark | What it measures |
 |---|---|
-| MMLU | Broad knowledge across 57 subjects. Historically the headline general-capability metric, but largely **saturated by 2026** — prefer **MMLU-Pro** and **GPQA** as more discriminating successors |
+| MMLU | Broad knowledge across 57 subjects. Historically the headline general-capability metric, but **saturated by 2026** — **MMLU-Pro** and **GPQA** replaced it, and GPQA is now near its ceiling too; frontier launches lead with **Humanity's Last Exam** and agentic suites (Terminal-Bench, OSWorld) instead |
 | GSM8K | Grade-school math reasoning |
 | HumanEval / MBPP | Code generation and programming ability |
 | MTEB | Embedding model quality (the benchmark for RAG embedding models) |
-| MT-Bench | Multi-turn conversation quality (LLM-as-judge scored) |
+| MT-Bench / Arena-Hard-Auto | Conversation quality on multi-turn and hard prompts (LLM-as-judge scored); MT-Bench is no longer maintained, Arena-Hard-Auto v2 is its successor |
 | IFEval | Instruction following accuracy (does the model do exactly what you asked?) |
-| TruthfulQA | Hallucination resistance — does the model say "I don't know" when it should? |
+| TruthfulQA | Whether the model repeats common misconceptions and falsehoods instead of the true answer (now largely retired from leaderboards) |
 
 > **Eval traps to avoid:**
 >
@@ -194,7 +194,7 @@ After training, make the model **smaller, faster, and cheaper** for inference.
 | Technique | What it does | Speed-up | Quality impact |
 |---|---|---|---|
 | Quantization (INT8) | Reduce weight precision from 16-bit to 8-bit | ~2x throughput, ~50% memory | Minimal (< 1% accuracy loss typically) |
-| Quantization (INT4 / GPTQ / AWQ) | Reduce to 4-bit with calibration | ~4x throughput, ~75% memory | Slight (~1–3% loss); good enough for most production |
+| Quantization (INT4 / GPTQ / AWQ) | Reduce to 4-bit with calibration | Up to ~3x faster decoding, ~75% memory | Slight (~1–3% loss); good enough for most production |
 | GGUF (llama.cpp format) | Optimized quantized format for CPU/local inference | Runs on CPU/Mac | Varies by quant level (Q4_K_M is the sweet spot) |
 | Distillation | Train a small model to mimic a large model's outputs | 10–100x smaller/faster | Depends on task; can retain 90%+ of quality on narrow domains |
 | Pruning | Remove unnecessary weights/neurons | 1.5–3x faster | Moderate; less common than quantization in 2026 |
@@ -208,12 +208,12 @@ The base models you'll fine-tune. "Open weights" means you download the weights 
 
 | Family | Provider | Sizes | Strengths | License |
 |---|---|---|---|---|
-| Llama 4 | Meta | Scout (109B MoE), Maverick (400B+ MoE) | Best open-weight general capability; huge ecosystem | Llama Community |
-| Llama 3.3 | Meta | 70B | Dense model; well-tested; huge fine-tuning ecosystem | Llama Community |
-| Qwen 3 | Alibaba | 0.6B–235B (MoE + dense) | Strong multilingual; competitive embeddings; thinking mode | Apache 2.0 |
-| Gemma 3 | Google | 1B–27B | Efficient; multimodal (vision); strong for size | Gemma (permissive) |
-| Mistral | Mistral AI | Small/Medium/Large | EU-hosted; multilingual; fast inference | Apache 2.0 (some) |
-| DeepSeek-R1 / V3 | DeepSeek | R1 (671B MoE), V3 (671B MoE) | Reasoning; cost-efficient; MoE architecture | MIT |
+| Llama 4 | Meta | Scout (109B MoE), Maverick (400B MoE), 17B active each | Huge fine-tuning ecosystem; since overtaken on capability (Meta's newest open model is the 30B Muse Glimmer, Apache 2.0) | Llama 4 Community License |
+| gpt-oss | OpenAI | 20B, 120B (MoE) | Reasoning; 120B runs on a single 80 GB GPU | Apache 2.0 |
+| Qwen 3.5 / 3.8 | Alibaba | 0.8B–397B (3.5); 27B dense up to 2.4T MoE (3.8) | Widest size range; thinking mode | Apache 2.0 (most sizes; the largest 3.8 models use Qwen's own licenses) |
+| Gemma 4 | Google | E2B, E4B, 12B, 26B MoE, 31B | Efficient; multimodal (vision, plus audio on E2B, E4B and 12B) | Apache 2.0 |
+| Mistral 3 family | Mistral AI | Ministral 3 (3B/8B/14B), Small 4 (119B MoE), Large 3 (675B MoE) | EU-hosted; multilingual; fast inference | Apache 2.0 (Medium 3.5: modified MIT) |
+| DeepSeek V4 | DeepSeek | V4-Flash (284B MoE), V4-Pro (1.6T MoE) | Reasoning modes built in; 1M context; cost-efficient | MIT |
 | Phi-4 | Microsoft | 14B | Small but punches above weight; good for edge | MIT |
 
 > **How to choose a base model for fine-tuning:** **Start with the smallest model that does well on your task with good prompting.** Fine-tuning a 7B model is 10x cheaper and faster than fine-tuning a 70B. If 7B SFT isn't good enough, try 14B before jumping to 70B. Benchmark the base model with prompting first — if it's already 90% there, fine-tuning the last 10% is much cheaper than starting from a weak base.
@@ -242,14 +242,14 @@ Steps 10 and 11 are where this guide hands off: serving, drift detection, and th
 
 | Service | Provider | Best for |
 |---|---|---|
-| SageMaker Training | AWS | Managed training jobs + HyperPod for fault-tolerant large runs; deepest GPU selection |
-| Vertex AI Training | GCP | Managed training + TPU access; tight BigQuery integration |
-| Azure ML Compute | Azure | Managed training; ND-series GPUs; Enterprise Agreement pricing |
+| SageMaker AI Training | AWS | Managed training jobs + HyperPod for fault-tolerant large runs; deepest GPU selection |
+| Gemini Enterprise Agent Platform Managed Training (formerly Vertex AI Training) | GCP | Managed training + TPU access; tight BigQuery integration |
+| Azure ML compute | Azure | Managed training; ND-series GPUs (H100 through GB300); reservations and savings plans |
 | Lambda Cloud / RunPod / Vast.ai | GPU clouds | Cheapest GPU hourly rates; no managed MLOps (you manage everything) |
-| Google Colab Pro | Google | Quick experiments; T4/A100 access for prototyping; not for production training |
-| Managed fine-tuning APIs | Together, Fireworks, Anyscale | Upload data → get fine-tuned model endpoint; zero infra management |
+| Google Colab Pro | Google | Quick experiments; T4/L4/A100-class GPUs for prototyping (types vary by plan and availability); not for production training |
+| Managed fine-tuning APIs | Together, Fireworks, Gemini tuning (Agent Platform) | Upload data → get fine-tuned model endpoint; zero infra management |
 
-> **Trade-off — managed fine-tuning API vs self-managed:** **Managed API** (Together, Fireworks, OpenAI fine-tuning) = upload data, get model, zero infra — but limited control over hyperparameters, training loop, and model architecture. **Self-managed** (Unsloth on cloud GPU) = full control, cheaper per hour — but you own the entire training stack. Start with managed for validation; switch to self-managed for production optimization.
+> **Trade-off — managed fine-tuning API vs self-managed:** **Managed API** (Together, Fireworks, Gemini tuning) = upload data, get model, zero infra — but limited control over hyperparameters, training loop, and model architecture. (OpenAI is winding its fine-tuning platform down: closed to new organizations since May 2026, no new jobs for anyone from January 2027.) **Self-managed** (Unsloth on cloud GPU) = full control, cheaper per hour — but you own the entire training stack. Start with managed for validation; switch to self-managed for production optimization.
 
 ## 12 — Trade-off Master Reference
 
@@ -265,8 +265,8 @@ Steps 10 and 11 are where this guide hands off: serving, drift detection, and th
 | Synthetic vs real data | Synthetic (frontier-generated) | Real (human-created) | Mix both; always validate synthetic quality |
 | Eval approach | Automated (LLM judge) | Human evaluation | Automated for iteration; human for final validation |
 | Distributed strategy | FSDP (PyTorch native) | DeepSpeed ZeRO | FSDP for simplicity; DeepSpeed for maximum memory efficiency |
-| Open weights vs API fine-tuning | Self-hosted (full control) | API (Together/Fireworks/OpenAI) | API for validation; self-hosted for production control |
-| Training hardware | Cloud GPU (H100) | Cloud TPU (v5e) | GPU for flexibility; TPU for large-scale cost efficiency |
+| Open weights vs API fine-tuning | Self-hosted (full control) | API (Together/Fireworks/Gemini) | API for validation; self-hosted for production control |
+| Training hardware | Cloud GPU (H100/B200) | Cloud TPU (Trillium/Ironwood) | GPU for flexibility; TPU for large-scale cost efficiency |
 
 ---
 

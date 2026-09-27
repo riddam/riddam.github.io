@@ -2,6 +2,7 @@
 title: "Making AI Coding Assistants Reliable: My Playbook"
 description: "The working discipline I've settled on for getting dependable, secure, low-regret results from AI coding assistants — prompting frameworks, model selection, context hygiene, and safety rules, learned the hard way."
 pubDate: 2026-06-04
+updatedDate: 2026-09-27
 tags: ["ai-assisted-coding", "github-copilot", "prompting", "developer-productivity"]
 cover: assist
 ---
@@ -24,9 +25,9 @@ The goal is simple: make AI coding assistance **reliable, secure, and low-regret
 
 - Quick tiny edits → **Claude Haiku 4.5** or your provider's fast tier (e.g. Gemini Flash)
 - Most coding tasks → **Claude Sonnet 5**
-- Multi-file patch + lots of tests → **GPT Codex** (current tier)
-- Deep debugging / security review / hardest refactors → **Claude Opus 4.8**
-- Second opinion on architecture or algorithms → **Gemini Pro** (current tier)
+- Multi-file patch + lots of tests → **GPT-6 Sol** (OpenAI's current coding tier)
+- Deep debugging / security review / hardest refactors → **Claude Opus 5.5**
+- Second opinion on architecture or algorithms → **Gemini Flash** (current tier)
 
 ## 1. What an AI Assistant Is (and Isn't)
 
@@ -44,7 +45,7 @@ Think of Copilot not as a replacement for a developer, but as a highly skilled, 
 ### What it's not
 
 - **An independent architect.** It cannot make high-level design decisions or understand business requirements without explicit context and human steering.
-- **A source of truth.** It doesn't "know" your system state — it predicts from what it sees in your open tabs. Outdated tabs produce outdated advice.
+- **A source of truth.** It doesn't "know" your system state — it predicts from whatever context it's given: your active file, what it searches up, what you attach. Stale context produces outdated advice.
 - **A replacement for quality gates.** It doesn't replace code review, integration tests, or threat modeling. AI-generated code needs *more* rigorous review, not less.
 - **A security expert.** It's a pattern mimic. It will happily suggest insecure patterns — hardcoded credentials, permissive IAM wildcards — because those patterns are everywhere in public training data.
 - **An autopilot for high-risk code.** IAM policies, encryption logic, and auth handlers require deep human verification plus specialized tooling (Snyk, Checkov, bandit).
@@ -74,7 +75,7 @@ Guardrails I include in *every* agent prompt:
 
 - **New chat** — start fresh for each ticket, or whenever the context feels polluted with old logs. Stale context measurably degrades reasoning.
 - **Local (interactive)** — short tasks where you watch every edit in real time. Best for small fixes and tests in the file you're already in.
-- **Background (asynchronous)** — delegated tasks of five-plus minutes ("write 20 integration tests"). The agent works in an isolated Git worktree while you keep coding; you review the diff and apply when done.
+- **Background (worktree)** — delegated tasks of five-plus minutes ("write 20 integration tests"). Start a Copilot session in the Agents window with **New Worktree** selected: the agent works in an isolated Git worktree while you keep coding; you review the diff and apply or merge it when done.
 - **Cloud (remote / PR agent)** — large refactors and repo-wide tasks. Runs on remote infrastructure, opens a draft pull request, and assigns you as reviewer.
 
 The workflow I use for 90% of non-trivial tasks:
@@ -82,7 +83,7 @@ The workflow I use for 90% of non-trivial tasks:
 ```mermaid
 flowchart LR
   A["Ask<br/>understand the code"] --> B["Plan<br/>design and align"]
-  B --> C["Background Agent<br/>execute in isolation"]
+  B --> C["Worktree session<br/>execute in isolation"]
   C --> D["Review the diff"]
   D --> E["Run the tests"]
   E -->|"pass"| F["Apply and commit"]
@@ -101,7 +102,7 @@ AI reliability isn't about model size anymore — it's about **context engineeri
 
 ### Practical context hygiene
 
-**1. Curate your workspace.** The AI weights your active tab and open editors heavily. Keep open: the file you're editing, its test file (the "contract" for success), one golden example of the pattern you want, and config files only when relevant.
+**1. Curate your workspace.** Inline suggestions read your open files; chat and agents pick up only the active file and selection automatically, then search for the rest. So keep open — and `#`-attach in chat — the file you're editing, its test file (the "contract" for success), one golden example of the pattern you want, and config files only when relevant.
 
 **2. Use explicit references.** Don't let it guess which files matter:
 
@@ -123,9 +124,9 @@ The current generation of models is optimized for agentic workflows and long-hor
 | --- | --- | --- |
 | Default daily driver | **Claude Sonnet 5** | Near-frontier quality on coding and agentic work at mid-tier cost. Handles most planning and implementation. |
 | Quick tasks / tiny edits | **Claude Haiku 4.5** / fast tier | Surgical for scoped edits, boilerplate tests, renames, and docs — at a fraction of the cost. |
-| Multi-file patch + heavy tests | **GPT Codex** (current tier) | Strong instruction-following for structured code output; usefully rigid about provided signatures. |
-| Deep debugging / security review / huge refactors | **Claude Opus 4.8** | The heavy artillery: long-horizon autonomy, strongest first-try rate on complex tasks, 1M-token context for sprawling codebases. |
-| Second opinion / logic check | **Gemini Pro** (current tier) | A genuinely different model family — useful cross-check on architectural trade-offs and math-heavy algorithms. |
+| Multi-file patch + heavy tests | **GPT-6 Sol** (OpenAI's current coding tier) | OpenAI's model for complex coding and agentic workflows — a strong alternative family for structured, multi-file changes. |
+| Deep debugging / security review / huge refactors | **Claude Opus 5.5** | The heavy artillery: long-horizon autonomy, strong first-try rate on complex tasks, 1M-token context (opt-in in the model picker) for sprawling codebases. |
+| Second opinion / logic check | **Gemini Flash** (current tier) | A genuinely different model family — useful cross-check on architectural trade-offs and math-heavy algorithms. |
 
 ### The escalation strategy
 
@@ -136,8 +137,8 @@ flowchart TD
   A["Task arrives"] --> B{"Risk and complexity?"}
   B -->|"mechanical: renames,<br/>boilerplate, docs"| C["Downgrade<br/>Haiku 4.5 / fast tier"]
   B -->|"normal feature work,<br/>planning, tests"| D["Default<br/>Claude Sonnet 5"]
-  B -->|"high ambiguity: security audit,<br/>15+ interdependent files,<br/>race conditions"| E["Upgrade<br/>Claude Opus 4.8"]
-  D -->|"stuck or hallucinating<br/>an internal API"| F["Cross-check<br/>Codex or Gemini Pro"]
+  B -->|"high ambiguity: security audit,<br/>15+ interdependent files,<br/>race conditions"| E["Upgrade<br/>Claude Opus 5.5"]
+  D -->|"stuck or hallucinating<br/>an internal API"| F["Cross-check<br/>GPT-6 Sol or Gemini Flash"]
 ```
 
 **Tip:** if your default model keeps hallucinating a specific internal library, try a different family — specialized code models are often more rigid (in a good way) about sticking to the signatures you provide.
@@ -158,13 +159,13 @@ Bake non-negotiables into `.github/copilot-instructions.md` (or `AGENTS.md`) so 
 
 ### 5.2 Repo signals (defining the truth)
 
-Keep these open or reference them with `@` to ground the AI in your actual stack:
+Attach these with `#` in VS Code chat (`@` in most CLI agents) to ground the AI in your actual stack:
 
 | Category | Python (uv) | TypeScript (CDK) |
 | --- | --- | --- |
 | Build & deps | `pyproject.toml`, `uv.lock` | `package.json`, `tsconfig.json` |
 | Quality gates | `ruff.toml`, `.pre-commit-config.yaml` | `eslint.config.js`, `.prettierrc` |
-| Test logic | `tests/`, `conftest.py` | `tests/`, `jest.config.js` |
+| Test logic | `tests/`, `conftest.py` | `test/`, `jest.config.js` |
 | Conventions | `README.md`, `CONTRIBUTING.md` | `README.md`, `docs/architecture.md` |
 
 ### 5.3 The task prompt (ticket-level contract)
@@ -190,8 +191,8 @@ Copy-paste template:
 # Context: You are acting as a senior engineer in this repository.
 
 ### ANCHOR
-- Primary file: @src/cli/deploy.py
-- Reference pattern: follow the argument parsing style in @src/cli/auth.py
+- Primary file: #src/cli/deploy.py
+- Reference pattern: follow the argument parsing style in #src/cli/auth.py
 
 ### TASK
 - Goal: [describe the feature or fix]
@@ -231,7 +232,7 @@ For daily feature work. Ideal model: Sonnet 5. The rhythm: **plan → you approv
 
 ### Forensics (legacy & infrastructure)
 
-For high-stakes areas — legacy modules, complex CDK stacks, IAM logic. Ideal model: Opus 4.8 with thinking. The discovery prompt:
+For high-stakes areas — legacy modules, complex CDK stacks, IAM logic. Ideal model: Opus 5.5 with a higher thinking effort (set it from the model picker). The discovery prompt:
 
 > "Before suggesting any changes, analyze this module: 1) **System map** — key responsibilities. 2) **Side effects** — does this touch S3, a database, or external APIs? 3) **Safe seams** — where is the safest place to inject new logic? 4) **Blast radius** — if this fails, what breaks downstream? Return a bulleted report before proposing code."
 
@@ -257,7 +258,7 @@ For high-stakes areas — legacy modules, complex CDK stacks, IAM logic. Ideal m
 
 ### CDK fine-grained assertions
 
-> "Write unit tests using the aws-cdk-lib assertions library for this construct. Verify resource properties in the synthesized template: encryption settings, retention policies, mandatory tags. Do not use snapshots — use Template.has_resource_properties for targeted assertions."
+> "Write unit tests using the aws-cdk-lib assertions library for this construct. Verify resource properties in the synthesized template: encryption settings, retention policies, mandatory tags. Do not use snapshots — use template.hasResourceProperties (has_resource_properties in Python) for targeted assertions."
 
 ### The safe refactor
 
@@ -273,7 +274,7 @@ For high-stakes areas — legacy modules, complex CDK stacks, IAM logic. Ideal m
 
 ## 9. VS Code Surfaces: What to Use When
 
-**Inline suggestions** — the flow state. Micro-edits, repetitive wiring, next-edit predictions. Steer with a comment:
+**Inline suggestions** — the flow state. Micro-edits, repetitive wiring, next edit suggestions. Steer with a comment:
 
 ```python
 # Create an SQS queue with a 14-day DLQ and KMS encryption
@@ -281,7 +282,7 @@ For high-stakes areas — legacy modules, complex CDK stacks, IAM logic. Ideal m
 
 Avoid inline for multi-file logic or anything security-sensitive.
 
-**Chat (Ask mode)** — the researcher. `@workspace /explain` for repo architecture (in current VS Code, `#codebase` is the newer inline equivalent), stack-trace root-causing from `#terminal`, planning before touching code.
+**Chat (Ask mode)** — the researcher. Ask about repo architecture (the agent searches the codebase on its own; add `#codebase` to force a semantic search, or use `/explain` on a selection), root-cause a stack trace from terminal output (`#terminalSelection`), and plan before touching code.
 
 **Agent & Plan modes** — the executors. Plan researches and drafts a step-by-step TODO list; Agent applies edits, runs commands, and fixes its own errors.
 
@@ -290,17 +291,17 @@ Avoid inline for multi-file logic or anything security-sensitive.
 | Session | Best for | How it works |
 | --- | --- | --- |
 | Local | Interactive tasks, real-time Keep/Undo review | Edits your working tree directly |
-| Background | Long tasks (bulk test-writing, folder-wide refactors) | Isolated Git worktree; review and apply when done |
+| Background (worktree) | Long tasks (bulk test-writing, folder-wide refactors) | Copilot session in the Agents window with New Worktree; review and apply when done |
 | Cloud | Repo-wide migrations, "document everything" | Remote infrastructure; opens a draft PR |
 
-**Watch the context indicator.** Red means the AI is about to start forgetting your early instructions — compact or start fresh.
+**Watch the context window control.** As it fills, VS Code auto-compacts and your early instructions can get summarized away — run `/compact` on your own terms or start fresh.
 
 ## 10. The Agent Workflow, Step by Step
 
 ### Step 1: Local agent (interactive scaffolding)
 
 1. Ensure a clean Git state so you can diff everything.
-2. Open Chat → Mode: Agent, with your default model.
+2. Open the Chat view → **New Chat**, pick **Local** as the Session Target and **Agent** in the agent picker, with your default model.
 3. Prompt with the A.T.C.D. structure.
 4. Review with the Keep/Undo UI, cherry-picking suggestions.
 
@@ -308,17 +309,17 @@ Example: *"Create a CLI skeleton using click with a command group and one subcom
 
 ### Step 2: Plan + background agent (delegated execution)
 
-1. **Commit first** — create a clean baseline.
-2. Switch to Plan mode and prompt for a roadmap.
-3. Approve the plan, then "Continue in Background."
+1. **Commit first** — a worktree session starts from your last commit.
+2. Open the Agents window, start a new session with the **Copilot** target and **New Worktree** selected, and type `/plan` followed by the roadmap you want.
+3. Review the plan, then choose **Implement Plan**.
 4. Keep coding while the agent works in its isolated worktree.
-5. Review the completed diff and apply.
+5. Review the completed diff and apply or merge it.
 
-Note: background agents don't see unsaved changes — save everything before delegating.
+Note: a worktree session starts from your last commit — uncommitted, untracked and git-ignored files (like `.env`) aren't there unless you commit them or list them in `git.worktreeIncludeFiles`.
 
 ### Step 3: Cloud agent (PR-scale work)
 
-For repo-wide changes and migrations: the agent runs remotely, creates a branch, opens a draft PR, and your CI runs against it. Review it exactly like a human's PR — because that's the contract that keeps quality up.
+For repo-wide changes and migrations: the agent runs remotely, works on a branch and opens a pull request. Your CI doesn't run on its pushes until you inspect the changes and click **Approve and run workflows**. Review it exactly like a human's PR — because that's the contract that keeps quality up.
 
 ## 11. Instruction Files: Reducing Bugs Through Grounding
 
@@ -328,11 +329,11 @@ The most common cause of hallucination is a lack of grounding. Instruction files
 
 **Three habits:**
 
-1. **The open-tab rule.** Keep `pyproject.toml` open in a background tab when dependency decisions matter — open files carry more weight in the AI's reasoning.
-2. **Explicit grounding.** "Write this test using the fixtures defined in @conftest.py." Don't assume it read your configs.
+1. **The attach rule.** When dependency decisions matter, attach `#pyproject.toml` rather than trusting a background tab — chat and agents only pick up your active file automatically (open tabs matter for inline suggestions, not for chat).
+2. **Explicit grounding.** "Write this test using the fixtures defined in #conftest.py." Don't assume it read your configs.
 3. **Forbidden invention.** Models love suggesting popular libraries (`requests`, `pandas`) whether or not they're in your stack: *"Strictly use only the dependencies listed in #pyproject.toml. Do not suggest new libraries."*
 
-**The repo-level instruction file.** Create `.github/copilot-instructions.md` (Copilot) or `AGENTS.md` (the emerging cross-tool standard) at the repo root with your hard rules: "We use uv for all Python tasks." "CDK tests use fine-grained assertions, never snapshots." "CLI output must support --json."
+**The repo-level instruction file.** Create `.github/copilot-instructions.md` (Copilot) or `AGENTS.md` (the open cross-tool format most agents now read) at the repo root with your hard rules: "We use uv for all Python tasks." "CDK tests use fine-grained assertions, never snapshots." "CLI output must support --json."
 
 > If a rule isn't in a file, it doesn't exist for the AI. Document your conventions to automate your conventions.
 
@@ -391,13 +392,13 @@ Automate the tail end by ending agent prompts with:
 3. **Secure-by-design IAM** — you need to spot an over-privileged suggestion at a glance.
 4. **Legacy refactoring patterns** — seams, the strangler-fig pattern, working effectively with untested code. Large AI refactors need stepwise human strategy.
 
-**References worth your time:** the [VS Code Copilot documentation](https://code.visualstudio.com/docs/copilot/overview) and [agents guide](https://code.visualstudio.com/docs/copilot/copilot-coding-agent), plus [Anthropic's prompt-engineering docs](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview) — most of it transfers directly to any coding assistant.
+**References worth your time:** the [VS Code AI documentation](https://code.visualstudio.com/docs/agents/overview) and [agents guide](https://code.visualstudio.com/docs/agents/run/agent-harnesses), plus [Anthropic's prompt-engineering docs](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview) — most of it transfers directly to any coding assistant.
 
 ## 15. Expert-Level Pitfalls
 
 - **Avoid vibe coding.** Never accept code because it looks clean and the AI sounds confident. Run the tests. Confidence is a UI feature, not a correctness signal.
 - **Combat context rot.** Models get less sharp as the window fills. `/compact` often; new chat per ticket.
-- **Use cross-repo awareness deliberately.** `@workspace` can trace how service A's schema change breaks service B — ask for the blast radius before you change shared contracts.
+- **Use cross-repo awareness deliberately.** With both services in the workspace, `#codebase` can trace how service A's schema change breaks service B — ask for the blast radius before you change shared contracts.
 
 ## Appendix: Quick Prompt Snippets
 
@@ -405,7 +406,7 @@ Automate the tail end by ending agent prompts with:
 
 > **Minimal diff:** "Change ONLY the code inside the target function. No unrelated refactors, no reformatting, no import changes unless strictly required."
 
-> **No new dependencies:** "Use only libraries already in @pyproject.toml / @package.json. If a task requires a new one, stop and ask."
+> **No new dependencies:** "Use only libraries already in #pyproject.toml / #package.json. If a task requires a new one, stop and ask."
 
 > **Ask before guessing:** "If unsure about a repo convention or internal API, ask a clarifying question. I prefer a question over a hallucination."
 
@@ -419,7 +420,7 @@ Automate the tail end by ending agent prompts with:
 
 > **Least-privilege IAM:** "Generate the IAM policy with no wildcards for actions or resources. Use specific ARNs."
 
-> **CDK assertions:** "Test with the assertions library, focusing has_resource_properties on encryption and public-access settings. No snapshots."
+> **CDK assertions:** "Test with the assertions library, focusing hasResourceProperties on encryption and public-access settings. No snapshots."
 
 **Quality & debugging**
 
@@ -427,7 +428,7 @@ Automate the tail end by ending agent prompts with:
 
 > **Log forensics:** "Analyze this stack trace against #file. Give the most likely failing line and 3 ranked hypotheses."
 
-> **Blast radius:** "If I change the return type of get_user_auth in @auth.py, trace all downstream dependencies across @workspace and list every file needing a signature update."
+> **Blast radius:** "If I change the return type of get_user_auth in #auth.py, trace all downstream dependencies across #codebase and list every file needing a signature update."
 
 ---
 

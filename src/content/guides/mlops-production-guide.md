@@ -2,7 +2,7 @@
 title: "MLOps & AI Production Operations: The 2026 Guide"
 description: "An end-to-end guide to CI/CD and production operations for AI systems, covering the MLOps pipeline, tooling, cloud infrastructure, deployment and release patterns, monitoring, drift, LLMOps, cost optimization, and governance."
 pubDate: 2026-06-04
-updatedDate: 2026-08-03
+updatedDate: 2026-09-27
 tags: ["mlops", "ci-cd", "llmops", "cloud-infrastructure"]
 cover: cycle
 ---
@@ -47,10 +47,10 @@ Data ingestion (sources → lake)
 |---|---|---|
 | Data ingestion | Collect data from sources (DBs, APIs, streams, files) into storage | Pub/Sub, Kinesis, Airflow, dbt |
 | Data validation | Schema checks, null detection, distribution validation — reject bad data before it reaches training | Great Expectations, TFX Data Validation, Evidently |
-| Feature engineering | Transform raw data into model features; store in feature store for consistency between training and serving | Feast, Vertex AI Feature Store, SageMaker Feature Store |
+| Feature engineering | Transform raw data into model features; store in feature store for consistency between training and serving | Feast, Feature Store on Gemini Enterprise Agent Platform (formerly Vertex AI Feature Store), SageMaker Feature Store |
 | Model training | Run training job on GPU/TPU cluster; track experiments, hyperparameters, metrics | PyTorch/TF, MLflow, W&B, cloud training services |
 | Evaluation | Compare new model against baseline on held-out test set + fairness/bias checks | MLflow, Evidently, custom eval harnesses |
-| Model registry | Version and store the trained model with metadata, lineage, and lifecycle stage (staging → production) | MLflow Model Registry, cloud registries |
+| Model registry | Version and store the trained model with metadata, lineage, and a promotion label (an alias such as champion; MLflow has deprecated fixed staging → production stages) | MLflow Model Registry, cloud registries |
 | CI/CD gate | Automated tests pass → human approval (optional) → promote to production | GitHub Actions, GitLab CI, Jenkins, cloud pipelines |
 | Deployment | Package model into container, deploy to serving endpoint (real-time/batch/serverless) | Docker, KServe, Seldon, cloud endpoints |
 | Monitoring | Track prediction quality, data drift, latency, cost, business KPIs — trigger retraining when needed | Evidently, Arize, Langfuse, Prometheus+Grafana |
@@ -72,10 +72,10 @@ Traditional DevOps has one CI/CD loop (code change → test → deploy). ML has 
 | Level | Description | Automation |
 |---|---|---|
 | Level 0 | Manual — data scientists train in notebooks, hand-off model as a file, manual deployment | None |
-| Level 1 | ML pipeline automation — automated training pipeline, but deployment is still manual or semi-auto | Training automated |
+| Level 1 | ML pipeline automation — continuous training on fresh data and automatic delivery of the trained model; new pipeline code is still tested and deployed by hand | Training automated |
 | Level 2 | CI/CD for ML — automated testing, automated deployment, continuous training triggered by data/drift, monitoring closes the loop | Full automation |
 
-> **Target:** Most teams start at Level 0. The goal is **Level 2** — where new data automatically triggers retraining, evaluation gates ensure quality, and deployment is hands-free with auto-rollback. Level 1 (automated training, manual deploy) is a practical intermediate milestone.
+> **Target:** Most teams start at Level 0. The goal is **Level 2** — where new data automatically triggers retraining, evaluation gates ensure quality, and deployment is hands-free with auto-rollback. Level 1 (automated training, manual pipeline releases) is a practical intermediate milestone.
 
 ## 04 — DevOps / MLOps Tool Catalog
 
@@ -97,22 +97,22 @@ Organized by function. Pick one tool per row — don't try to use all of them.
 
 | Function | Tools | Choose when |
 |---|---|---|
-| Experiment tracking | MLflow, Weights & Biases, Comet, Neptune | MLflow (open-source, self-host) is the default; W&B for teams wanting managed + collaboration |
+| Experiment tracking | MLflow, Weights & Biases, Comet | MLflow (open-source, self-host) is the default; W&B for teams wanting managed + collaboration |
 | Data versioning | DVC, LakeFS, Delta Lake | DVC for small teams; LakeFS/Delta for lake-scale versioning |
-| Feature store | Feast, Tecton, Vertex AI/SageMaker built-in | Feast (open-source) or cloud-native for managed simplicity |
+| Feature store | Feast, Databricks (Tecton), Agent Platform/SageMaker built-in | Feast (open-source) or cloud-native for managed simplicity |
 | Pipeline orchestration | Kubeflow Pipelines, Airflow, Prefect, Dagster, cloud pipelines | Airflow for general orchestration; Kubeflow for K8s-native ML pipelines |
 | Model registry | MLflow Model Registry, cloud registries | MLflow for portability; cloud-native for tight integration |
-| Model serving | vLLM, TGI, KServe, Seldon Core, BentoML, cloud endpoints | vLLM/TGI for LLM serving; KServe for K8s; cloud endpoints for managed |
+| Model serving | vLLM, SGLang, KServe, Seldon Core (commercial license for production), BentoML, cloud endpoints | vLLM/SGLang for LLM serving; KServe for K8s; cloud endpoints for managed |
 | Data quality / validation | Great Expectations, Evidently, Pandera | Great Expectations for schema; Evidently for drift + quality reports |
-| Model format | ONNX, SafeTensors, GGUF, TorchScript | ONNX for portability; SafeTensors for safe LLM weights; GGUF for local inference |
+| Model format | ONNX, SafeTensors, GGUF, torch.export | ONNX for portability; SafeTensors for safe LLM weights; GGUF for local inference |
 
 ### LLM-specific tools
 
 | Function | Tools | Choose when |
 |---|---|---|
-| LLM observability | Langfuse, LangSmith, Arize Phoenix, Helicone | Langfuse (open-source, self-host); LangSmith (LangChain teams); Arize (RAG debugging) |
+| LLM observability | Langfuse, LangSmith, Arize Phoenix | Langfuse (open-source, self-host); LangSmith (LangChain teams); Arize (RAG debugging) |
 | LLM gateway / proxy | LiteLLM, Portkey, TrueFoundry Gateway, custom | Multi-provider routing, failover, cost tracking, rate limiting |
-| Prompt management | Langfuse, PromptLayer, Humanloop, Agenta | Version prompts like code; A/B test prompt variants |
+| Prompt management | Langfuse, PromptLayer, Agenta | Version prompts like code; A/B test prompt variants |
 | LLM evaluation | DeepEval / Confident AI (its managed platform), RAGAS, custom judges | DeepEval / RAGAS for RAG eval; LLM-as-judge for generation quality |
 | Vector database | Qdrant, Pinecone, Weaviate, Chroma, pgvector | Qdrant (greenfield); pgvector (existing Postgres); Pinecone (managed) |
 
@@ -124,10 +124,10 @@ Organized by function. Pick one tool per row — don't try to use all of them.
 
 | Option | Best for | Trade-off |
 |---|---|---|
-| Cloud managed (SageMaker/Vertex/Azure ML) | Most teams — spin up training, tear down after | 20–40% premium over raw VMs but zero cluster management |
+| Cloud managed (SageMaker AI/Agent Platform/Azure ML) | Most teams — spin up training, tear down after | Roughly 15–40% premium over raw VMs (AWS list prices) but zero cluster management |
 | Raw GPU VMs + custom stack | Teams with MLOps expertise, steady high utilization | Cheapest per hour but you manage scaling, fault tolerance, storage |
-| TPU pods (GCP only) | Large-scale training (>10B params), research | Best $/FLOP for large models; requires JAX/XLA expertise |
-| Spot/preemptible instances | Fault-tolerant training (checkpoint frequently) | 60–91% cheaper but can be interrupted; use with checkpointing |
+| TPU pods (GCP only) | Large-scale training (>10B params), research | Best $/FLOP for large models; JAX is the native path, PyTorch runs via PyTorch/XLA (native TorchTPU backend in preview) |
+| Spot/preemptible instances | Fault-tolerant training (checkpoint frequently) | Up to ~90% cheaper but can be interrupted; use with checkpointing |
 
 ### Inference infrastructure
 
@@ -136,7 +136,7 @@ Organized by function. Pick one tool per row — don't try to use all of them.
 | Real-time endpoint (always-on) | Low (ms) | Steady — pay even at zero traffic | User-facing, low-latency requirements |
 | Serverless inference (scale-to-zero) | Higher (cold start) | Pay per request | Dev/staging, low-traffic, variable demand |
 | Batch inference | Hours | Cheapest per prediction | Overnight scoring, recommendations, ETL |
-| Multi-model endpoint | Low | Shared infra (up to 80% savings) | Many models with moderate traffic each |
+| Multi-model endpoint | Low | Shared infra (far cheaper than one endpoint per model) | Many models with moderate traffic each |
 | Edge inference | Lowest | Device cost | Offline, privacy-sensitive, real-time on-device |
 
 ### Infrastructure decision tree
@@ -149,7 +149,7 @@ Organized by function. Pick one tool per row — don't try to use all of them.
 | Many models, moderate traffic each? | Multi-model endpoint |
 | Privacy / offline / on-device? | Edge (quantized model) |
 
-> **Trade-off — managed vs self-hosted serving:** **Managed endpoint** (SageMaker/Vertex/Azure ML) = autoscaling, monitoring, blue-green deployment built in — but higher per-hour cost and less control. **Self-hosted** (vLLM on K8s) = cheapest at scale, full control over batching/quantization — but you build your own scaling, health checks, and rollback. Start managed; migrate to self-hosted when monthly inference spend exceeds ~$10K and you have dedicated ops capacity.
+> **Trade-off — managed vs self-hosted serving:** **Managed endpoint** (SageMaker AI/Agent Platform/Azure ML) = autoscaling, monitoring, blue-green deployment built in — but higher per-hour cost and less control. **Self-hosted** (vLLM on K8s) = cheapest at scale, full control over batching/quantization — but you build your own scaling, health checks, and rollback. Start managed; migrate to self-hosted when monthly inference spend exceeds ~$10K and you have dedicated ops capacity.
 
 *This section assumes a managed cloud underneath. For the hybrid and on-premises case — outbound-only delivery, cross-cluster connectivity, air-gapped installs — see [Connecting Cloud and On-Premises](/guides/connecting-cloud-and-on-premises/).*
 
@@ -170,11 +170,11 @@ Trained model (from registry)
 
 | Runtime | Best for | Key feature |
 |---|---|---|
-| vLLM | Production LLM inference — the 2026 default | PagedAttention, continuous batching, OpenAI-compatible API, ~2–4x throughput vs naive |
-| TGI (Text Generation Inference) | Hugging Face models, production serving | Tensor parallelism, watermarking, streaming |
+| vLLM | Production LLM inference — the 2026 default | PagedAttention, continuous batching, OpenAI-compatible API |
+| SGLang | High-throughput LLM and multimodal serving — vLLM's main alternative | RadixAttention prefix caching, structured outputs, prefill-decode disaggregation, OpenAI-compatible API |
 | Ollama | Local development and testing | One-command local LLM serving; not for production |
 | TensorRT-LLM | Maximum NVIDIA GPU throughput | NVIDIA-optimized; best throughput but NVIDIA-only |
-| Cloud endpoints | Managed, zero-ops serving | SageMaker/Vertex/Azure ML handle everything |
+| Cloud endpoints | Managed, zero-ops serving | SageMaker AI/Agent Platform/Azure ML handle everything |
 
 ## 07 — Release Strategies for Models
 
@@ -205,10 +205,10 @@ ML monitoring has **four layers** — each catches different failure modes.
 | Layer | Open-source | Managed |
 |---|---|---|
 | Infrastructure | Prometheus + Grafana | Datadog, New Relic, CloudWatch, Cloud Monitoring |
-| Model performance | Evidently, MLflow | Arize, WhyLabs, SageMaker Model Monitor, Vertex AI Model Monitoring |
-| Data/drift | Evidently, Great Expectations | Arize, WhyLabs, cloud monitoring |
-| Business KPIs | Grafana dashboards, custom metrics | Looker, Power BI, Datadog Business Monitoring |
-| LLM-specific | Langfuse, Arize Phoenix | LangSmith, Helicone, Confident AI |
+| Model performance | Evidently, MLflow | Arize, Model Monitoring on Agent Platform, SageMaker Model Monitor (existing customers only) |
+| Data/drift | Evidently, Great Expectations | Arize, cloud monitoring |
+| Business KPIs | Grafana dashboards, custom metrics | Looker, Power BI, Datadog dashboards |
+| LLM-specific | Langfuse, Arize Phoenix (source-available) | LangSmith, Arize AX, Confident AI |
 
 > **Common mistake:** Teams monitor Layer 1 (infrastructure) and think they're covered. The model returns HTTP 200 even when predictions are garbage. **Infrastructure can be perfectly healthy while the model is silently failing.** You need all four layers.
 
@@ -253,7 +253,7 @@ LLMs add new concerns that traditional MLOps doesn't cover well. Think of LLMOps
 ```
 Prompt versioning (track + A/B test)
   → LLM evaluation (judge + metrics)
-  → Prompt caching (90% cheaper reads)
+  → Prompt caching (90%+ cheaper reads)
   → Model gateway (route + failover)
   → Guardrails (input/output filters)
   → LLM observability (traces + quality scores)
@@ -273,14 +273,14 @@ Prompt versioning (track + A/B test)
 
 | Lever | Savings | How |
 |---|---|---|
-| Model right-sizing | 60–80% | Use Haiku for routing, Sonnet for main work, Opus only for hardest tasks |
-| Prompt caching | 90% on cached reads | Cache static system prompts, tool definitions, reference docs. Default TTL is 5 minutes; a longer option exists at a higher write premium, which pays off only for traffic bursty enough to otherwise let the cache expire |
+| Model right-sizing | 50–80% | Use Haiku for routing, Sonnet for main work, Opus only for hardest tasks |
+| Prompt caching | 90%+ on cached reads | Cache static system prompts, tool definitions, reference docs. Default TTL is 5 minutes; a longer option exists at a higher write premium, which pays off only for traffic bursty enough to otherwise let the cache expire |
 | Batch API | 50% | Async processing for non-real-time workloads (24-hr window) |
-| Spot/preemptible GPUs | 60–91% | For training jobs with checkpointing; not for serving |
+| Spot/preemptible GPUs | Up to ~90% | For training jobs with checkpointing; not for serving |
 | Quantization | 2–4x throughput | INT8/INT4 quantization reduces model size; slight accuracy trade-off |
 | Token budgets | Variable | Set per-user/per-team/per-project token limits; alert on anomalies |
 | Progressive summarization | Variable | Compress older conversation turns; reduces per-request token count |
-| Committed/reserved capacity | 30–70% | SageMaker Savings Plans, GCP CUDs, Azure EA for steady-state workloads |
+| Committed/reserved capacity | 30–70% | SageMaker Savings Plans, GCP CUDs, Azure reservations and savings plans for steady-state workloads |
 | Auto-scaling + scale-to-zero | Variable | Serverless inference for dev/staging; autoscale production endpoints |
 
 > **Measure cost per outcome, not cost per token:** A cheaper model that gets the answer wrong 30% of the time costs *more* than an expensive model that's right 95% of the time — because you pay for retries, escalations, and lost customers. Track **cost per successful resolution**, not just token spend.
@@ -295,18 +295,18 @@ Prompt versioning (track + A/B test)
 - **Supply chain security:** scan model weights for trojans (backdoors injected during training). Don't download untrusted models from the internet without verification. Use SafeTensors format, not pickle.
 - **Prompt injection defense:** input validation + output verification + separation of trusted/untrusted content + guardrail hooks.
 
-> **The EU AI Act:** High-risk AI systems (Annex III) must demonstrate: transparency, explainability, human oversight, data governance, accuracy/robustness testing, and a conformity assessment. Note the timeline has shifted — the May 2026 "Digital Omnibus" postponed the high-risk (Annex III) obligations from August 2, 2026 to December 2, 2027, so the near-term compliance deadline is no longer 2026. That's more runway, not a reprieve: building MLOps pipelines that version, test, monitor, and audit is how you demonstrate compliance, and it's far easier to bake in now than to retrofit later. **If your pipeline can't reproduce a training run and explain a prediction, you won't be EU AI Act compliant when the obligations land.**
+> **The EU AI Act:** High-risk AI systems (Annex III) must demonstrate: transparency, explainability, human oversight, data governance, accuracy/robustness testing, and a conformity assessment. Note the timeline has shifted — the AI "Digital Omnibus" (agreed in May 2026, in force since July 27, 2026) postponed the high-risk (Annex III) obligations from August 2, 2026 to December 2, 2027, and product-embedded (Annex I) systems to August 2, 2028, so the near-term compliance deadline is no longer 2026. That's more runway, not a reprieve: building MLOps pipelines that version, test, monitor, and audit is how you demonstrate compliance, and it's far easier to bake in now than to retrofit later. **If your pipeline can't reproduce a training run and explain a prediction, you won't be EU AI Act compliant when the obligations land.**
 
 ## 13 — Trade-off Master Reference
 
 | Decision | Option A | Option B | Default |
 |---|---|---|---|
-| Managed platform vs self-hosted | SageMaker / Vertex / Azure ML | Raw VMs + custom stack | Managed unless >$10K/mo + dedicated MLOps team |
-| Training on spot vs on-demand | Spot (60–91% off) | On-demand (guaranteed) | Spot with checkpointing for training; on-demand for serving |
+| Managed platform vs self-hosted | SageMaker AI / Agent Platform / Azure ML | Raw VMs + custom stack | Managed unless >$10K/mo + dedicated MLOps team |
+| Training on spot vs on-demand | Spot (up to ~90% off) | On-demand (guaranteed) | Spot with checkpointing for training; on-demand for serving |
 | Real-time vs batch inference | Real-time endpoint | Batch transform | Real-time for user-facing; batch for scoring/ETL |
 | Model serving: vLLM vs managed | Self-hosted vLLM on K8s | Cloud managed endpoint | Managed to start; self-hosted when scale justifies ops cost |
 | Experiment tracking | MLflow (open-source) | W&B (managed) | MLflow for portability and cost; W&B for team collaboration |
-| Pipeline orchestration | Airflow / Prefect | Cloud-native (Vertex/SageMaker Pipelines) | Cloud-native for single-cloud; Airflow for multi-cloud |
+| Pipeline orchestration | Airflow / Prefect | Cloud-native (Agent Platform/SageMaker Pipelines) | Cloud-native for single-cloud; Airflow for multi-cloud |
 | Monitoring: open-source vs managed | Prometheus + Grafana + Evidently | Datadog + Arize | Open-source for cost; managed for faster setup |
 | LLM observability | Langfuse (self-hosted) | LangSmith / Arize (managed) | Langfuse for data sovereignty; managed for speed |
 | Retraining trigger | Scheduled (time-based) | Drift-triggered (automated) | Scheduled to start; drift-triggered at maturity (Level 2) |

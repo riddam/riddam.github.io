@@ -2,7 +2,7 @@
 title: "GCP Professional Cloud Architect — 2026 Blueprint"
 description: "A last-minute review guide for the Google Cloud Professional Cloud Architect exam covering the format, all six domains, service trade-offs, scenario triggers, HA/DR, cost optimization, and the new 2026 AI focus."
 pubDate: 2026-06-20
-updatedDate: 2026-08-03
+updatedDate: 2026-09-27
 tags: ["gcp", "cloud-architect", "certification", "study-guide"]
 cover: cloud
 ---
@@ -13,7 +13,7 @@ cover: cloud
 |---|---|---|---|---|---|
 | 50–60 | 2 hours | $200 USD | 2 years | 2 of 4 · 20–30% | Not published |
 
-> **⚠ 2026 naming change:** the exam is transitioning from **Vertex AI** to **Gemini Enterprise Agent Platform**. Both names may appear on questions. Renamed services are flagged here with the old name in brackets, e.g. *GKE Enterprise (Anthos)*.
+> **⚠ 2026 naming change:** the exam has been updated to Google's current product names — the exam guide now uses **Gemini Enterprise Agent Platform** (formerly **Vertex AI**). Older courses and practice tests still use the old names, so know both. Renamed services are flagged here with the old name in brackets, e.g. *Cloud Run functions (Cloud Functions)*.
 
 ## 00 — Exam Format & Domains
 
@@ -26,24 +26,22 @@ The PCA is Google Cloud's flagship architect credential. It rewards **architectu
 | Length | 2 hours | 1 hour |
 | Fee | $200 | $100 |
 | Questions | 50–60 MC & multi-select | 25 MC & multi-select |
-| Case studies | 2 (from a pool of 4), 20–30% | 2 available, gen-AI focused, 90–100% |
+| Case studies | 2 (from a pool of 4), 20–30% | 1 per exam (Cymbal Retail or Altostrat Media), gen-AI focused, 90–100% |
 | Who | First-timers / expired certs | Active cert, within renewal window |
 | Languages | English, Japanese | English, Japanese |
 
 ### Six domains & weighting (2026 guide)
 
-> **⚠ Weightings are unofficial estimates — Google does not publish per-domain weightings for this exam.** The percentages below are community/author estimates to help you prioritize study time; treat all six domains as testable and don't rely on these numbers.
+> **Weightings are from the official exam guide.** Treat all six domains as testable — the percentages tell you where to spend study time, not what to skip.
 
-| Domain | Weight (est.*) | Watch for |
+| Domain | Weight | Watch for |
 |---|---|---|
-| **1.** Designing & planning a cloud solution architecture | ~25%* | Business→technical mapping, trade-offs, HA/DR, Gemini Cloud Assist |
-| **2.** Managing & provisioning solution infrastructure | ~17.5%* | Network topology, storage/compute config, Agent Platform ML workflows |
-| **3.** Designing for security & compliance | ~17.5%* | IAM hierarchy, KMS, VPC-SC, **Securing AI** (Model Armor) |
-| **4.** Analyzing & optimizing processes | ~15%* | SDLC, CI/CD, cost (CapEx/OpEx), stakeholder mgmt |
-| **5.** Managing implementation | ~12.5%* | Apigee, IaC/Terraform, `gcloud`/`gsutil`/`bq`, emulators |
-| **6.** Ensuring solution and operations reliability | ~12.5%* | Cloud Observability, SLO/alerting, chaos/load testing |
-
-> *\* Estimated — Google doesn't publish official per-domain weightings.*
+| **1.** Designing & planning a cloud solution architecture | ~25% | Business→technical mapping, trade-offs, HA/DR, Gemini Cloud Assist |
+| **2.** Managing & provisioning solution infrastructure | ~17.5% | Network topology, storage/compute config, Agent Platform ML workflows |
+| **3.** Designing for security & compliance | ~17.5% | IAM hierarchy, KMS, VPC-SC, **Securing AI** (Model Armor) |
+| **4.** Analyzing & optimizing processes | ~15% | SDLC, CI/CD, cost (CapEx/OpEx), stakeholder mgmt |
+| **5.** Managing implementation | ~12.5% | Apigee, IaC/Terraform, `gcloud`/`gsutil`/`bq`, emulators |
+| **6.** Ensuring solution and operations excellence | ~12.5% | Cloud Observability, SLO/alerting, chaos/load testing |
 
 > **Read this first:** The case studies are **published in advance**. Read all four cold before exam day — know each company's existing tech, business goals, constraints and compliance needs so you don't burn time reading during the exam.
 
@@ -53,67 +51,67 @@ The old pool (Mountkirk Games, TerramEarth, Helicopter Racing League) is **retir
 
 ### Altostrat Media (Media)
 
-- **Core challenge:** Global streaming/media platform; personalization & gen-AI content features, cost-efficient transcoding, global low-latency delivery.
-- **Key services:** Global External App LB · Cloud CDN/Media CDN · Transcoder API · Agent Platform (Vertex AI) · BigQuery
-- **Themes:** Global delivery, personalization, cost at scale, gen-AI features.
+- **Core challenge:** Media library (podcasts, news, documentaries) already on GKE, Cloud Storage, BigQuery and Cloud Run functions, with some on-prem ingest/archive systems still to migrate. Wants gen-AI summaries, metadata extraction, harmful-content detection and a 24/7 natural-language support chatbot, with explainable AI; reliability and cost are the stated top priorities.
+- **Key services:** Gemini on Agent Platform (Vertex AI) · Vision / Video AI APIs · Agent Builder (chat) · GKE fleets (formerly GKE Enterprise) across cloud + on-prem · Cloud Interconnect · Cloud Storage (Autoclass / lifecycle) · BigQuery
+- **Themes:** Gen-AI content features, responsible and explainable AI, hybrid Kubernetes, storage cost.
 
 ### Cymbal Retail (Retail)
 
-- **Core challenge:** Omnichannel retailer; demand forecasting, recommendations/search, seasonal traffic spikes, unifying operational + analytical data.
-- **Key services:** GKE / Cloud Run · Spanner or Cloud SQL · BigQuery · Agent Builder (search/recs) · Pub/Sub
-- **Themes:** Elastic scale, recommendations, HTAP data, gen-AI search.
+- **Core challenge:** Fast-growing online retailer with a huge catalog. Wants gen-AI catalog enrichment (attributes, descriptions, image variants) with human-in-the-loop review, conversational commerce through virtual agents using Discovery AI, and to modernize a mixed on-prem stack (MySQL, SQL Server, Redis, MongoDB, SFTP/batch ETL, an IVR call center).
+- **Key services:** Gemini & Imagen on Agent Platform (Vertex AI) · AI Commerce Search (formerly Vertex AI Search for commerce) · CX Agent Studio (Dialogflow CX) · GKE · Cloud SQL / Memorystore · BigQuery
+- **Themes:** Gen-AI content with human review, conversational search, call-center cost reduction, breaking down data silos.
 
 ### EHR Healthcare (Healthcare)
 
-- **Core challenge:** Multi-hospital EHR SaaS migrating off legacy on-prem; **HIPAA**, multi-region HA, hybrid connectivity, strict governance.
-- **Key services:** Cloud Healthcare API · Cloud SQL (HA) · Shared VPC · Cloud Armor · Cloud KMS (CMEK) · VPC-SC · Assured Workloads
+- **Core challenge:** EHR SaaS provider leaving colocation data centers; containerized apps, mixed MySQL / SQL Server / Redis / MongoDB, Active Directory users, and legacy insurer integrations that stay on-prem. Needs 99.9% availability, health-record privacy compliance (e.g. **HIPAA**), secure hybrid connectivity and consistent monitoring/alerting.
+- **Key services:** GKE · Cloud SQL (HA) · Cloud Interconnect · Cloud Monitoring / Logging · Cloud Healthcare API · Cloud KMS (CMEK) · VPC-SC · Assured Workloads
 - **Themes:** Compliance, security, hybrid migration, minimal downtime.
 
 ### KnightMotives Automotive (Automotive / IoT)
 
-- **Core challenge:** Connected-vehicle telemetry at massive scale; time-series ingest, predictive-maintenance ML, modern data platform.
-- **Key services:** Pub/Sub · Dataflow · Bigtable · BigQuery · Agent Platform (Vertex AI) predictive models
-- **Themes:** IoT pipeline, batch vs streaming, ML integration, data lifecycle.
+- **Core challenge:** Carmaker (BEV, hybrid and ICE, with autonomous-driving ambitions) modernizing the in-vehicle AI experience across all models, fixing an unreliable online build-to-order system and dealer tooling, monetizing siloed data, and moving off a legacy mainframe/ERP — under EU data-protection rules, after past breaches, with poor rural connectivity.
+- **Key services:** Agent Platform (Vertex AI) + AI Hypercomputer (AV training / simulation) · BigQuery + Knowledge Catalog (formerly Dataplex) · Pub/Sub · Dataflow · Cloud Interconnect (plants to HQ) · Security Command Center · Assured Workloads (EU data residency)
+- **Themes:** Hybrid modernization, data monetization and governance, security, EU compliance, ML at scale.
 
 > **Pattern to internalize:** Healthcare → compliance + Assured Workloads/CMEK. IoT telemetry → Pub/Sub → Dataflow → Bigtable/BigQuery. Retail/media personalization → Agent Platform (Vertex AI) + BigQuery.
 
 ## 02 — Service Renames — Old → New
 
-Questions may use either name. These are the renames and deprecations most likely to trip you up in 2026.
+Questions use the names in the current exam guide, but older courses and practice tests still use the old ones, so know both. These are the renames and deprecations most likely to trip you up in 2026.
 
 | Current name | Old / former name | Note |
 |---|---|---|
 | Gemini Enterprise Agent Platform | Vertex AI | The headline change — unified ML + gen-AI + agent platform |
-| GKE Enterprise | Anthos | Fleet mgmt, multicluster/multicloud, Config Mgmt, Service Mesh |
+| GKE (one edition) | GKE Enterprise / Anthos | Since Sept 2025 fleet management, Config Sync and Policy Controller are part of GKE; Cloud Service Mesh and multicluster gateways are separate SKUs |
 | Cloud Run functions | Cloud Functions | FaaS folded under the Cloud Run brand |
 | Cloud Service Mesh | Traffic Director / Anthos Service Mesh | Managed Istio/Envoy mesh |
 | Google Cloud Observability | Stackdriver | = Cloud Monitoring + Logging + Trace + Profiler |
 | Sensitive Data Protection | Data Loss Prevention (DLP) | Discover/classify/de-identify PII |
-| Artifact Registry | Container Registry (GCR) | GCR deprecated — use Artifact Registry |
-| Infrastructure Manager | Deployment Manager | Terraform-based; Deployment Manager is being retired |
+| Artifact Registry | Container Registry (GCR) | GCR shut down in March 2025 — use Artifact Registry (it can host gcr.io repositories) |
+| Infrastructure Manager | Deployment Manager | Terraform-based; Deployment Manager reached end of support on March 31, 2026 |
 | Chrome Enterprise Premium | BeyondCorp Enterprise | Zero-trust context-aware access |
 | Google Security Operations (SecOps) | Chronicle | SIEM/SOAR under Google SecOps |
 | Spot VMs | Preemptible VMs | Spot = successor, no 24h cap; preemptible is legacy |
 | Migrate to Virtual Machines | Migrate for Compute Engine | VM lift-and-shift |
 | Migrate to Containers | Migrate for Anthos | VM → container modernization |
-| Managed Service for Apache Spark | (new, complements Dataproc) | Serverless Spark option |
+| Managed Service for Apache Spark | Dataproc + Serverless for Apache Spark | One product, two deployment modes: managed clusters or serverless |
 | Hyperdisk / Block Storage | Persistent Disk (still valid) | Hyperdisk = next-gen, decoupled IOPS/throughput |
 | gcloud storage | gsutil | Newer, faster CLI for Cloud Storage |
-| Dataplex Catalog | Data Catalog | Now part of Dataplex governance |
+| Knowledge Catalog | Dataplex Universal Catalog (Dataplex); Data Catalog | Dataplex renamed April 2026; Data Catalog shut down June 1, 2026 |
 
-> **Deprecated — don't pick these:** Cloud Debugger (retired), Cloud IoT Core (retired — use Pub/Sub + partners), and Deployment Manager (superseded by Terraform / Infrastructure Manager). If an answer relies on a retired service, it's almost certainly a distractor.
+> **Deprecated — don't pick these:** Cloud Debugger (retired), Cloud IoT Core (retired — use Pub/Sub + partners), and Deployment Manager (end of support March 2026 — use Terraform / Infrastructure Manager). If an answer relies on a retired service, it's almost certainly a distractor.
 
 ## 03 — AI & ML — the 2026 Focus Area
 
 AI now appears across **design (§1.3), provisioning (§2.4/2.5), and security (§3.1)**. Almost everything routes through the **Gemini Enterprise Agent Platform (Vertex AI)**. Learn the stack and how the pieces fit.
 
-This is more than a rename: Google has stated that Vertex AI services and roadmap are delivered **exclusively** through the Agent Platform rather than as a standalone service. In current docs and console the platform is organised under five top-level areas — **Studio**, **Agents**, **Models**, **Notebooks**, and **CodeMender** — so expect either vocabulary on exam questions and don't be thrown when a stem says "Vertex AI" and the answer options say "Agent Platform". The exam wants the Google service names; if you want the vendor-neutral reasoning underneath them, that's [the AI architecture field guide](/guides/ai-architecture-master-guide/).
+This is more than a rename: Google has stated that Vertex AI services and roadmap are delivered **exclusively** through the Agent Platform rather than as a standalone service. Google's overview now organizes the platform around four pillars — **Build**, **Scale**, **Govern** and **Optimize** — and the docs are split into **Studio**, **Agents**, **Models** and **Notebooks** tabs. Older prep material says "Vertex AI" where the current exam guide says "Agent Platform", so know both vocabularies. The exam wants the Google service names; if you want the vendor-neutral reasoning underneath them, that's [the AI architecture field guide](/guides/ai-architecture-master-guide/).
 
 **Fig 03.1 — Gemini Enterprise Agent Platform stack**
 
 | Layer | Components |
 |---|---|
-| Assist & agents (business value) | Gemini Cloud Assist · Agent Builder / Agent Studio · Gemini Enterprise / AI Agents · NotebookLM · Code Assist |
+| Assist & agents (business value) | Gemini Cloud Assist · Agent Builder (now part of Agent Platform) / Agent Studio (formerly Vertex AI Studio) · Gemini Enterprise app (AI Agents, NotebookLM) · Gemini Code Assist |
 | Agent operations (new with the platform) | Agent-to-agent orchestration · Agent Registry · Agent Identity · Agent Gateway · Agent Observability |
 | Models & APIs (build with) | Gemini LLMs · Model Garden (200+ models) · Search · Conversation · Vision · Image · Video · Audio (Speech) |
 | MLOps (operate) | Agent Platform Pipelines (Vertex Pipelines) · Feature Store · Model Registry · Endpoints / serving |
@@ -126,11 +124,11 @@ This is more than a rename: Google has stated that Vertex AI services and roadma
 |---|---|---|
 | Gemini Enterprise Agent Platform (Vertex AI) | Any custom-model training, tuning, deployment, or end-to-end MLOps | SageMaker |
 | Model Garden | Pick from 200+ first/third-party models (Gemini, Llama, etc.) without building from scratch | Bedrock catalog |
-| Agent Builder | Build RAG / search / conversational agents grounded on your data, low-code | Bedrock Agents |
+| Agent Builder (now part of Agent Platform: Agent Studio, ADK and Agent Runtime, formerly Vertex AI Agent Engine; search apps are now Agent Search, formerly Vertex AI Search) | Build RAG / search / conversational agents grounded on your data, low-code | Bedrock Agents |
 | Gemini Cloud Assist | AI help *designing, deploying & troubleshooting* the architecture itself (in-console) | Amazon Q Developer |
 | AI Hypercomputer | Large-scale training/serving; integrates GPUs & TPUs, optimized consumption models | EC2 UltraClusters |
 | Prebuilt AI APIs | Off-the-shelf Vision, Speech-to-Text, Text-to-Speech, Translation, Document AI | Rekognition / Transcribe |
-| Conversational Agents (Dialogflow CX / CCAI) | Build virtual agents / contact-center bots (voice & chat) | Lex / Connect |
+| CX Agent Studio (Dialogflow CX / Conversational Agents) | Build virtual agents / contact-center bots (voice & chat), in Gemini Enterprise for Customer Experience | Lex / Connect |
 | Model Armor | Screen prompts/responses for safety, prompt injection, data leakage | Bedrock Guardrails |
 
 > **Trade-off — prebuilt API vs custom model:** **Prebuilt API / Model Garden model** = fastest, cheapest, no ML expertise, but generic. **Custom-trained model on Agent Platform** = best domain accuracy, but needs labeled data, MLOps, GPU/TPU cost, maintenance. Default: reach for **prebuilt or a foundation model + RAG** unless the scenario says pretrained accuracy is insufficient.
@@ -144,7 +142,7 @@ This is more than a rename: Google has stated that Vertex AI services and roadma
 | Compute Engine | Max (IaaS) | OS access, custom kernels, licensed software, lift-and-shift, GPUs | EC2 |
 | GKE Standard | High | Kubernetes with node control, GPUs, custom node configs | EKS |
 | GKE Autopilot | Medium | Kubernetes without node ops, pay-per-pod, simplified ops | EKS+Fargate |
-| GKE Enterprise (Anthos) | High | Fleet mgmt across clusters / on-prem / multicloud | EKS Anywhere |
+| GKE fleets + Google Distributed Cloud (formerly GKE Enterprise / Anthos) | High | Fleet mgmt across clusters / on-prem / multicloud (attached clusters) | EKS Anywhere |
 | Cloud Run | Low | Stateless containers, pay-per-request, scale-to-zero, HTTP | Fargate |
 | Cloud Run functions (Functions) | Minimal | Event-driven code (Pub/Sub, HTTP triggers), short execution | Lambda |
 | App Engine | Minimal | Opinionated PaaS web apps (Standard = runtimes; Flex = containers) | Beanstalk |
@@ -156,11 +154,11 @@ This is more than a rename: Google has stated that Vertex AI services and roadma
 - Existing **Kubernetes** / need portability & fine control? → **GKE (Autopilot if no node ops)**
 - Stateless **containerized** HTTP service, want scale-to-zero? → **Cloud Run**
 - Small **event-driven** glue (Pub/Sub, Storage triggers)? → **Cloud Run functions**
-- Multi-cluster / hybrid / **multicloud** fleet? → **GKE Enterprise**
+- Multi-cluster / hybrid / **multicloud** fleet? → **GKE fleet management** (formerly GKE Enterprise), with Google Distributed Cloud on-prem
 
 ### Compute Engine essentials
 
-- **Spot VMs (Preemptible):** up to ~91% cheaper, reclaimed with 30s notice — fault-tolerant/batch only. Spot has **no 24-hour cap** (old preemptible did).
+- **Spot VMs (Preemptible):** up to ~91% cheaper, reclaimed with a best-effort 30s shutdown window — fault-tolerant/batch only. Spot has **no 24-hour cap** (old preemptible did).
 - **MIG:** autoscaling + autohealing + rolling/canary + regional multi-zone spread. Unmanaged = static, no autoscale.
 - **CUDs** for steady state; **Sustained Use Discounts** apply automatically; **custom machine types** right-size vCPU/RAM.
 - **Sole-tenant nodes** for compliance/licensing; **Confidential VMs** encrypt memory in-use.
@@ -212,7 +210,7 @@ The single most-tested topic — know the decision rule cold.
 | Spanner | Relational, global | Multi-region strong consistency, 99.999% SLA, horizontal scale, >1000 TPS | Aurora Global |
 | Firestore | NoSQL document | Mobile/web, real-time sync, offline, flexible schema | DynamoDB |
 | Bigtable | NoSQL wide-column | IoT/time-series, high-throughput low-latency, >1TB | DynamoDB / Timestream |
-| Memorystore | In-memory | Redis/Memcached caching, sessions, leaderboards, sub-ms | ElastiCache |
+| Memorystore | In-memory | Valkey/Redis caching, sessions, leaderboards, sub-ms (Memcached is deprecated) | ElastiCache |
 | BigQuery | Analytical OLAP | Petabyte analytics, warehouse, serverless SQL, BI | Redshift |
 
 **Fig 06.1 — Database decision tree**
@@ -228,7 +226,7 @@ The single most-tested topic — know the decision rule cold.
 
 > **Trade-off — Cloud SQL vs Spanner:** **Cloud SQL:** cheaper, familiar engines, easy migration — but vertical ceiling & regional (replicas scale reads only). **Spanner:** unlimited horizontal scale + global strong consistency + 99.999% — but expensive and needs key design to avoid hotspots. Choose Spanner only for **global writes or scale beyond one big instance**.
 
-> **Trade-off — Firestore vs Bigtable:** **Firestore:** document model, real-time listeners, strong consistency, app backends — modest write throughput. **Bigtable:** wide-column, single-digit-ms at millions of ops/sec, ideal for time-series/IoT — no cross-row transactions, no secondary indexes, min 1-node cost. Row-key design is everything.
+> **Trade-off — Firestore vs Bigtable:** **Firestore:** document model, real-time listeners, strong consistency, app backends — modest write throughput. **Bigtable:** wide-column, single-digit-ms at millions of ops/sec, ideal for time-series/IoT — no cross-row transactions, no native secondary indexes (async ones via continuous materialized views), min 1-node cost. Row-key design is everything.
 
 ## 07 — Networking
 
@@ -269,7 +267,7 @@ The single most-tested topic — know the decision rule cold.
 
 **Fig 07.1 — Hybrid connectivity: choosing the on-prem link**
 
-- **Highest bandwidth**, dedicated physical fibre, lowest latency (10/100 Gbps)? → **Dedicated Interconnect**
+- **Highest bandwidth**, dedicated physical fibre, lowest latency (10, 100 or 400 Gbps circuits)? → **Dedicated Interconnect**
 - **Cannot co-locate** at a Google PoP / lower bandwidth (50 Mbps–50 Gbps)? → **Partner Interconnect**
 - Quick / cheap / encrypted over public internet (<3 Gbps)? → **HA VPN (99.99%)**
 - Reach Google APIs privately from on-prem/VMs? → **Private Google Access / PSC**
@@ -389,12 +387,12 @@ All under **Google Cloud Observability (Stackdriver)**.
 |---|---|---|
 | Pub/Sub | Global async messaging — entry point for streaming pipelines | SNS+SQS / Kinesis |
 | Dataflow | Managed Apache Beam — unified stream + batch ETL | Kinesis Data Analytics |
-| Dataproc | Managed Hadoop/Spark — migrate existing jobs | EMR |
-| Managed Service for Apache Spark | Serverless Spark | EMR Serverless |
+| Managed Service for Apache Spark — clusters (Dataproc) | Managed Spark/Hadoop clusters — migrate existing jobs | EMR |
+| Managed Service for Apache Spark — serverless | Serverless Spark batches and sessions | EMR Serverless |
 | BigQuery | Serverless warehouse + BQML + BI Engine | Redshift |
 | Cloud Composer | Managed Apache Airflow orchestration | MWAA |
 | Cloud Data Fusion | Visual, code-free ETL/ELT | Glue (visual) |
-| Dataplex | Governance, lakehouse, catalog | Lake Formation |
+| Knowledge Catalog (Dataplex) | Governance, lakehouse, catalog | Lake Formation |
 | Looker / Looker Studio | Governed BI & visualization on BigQuery | QuickSight |
 | Datastream | Serverless change-data-capture (CDC) — replicate DB changes into BigQuery/GCS | DMS (CDC) |
 | Cloud Healthcare API | Managed FHIR/HL7v2/DICOM store — the EHR-case ingestion/interop layer | HealthLake |
@@ -403,7 +401,7 @@ All under **Google Cloud Observability (Stackdriver)**.
 
 Pub/Sub → Dataflow (transform) → Bigtable (low-latency serving) + BigQuery (analytics)
 
-> **Trade-off — Dataflow vs Dataproc:** **Dataflow:** serverless, autoscaling, one pipeline for batch *and* stream — preferred greenfield. **Dataproc:** when **migrating existing Hadoop/Spark/Hive** with minimal rewrite. Lift-and-shift Spark → Dataproc; net-new streaming → Dataflow.
+> **Trade-off — Dataflow vs Dataproc:** **Dataflow:** serverless, autoscaling, one pipeline for batch *and* stream — preferred greenfield. **Managed Service for Apache Spark (Dataproc):** when **migrating existing Hadoop/Spark/Hive** with minimal rewrite. Lift-and-shift Spark → Dataproc; net-new streaming → Dataflow.
 
 ## 12 — Migration Strategy (the 6 R's)
 
@@ -414,7 +412,7 @@ Pub/Sub → Dataflow (transform) → Bigtable (low-latency serving) + BigQuery (
 | **Refactor** / modernize | Re-architect to cloud-native | Migrate to Containers, GKE, Cloud Run |
 | **Repurchase** | Switch to SaaS | — |
 | **Retire** | Decommission unused | — |
-| **Retain** | Keep on-prem for now (hybrid) | Interconnect / GKE Enterprise |
+| **Retain** | Keep on-prem for now (hybrid) | Interconnect / GKE fleets + Google Distributed Cloud |
 
 - **Assess first** with **Migration Center** (discovery, TCO, dependency mapping) — always the step before choosing a strategy.
 - **Data transfer sizing:** Storage Transfer Service (online), **Transfer Appliance** (petabyte-scale offline), `gcloud storage` for smaller sets.
@@ -425,9 +423,9 @@ Pub/Sub → Dataflow (transform) → Bigtable (low-latency serving) + BigQuery (
 
 | Lever | Savings / trigger | Use when… |
 |---|---|---|
-| Committed Use Discounts (CUD) | up to ~57–70% for 1- or 3-yr commit | Steady-state, predictable baseline load |
+| Committed Use Discounts (CUD) | up to 55% (70% memory-optimized) for 1- or 3-yr commit | Steady-state, predictable baseline load |
 | Spot VMs (Preemptible) | up to ~91% off; 30s reclaim notice | Batch, fault-tolerant, stateless workers |
-| Sustained Use Discounts | automatic after >25% of the month | Always — no action needed (Compute Engine) |
+| Sustained Use Discounts | automatic after >25% of the month (up to 20–30%) | N1, N2, N2D, C2, M1/M2 and sole-tenant only, on self-serve billing — not E2 or newer series |
 | Rightsizing / Recommender | flags idle/underused VMs | Regular reviews; Active Assist |
 | Storage Lifecycle policies | auto-tier to Nearline/Coldline/Archive | Aging data with dropping access frequency |
 | Autoscaling / scale-to-zero | pay only for what runs | Spiky/variable traffic → Cloud Run, MIGs, Autopilot |
@@ -442,7 +440,7 @@ Pub/Sub → Dataflow (transform) → Bigtable (low-latency serving) + BigQuery (
 
 ## 14 — Business, Process & Governance
 
-Domain §4 (~15%, unofficial estimate — Google doesn't publish weightings) is **not about services** — it tests architect judgment: stakeholders, process maturity, buy-vs-build, and how responsibility is shared. These questions have no product in the answer; they reward the option that reflects sound engineering-organization practice.
+Domain §4 (~15% per the exam guide) is **not about services** — it tests architect judgment: stakeholders, process maturity, buy-vs-build, and how responsibility is shared. These questions have no product in the answer; they reward the option that reflects sound engineering-organization practice.
 
 ### People & process
 
@@ -551,7 +549,7 @@ The decisions examiners most love to test — memorize the "choose X when" trigg
 
 ### How hard is the PCA, and how long should I prepare?
 
-It's one of the harder GCP exams — 50–60 questions in 2 hours, heavily scenario-based. Most candidates with 2+ years of cloud experience pass in one attempt after 4–8 focused weeks, with the emphasis on case studies and service trade-offs rather than rote facts.
+It's one of the harder GCP exams — 50–60 questions in 2 hours, heavily scenario-based. Google recommends 3+ years of industry experience, including 1+ year designing and managing solutions on Google Cloud; put your prep time into the case studies and service trade-offs rather than rote facts.
 
 ### What are the current official case studies?
 
@@ -571,11 +569,11 @@ The 2026 pool is **Altostrat Media, Cymbal Retail, EHR Healthcare, and KnightMot
 
 ### What changed for AI in 2026?
 
-Generative AI is now explicitly in scope and the exam is moving from the **Vertex AI** name to **Gemini Enterprise Agent Platform**. Expect questions on Model Garden, Agent Builder (RAG), Gemini Cloud Assist, AI Hypercomputer, and securing AI with Model Armor + Sensitive Data Protection. Both old and new product names may appear.
+Generative AI is now explicitly in scope, and the exam guide now uses **Gemini Enterprise Agent Platform** (formerly Vertex AI) — Google notes the exam was updated for recent branding changes. Expect questions on Model Garden, Agent Builder (RAG), Gemini Cloud Assist, AI Hypercomputer, and securing AI with Model Armor + Sensitive Data Protection. Older prep material still says Vertex AI, so know both names.
 
 ### Standard vs renewal exam?
 
-First-timers and expired certs take the **standard** exam (2 hrs, $200, 50–60 questions, 2 case studies). If you hold an active cert within the renewal window, you can take the shorter **renewal** exam (1 hr, $100, 25 questions, with 2 gen-AI case studies available and case-study-weighted questions making up 90–100% of it).
+First-timers and expired certs take the **standard** exam (2 hrs, $200, 50–60 questions, 2 case studies). If you hold an active cert within the renewal window, you can take the shorter **renewal** exam (1 hr, $100, 25 questions built on 1 gen-AI case study — Cymbal Retail or Altostrat Media — with case-study questions making up 90–100% of it).
 
 ## Appendix A1 — CLI Quick Reference
 
@@ -610,7 +608,7 @@ First-timers and expired certs take the **standard** exam (2 hrs, $200, 50–60 
 | Network | `gcloud compute networks create --subnet-mode=custom` | Custom-mode VPC (global; subnets regional) |
 | Network | `gcloud compute firewall-rules create` | Allow/deny VPC traffic |
 
-> **The one fact that actually earns points:** It's the **tool-to-service mapping**, not flags: `bq` = BigQuery · `gcloud storage`/`gsutil` = Cloud Storage · `kubectl` (after `get-credentials`) = inside a GKE cluster. And for provisioning: prefer **Terraform / Infrastructure Manager** (IaC) over the deprecated **Deployment Manager**. Also know the emulators — Bigtable, Spanner, Pub/Sub, Firestore — exist for local testing without touching real resources.
+> **The one fact that actually earns points:** It's the **tool-to-service mapping**, not flags: `bq` = BigQuery · `gcloud storage`/`gsutil` = Cloud Storage · `kubectl` (after `get-credentials`) = inside a GKE cluster. And for provisioning: prefer **Terraform / Infrastructure Manager** (IaC) over **Deployment Manager**, which reached end of support in March 2026. Also know the emulators — Bigtable, Spanner, Pub/Sub, Firestore — exist for local testing without touching real resources.
 
 > **Don't over-study this:** If you find yourself memorizing exact flag names or output formats, stop — you're studying for the ACE exam, not PCA. Spend that time on case studies and service trade-offs instead.
 
@@ -622,9 +620,9 @@ First-timers and expired certs take the **standard** exam (2 hrs, $200, 50–60 
 
 | Tier | Unlocks | Scenario signal |
 |---|---|---|
-| Standard (free) | Basic posture — Security Health Analytics (misconfigs, exposed resources), Web Security Scanner custom scans. GCP only. | "Free dashboard / find misconfigurations" |
+| Standard (free) | Basic security & compliance posture — vulnerability assessment, Model Armor findings, CIEM, limited attack-path views. GCP only. (Security Health Analytics and Web Security Scanner custom scans aren't included in new Standard activations.) | "Free / basic posture" |
 | Premium | + Threat detection (Event / Container / VM), **attack-path simulation**, **compliance monitoring** (CIS, PCI-DSS, NIST, HIPAA, ISO). Org or project level. | "Detect active threats / monitor PCI-HIPAA / attack paths" |
-| Enterprise | Multi-cloud CNAPP across **AWS/Azure**, integrated **Google SecOps** (SIEM/SOAR), CIEM. Org level only. | "One security view across GCP + AWS + Azure with SIEM" |
+| Enterprise (deprecated) | Multi-cloud CNAPP across **AWS/Azure**, integrated **Google SecOps** (SIEM/SOAR). Org level only. | "One security view across GCP + AWS + Azure with SIEM" |
 
 > **Note:** The SCC **Enterprise** tier is scheduled to shut down on **May 21, 2027**, with those orgs moving to **Premium**. If a question forces a choice, Premium is the safe "paid tier" default for threat detection + compliance.
 
@@ -651,7 +649,7 @@ First-timers and expired certs take the **standard** exam (2 hrs, $200, 50–60 
 | Persistent Disk / Hyperdisk | pd-standard (HDD) → pd-balanced (default SSD) → pd-ssd → pd-extreme / **Hyperdisk** (tunable) | cost vs IOPS/latency |
 | BigQuery compute | **On-demand** (per-TB scanned, spiky) vs **Editions** (Standard / Enterprise / Enterprise Plus — slot capacity + autoscale + commitments) | predictable heavy load → Editions |
 | Firestore | **Native mode** (real-time sync + offline) vs **Datastore mode** (server-side, no real-time) | new apps → Native |
-| GKE | Autopilot / Standard modes → **GKE Enterprise (Anthos)** for fleet/multicloud | hybrid/multicluster → Enterprise |
+| GKE | Autopilot vs Standard **modes**; one edition since Sept 2025 — fleet/multicluster features included, Cloud Service Mesh and multicluster gateways billed separately | hybrid/multicluster → fleets + Google Distributed Cloud |
 | Cloud VPN | Classic VPN (99.9%) → **HA VPN** (99.99%) | production → HA VPN |
 
 ---

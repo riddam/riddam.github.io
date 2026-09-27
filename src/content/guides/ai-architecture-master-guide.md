@@ -2,6 +2,7 @@
 title: "AI Architecture: A Practitioner's Field Guide (2026)"
 description: "A practitioner's blueprint covering every layer of modern AI systems — foundation model selection, RAG, fine-tuning, agentic patterns, LLMOps, safety, cloud platforms, and the trade-offs behind each decision."
 pubDate: 2026-07-11
+updatedDate: 2026-09-27
 tags: ["ai-architecture", "llm", "rag", "agents"]
 cover: ai
 ---
@@ -30,25 +31,25 @@ AI architecture in 2026 is no longer "pick a model and prompt it." It's a layere
 
 | Provider | Frontier | Workhorse | Fast / cheap | Strengths |
 |---|---|---|---|---|
-| Anthropic | Claude Fable 5 (most capable) / Opus 4.8 | Claude Sonnet 5 | Claude Haiku 4.5 | Safety, long context (1M; Haiku 200K), coding, structured output |
-| OpenAI | GPT-5 / GPT-5.1 | GPT-5 mini | GPT-5 nano | Ecosystem breadth, multimodal, reasoning |
-| Google | Gemini 3 Pro (also 2.5 Pro) | Gemini 3 Pro | Gemini Flash | Multimodal native, huge context (1M+), Google integration |
-| Meta | Llama 4 Maverick (Behemoth was previewed but never shipped) | Llama 4 Maverick | Llama 4 Scout | Open weights, self-hostable, fine-tunable, no API dependency |
-| Mistral | Mistral Large | Mistral Medium | Mistral Small | EU-hosted, multilingual, open weights for some |
-| DeepSeek | DeepSeek-R1 | DeepSeek-V3.1 / V3.2 | — | Open weights, reasoning, cost-efficient, China-based |
+| Anthropic | Claude Fable 5.1 (most capable) / Opus 5.5 | Claude Sonnet 5 | Claude Haiku 4.5 | Safety, long context (1M; Haiku 200K), coding, structured output |
+| OpenAI | GPT-6 Astra | GPT-6 Sol | GPT-6 Luna | Ecosystem breadth, multimodal, reasoning |
+| Google | Gemini 3.1 Pro (preview) | Gemini 3.8 Flash | Gemini 3.5 Flash-Lite | Multimodal native, huge context (1M+), Google integration |
+| Meta | Muse Spark (closed; API in private preview) | Llama 4 Maverick | Llama 4 Scout | Llama 4 is open weights: self-hostable, fine-tunable, no API dependency |
+| Mistral | Mistral Large 3 | Mistral Medium 3.5 | Mistral Small 4 | EU-hosted, multilingual, open weights for most current models |
+| DeepSeek | DeepSeek-V4-Pro (V4.1-Pro pending) | DeepSeek-V4.1-Flash | — | Open weights, reasoning, cost-efficient, China-based |
 
 ### Model selection decision framework
 
 **Fig 02.1 — How to choose a model**
 
-- Need **maximum reasoning / complex tasks** (low volume, high stakes)? → **Frontier (Fable 5 / Opus 4.8 / GPT-5 / Gemini 3 Pro)**
-- Need **balanced cost + capability** for most production workloads? → **Workhorse (Sonnet 5 / GPT-5 mini / Gemini Flash)**
-- Need **fast, cheap** for classification / routing / high-volume simple tasks? → **Fast (Haiku 4.5 / GPT-5 nano / Gemini Flash)**
+- Need **maximum reasoning / complex tasks** (low volume, high stakes)? → **Frontier (Fable 5.1 / Opus 5.5 / GPT-6 Astra / Gemini 3.1 Pro)**
+- Need **balanced cost + capability** for most production workloads? → **Workhorse (Sonnet 5 / GPT-6 Sol / Gemini 3.8 Flash)**
+- Need **fast, cheap** for classification / routing / high-volume simple tasks? → **Fast (Haiku 4.5 / GPT-6 Luna / Gemini 3.5 Flash-Lite)**
 - Need **data sovereignty / no vendor lock-in / custom fine-tuning**? → **Open weights (Llama / Mistral / DeepSeek)**
 
 > **Trade-off — closed API vs open weights:** **Closed API** (Claude, GPT) = highest capability, zero infra, pay-per-token, vendor lock-in. **Open weights** (Llama, Mistral) = self-hostable, fine-tunable, no per-token API cost — but you own GPU infra, ops, and security. Most production systems use a **mix**: closed API for the hard reasoning, open weights for high-volume/sensitive tasks.
 
-> **Key principle — right-size the model:** Don't use a frontier model for everything. In a multi-agent system, the **router** uses a fast/cheap model (Haiku 4.5), the **main agent** uses the workhorse (Sonnet 5), and only the **hardest reasoning steps** escalate to frontier (Opus 4.8 / Fable 5). This can cut costs 60–80% versus using frontier everywhere.
+> **Key principle — right-size the model:** Don't use a frontier model for everything. In a multi-agent system, the **router** uses a fast/cheap model (Haiku 4.5), the **main agent** uses the workhorse (Sonnet 5), and only the **hardest reasoning steps** escalate to frontier (Opus 5.5 / Fable 5.1). At list prices Sonnet 5 costs a fifth of Fable 5.1 per token and Haiku 4.5 a tenth, so keeping most traffic off the frontier tier cuts cost substantially versus using it everywhere.
 
 ## 03 — The Customization Ladder
 
@@ -92,17 +93,17 @@ The single most important strategic decision: **how do you make a general model 
 | Few-shot examples | Show 2–5 input/output pairs to anchor behavior | Inconsistent output; need specific tone/format/length |
 | XML/structured tags | Wrap context in tags (`<document>`, `<instructions>`) | Complex prompts with multiple context sources |
 | Chain-of-thought | Ask model to reason step-by-step before answering | Complex reasoning, math, multi-step logic |
-| Prefilled response *(legacy)* | Start the assistant's response to steer its format | Older models only — most 2026 frontier models reject assistant prefill; use structured outputs instead |
+| Prefilled response *(legacy)* | Start the assistant's response to steer its format | Older models only — Claude models from the 4.6 generation on reject a prefilled assistant turn with a 400 error; use structured outputs instead |
 | Self-critique / reflection | Model evaluates its own output, then revises | High-quality generation; catch hallucinations |
 
 ### The PRECISE framework (community mnemonic)
 
-**P**ersona · **R**ole · **E**xplicit instructions · **C**ontext · **I**nstructions · **S**teps · **E**xamples — a community mnemonic (not an official Anthropic framework) for structuring system prompts. It lines up well with Anthropic's actual published guidance: give clear and direct instructions, use multishot examples, wrap context in XML tags, let the model reason with chain-of-thought, and constrain the output with a schema. (Prefilling the assistant's reply to force a format was a common older trick, but most current frontier models reject a prefilled turn — reach for structured outputs instead.) The **Examples** component is the single most impactful lever: without examples, the model guesses format and tone from pretraining.
+**P**ersona · **R**ole · **E**xplicit instructions · **C**ontext · **I**nstructions · **S**teps · **E**xamples — a community mnemonic (not an official Anthropic framework) for structuring system prompts. It lines up well with Anthropic's actual published guidance: give clear and direct instructions, use multishot examples, wrap context in XML tags, let the model reason with chain-of-thought, and constrain the output with a schema. (Prefilling the assistant's reply to force a format was a common older trick, but current Claude models reject a prefilled turn — reach for structured outputs instead.) The **Examples** component is the single most impactful lever: without examples, the model guesses format and tone from pretraining.
 
 ### Structured output patterns
 
 - **Tool-use extraction:** define a "tool" whose input schema matches your desired JSON structure, force Claude to "call" it → schema-validated output. Production-grade.
-- **Schema-constrained output:** point the model at a full JSON Schema the response must satisfy (a `response_format` / `output_config.format` field). Guarantees parseable, schema-valid output — the modern replacement for prefilling a `{` to coax JSON. Older "JSON mode" only guarantees valid-JSON-*shaped* text, not *your* schema.
+- **Schema-constrained output:** point the model at a full JSON Schema the response must satisfy (`output_config.format` on Claude, `text.format` in OpenAI's Responses API, `response_format` in its Chat Completions API). Guarantees parseable, schema-valid output — the modern replacement for prefilling a `{` to coax JSON. Older "JSON mode" only guarantees valid-JSON-*shaped* text, not *your* schema.
 - **Validation-retry loop:** parse output → validate against schema → if invalid, send error back to model with the original input → retry (cap at 2–3).
 
 > **Trade-off — strict schema vs free-form:** **Structured (tool_use / JSON Schema):** deterministic, parseable, production-safe — but constrains the model. **Free-form text:** more natural, flexible — but requires post-processing and can't be reliably parsed. Default to structured for any machine-consumed output.
@@ -123,7 +124,7 @@ RAG (Retrieval-Augmented Generation) is the **dominant enterprise AI pattern in 
 | **4. Graph RAG** | Knowledge graph + vector search. Enables multi-hop reasoning over connected entities (contracts, case law, org charts). | relationships |
 | **5. Agentic RAG** | Agent decomposes query into sub-queries, decides which retrieval tools to call, iterates until it has enough context. Most capable. | complex reasoning |
 
-> **The 60/30/10 rule:** In a typical enterprise system, ~60% of queries are simple enough for Naive or Hybrid RAG. ~30% benefit from reranking or Self-RAG. Only ~10% need Graph or Agentic RAG. **Adaptive RAG** routes each query to the cheapest architecture that can handle it — this is the cost-efficient production pattern.
+> **The 60/30/10 rule (a planning heuristic, not a measured split):** In a typical enterprise system, expect roughly 60% of queries to be simple enough for Naive or Hybrid RAG, ~30% to benefit from reranking or Self-RAG, and only ~10% to need Graph or Agentic RAG — then check the split against your own query logs. **Adaptive RAG** routes each query to the cheapest architecture that can handle it — this is the cost-efficient production pattern.
 
 **Fig 05.2 — Hybrid RAG pipeline (production baseline)**
 
@@ -175,7 +176,7 @@ flowchart LR
 
 | Component | Options (2026) | Decision |
 |---|---|---|
-| Embedding model | Voyage 3.5, Cohere Embed v4, OpenAI text-embedding-3-large, Qwen3-Embedding | Domain-specific fine-tuned embeddings add 5–15% accuracy for specialized corpora |
+| Embedding model | Voyage 4, Cohere Embed v4, OpenAI text-embedding-3-large, Qwen3-Embedding | Domain-specific fine-tuned embeddings can lift accuracy on specialized corpora — measure the gain on your own retrieval eval |
 | Vector database | Qdrant, Pinecone, Weaviate, Chroma, pgvector | Qdrant for greenfield; pgvector if already on Postgres; Pinecone for managed simplicity |
 | Chunking strategy | Fixed-size, semantic, recursive, document-structure-aware | Structure-aware (respect headings, paragraphs) > fixed-size. Chunk size 256–512 tokens typical. |
 | Reranker | Cohere Rerank, Voyage Rerank, cross-encoder models | Always add a reranker for production — cheap uplift in relevance |
@@ -253,7 +254,7 @@ An **agent** is an LLM that operates in a loop — observe, think, act, repeat �
 ```
 
 - `stop_reason === "tool_use"` → execute tools → loop back.
-- `stop_reason === "end_turn"` → terminate. This is the **only reliable** termination signal.
+- `stop_reason === "end_turn"` → terminate. This is the **only reliable** signal that the task finished — but also handle `max_tokens` (truncated output), `refusal` (the model declined; stop or fall back) and `pause_turn` (see below) explicitly rather than looping on them.
 - Every iteration: append the assistant response and tool results to conversation history, so the model can reason about the cumulative state.
 
 ### What's new in agent loops (2026)
@@ -275,9 +276,9 @@ One loop mechanic worth knowing regardless: when a **server-side tool** (web sea
 |---|---|---|
 | Claude Agent SDK | Production agents on Claude; hooks, subagents, session management | Anthropic |
 | LangGraph | Complex stateful workflows with conditional branching, checkpointing | LangChain |
-| AutoGen | Multi-agent conversation, research-oriented architectures | Microsoft |
-| CrewAI | Quick multi-agent prototyping, role-based agents | Community |
-| OpenAI Agents SDK | Handoff-based agent routing, OpenAI ecosystem (the older Assistants API is being sunset in favor of the Responses API / Agents SDK) | OpenAI |
+| Microsoft Agent Framework | Multi-agent orchestration and graph workflows; successor to AutoGen (now in maintenance mode) and Semantic Kernel | Microsoft |
+| CrewAI | Quick multi-agent prototyping, role-based agents | CrewAI (open source) |
+| OpenAI Agents SDK | Handoff-based agent routing, OpenAI ecosystem (the older Assistants API shut down on 26 August 2026; the Responses API replaces it) | OpenAI |
 
 ## 08 — Multi-Agent Systems
 
@@ -338,7 +339,7 @@ flowchart TD
 - **Context isolation:** each agent gets only the context it needs — never share the coordinator's full history (prevents context pollution).
 - **Structured handoffs:** pass JSON between agents, not raw text — preserves attribution and structure.
 - **Minimal footprint:** each agent scoped to a single responsibility and returns a focused result.
-- **Right-size models:** router = Haiku 4.5; workers = Sonnet 5; hardest reasoning = Opus 4.8 / Fable 5.
+- **Right-size models:** router = Haiku 4.5; workers = Sonnet 5; hardest reasoning = Opus 5.5 / Fable 5.1.
 - **Observability:** log every agent call, tool use, and decision at the coordinator level. You cannot debug what you cannot see.
 
 > **Common mistake:** Building a multi-agent system when a single agent with tools would suffice. Multi-agent adds latency, cost, and debugging complexity. Start with the simplest architecture that works, and only add agents when you hit a clear capability ceiling.
@@ -386,7 +387,7 @@ Develop (prompts, RAG, agents) → Evaluate (test sets, benchmarks)
 
 A centralized proxy between your application and LLM providers. It handles: rate limiting, token budget tracking, multi-provider failover, prompt/response logging, cost attribution, and policy enforcement. Every production system should have one.
 
-> **Cost management levers:** **Prompt caching** (90% cheaper cached reads) · **Batch API** (50% cheaper, async) · **Model right-sizing** (Haiku 4.5 for routing) · **Token budgets** (per-user, per-team) · **Progressive summarization** (reduce context growth). A well-run system can cut LLM costs 40–70% vs naive implementation.
+> **Cost management levers:** **Prompt caching** (90%+ cheaper cached reads) · **Batch API** (50% cheaper, async) · **Model right-sizing** (Haiku 4.5 for routing) · **Token budgets** (per-user, per-team) · **Progressive summarization** (reduce context growth). Together they take a well-run system far below a naive implementation's bill — measure cost per successful outcome before and after to know by how much.
 
 ## 11 — AI Safety & Guardrails
 
@@ -397,7 +398,7 @@ A centralized proxy between your application and LLM providers. It handles: rate
 | Layer | Controls |
 |---|---|
 | **Input guardrails (before the model)** | prompt injection detection, PII scrubbing, topic filtering, rate limiting |
-| **Model-level controls** | system prompt constraints, operator permissions, tool restrictions, response prefilling |
+| **Model-level controls** | system prompt constraints, operator permissions, tool restrictions, structured outputs (schema-constrained responses) |
 | **Output guardrails (after the model)** | content classification, schema validation, PII detection on output, citation verification |
 | **Action guardrails (before execution)** | tool-call validation (hooks), human-in-the-loop gates, irreversible-action blocks, spending limits |
 
@@ -425,15 +426,15 @@ A centralized proxy between your application and LLM providers. It handles: rate
 | Approach | Use when | Trade-off |
 |---|---|---|
 | API providers (Anthropic, OpenAI, Google) | Default. Zero infra, pay per token, highest capability | Vendor dependency, data leaves your control |
-| Self-hosted (vLLM, TGI, Ollama) | Data sovereignty, custom models, predictable cost at scale | You own GPU infra, ops, scaling, security |
-| Managed serving (AWS Bedrock, GCP Vertex, Azure AI) | Cloud-provider ecosystem, compliance, hybrid of API + control | Cloud lock-in, sometimes behind on latest models |
+| Self-hosted (vLLM, SGLang, Ollama) | Data sovereignty, custom models, predictable cost at scale | You own GPU infra, ops, scaling, security |
+| Managed serving (Amazon Bedrock, Gemini Enterprise Agent Platform [formerly Vertex AI], Microsoft Foundry [formerly Azure AI Foundry]) | Cloud-provider ecosystem, compliance, hybrid of API + control | Cloud lock-in, sometimes behind on latest models |
 
 ### GPU/TPU landscape
 
-- **NVIDIA H100/H200:** the workhorse for LLM training and inference; most available, broadest framework support.
-- **NVIDIA B100/B200 (Blackwell):** next-gen, higher throughput; becoming available 2025–2026.
-- **Google TPUs (v5e/v6e):** competitive for training large models on GCP; Jax/TensorFlow-centric.
-- **AMD MI300X:** growing alternative; good cost/performance for inference.
+- **NVIDIA H100/H200 (Hopper):** previous generation but still the most widely available, with the broadest framework support.
+- **NVIDIA B200/B300 (Blackwell / Blackwell Ultra):** the current generation, in volume across the major clouds (AWS P6 instances, for example); the next generation, Vera Rubin, began ramping in the second half of 2026.
+- **Google TPUs (Trillium v6e, Ironwood):** competitive for training and serving large models on Google Cloud; JAX-first, with PyTorch via PyTorch/XLA and native PyTorch support (TorchTPU) announced in 2026.
+- **AMD Instinct MI350/MI400 series:** growing alternative; good cost/performance for inference.
 
 > **Trade-off — API vs self-host:** **API** wins when: you're under ~$50K/mo in inference, you want the latest models immediately, you don't have GPU ops expertise. **Self-host** wins when: you're spending $100K+/mo (amortized GPU cost is lower), you need data sovereignty, or you've fine-tuned open weights. Most enterprises use both — API for frontier reasoning, self-hosted for high-volume / sensitive tasks.
 
@@ -443,15 +444,15 @@ Modern AI systems aren't text-only. **Multimodal** models process images, audio,
 
 | Modality | Models (2026) | Use cases |
 |---|---|---|
-| Vision (image → text) | Claude Sonnet 5 / Opus 4.8, GPT-5, Gemini 3 Pro | Document understanding, UI analysis, image description, OCR replacement |
-| Image generation | GPT-image-1, Midjourney, Stable Diffusion 3, Imagen 4 | Creative assets, product mockups, data visualization |
-| Audio / speech | Whisper (STT), GPT-5 (native audio), ElevenLabs (TTS) | Transcription, voice agents, real-time conversation |
-| Video | Gemini (native video), Sora 2, Runway Gen-4, Google Veo 3 | Video understanding, generation, editing |
-| Code | Claude (Opus 4.8 / Sonnet 5), GPT-5, Codex, DeepSeek-Coder | Code generation, review, debugging, migration |
+| Vision (image → text) | Claude Sonnet 5 / Opus 5.5, GPT-6, Gemini 3.1 Pro / 3.8 Flash | Document understanding, UI analysis, image description, OCR replacement |
+| Image generation | gpt-image-2.5, Midjourney, Stable Diffusion 3.5, Nano Banana Pro (Gemini 3 Pro Image) | Creative assets, product mockups, data visualization |
+| Audio / speech | gpt-transcribe or open-weight Whisper (STT), OpenAI realtime models such as gpt-realtime-2.1 (native speech-to-speech), ElevenLabs (TTS) | Transcription, voice agents, real-time conversation |
+| Video | Gemini (native video understanding), Google Veo 3.1, Runway Gen-4.5 | Video understanding, generation, editing |
+| Code | Claude (Opus 5.5 / Sonnet 5), GPT-6 Sol, Codex, Qwen3-Coder | Code generation, review, debugging, migration |
 
 ### Multimodal RAG
 
-Standard RAG embeds text. **Multimodal RAG** also embeds images, tables, and diagrams from documents (using vision models or multimodal embeddings like CLIP/Jina CLIP). This is critical for document-heavy industries (legal, medical, manufacturing) where important information lives in charts, forms, and images — not just text.
+Standard RAG embeds text. **Multimodal RAG** also embeds images, tables, and diagrams from documents (using vision models or multimodal embeddings like CLIP, jina-embeddings-v4 or Cohere Embed v4). This is critical for document-heavy industries (legal, medical, manufacturing) where important information lives in charts, forms, and images — not just text.
 
 ## 15 — Cloud AI Platforms — GCP / AWS / Azure
 
@@ -461,9 +462,9 @@ Knowing the patterns (§03–§08) is half the job. The other half is knowing **
 
 | | GCP | AWS | Azure |
 |---|---|---|---|
-| **Primary AI platform** | Vertex AI / Gemini Enterprise Agent Platform | SageMaker + Bedrock | Azure AI Foundry + Azure ML |
-| **Foundation model access** | Gemini (native), Llama, Gemma via Model Garden | Claude, Llama, Mistral, Cohere via Bedrock; GPT via custom | GPT-5 via Azure OpenAI (exclusive); Llama, Mistral via Model Catalog |
-| **Unique hardware** | TPUs (v5e/v6e) — best $/FLOP for large training | Trainium/Inferentia — purpose-built inference chips | Maia AI accelerators (emerging) |
+| **Primary AI platform** | Gemini Enterprise Agent Platform | SageMaker AI + Bedrock | Microsoft Foundry + Azure ML |
+| **Foundation model access** | Gemini (native), Claude, Llama, Gemma via Model Garden | Claude, OpenAI GPT, Llama, Mistral, Cohere via Bedrock | GPT via Azure OpenAI (new OpenAI models ship here first); Claude, Llama, Mistral via the Foundry Models catalog |
+| **Unique hardware** | TPUs (Trillium v6e, Ironwood) — strong $/FLOP for large training | Trainium (now Trainium3) for training, Inferentia for inference | Maia 200 inference accelerators (in production since 2026) |
 | **Best for** | Data in BigQuery, Gemini models, TPU training, opinionated managed workflows | Deepest flexibility, broadest ecosystem, Bedrock for Claude/multi-model | Microsoft-centric orgs, Azure OpenAI (GPT), compliance/hybrid |
 | **Sweet spot** | Research, startups, warehouse-native ML | Expert teams, fine-grained control, large inference | Enterprises on Microsoft stack, regulated industries |
 
@@ -471,22 +472,22 @@ Knowing the patterns (§03–§08) is half the job. The other half is knowing **
 
 | AI architecture pattern | GCP | AWS | Azure |
 |---|---|---|---|
-| **Model training (custom)** | Vertex AI Training + TPUs | SageMaker Training + p5/Trainium | Azure ML Compute + ND-series GPUs |
-| **Fine-tuning (managed)** | Vertex AI Model Tuning | SageMaker JumpStart fine-tuning / Bedrock custom models | Azure AI Foundry fine-tuning / Azure OpenAI fine-tuning |
-| **Model serving / inference** | Vertex AI Endpoints (dedicated + serverless) | SageMaker Endpoints (real-time, serverless, async, multi-model) | Azure ML Managed Endpoints (online + batch) |
-| **Foundation model API (hosted)** | Vertex AI Model Garden / Gemini API | Amazon Bedrock | Azure OpenAI Service / Azure AI Model Catalog |
-| **RAG — vector search** | Vertex AI Vector Search / AlloyDB pgvector | Amazon OpenSearch / Bedrock Knowledge Bases / Aurora pgvector | Azure AI Search (vector mode) / Cosmos DB vCore |
-| **RAG — embedding** | Vertex AI Embeddings (Gemini) / text-embedding | Bedrock Embeddings (Titan / Cohere) | Azure OpenAI Embeddings (ada-002/3-large) |
-| **RAG — orchestration** | Vertex AI Agent Builder | Bedrock Knowledge Bases + Agents | Azure AI Foundry Prompt Flow |
-| **MLOps pipeline** | Vertex AI Pipelines (Kubeflow) | SageMaker Pipelines | Azure ML Pipelines |
-| **Experiment tracking** | Vertex AI Experiments | SageMaker Experiments / MLflow on SageMaker | Azure ML + MLflow |
-| **Model registry** | Vertex AI Model Registry | SageMaker Model Registry | Azure ML Model Registry |
-| **Feature store** | Vertex AI Feature Store | SageMaker Feature Store | Azure ML Managed Feature Store |
-| **Data labeling** | Vertex AI Data Labeling | SageMaker Ground Truth | Azure ML Data Labeling |
-| **AutoML** | Vertex AI AutoML | SageMaker Autopilot | Azure AutoML |
+| **Model training (custom)** | Agent Platform Managed Training (formerly Vertex AI Training) + TPUs | SageMaker Training + P5/P6 GPUs or Trainium | Azure ML Compute + ND-series GPUs |
+| **Fine-tuning (managed)** | Agent Platform model tuning (formerly Vertex AI Model Tuning) | SageMaker JumpStart fine-tuning / Bedrock custom models | Microsoft Foundry fine-tuning (incl. Azure OpenAI models) |
+| **Model serving / inference** | Agent Platform Endpoints (formerly Vertex AI Endpoints; scale-to-zero in preview) | SageMaker Endpoints (real-time, serverless, async, multi-model) | Azure ML Managed Endpoints (online + batch) |
+| **Foundation model API (hosted)** | Agent Platform Model Garden (formerly Vertex AI Model Garden) / Gemini API | Amazon Bedrock | Foundry Models (formerly Azure OpenAI Service / Azure AI Model Catalog) |
+| **RAG — vector search** | Vector Search on Agent Platform (formerly Vertex AI Vector Search) / AlloyDB pgvector | Amazon OpenSearch / Bedrock Knowledge Bases / Aurora pgvector | Azure AI Search (vector mode) / Azure DocumentDB (formerly Cosmos DB for MongoDB vCore) |
+| **RAG — embedding** | Gemini Embedding (gemini-embedding-2 / -001) | Bedrock Embeddings (Titan / Cohere) | Azure OpenAI Embeddings (ada-002/3-large) |
+| **RAG — orchestration** | RAG Engine on Agent Platform (formerly Vertex AI RAG Engine) | Bedrock Knowledge Bases + AgentCore | Foundry Agent Service (Prompt flow retires April 2027) |
+| **MLOps pipeline** | Agent Platform Pipelines (formerly Vertex AI Pipelines; Kubeflow) | SageMaker Pipelines | Azure ML Pipelines |
+| **Experiment tracking** | Experiments on Agent Platform (formerly Vertex AI Experiments) | SageMaker Experiments / MLflow on SageMaker | Azure ML + MLflow |
+| **Model registry** | Model Registry on Agent Platform (formerly Vertex AI Model Registry) | SageMaker Model Registry | Azure ML Model Registry |
+| **Feature store** | Feature Store on Agent Platform (formerly Vertex AI Feature Store) | SageMaker Feature Store | Azure ML Managed Feature Store |
+| **Data labeling** | Data Labeling on Agent Platform (formerly Vertex AI Data Labeling; self-serve only — Google's managed labeling service shut down in 2024) | SageMaker Ground Truth | Azure ML Data Labeling |
+| **AutoML** | AutoML on Agent Platform (formerly Vertex AI AutoML; image and tabular) | SageMaker Canvas (now includes Autopilot) | Azure AutoML |
 | **AI safety / guardrails** | Model Armor + VPC-SC | Bedrock Guardrails | Azure AI Content Safety |
-| **Agent framework** | Agent Builder / Vertex AI Agent | Bedrock Agents | Azure AI Agent Service |
-| **Notebooks** | Vertex AI Workbench (managed JupyterLab) | SageMaker Studio | Azure ML Notebooks |
+| **Agent framework** | Agent Builder / Agent Runtime (formerly Vertex AI Agent Engine) | Bedrock AgentCore (Bedrock Agents is in maintenance mode) | Foundry Agent Service (formerly Azure AI Agent Service) |
+| **Notebooks** | Agent Platform Workbench (formerly Vertex AI Workbench; managed JupyterLab) | SageMaker Studio | Azure ML Notebooks |
 
 **Fig 15.1 — Cloud AI training & inference pipeline (generic, all clouds)**
 
@@ -504,51 +505,51 @@ flowchart LR
 **Fig 15.2 — Which cloud for your AI workload?**
 
 - **Data gravity:** where does most of your data already live? → S3 → AWS · BigQuery → GCP · Azure Data Lake → Azure
-- Need **Azure OpenAI (GPT-5)**? → **Azure (exclusive enterprise GPT access)**
-- Need **Claude** via managed service? → **AWS Bedrock (deepest Claude integration)**
-- Need **Gemini** or **TPU training**? → **GCP Vertex AI**
+- Need **OpenAI GPT models** through a cloud contract? → **Azure (OpenAI's primary cloud; new models ship there first) — GPT models are now also on Amazon Bedrock**
+- Need **Claude** via a cloud provider? → **AWS (Claude Platform on AWS for full Claude API parity, or Bedrock); Claude is also on Google's Agent Platform and Microsoft Foundry**
+- Need **Gemini** or **TPU training**? → **GCP Agent Platform**
 - **Microsoft-centric** org (Entra, M365, Power BI)? → **Azure ML**
 - Need **maximum flexibility** + deepest service catalog? → **AWS SageMaker**
-- **Greenfield team** wanting opinionated, fast-to-start pipelines? → **GCP Vertex AI**
+- **Greenfield team** wanting opinionated, fast-to-start pipelines? → **GCP Agent Platform**
 
-> **The data gravity rule:** The single strongest predictor of platform choice is **where the data already lives**. Moving petabytes between clouds is expensive and slow. If your data is in BigQuery, build on Vertex AI. If it's in S3, build on SageMaker. If it's in Azure Data Lake or SQL Server, build on Azure ML. Everything else is secondary.
+> **The data gravity rule:** The single strongest predictor of platform choice is **where the data already lives**. Moving petabytes between clouds is expensive and slow. If your data is in BigQuery, build on Agent Platform. If it's in S3, build on SageMaker. If it's in Azure Data Lake or SQL Server, build on Azure ML. Everything else is secondary.
 
 ### Training infrastructure trade-offs
 
 | Factor | GCP | AWS | Azure |
 |---|---|---|---|
-| **Best GPU value** | TPU v5p ~$4.20/hr (best $/FLOP for large training) | H100 via p5 ~$8.60–10.80/hr; Trainium for AWS-optimized workloads | H100 via ND-series; best through EA negotiated pricing |
+| **Best GPU value** | Trillium (v6e) ~$2.70/chip-hr, v5p ~$4.20/chip-hr on demand | H100 via p5 ~$6.88/GPU-hr on demand (us-east-1); Trainium for AWS-optimized workloads | H100 via ND-series; best through EA negotiated pricing |
 | **Spot / preemptible** | Spot VMs up to ~91% off (good for training) | Spot Instances (~60–90% off); SageMaker Managed Spot Training | Spot VMs available but less GPU spot capacity |
-| **Distributed training** | TPU pods (scale natively); GPU with NCCL | SageMaker HyperPod (auto fault recovery, 99.9% uptime in 6-week runs) | Azure ML distributed training with DeepSpeed/FSDP |
-| **Cost savings** | Sustained Use Discounts (auto); CUDs | SageMaker Savings Plans (up to 64%) | Enterprise Agreement negotiated rates |
+| **Distributed training** | TPU pods (scale natively); GPU with NCCL | SageMaker HyperPod (automatic fault recovery in under 2 minutes; AWS cites up to 95% training goodput at scale) | Azure ML distributed training with DeepSpeed/FSDP |
+| **Cost savings** | Committed use discounts; Sustained Use Discounts only for N1-attached GPUs (not accelerator-optimized VMs or TPUs) | SageMaker Savings Plans (up to 64%) | Enterprise Agreement negotiated rates |
 
 ### Inference infrastructure trade-offs
 
 | Pattern | GCP | AWS | Azure |
 |---|---|---|---|
-| **Real-time (always-on)** | Vertex AI Dedicated Endpoints (~$7/day min) | SageMaker Real-time Endpoints | Azure ML Managed Online Endpoints |
-| **Serverless (scale-to-zero)** | Vertex AI Serverless Prediction (limited model types) | SageMaker Serverless Inference (scales to zero — dev/low-traffic) | Azure ML Serverless (newer) |
-| **Batch** | Vertex AI Batch Prediction | SageMaker Batch Transform | Azure ML Batch Endpoints |
-| **Multi-model hosting** | Custom containers (manual routing) | SageMaker Multi-Model Endpoints + Inference Components (up to 80% savings) | Custom containers |
+| **Real-time (always-on)** | Agent Platform Endpoints (billed per node-hour while deployed) | SageMaker Real-time Endpoints | Azure ML Managed Online Endpoints |
+| **Serverless (scale-to-zero)** | Endpoint scale-to-zero (preview); Model as a Service for hosted models | SageMaker Serverless Inference (scales to zero — dev/low-traffic) | Foundry serverless deployment (catalog models) |
+| **Batch** | Agent Platform Batch Inference (formerly Vertex AI Batch Prediction) | SageMaker Batch Transform | Azure ML Batch Endpoints |
+| **Multi-model hosting** | Custom containers (manual routing) | SageMaker Multi-Model Endpoints + Inference Components (AWS cites 50% lower deployment cost on average) | Custom containers |
 | **Async inference** | Custom (Pub/Sub + Cloud Run) | SageMaker Async Inference (native, built-in) | Custom (Service Bus + Azure Functions) |
-| **Foundation model API** | Vertex AI / Gemini API (pay per token) | Bedrock (pay per token; 50% batch discount) | Azure OpenAI (pay per token; provisioned throughput for steady load) |
+| **Foundation model API** | Agent Platform / Gemini API (pay per token) | Bedrock (pay per token; 50% batch discount on select models) | Azure OpenAI (pay per token; provisioned throughput for steady load) |
 
-> **Trade-off — managed platform vs self-hosted on cloud:** **Managed platform** (SageMaker/Vertex/Azure ML) = faster to ship, less ops, built-in MLOps — but 20–40% more expensive than raw compute (e.g., SageMaker ml.* instances cost more than equivalent EC2). **Self-hosted on raw VMs** (EC2 + your own serving stack like vLLM) = cheaper at scale, full control — but you own infrastructure, scaling, monitoring. Use managed for most workloads; go self-hosted only if you have a dedicated MLOps team *and* the cost savings justify it.
+> **Trade-off — managed platform vs self-hosted on cloud:** **Managed platform** (SageMaker/Agent Platform/Azure ML) = faster to ship, less ops, built-in MLOps — but pricier than raw compute (at list price, SageMaker's ml.p5.48xlarge runs about 15% above the equivalent EC2 p5.48xlarge, and ml.m5.xlarge about 20% above m5.xlarge). **Self-hosted on raw VMs** (EC2 + your own serving stack like vLLM) = cheaper at scale, full control — but you own infrastructure, scaling, monitoring. Use managed for most workloads; go self-hosted only if you have a dedicated MLOps team *and* the cost savings justify it.
 
 ### Multi-cloud AI patterns
 
 - **Train on one cloud, infer on another:** train where GPUs/TPUs are cheapest (GCP TPUs for large models), deploy inference where your app already runs (AWS/Azure). Transfer the trained model weights, not the training data.
-- **AI Gateway pattern:** a proxy layer that routes LLM API calls to the cheapest/fastest/most-available provider (Claude on Bedrock, GPT on Azure, Gemini on Vertex) with automatic failover. Emerging standard for multi-cloud LLM ops.
-- **Portable MLOps:** standardize on vendor-neutral tools (MLflow for tracking, KubeFlow for pipelines, ONNX for model format) to reduce lock-in. Managed services are faster but create deeper coupling.
+- **AI Gateway pattern:** a proxy layer that routes LLM API calls to the cheapest/fastest/most-available provider (Claude on Bedrock, GPT on Azure, Gemini on Agent Platform) with automatic failover. Emerging standard for multi-cloud LLM ops.
+- **Portable MLOps:** standardize on vendor-neutral tools (MLflow for tracking, Kubeflow for pipelines, ONNX for model format) to reduce lock-in. Managed services are faster but create deeper coupling.
 
 **Fig 15.3 — Multi-cloud AI gateway pattern**
 
 ```mermaid
 flowchart TD
     A["Application"] --> G["AI Gateway<br/>(routing, failover, budget)"]
-    G --> B["AWS Bedrock<br/>(Claude, Llama)"]
-    G --> C["GCP Vertex AI<br/>(Gemini, Gemma)"]
-    G --> D["Azure OpenAI<br/>(GPT-5)"]
+    G --> B["Amazon Bedrock<br/>(Claude, GPT, Llama)"]
+    G --> C["Google Agent Platform<br/>(Gemini, Gemma)"]
+    G --> D["Azure OpenAI<br/>(GPT)"]
 ```
 
 *The on-premises and hybrid case gets its own treatment in [Connecting Cloud and On-Premises](/guides/connecting-cloud-and-on-premises/), including what happens when a site accepts no inbound connections at all.*
@@ -573,11 +574,11 @@ Every architectural decision an AI architect makes, in one table.
 | Evaluation | Automated metrics | Human evaluation | LLM-as-judge for scale, human for gold standard |
 | Batch vs real-time | Batch API (50% cheaper) | Real-time Messages API | Batch for bulk ETL; real-time for user-facing |
 | Context strategy | Full history (precise) | Progressive summarization (efficient) | Summarize when context exceeds 50% of window |
-| Caching | Prompt cache (90% cheaper reads) | No cache | Cache anything repeated across turns |
+| Caching | Prompt cache (90%+ cheaper reads) | No cache | Cache anything repeated across turns |
 | Cost control | Per-token optimization | Per-outcome optimization | Measure cost per successful outcome, not just tokens |
-| Cloud AI platform | Managed (SageMaker/Vertex/Azure ML) | Self-hosted on raw compute | Managed unless dedicated MLOps team + cost savings justify self-hosting |
+| Cloud AI platform | Managed (SageMaker/Agent Platform/Azure ML) | Self-hosted on raw compute | Managed unless dedicated MLOps team + cost savings justify self-hosting |
 | Training hardware | GPUs (H100, universal) | TPUs (GCP) / Trainium (AWS) | GPUs for flexibility; TPU/Trainium for cost at large scale |
-| Foundation model source | Cloud-managed API (Bedrock/Vertex/Azure OpenAI) | Direct vendor API (Anthropic/OpenAI) | Cloud-managed for governance + VPC; direct for latest models + flexibility |
+| Foundation model source | Cloud-managed API (Bedrock/Agent Platform/Azure OpenAI) | Direct vendor API (Anthropic/OpenAI) | Cloud-managed for governance + VPC; direct for latest models + flexibility |
 | Multi-cloud vs single | Single cloud (simpler ops) | Multi-cloud (avoid lock-in) | Single unless regulatory/cost/model-access forces multi-cloud |
 
 > **The architect's mental model:** Every decision above is a dial, not a switch. The expert architect doesn't pick "always A" or "always B" — they tune each dial per use case, per constraint, and per organizational context. The table gives you the defaults; the skill is knowing when to deviate.
@@ -590,7 +591,7 @@ Organized as a reading path — start at the foundation and work up. Each book i
 
 | Book | Author(s) | Covers | Maps to |
 |---|---|---|---|
-| Build a Large Language Model (From Scratch) | Sebastian Raschka · Manning, 2025 | Attention, tokenization, pretraining, fine-tuning, LoRA — builds a GPT-like model step by step. Understand what's inside the black box. | §02, §06 |
+| Build a Large Language Model (From Scratch) | Sebastian Raschka · Manning, 2024 | Attention, tokenization, pretraining, fine-tuning, LoRA — builds a GPT-like model step by step. Understand what's inside the black box. | §02, §06 |
 | Hands-On Large Language Models | Jay Alammar & Maarten Grootendorst · O'Reilly, 2024 | Embeddings → RAG → fine-tuning in one accessible flow. Great visual explanations of transformer internals. | §02, §05, §06 |
 | Designing Machine Learning Systems | Chip Huyen · O'Reilly, 2022 | The ML lifecycle: data, modeling, deployment, monitoring, iteration. The principles transfer directly to LLM systems. | §10, §12 |
 
@@ -608,24 +609,24 @@ Organized as a reading path — start at the foundation and work up. Each book i
 |---|---|---|---|
 | Designing Multi-Agent Systems | Victor Dibia · independently published, 2025 | Principles, patterns, and implementation for AI agents — orchestration patterns, MCP/A2A, evaluation, failure modes, case studies. Framework-agnostic, build from scratch. | §07, §08, §09, §11 |
 | Agentic Architectural Patterns for Building Multi-Agent Systems | Ali Arsanjani & Juan Pablo Bustos · Packt, 2026 | Hierarchical multi-agent architecture, coordination, explainability, fault tolerance, human-agent interaction. Enterprise-focused. | §08, §11, §12 |
-| Building LLM-Powered Applications | Valentina Alto · Packt, 2024 | LangChain, agent memory, tool integration, multi-agent architectures, failure handling. Prototype-to-production. | §07, §08, §09 |
+| Building LLM Powered Applications | Valentina Alto · Packt, 2024 | LangChain, agent memory, tool integration, multi-agent architectures, failure handling. Prototype-to-production. | §07, §08, §09 |
 
 ### Tier 4 — Specialized depth
 
 | Book | Author(s) | Covers | Maps to |
 |---|---|---|---|
-| Prompt Engineering for LLMs | John Berryman & Albert Ziegler · O'Reilly, 2025 | Context as "packets of knowledge"; flexible, scalable prompt systems. Written by a core GitHub Copilot engineer. | §04 |
+| Prompt Engineering for LLMs | John Berryman & Albert Ziegler · O'Reilly, 2024 | Context as "packets of knowledge"; flexible, scalable prompt systems. Written by a core GitHub Copilot engineer. | §04 |
 | Prompt Engineering for Generative AI | James Phoenix & Mike Taylor · O'Reilly, 2024 | CoT, ReAct, planning loops, agent behavioral architecture, prompt debugging. Strong on why agents fail. | §04, §07 |
 | Building Reliable AI Systems | Rush Shahani · Manning, 2026 | Reduce hallucinations, improve performance, manage bias. From prototype to production reliability. | §10, §11 |
-| Generative AI Design Patterns | Valliappa Lakshmanan & Hannes Hapke · O'Reilly | 32 patterns including RAG, reasoning, generation, evaluation. Pattern catalog for architects. | §04–§08 |
-| Machine Learning System Design Interview | Ali Aminian & Alex Xu | ML design problems, feature engineering, scalability, monitoring. System-design thinking for ML/AI. | §10, §12, §13 |
+| Generative AI Design Patterns | Valliappa Lakshmanan & Hannes Hapke · O'Reilly, 2025 | 32 patterns including RAG, reasoning, generation, evaluation. Pattern catalog for architects. | §04–§08 |
+| Machine Learning System Design Interview | Ali Aminian & Alex Xu · ByteByteGo, 2023 | ML design problems, feature engineering, scalability, monitoring. System-design thinking for ML/AI. | §10, §12, §13 |
 
 ### Tier 5 — Data & infrastructure foundations
 
 | Book | Author(s) | Covers | Maps to |
 |---|---|---|---|
 | Fundamentals of Data Engineering | Joe Reis & Matt Housley · O'Reilly, 2022 | Data lifecycle: ingestion, storage, transformation, orchestration, serving. The data layer beneath every AI system. | §05 (data for RAG), §12 |
-| Designing Data-Intensive Applications | Martin Kleppmann · O'Reilly, 2017 | Distributed systems, consistency, replication, partitioning. Still the GOAT for understanding the infrastructure AI runs on. | §13 |
+| Designing Data-Intensive Applications | Martin Kleppmann & Chris Riccomini · O'Reilly, 2nd ed. 2026 | Distributed systems, consistency, replication, partitioning. Still the GOAT for understanding the infrastructure AI runs on. | §13 |
 
 ### Tier 6 — Cloud AI platforms & MLOps
 
@@ -633,8 +634,8 @@ Organized as a reading path — start at the foundation and work up. Each book i
 |---|---|---|---|
 | Practical MLOps | Noah Gift & Alfredo Deza · O'Reilly, 2021 | MLOps on AWS, Azure, GCP — the cross-cloud operational playbook. AutoML, containers, edge, monitoring. Practical case studies. | §10, §13, §15 |
 | MLOps Engineering at Scale | Carl Osipov · Manning, 2022 | Serverless ML pipelines on AWS: PyTorch + SageMaker + Lambda + Step Functions. Infrastructure-as-code for ML. | §10, §13, §15 (AWS) |
-| Google Cloud Platform (GCP) MLOps Engineer Handbook | Dilip Kumar Mondal · 2026 | Vertex AI, BigQuery, Cloud Build, Pipelines. End-to-end GCP-native ML platform design with drift detection and monitoring. | §10, §15 (GCP) |
-| Hands-On MLOps on Azure | Banibrata De · Packt | Azure ML CLI, GitHub integration, LLMOps, secure and scalable ML workflows on Azure. Enterprise governance focus. | §10, §12, §15 (Azure) |
+| Google Cloud Platform (GCP) MLOps Engineer Handbook | Dilip Kumar Mondal · independently published, 2026 | Vertex AI, BigQuery, Cloud Build, Pipelines. End-to-end GCP-native ML platform design with drift detection and monitoring. | §10, §15 (GCP) |
+| Hands-On MLOps on Azure | Banibrata De · Packt, 2025 | Azure ML CLI, GitHub integration, LLMOps, secure and scalable ML workflows on Azure. Enterprise governance focus. | §10, §12, §15 (Azure) |
 | The Machine Learning Solutions Architect Handbook | David Ping · Packt, 2nd ed. 2024 | ML lifecycle, system design, MLOps, generative AI from a solutions architect perspective. Cross-cloud strategies and best practices. | §10–§15 |
 | AI Systems Performance Engineering | Chris Fregly · O'Reilly, 2025 | Optimizing model training and inference with GPUs, CUDA, PyTorch. Hardware-level understanding for architects who need to spec infrastructure. | §13, §15 |
 
@@ -642,16 +643,16 @@ Organized as a reading path — start at the foundation and work up. Each book i
 
 | Resource | What it is | Maps to |
 |---|---|---|
-| Anthropic Academy (anthropic.skilljar.com) | 19 free courses: Claude API, MCP, Claude Code, AI Fluency, Agentic Architecture. Official Anthropic. | §04, §07, §09 |
-| Anthropic Cookbook (github.com/anthropics/anthropic-cookbook) | 43K+ stars. Production recipes: RAG, tool use, agents, structured output, prompt caching. | §04, §05, §07, §09 |
-| DeepLearning.AI short courses | Free courses with Andrew Ng: LangChain, LlamaIndex, RAG, agents, fine-tuning, prompt engineering. | §03–§08 |
-| Full Stack AI Engineering (Towards AI Academy) | Louis-François Bouchard's practical course: RAG, agents, fine-tuning, deployment. | §05–§10 |
+| Anthropic Academy (anthropic.skilljar.com) | 20+ free courses: Claude API, MCP, Claude Code, agent skills and subagents, AI Fluency. Official Anthropic. | §04, §07, §09 |
+| Claude Cookbooks (github.com/anthropics/claude-cookbooks) | 50K+ stars. Production recipes: RAG, tool use, agents, structured output, prompt caching. | §04, §05, §07, §09 |
+| DeepLearning.AI short courses | Short courses with Andrew Ng and partners, free to watch: LangChain, LlamaIndex, RAG, agents, fine-tuning, prompt engineering. | §03–§08 |
+| Full Stack AI Engineering (Towards AI Academy) | Louis-François Bouchard's practical course (paid; the first lessons are free): RAG, agents, fine-tuning, deployment. | §05–§10 |
 | LLM Visualization (bbycroft.net/llm) | Interactive 3D visualization of transformer internals. Best single resource for building intuition on how LLMs work. | §02 |
 | MCP Specification (modelcontextprotocol.io) | The open standard specification for tool/resource/prompt integration. | §09 |
-| Cloud ML Platforms (Coursera — Board Infinity) | Free course: deploy ML on AWS SageMaker, Azure ML, Vertex AI. Practical cross-cloud comparison. | §15 |
-| AWS ML Specialty exam guide + free training | AWS Skill Builder free courses covering SageMaker, Bedrock, MLOps on AWS. | §15 (AWS) |
-| Google Cloud Skills Boost — ML Engineer path | Free labs + courses on Vertex AI, BigQuery ML, MLOps on GCP. | §15 (GCP) |
-| Microsoft Learn — Azure AI Engineer path | Free modules on Azure ML, Azure OpenAI, Prompt Flow, responsible AI. | §15 (Azure) |
+| Cloud Platforms for ML: AWS, Azure & GCP Deployment (Coursera — Board Infinity) | Free to enroll (certificate paid): deploy ML on AWS SageMaker, Azure ML, Vertex AI. Practical cross-cloud comparison. | §15 |
+| AWS Certified Machine Learning Engineer – Associate exam guide + free training | AWS Skill Builder free courses covering SageMaker, Bedrock, MLOps on AWS (the ML Specialty exam retired on 31 March 2026). | §15 (AWS) |
+| Google Skills (formerly Google Cloud Skills Boost) — ML Engineer path | Free labs + courses on Agent Platform, BigQuery ML, MLOps on GCP. | §15 (GCP) |
+| Microsoft Learn — Azure AI Apps and Agents Developer path (AI-103) | Free modules on Microsoft Foundry, Azure OpenAI, agents, responsible AI (AI-103 replaced the retired AI-102). | §15 (Azure) |
 
 ### Recommended reading order
 

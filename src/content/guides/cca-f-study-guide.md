@@ -2,7 +2,7 @@
 title: "CCAR-F: Claude Certified Architect Foundations — 2026 Blueprint"
 description: "An exam-day reference for the CCAR-F certification covering all five domains, the six exam scenarios, anti-patterns, trade-offs, and scenario triggers."
 pubDate: 2026-07-04
-updatedDate: 2026-08-03
+updatedDate: 2026-09-27
 tags: ["claude", "certification", "study-guide", "ai-architecture"]
 cover: agent
 ---
@@ -15,7 +15,7 @@ cover: agent
 
 ## Exam Format & Domains
 
-Launched March 12, 2026, **Claude Certified Architect — Foundations (CCAR-F)** was Anthropic's first proctored technical certification. (Early coverage widely wrote it *CCA-F*; **CCAR-F** is the official code, and it now sits alongside an Associate, a Developer, and a Professional-tier Architect exam.) It validates that you can **design and ship production-grade Claude applications at enterprise scale**. Every question is scenario-based — a realistic production system with a problem, and you pick the architecturally correct fix among plausible alternatives. No simple recall questions.
+Launched March 12, 2026, **Claude Certified Architect — Foundations (CCAR-F)** was Anthropic's first proctored technical certification. (Early coverage widely wrote it *CCA-F*; **CCAR-F** is the official code, and it now sits alongside an Associate, a Developer, and a Professional-tier Architect exam.) It validates that you can **make sound trade-off decisions when building production-grade Claude applications**; enterprise-scale design and governance is the Professional tier's job. Every question is scenario-based — a realistic production system with a problem, and you pick the architecturally correct fix among plausible alternatives (some items ask you to select more than one response). No simple recall questions.
 
 > **Before you plan around this:** the certification is offered through the **Claude Partner Network** — registration runs via the Anthropic **Partner Academy**, which validates partner credentials at login. Confirm your organization's eligibility before budgeting exam time.
 
@@ -24,12 +24,12 @@ Launched March 12, 2026, **Claude Certified Architect — Foundations (CCAR-F)**
 | Domain | Weight | Core concepts |
 |---|---|---|
 | **1.** Agentic Architecture & Orchestration | 27% | Agentic loop, stop_reason, hub-and-spoke, subagents, hooks, task decomposition, session state |
-| **2.** Tool Design & MCP Integration | 18% | MCP servers (resources/tools/prompts), JSON Schema, stdio vs SSE, tool descriptions, tool_choice |
+| **2.** Tool Design & MCP Integration | 18% | MCP servers (resources/tools/prompts), JSON Schema, `.mcp.json` vs `~/.claude.json` scoping, tool descriptions, tool_choice |
 | **3.** Claude Code Configuration & Workflows | 20% | CLAUDE.md hierarchy, skills, slash commands, plan mode, path-specific rules, CI/CD (-p flag) |
 | **4.** Prompt Engineering & Structured Output | 20% | PRECISE (community mnemonic), few-shot, XML tags, JSON schemas, tool_use for extraction, validation-retry, Batch API |
-| **5.** Context Management & Reliability | 15% | Context window, prompt caching, token budgets, CALM (informal study aid), escalation, error propagation, human-in-the-loop |
+| **5.** Context Management & Reliability | 15% | Context window, progressive summarization, token budgets, CALM (informal study aid), escalation, error propagation, human-in-the-loop |
 
-> **Scoring:** Scaled 100–1000, pass at **720**. Domain-weighted — you can't pass by acing one domain and ignoring others. 4 of 6 published scenarios are randomly selected per exam; each provides the context for ~15 questions.
+> **Scoring:** Scaled 100–1000, pass at **720**. Pass/fail rides on the total scaled score, with no per-domain minimum, but items are drawn in proportion to the domain weights, so no single domain can carry you. 4 of 6 published scenarios are randomly selected per exam; each provides the context for ~15 questions.
 
 ## The 6 Exam Scenarios
 
@@ -84,7 +84,7 @@ The agentic loop lifecycle:
 
 - `stop_reason === "tool_use"` → Claude wants to call tools → execute them → append results → loop back.
 - `stop_reason === "end_turn"` → Claude is finished → **terminate the loop**.
-- `stop_reason === "pause_turn"` → a long **server-side-tool** turn (web search, code execution) checkpointed instead of finishing → re-send the conversation unchanged to resume. It's a checkpoint, not a termination — don't treat it as "done."
+- `stop_reason === "pause_turn"` → a long **server-side-tool** turn (web search, code execution) hit its iteration limit and checkpointed instead of finishing → send the response back as-is (append the paused assistant turn; no new user message) to resume. It's a checkpoint, not a termination — don't treat it as "done."
 - The `stop_reason` field is a **structured API signal** — the *only* reliable termination mechanism.
 
 > **Anti-patterns (exam favorites):**
@@ -117,9 +117,9 @@ Hooks are **programmatic enforcement points** — Python/TypeScript functions in
 
 | Hook type | When it fires | Use for |
 |---|---|---|
-| `Pre-tool` | Before a tool is executed | Validate inputs, check permissions, block dangerous actions |
-| `Post-tool` | After a tool returns | Log results, sanitize output, enforce PII rules |
-| `Pre-message` | Before Claude's response is sent to the user | Content filtering, compliance checks, redaction |
+| `PreToolUse` | Before a tool is executed | Validate inputs, check permissions, block dangerous actions |
+| `PostToolUse` | After a tool returns | Log results, sanitize output, enforce PII rules |
+| `MessageDisplay` (TypeScript SDK only) | When an assistant text message completes, before it is displayed | Redact or reformat what the user sees (the stored transcript is unchanged) |
 
 > **Trade-off — hooks vs prompt-based guardrails:** **Hooks** = programmatic, deterministic, enforced by code, can't be jailbroken → use for *hard constraints* (compliance, PII blocking, permission checks). **Prompt instructions** = flexible, natural-language guidance, can be circumvented → use for *soft guidelines* (tone, style, preference). Default to hooks for anything safety-critical.
 
@@ -131,7 +131,7 @@ Hooks are **programmatic enforcement points** — Python/TypeScript functions in
 | **Parallel** | Independent subtasks with no dependencies | Faster but costs more tokens; harder to debug |
 | **Dynamic planning** | Task scope unclear upfront; agent decides next steps | Most flexible but needs guardrails to prevent drift |
 
-> **Session management:** Know: `fork_session` creates an isolated branch (subagent work doesn't pollute the main conversation). Sessions can be **resumed** with conversation history. State can be **in-context** (conversation history) or **external** (database/file); external is more durable for long-running agents.
+> **Session management:** Know: `fork_session` creates an independent branch that starts from a copy of the session's history, so you can explore a divergent approach without changing the original (it branches the conversation, not the filesystem). Sessions can be **resumed** with conversation history. State can be **in-context** (conversation history) or **external** (database/file); external is more durable for long-running agents.
 
 ## §2 — Tool Design & MCP Integration (18%)
 
@@ -173,15 +173,15 @@ Tests your ability to design tool interfaces, write schemas Claude can reliably 
 - Best for remote/cloud servers, team sharing
 - **Note:** the standalone HTTP+SSE transport is **deprecated in favor of Streamable HTTP**, which is now the recommended remote transport. Treat "SSE" here as shorthand for HTTP-based remote transport.
 
-> **Scenario trigger:** "Stream large file contents across a network" → **SSE**. "Local subprocess, same machine" → **stdio**. "Share MCP server across a team" → **SSE** (or Streamable HTTP).
+> **Scenario trigger:** "Stream large file contents across a network" → **remote HTTP transport** (Streamable HTTP; older prep material says SSE). "Local subprocess, same machine" → **stdio**. "Share MCP server across a team" → **Streamable HTTP** (remote).
 
 ### tool_choice parameter
 
 | Value | Behavior | Use when |
 |---|---|---|
 | `auto` | Claude decides whether/which tool to call | Default; most scenarios |
-| `any` | Claude must call a tool (any one) | Force tool use; extraction pipelines |
-| `tool` (specific) | Claude must call this exact tool | Deterministic extraction; structured output |
+| `any` | Claude must call a tool (any one); returns a 400 on Fable 5.1 and Opus 5.5 | Force tool use; extraction pipelines |
+| `tool` (specific) | Claude must call this exact tool; returns a 400 on Fable 5.1 and Opus 5.5 | Deterministic extraction; structured output |
 | `none` | Claude cannot use any tools | Force text-only response |
 
 ### Structured error responses
@@ -198,23 +198,23 @@ Tests your ability to configure **Claude Code** (Anthropic's agentic CLI/IDE too
 
 | Level | Location | Scope |
 |---|---|---|
-| `Enterprise` | Set by admin (operator) | All users in the org — hard constraints |
+| `Managed policy` | OS-level file deployed by IT (e.g. `/Library/Application Support/ClaudeCode/CLAUDE.md` on macOS, `/etc/claude-code/CLAUDE.md` on Linux) | All users in the org — can't be excluded |
 | `User / global` | `~/.claude/CLAUDE.md` | Personal preferences across all projects |
 | `Project` | `./CLAUDE.md` (repo root) | Shared team conventions, committed to VCS |
 | `Path-specific rules` | `.claude/rules/*.md` with YAML frontmatter | Activated only when editing matching file paths |
 
-- Higher levels override lower: Enterprise > User > Project.
-- An **operator** (enterprise admin) can set constraints that **users cannot override** — this is the trust hierarchy.
+- No level overrides another: Claude Code loads them all as context, broadest first (managed policy, then user, then project), and when two conflict Claude may follow either — keep them consistent.
+- An **operator** (enterprise admin) can deploy a managed-policy CLAUDE.md that users can't exclude; for constraints that must actually be enforced, use managed settings (permission rules) or hooks — CLAUDE.md is guidance, not enforcement.
 - `.claude/rules/` with path-scoped YAML frontmatter is the **recommended** approach over a monolithic CLAUDE.md — reduces irrelevant context.
 
 ### Skills, commands & built-in tools
 
 | Concept | What it is |
 |---|---|
-| `Custom slash commands` | Defined in `.claude/commands/`; reusable workflows invoked by `/command-name` |
+| `Custom slash commands` | Defined in `.claude/commands/`; reusable workflows invoked by `/command-name`. Still supported, though Claude Code has merged commands into skills — `.claude/skills/<name>/SKILL.md` creates the same `/name` |
 | `Skills (SKILL.md)` | Project- or user-scoped instructions for specific tasks (e.g. "how to create a docx"); `context: fork` in frontmatter runs the skill in an isolated sub-agent |
-| `Built-in tools` | Read, Write, Edit, Bash, Search, List — Claude Code's native file/code tools |
-| `MCP servers in Claude Code` | Configured in `.claude/mcp.json` (project) or `~/.claude/mcp.json` (user) |
+| `Built-in tools` | Read, Write, Edit, Bash, Grep, Glob — Claude Code's native file/code tools |
+| `MCP servers in Claude Code` | Project scope in `.mcp.json` at the repo root; user and local scope in `~/.claude.json` |
 
 > **Scenario trigger:** `context: fork` = the skill runs as an isolated sub-agent, preventing verbose output from polluting the main session. Use it for tasks that generate large output (code generation, data processing).
 
@@ -226,7 +226,7 @@ Tests your ability to configure **Claude Code** (Anthropic's agentic CLI/IDE too
 | `Direct execution` | Claude executes immediately | Simple / well-understood tasks |
 | `Non-interactive (-p flag)` | Headless mode, no user prompts; outputs to stdout | **CI/CD pipelines**; add `--output-format json` for structured output |
 
-> **CI/CD (scenario 5):** For CI/CD: use `claude -p "review this PR" --output-format json --json-schema schema.json`. This gives deterministic, machine-parseable output. Remember: `-p` = non-interactive / print mode.
+> **CI/CD (scenario 5):** For CI/CD: use `claude -p "review this PR" --output-format json --json-schema "$(cat schema.json)"` — the flag takes the schema itself as a JSON string, not a file path, and the validated result arrives in the `structured_output` field. This gives schema-validated, machine-parseable output. Remember: `-p` = non-interactive / print mode.
 
 ## §4 — Prompt Engineering & Structured Output (20%)
 
@@ -251,11 +251,11 @@ A community mnemonic — not official Anthropic terminology — for a structured
 - **Few-shot prompting:** 2–3 input/output examples to anchor behavior. Place them after the instructions, before the actual task.
 - **XML tags** for context structure: `<document>`, `<instructions>`, `<example>` — Claude respects these boundaries for parsing and retrieval.
 - **Chain-of-thought / extended thinking:** for complex reasoning, let Claude think step-by-step before producing the final answer.
-- **Prefilled assistant responses:** start the assistant turn with a partial response to steer format/structure. *Note: most current frontier Claude models (Opus 4.6+, Sonnet 4.6+, Fable 5) reject a prefilled assistant turn — prefer schema-constrained structured outputs there.*
+- **Prefilled assistant responses:** start the assistant turn with a partial response to steer format/structure. *Note: every current Claude model except Haiku 4.5 (Fable 5.1, Opus 5.5 and 5, Sonnet 5, and the whole 4.6-and-later generation) returns a 400 on a prefilled final assistant turn — prefer schema-constrained structured outputs there.*
 
 ### Structured output via tool_use
 
-The exam's preferred pattern for extracting structured data: define a tool whose `input_schema` matches your desired JSON structure, then set `tool_choice` to force Claude to call it. This gives you validated, schema-conforming output.
+The exam's preferred pattern for extracting structured data: define a tool whose `input_schema` matches your desired JSON structure, then set `tool_choice` to force Claude to call it. This gives you schema-conforming output (guaranteed when the tool sets `strict: true`). *On Claude Fable 5.1 and Opus 5.5 forcing returns a 400; there, use structured outputs (`output_config.format`) or a `strict: true` tool under `auto`.*
 
 > **Trade-off — tool_use extraction vs raw JSON prompting:** **tool_use with JSON Schema** = schema-validated, deterministic structure, nullable fields reduce hallucination → preferred for production. **Prompting for JSON** = simpler to set up, but output can drift from schema, requires post-processing validation → acceptable for prototyping only.
 
@@ -277,7 +277,7 @@ The lightest domain by weight but consistently underestimated. These questions a
 
 ### Context window fundamentals
 
-- **Context window = input tokens + output tokens.** Know the model limits: Opus (4.6/4.7/4.8), Sonnet (4.6/5), and Fable 5 = 1M-token context; only Haiku 4.5 = 200K.
+- **Context window = input tokens + output tokens.** Know the model limits: every current model — Fable 5.1, Opus 5.5 and 5, Sonnet 5, and the previous-generation Opus 4.6–4.8 and Sonnet 4.6 — has a 1M-token context window; only Haiku 4.5 = 200K.
 - System prompt + conversation history + tool definitions + tool results all consume input tokens. They add up fast in agentic loops.
 - **Progressive summarization:** as conversation grows, periodically summarize older turns and replace the raw history → keeps context under budget without losing critical information.
 - **Conversation compaction:** similar idea, applied at the system level — compress older context to make room for new.
@@ -285,9 +285,9 @@ The lightest domain by weight but consistently underestimated. These questions a
 ### Prompt caching
 
 - Use `cache_control` breakpoints on large, static content blocks (system prompts, reference docs, tool definitions) that don't change between turns.
-- **Cached reads are 90% cheaper** than uncached — massive savings in multi-turn agentic loops where the system prompt is repeated every turn.
+- **Cached reads are 90% cheaper** than uncached on most models — 95% on Opus 5.5 and 97.5% on Fable 5.1 — massive savings in multi-turn agentic loops where the system prompt is repeated every turn.
 - Cache has a **5-minute TTL by default**, with a **1-hour TTL option** also available — if the next request comes within the TTL window, you get the cached price.
-- Trade-off: write cost to populate cache is 25% more than a normal read, so caching only pays off if you're making multiple requests against the same prefix.
+- Trade-off: writing to the cache costs 25% more than normal input (double for the 1-hour TTL), so caching only pays off if you're making multiple requests against the same prefix.
 
 > **Trade-off — when caching pays off:** Cache if: multi-turn conversation, repeated system prompt, agentic loop (many iterations). Don't cache if: one-shot request with unique content. The break-even is roughly **2+ requests** with the same cached prefix within 5 minutes.
 
@@ -315,7 +315,7 @@ The lightest domain by weight but consistently underestimated. These questions a
 
 | Model | Strength | Use when |
 |---|---|---|
-| `Opus (largest)` | Highest reasoning, complex tasks, nuanced judgment | Hard reasoning, complex orchestration, low-volume high-stakes |
+| `Opus (large)` | Deepest reasoning of the three, complex tasks, nuanced judgment | Hard reasoning, complex orchestration, low-volume high-stakes |
 | `Sonnet (mid)` | Best balance of capability and cost; fast | Default for most production workloads, agentic loops, coding |
 | `Haiku (smallest)` | Fastest, cheapest, good for simple tasks | Classification, routing, simple extraction, high-volume low-complexity |
 
@@ -323,9 +323,9 @@ The lightest domain by weight but consistently underestimated. These questions a
 
 ### API concepts the exam assumes
 
-- **Messages API:** the core endpoint. Send a list of messages (system, user, assistant), receive a response with `content` blocks and `stop_reason`.
-- **Streaming:** `stream: true` for real-time token delivery. Use for user-facing responses.
-- **Extended thinking:** `thinking` blocks that let Claude reason before responding. On current models this is **adaptive** (`thinking: {type: "adaptive"}` plus an `effort` level) rather than a fixed token budget. Useful for complex tasks; costs extra tokens.
+- **Messages API:** the core endpoint. Send a top-level `system` prompt plus a list of `user`/`assistant` messages, receive a response with `content` blocks and `stop_reason`.
+- **Streaming:** `stream: true` for real-time token delivery. Use for user-facing responses. (The exam guide puts streaming implementation out of scope; know it exists.)
+- **Extended thinking:** `thinking` blocks that let Claude reason before responding. On current models this is **adaptive** (`thinking: {type: "adaptive"}`, tuned with `output_config.effort`) rather than a fixed token budget. Useful for complex tasks; costs extra tokens.
 - **System / Operator / User hierarchy:** operator instructions (set by the app developer) can restrict what user prompts can override. Users can't elevate their own permissions beyond what the operator allows.
 
 ## Anti-Pattern Master List
@@ -354,10 +354,10 @@ Decisions the exam tests repeatedly. Know the trigger phrase → right answer.
 | Loop termination | `stop_reason` | Iteration cap | Always primary | Safety net only |
 | Guardrails | `Hooks (code)` | Prompt instructions | Hard safety constraints | Soft style/tone guidance |
 | Execution | `Sequential` | Parallel | Steps depend on prior results | Independent subtasks |
-| Transport | `stdio` | SSE | Local, same machine | Remote, team sharing, streaming |
+| Transport | `stdio` | Streamable HTTP (legacy: SSE) | Local, same machine | Remote, team sharing, streaming |
 | Structured output | `tool_use + schema` | Prompt for JSON | Production extraction | Quick prototyping only |
 | Model size | `Haiku` | Opus | Simple / routing / high-volume | Complex reasoning / high-stakes |
-| Caching | `Cache (90% cheaper reads)` | No cache | Multi-turn / agentic loop | One-shot unique requests |
+| Caching | `Cache (90%+ cheaper reads)` | No cache | Multi-turn / agentic loop | One-shot unique requests |
 | Batch vs real-time | `Batches API (50% off)` | Real-time Messages | Bulk ETL, overnight jobs | User-facing, low-latency |
 | Context strategy | `Progressive summarization` | Full history | Long conversations / budgets | Short conversations / precision |
 | CLAUDE.md structure | `Path-scoped rules` | Monolithic file | Large repos, mixed stacks | Tiny projects |
@@ -373,11 +373,11 @@ Decisions the exam tests repeatedly. Know the trigger phrase → right answer.
 - **Context isolation is a theme.** Any time a subagent gets "too much" context, or a coordinator shares everything, it's the wrong answer.
 - **Structured > unstructured.** Passing structured JSON between agents beats plain text. tool_use extraction beats prompting for JSON. Schema-validated output beats unvalidated.
 - **Right-size the model.** Using Opus for classification or Haiku for complex reasoning are both wrong in scenario questions.
-- **Prompt caching math:** 90% cheaper reads, 25% more expensive writes, 5-min default TTL (1-hour option available), break-even at ~2 requests. Know this for cost-optimization questions.
+- **Prompt caching math:** 90% cheaper reads on most models, 25% more expensive writes (double for the 1-hour TTL), 5-min default TTL (1-hour option available), break-even at ~2 requests. The exam guide lists caching details and pricing calculations as out of scope beyond knowing caching exists, so treat these numbers as production knowledge, not exam points.
 - **2 min/question average.** Don't overthink — recognize the pattern (it maps to one of the anti-patterns or trade-offs above), pick the answer, and move on. Flag and return if unsure.
 
-> **Preparation resources (free):** **Anthropic Academy** (anthropic.skilljar.com): 13+ free courses covering all domains. Key courses: *Building Applications with the Claude API* (8+ hrs), *Claude Code in Action*, *Introduction to MCP*, *AI Fluency Framework*. Also: the official **Exam Guide PDF** (12 sample questions with explanations) and the official **60-question practice exam** on Skilljar. Score 850+ on the practice before booking the real exam. Note the three-way split as of mid-2026: the public Academy hosts the **free training courses**, registration goes through the **Partner Academy** (anthropic-partners.skilljar.com, partner login required), and the exam itself is **scheduled and proctored via Pearson VUE (OnVUE)**. Retakes are capped at 4 attempts per rolling 12 months, with waiting periods that lengthen after each failure (14 days, then 30, then 90).
+> **Preparation resources (free):** **Claude Academy** (academy.claude.com; the same courses are still on the older anthropic.skilljar.com): 20+ free courses. Key courses: *Building with the Claude API*, *Claude Code in Action*, *Introduction to Model Context Protocol*, *AI Fluency: Framework & Foundations*. Also: the official **Exam Guide PDF** (12 sample questions with explanations). The old 60-question practice exam was retired when delivery moved to Pearson VUE on June 30, 2026, so the guide's sample questions are now the official format reference. Note the three-way split as of late 2026: Claude Academy hosts the **free public courses**, the **Partner Academy** (anthropic-partners.skilljar.com, partner login required) handles **registration and the official exam-prep courses**, and the exam itself is **scheduled and proctored by Pearson VUE**, online (OnVUE) or at a test center. Retakes are capped at 4 attempts per rolling 12 months, with waiting periods that lengthen after each failure (14 days, then 30, then 90).
 
 ---
 
-*Claude Certified Architect — Foundations (CCAR-F), 2026 Blueprint. Built from the official exam guide, Anthropic Academy materials, and community sources. Independent study aid — not affiliated with or endorsed by Anthropic. Exam format, fees, and scheduling change; verify current details on Pearson VUE's Anthropic certification page before booking.*
+*Claude Certified Architect — Foundations (CCAR-F), 2026 Blueprint. Built from the official exam guide, Anthropic Academy materials, and community sources. Independent study aid — not affiliated with or endorsed by Anthropic. Exam format, fees, and scheduling change; verify current details in the Partner Academy's certification FAQ and on Pearson VUE's Anthropic page before booking.*
