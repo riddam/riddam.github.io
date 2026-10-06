@@ -1,6 +1,6 @@
 ---
 title: "Claude Code Plugins: What I Actually Use, and What a Plugin Even Is"
-description: "I checked which Claude Code plugins I actually reach for, and found one I was certain I used and never had. What a plugin really is, why an idle plugin is usually a role mismatch rather than a bad plugin, and which official ones are worth starting with."
+description: "I checked which Claude Code plugins I actually reach for, and found one I was certain I used and never had. What a plugin really is, the integrations that let me find developer-experience gaps instead of guessing at them, why an idle plugin is usually a role mismatch rather than a bad one, and where to start."
 pubDate: 2026-10-06
 tags: ["claude-code", "ai-assisted-coding", "developer-productivity", "plugins"]
 cover: agent
@@ -163,6 +163,55 @@ went and looked. No amount of reflecting on my own workflow was going to surface
 it, because my workflow felt exactly the same either way.
 
 Where that plugin actually belongs is the first group of the next section.
+
+## The ones that connect it to everything else
+
+The list above is the plugins that change how I *work*. There is a second group
+that changes what I can *see*, and I nearly left them out because they feel less
+like tools and more like plumbing. That would have been a mistake, because they
+are the ones I would miss first.
+
+**GitHub.** Pull requests, issues, reviews and repository search, without leaving
+the session. The obvious use is mechanical — open a PR, read a review thread. The
+one I did not expect is using it to ask questions across repositories rather than
+inside one: where a pattern got introduced, which teams hit the same problem, how
+long a particular kind of change usually sits waiting. That is a different
+activity from coding and it is the one that has changed how I spend my time.
+
+**TeamCity.** Builds, logs, queues and agents from the same place I am reading
+the code that failed. Diagnosing a red build normally means a browser tab, a
+search through log output, and a reconstruction of what changed; doing it in the
+session collapses all three, because the thing reading the log already has the
+diff in front of it.
+
+**Datadog**, which is in the list above, does the same job for runtime that
+TeamCity does for the pipeline.
+
+Those three together are why I think this category deserves its own heading.
+Individually they each remove a context switch. Together they let me ask a
+question I could not easily ask before: **where is the developer experience
+actually bad?** Not where does it feel bad — where do the numbers say people are
+waiting, retrying, or going around the process. Build times and failure rates
+live in one of them, review latency in another, runtime noise in the third, and
+when all three answer in the same conversation the gaps stop being anecdotes.
+Most of the platform work I have picked up in the last year started as something
+I noticed that way rather than something anyone reported.
+
+**Slack.** The one that is least about my own work. Being able to search
+discussions and threads from inside a session means that when someone asks me
+something, I can go and read what they have already tried and what was already
+said about it, instead of asking them to summarise it for me. The honest value is
+not speed — it is that the answer I give is based on their actual situation
+rather than my reconstruction of it.
+
+A note on where these come from, because it matters for the point this post keeps
+making. All four exist as plugins in the official marketplace: `github`, `slack`,
+`teamcity-cli` — that one authored by JetBrains, and a skill around their CLI
+rather than an MCP server — and `datadog`. But several of them are *also*
+available as connectors you can enable without installing a plugin at all, and if
+you have the connector you do not need the plugin. Check which one you are
+actually running before you install the other. I did not, which is how I ended up
+with the story in the previous section.
 
 ## The ones I don't
 
@@ -328,6 +377,13 @@ would reach for first.
 - **Housekeeping**: `commit-commands`, `claude-md-management`, `session-report`.
 - **Building your own**: `plugin-dev` for a plugin, `skill-creator` for a single
   skill.
+
+Then, separately from that ladder, the integrations: `github`, `slack`,
+`datadog`, and `teamcity-cli` if you are on TeamCity. These are not
+Anthropic-authored — `teamcity-cli` is JetBrains', the others are vendor
+integrations — and they are the ones I would add first after the basics, for the
+reasons in the section above. Check whether you already have the equivalent as a
+connector before installing any of them.
 
 Several of those — `feature-dev`, `code-review`, `claude-security`,
 `claude-md-management` — are in my idle list above. That is not a contradiction I
