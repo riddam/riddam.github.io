@@ -2,7 +2,7 @@
 title: "Making AI Coding Assistants Reliable: My Playbook"
 description: "The working discipline I've settled on for getting dependable, secure, low-regret results from AI coding assistants — prompting frameworks, model selection, context hygiene, and safety rules, learned the hard way."
 pubDate: 2026-06-04
-updatedDate: 2026-09-27
+updatedDate: 2026-10-06
 tags: ["ai-assisted-coding", "github-copilot", "prompting", "developer-productivity"]
 cover: assist
 ---
@@ -336,6 +336,8 @@ The most common cause of hallucination is a lack of grounding. Instruction files
 **The repo-level instruction file.** Create `.github/copilot-instructions.md` (Copilot) or `AGENTS.md` (the open cross-tool format most agents now read) at the repo root with your hard rules: "We use uv for all Python tasks." "CDK tests use fine-grained assertions, never snapshots." "CLI output must support --json."
 
 > If a rule isn't in a file, it doesn't exist for the AI. Document your conventions to automate your conventions.
+
+One refinement I'd add to that, written up later in [the words for the layer around the model](/engineering/harness-engineering-vocabulary/): an instruction file is *advisory*. The model reads it and weighs it against everything else in context, so on a long session it can lose. If a rule genuinely must hold every time — tests before commit, never touch production — a hook enforces it and an instruction file only asks. Write the rule down either way; just put the non-negotiable ones where they're executed rather than read.
 
 ## 12. Safe Usage Rules (Security & Privacy)
 
