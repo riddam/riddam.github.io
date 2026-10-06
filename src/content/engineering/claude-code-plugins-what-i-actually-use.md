@@ -21,7 +21,7 @@ of a plugin I have never once invoked. That story is further down, because it
 turned out to be the most useful thing in here.
 
 This post is three things: a short account of what a plugin actually is, the five
-I use with the numbers behind them, and the eleven I don't — grouped by *why*,
+I use with the numbers behind them, and the twelve I don't — grouped by *why*,
 because only one of those reasons is a reason to uninstall anything. Then the
 method, so you can run it against your own set, and a starting ladder if you have
 none yet.
@@ -145,7 +145,7 @@ method was making. That is the whole argument for the section further down.
 
 Where that plugin actually belongs is the first group of the next section.
 
-## The eleven I don't
+## The twelve I don't
 
 Before the names: **idle is not the same as bad**, and of the four reasons a
 plugin sits unused, only one is a reason to uninstall anything. The reason is the
@@ -155,8 +155,9 @@ about the plugin.
 **Doing a job something else already does.** `code-review` — the one the count
 caught — because Claude Code's built-in review does it and I reach for that
 without thinking. `code-simplifier`, because the cleanup it offers overlaps the
-review pass I already run. `skill-creator`, because `superpowers` ships its own
-skill-authoring tooling and I use that instead. This is the only group where
+review pass I already run. `skill-creator` and `feature-dev`, because
+`superpowers` covers both — its own skill tooling, and a feature workflow I had
+already settled into before I installed anything else. This is the only group where
 "remove it" is reasonable advice, and even then it is *pick one*, not *this one is
 worse*. Two tools competing for the same moment is a cost, because the model has
 to choose between them and you will not see which it chose.
@@ -180,6 +181,11 @@ learn it than reading about it.
 and `typescript-lsp` through a language server, so neither can appear in a count
 of invocations. I am listing them in the idle section because that is where the
 numbers put them, and flagging that the numbers are wrong about them.
+
+That is eleven names. The twelfth comes from a private team marketplace and I am
+not going to name it here, which is itself a small illustration of the last
+section: a plugin can be built for an audience of one team, and that is a
+perfectly good reason for it to exist.
 
 Two things follow, and they are the useful output of the whole exercise.
 
@@ -274,10 +280,10 @@ reach for first.
 - **Building your own**: `plugin-dev` for a plugin, `skill-creator` for a single
   skill.
 
-Three of those — `code-review`, `claude-security` and `claude-md-management` —
-are in my idle list above. That is not a contradiction I want to hide: they are
-recommended on their merits, and they are idle for me for role and trigger
-reasons. If you install them, the thing worth doing is deciding up front how they
+Four of those — `feature-dev`, `code-review`, `claude-security` and
+`claude-md-management` — are in my idle list above. That is not a contradiction I
+want to hide: they are recommended on their merits, and they are idle for me
+because something else got there first, or because of role and trigger reasons. If you install them, the thing worth doing is deciding up front how they
 will fire, rather than trusting yourself to remember.
 
 ## Marketplaces your team controls
