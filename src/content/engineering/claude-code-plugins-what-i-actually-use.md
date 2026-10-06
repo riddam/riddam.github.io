@@ -1,6 +1,6 @@
 ---
 title: "Claude Code Plugins: What I Actually Use, and What a Plugin Even Is"
-description: "Seventeen plugins installed, five actually used — counted from my own session logs, including the one the count proved I was wrong about. What a plugin really is, why an idle plugin is usually a role mismatch rather than a bad plugin, and which official ones are worth starting with."
+description: "I checked which Claude Code plugins I actually reach for, and found one I was certain I used and never had. What a plugin really is, why an idle plugin is usually a role mismatch rather than a bad plugin, and which official ones are worth starting with."
 pubDate: 2026-10-06
 tags: ["claude-code", "ai-assisted-coding", "developer-productivity", "plugins"]
 cover: agent
@@ -10,29 +10,30 @@ draft: false
 
 ## Install rate is not usage rate
 
-I have seventeen Claude Code plugins installed. I use five.
+I have far more Claude Code plugins installed than I use. Most people reading
+this will too, and that gap is the subject of this post.
 
-I know that because I counted, and I am leading with it because the counting is
-the only interesting part. Every "best plugins" post I have read is a list of
-what the author installed, and installing is free. What costs you something is
-the plugin that sits in every prompt you send and never earns it, and you cannot
-find those by remembering — I tried, and the count caught me claiming daily use
-of a plugin I have never once invoked. That story is further down, because it
-turned out to be the most useful thing in here.
+Not as a confession — installing is free, and an unused plugin is not a moral
+failing. The gap is interesting because of what sits in it. Every "best plugins"
+post I have read is a list of what the author installed, and nobody writes the
+other half: the ones that turned out to be somebody else's tool, the ones doing a
+job something you already had does better, and the ones that are genuinely good
+and simply never fire. Those three are different problems with different fixes,
+and only one of them is solved by uninstalling anything.
 
-This post is three things: a short account of what a plugin actually is, the five
-I use with the numbers behind them, and the twelve I don't — grouped by *why*,
-because only one of those reasons is a reason to uninstall anything. Then the
-method, so you can run it against your own set, and a starting ladder if you have
-none yet.
+I also found, going through this, a plugin I would have told you I used daily and
+have never once invoked. That story is further down. It is the most useful thing
+in here, and I did not find it by remembering.
+
+So: what a plugin actually is, the handful I genuinely reach for, the larger
+group I don't and why, how to check your own set rather than trusting mine, and a
+starting ladder if you have none yet.
 
 None of it is about prompting or about how I decide what to build — those are the
 [AI coding playbook](/engineering/ai-assisted-coding-playbook/) and
 [spec-driven development](/engineering/spec-driven-development-tdd-bdd-ai-agents/)
 respectively. This is only about the tools sitting in the session while that work
 happens.
-
-Every number was counted on 6 October 2026 from my own session logs.
 
 ## What is in the box
 
@@ -77,29 +78,27 @@ I defend that properly in the other post — here it matters because it is the
 reason for one of the groups in my idle list below: good tools wired to a trigger
 that depends on me remembering them, which I reliably do not.
 
-**Before any number: what this method cannot see.** I counted skill invocations
-and MCP tool calls, because those are what the logs record. Plugins that work
-through hooks or language servers never appear as either. `security-guidance`
-runs on edit and on stop; `typescript-lsp` answers code-intelligence queries. Both
-will read as zero below no matter how much they did for me, and I have no way to
-measure them from here.
+**One caveat before the lists, because it shapes both of them.** The way I
+checked this was to go through my session logs for skills invoked and tools
+called, which is the only trace these things leave. Plugins that work through
+hooks or language servers leave no trace at all: `security-guidance` runs on edit
+and on stop, `typescript-lsp` answers code-intelligence queries, and neither will
+ever show up.
 
-That blind spot is worth sitting with, because of what it is blind to. The method
-under-reports exactly the deterministic layer that the rule above says is the most
-valuable one. A count like this is good at finding plugins you forgot you
-installed. It is bad at valuing the ones that never needed your attention.
+That blind spot is worth sitting with, because of what it is blind to. The check
+is silent about exactly the deterministic layer that the rule above calls the
+most valuable. It is good at finding plugins you forgot you installed. It is bad
+at valuing the ones that never needed your attention.
 
 ## What I actually use
 
-Five, in order of how much they changed my work. Counts are invocations from my
-session logs, 6 October 2026.
+In order of how much they changed my work.
 
-**superpowers — 59 invocations.** ([obra/superpowers](https://github.com/obra/superpowers))
+**superpowers.** ([obra/superpowers](https://github.com/obra/superpowers))
 Far and away the one that mattered, and the reason this list is short rather than
-long. The breakdown is more interesting than the total: systematic-debugging 16,
-brainstorming 16, writing-plans 8, then test-driven-development and
-subagent-driven-development at 5 each, with executing-plans and
-verification-before-completion behind them. What it replaced is not a tool — it is a habit. I used to start
+long. Two of its skills account for most of that on their own — the debugging one
+and the brainstorming one — with its planning and test-first skills close behind.
+What it replaced is not a tool, it is a habit. I used to start
 coding before I had decided what I was building, and brainstorming-then-spec is
 now the thing that happens instead. The cost is real and it is the point: it is
 opinionated, and it slows the start of every piece of work on purpose. On a
@@ -108,59 +107,55 @@ deliberate slowness is also the thing I would least want a junior engineer to
 turn off, for reasons I set out in
 [learning to build software when AI writes the code](/leadership/learning-to-build-software-when-ai-writes-the-code/).
 
-**deploy-on-aws — 33 MCP tool calls.** Three MCP servers covering AWS
+**deploy-on-aws.** Three MCP servers covering AWS
 documentation, pricing and infrastructure-as-code validation. It replaced
 tab-switching to the AWS docs and guessing at what something would cost, which
 are two of the slowest parts of infrastructure work. The cost is the clearest
 example of the context tax in my whole setup: three servers' worth of tool
 definitions sit in every session I open, whether or not I touch AWS that day.
 
-**frontend-design — 6 invocations**, three of them logged before Claude Code
-started namespacing skill names, which is a wrinkle I come back to below. Fires
-when I am building UI, and the output
-stops looking like a template with the colours changed. Narrow by design — it
-does nothing at all for the infrastructure work that is most of my week, which is
-why six is the right number rather than a disappointing one.
+**frontend-design.** Fires when I am building UI, and the output stops looking
+like a template with the colours changed. Narrow by design — it does nothing at
+all for the infrastructure work that is most of my week, so it fires rarely, and
+that is the correct amount rather than a disappointing one.
 
-**context7 — 1 MCP tool call.** ([upstash/context7](https://github.com/upstash/context7))
-Pulls current library documentation in over MCP. One call is not an endorsement
-and I am not going to dress it up as one. I keep it because of what that call was
-for: the specific failure where a model confidently writes an API that was
+**context7.** ([upstash/context7](https://github.com/upstash/context7))
+Pulls current library documentation in over MCP. I reach for it rarely enough
+that it is the weakest entry on this list, and I am not going to dress that up. I
+keep it for one specific failure: the model confidently writing an API that was
 renamed two versions ago, which costs an hour of debugging something that was
-never going to work. Low frequency, high cost when it hits. If it stays at one
-call a quarter I will drop it, and by the standard of this post I should probably
-have dropped it already.
+never going to work. Low frequency, high cost when it hits. By the standard of
+this post it is on probation.
 
-**mattpocock-skills — 1 invocation.** Its `codebase-design` skill gave me a
-vocabulary for module boundaries. I used it once, it changed how I named a seam,
-and I kept it for that. One use is one use; I am listing it because leaving it
-out would have made my set look tidier than it is.
+**mattpocock-skills.** Its `codebase-design` skill gave me a vocabulary for
+module boundaries. I have used it once. It changed how I named a seam, and I kept
+it for that — and I am listing it because leaving it out would have made my set
+look tidier and more considered than it really is.
 
 ### The plugin I was sure I used, and have never used
 
 Here is the part I did not expect to write.
 
-My first pass at this counted a dozen-odd uses of the `code-review` plugin and
-put it confidently in the list above. It is not in the list above, because that
-count was wrong. Every one of those calls went to a Claude Code **built-in** —
-`/review` six times and the built-in `code-review` four — neither of which is a
-plugin at all. The plugin's own skill, the one that only exists because I
-installed it, has been invoked **zero** times.
+My first pass at this had the `code-review` plugin confidently in the list above.
+It is not in the list above, because every one of those reviews went to a Claude
+Code **built-in** — `/review`, and a built-in also called `code-review` — neither
+of which is a plugin at all. The plugin's own skill, the one that exists only
+because I installed it, has never been invoked.
 
 I had been using a built-in for months and crediting a plugin for it. Nothing
 about my experience would ever have told me otherwise: the work got done, the
-reviews were good, and the plugin's name was right there in my installed list
+reviews were good, and the plugin's name sat right there in my installed list
 looking like the explanation.
 
-Two things follow. First, a plugin and a built-in with the same name are
-different things, and the ambiguity is not hypothetical — it fooled me while I
-was writing a post about being rigorous. Second, and more usefully: the only
-reason I know is that I counted, and the method caught an error the author of the
-method was making. That is the whole argument for the section further down.
+Two things follow. First, a plugin and a built-in sharing a name are different
+things, and the ambiguity is not hypothetical — it fooled me while I was writing
+a post about being rigorous. Second, and more usefully: I only know because I
+went and looked. No amount of reflecting on my own workflow was going to surface
+it, because my workflow felt exactly the same either way.
 
 Where that plugin actually belongs is the first group of the next section.
 
-## The twelve I don't
+## The ones I don't
 
 Before the names: **idle is not the same as bad**, and of the four reasons a
 plugin sits unused, only one is a reason to uninstall anything. The reason is the
@@ -189,18 +184,18 @@ that is a different sentence.
 
 **Right job, wrong trigger.** `claude-md-management` and `hookify` are both good
 and both wait for me to remember a command. I don't. This is the slash-command
-failure mode showing up in my own data, which is a more uncomfortable way to
+failure mode showing up in my own habits, which is a more uncomfortable way to
 learn it than reading about it.
 
-**Measured as zero, probably not zero.** `security-guidance` works through hooks
-and `typescript-lsp` through a language server, so neither can appear in a count
-of invocations. I am listing them in the idle section because that is where the
-numbers put them, and flagging that the numbers are wrong about them.
+**Idle on paper, probably not idle.** `security-guidance` works through hooks and
+`typescript-lsp` through a language server, so neither leaves the kind of trace I
+was looking for. They are in this section because that is where my method put
+them, and I think my method is wrong about them.
 
-That is eleven names. The twelfth comes from a private team marketplace and I am
-not going to name it here, which is itself a small illustration of the last
-section: a plugin can be built for an audience of one team, and that is a
-perfectly good reason for it to exist.
+There is one more I am not naming, because it comes from a private team
+marketplace. That is itself a small illustration of the last section: a plugin
+can be built for an audience of one team, and that is a perfectly good reason for
+it to exist.
 
 Two things follow, and they are the useful output of the whole exercise.
 
@@ -217,8 +212,10 @@ my own set, and it is the one change I am actually going to make.
 
 ## Count your own
 
-The method is two commands. Claude Code keeps session transcripts as JSONL under
-`~/.claude/projects/`, and every skill invocation and tool call is in there.
+You should not take my list on faith, and you do not have to. Claude Code keeps
+session transcripts as JSONL under `~/.claude/projects/`, and every skill
+invocation and tool call is in there. Two commands will tell you which of your
+plugins have ever actually fired.
 
 ```bash
 # Which skills fired, deduplicated by tool-call id
@@ -234,43 +231,40 @@ grep -rhoE '"id":"toolu_[A-Za-z0-9]+","name":"mcp__plugin_[a-z0-9_-]+' \
   | sort -u | awk '{print $2}' | sort | uniq -c | sort -rn
 ```
 
-Those are uglier than they need to be, and the ugliness is the lesson. Three
-things will give you wrong numbers if you take the obvious shortcut, and I hit
-all three.
+Those are uglier than they look like they should be, and the ugliness is the
+lesson — three things will mislead you if you take the obvious shortcut, and I
+walked into all three.
 
-**Deduplicate by tool-call id.** A single call is written into the transcript
-more than once — the assistant's tool-use block and a later echo of the same
-inputs land on the same line. A naive `grep -c` counts both. My first set of
-figures was inflated by about 1.6x for exactly this reason, which I only found
-because someone re-derived them. That is why both commands above pull the
-`toolu_` id and `sort -u` on it.
+**Deduplicate by tool-call id.** A single call gets written into the transcript
+more than once, so anything built on a plain `grep -c` runs high. That is why
+both commands pull the `toolu_` id and `sort -u` on it. I had a full set of
+inflated figures before I noticed, and nothing about them looked wrong, because
+inflating everything leaves the ranking intact.
 
-**Do not filter on the namespaced form alone.** It is tempting to match only
-`plugin:skill`, because that reliably identifies a plugin. But Claude Code
-started namespacing skill names partway through the period I was measuring, so
-plugin calls in older transcripts are recorded bare. Filtering on the colon
-silently drops them — it hid three of my six `frontend-design` calls.
+**Do not filter on the namespaced `plugin:skill` form alone.** It is tempting,
+because a colon reliably means a plugin. But Claude Code began namespacing skill
+names partway through the period most transcripts cover, so older plugin calls
+are recorded bare, and filtering on the colon silently drops them. It hid half of
+one plugin's usage from me.
 
-**A namespaced name is not automatically a plugin.** The first command returns
-bundled skill sets alongside real plugins. Check anything it reports against your
-actual installed list rather than assuming the two agree.
+**A namespaced name is not automatically a plugin.** The first command also
+returns bundled skill sets that ship with Claude Code. Check whatever it reports
+against your actual installed list rather than assuming the two agree.
 
-Then there is the inverse of that last point, which is how I got caught: a bare
-name may be a built-in *or* an old plugin record. The only way to tell is to look
-at whether you have a plugin by that name and when the calls happened. My
-`code-review` calls were recent, after namespacing began, so they were the
-built-in.
+The inverse of that last point is how I got caught: a bare name may be a built-in
+*or* an old plugin record, and the only way to tell is whether you have a plugin
+by that name and when the calls happened. My `code-review` calls were recent —
+after namespacing started — so they were the built-in.
 
-Two further limits. The counts are retention-bound — you are measuring the
-sessions still on disk, not all of history. And, as above, hook-driven and
-language-server plugins never appear, so read a zero as "no recorded invocation"
-rather than "did nothing". If you would rather not grep, the official
-`session-report` plugin produces a per-session breakdown of tokens, subagents and
-skills.
+Two further limits. You are measuring the sessions still on disk, not all of
+history. And, as above, hook-driven and language-server plugins never appear, so
+read silence as "left no trace" rather than "did nothing". If you would rather
+not grep, the official `session-report` plugin gives you a per-session breakdown
+of tokens, subagents and skills.
 
-Run it against your own set before you trust anyone's recommendations, including
-mine. It takes a minute and it is the only way to find out whether your setup is
-helping you or just resident.
+Run it before you trust anyone's recommendations, including mine. It takes a
+minute, and it is the only way to find out whether your setup is helping you or
+just resident.
 
 ## What a plugin costs you
 
@@ -286,8 +280,8 @@ trade and most people have never priced it.
 
 **Trigger collisions.** When two things have overlapping descriptions the model
 picks one, and you do not get told which. My own set has the built-in review
-skill competing with the `code-review` plugin — the exact collision that produced
-my miscount — and two different `skill-creator`s. Nothing breaks. You just stop
+skill competing with the `code-review` plugin — the exact collision that fooled
+me above — and two different `skill-creator`s. Nothing breaks. You just stop
 being able to reason about which thing ran.
 
 **Drift.** Plugins install from a git repository and update under you. A workflow
@@ -320,7 +314,7 @@ would reach for first.
 - **Building your own**: `plugin-dev` for a plugin, `skill-creator` for a single
   skill.
 
-Four of those — `feature-dev`, `code-review`, `claude-security` and
+Several of those — `feature-dev`, `code-review`, `claude-security`,
 `claude-md-management` — are in my idle list above. That is not a contradiction I
 want to hide: they are recommended on their merits, and they are idle for me
 because something else got there first, or because of role and trigger reasons. If you install them, the thing worth doing is deciding up front how they
