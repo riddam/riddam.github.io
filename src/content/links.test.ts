@@ -60,13 +60,16 @@ test('a link to a draft or missing post is reported as broken', () => {
   assert.equal(known.has(hrefs[1]), true, 'an anchored link must resolve to its post');
 });
 
-test('the harness-engineering post exists and is not a draft', () => {
+test('the harness and plugins posts exist and are not drafts', () => {
   const known = slugs();
-  assert.ok(
-    known.has('/engineering/harness-engineering-vocabulary/'),
-    'expected src/content/engineering/harness-engineering-vocabulary.md',
-  );
-  const post = posts().find((p) => p.path.endsWith('harness-engineering-vocabulary.md'));
-  assert.ok(post, 'post not readable');
-  assert.doesNotMatch(post.body, /^draft:\s*true$/m, 'post is still a draft');
+  const expected = [
+    'harness-engineering-vocabulary',
+    'claude-code-plugins-what-i-actually-use',
+  ];
+  for (const slug of expected) {
+    assert.ok(
+      known.has(`/engineering/${slug}/`),
+      `expected src/content/engineering/${slug}.md (published, not a draft)`,
+    );
+  }
 });
