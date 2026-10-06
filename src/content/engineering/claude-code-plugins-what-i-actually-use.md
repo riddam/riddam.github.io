@@ -114,6 +114,15 @@ are two of the slowest parts of infrastructure work. The cost is the clearest
 example of the context tax in my whole setup: three servers' worth of tool
 definitions sit in every session I open, whether or not I touch AWS that day.
 
+**datadog.** An MCP server over logs, metrics, traces, dashboards and monitors,
+plus a few skills for setting it up. This one is in my day-to-day rather than my
+occasionally: the thing it removes is the context switch out of the codebase and
+into a browser tab in the middle of working out why something is behaving oddly.
+Asking about an error rate where I am already reading the code that produces it
+is a genuinely different experience from going and looking it up. Same cost as
+any MCP plugin — tool definitions in every session — and the same discipline
+applies: it is for reading production, not changing it.
+
 **frontend-design.** Fires when I am building UI, and the output stops looking
 like a template with the colours changed. Narrow by design — it does nothing at
 all for the infrastructure work that is most of my week, so it fires rarely, and
@@ -162,8 +171,8 @@ plugin sits unused, only one is a reason to uninstall anything. The reason is th
 whole lesson here. "I don't use it" tells you about my week; it tells you nothing
 about the plugin.
 
-**Doing a job something else already does.** `code-review` — the one the count
-caught — because Claude Code's built-in review does it and I reach for that
+**Doing a job something else already does.** `code-review` — the one above —
+because Claude Code's built-in review does it and I reach for that
 without thinking. `code-simplifier`, because the cleanup it offers overlaps the
 review pass I already run. `skill-creator` and `feature-dev`, because
 `superpowers` covers both — its own skill tooling, and a feature workflow I had
@@ -176,8 +185,7 @@ to choose between them and you will not see which it chose.
 without a job title attached is nearly useless. `superdesign` is dead weight on
 my infrastructure work and would be somebody's most-used plugin if they designed
 interfaces for a living. `claude-security` is a deliberate deep scan that I run
-occasionally and that a security consultant would run weekly. `datadog` belongs
-to whoever owns the dashboards, which on my team is not me. `typescript-lsp`
+occasionally and that a security consultant would run weekly. `typescript-lsp`
 earns its place in a TypeScript product codebase; mine is AWS CDK, where the win
 is thinner. Nothing is wrong with any of these. They are not wrong *for me*, and
 that is a different sentence.
