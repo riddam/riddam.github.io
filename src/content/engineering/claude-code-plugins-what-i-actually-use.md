@@ -185,10 +185,9 @@ to choose between them and you will not see which it chose.
 without a job title attached is nearly useless. `superdesign` is dead weight on
 my infrastructure work and would be somebody's most-used plugin if they designed
 interfaces for a living. `claude-security` is a deliberate deep scan that I run
-occasionally and that a security consultant would run weekly. `typescript-lsp`
-earns its place in a TypeScript product codebase; mine is AWS CDK, where the win
-is thinner. Nothing is wrong with any of these. They are not wrong *for me*, and
-that is a different sentence.
+occasionally and that a security consultant would run weekly. Nothing is wrong
+with either of them. They are not wrong *for me*, and that is a different
+sentence.
 
 **Right job, wrong trigger.** `claude-md-management` and `hookify` are both good
 and both wait for me to remember a command. I don't. This is the slash-command
@@ -199,6 +198,14 @@ learn it than reading about it.
 `typescript-lsp` through a language server, so neither leaves the kind of trace I
 was looking for. They are in this section because that is where my method put
 them, and I think my method is wrong about them.
+
+`typescript-lsp` is the one I would defend hardest. TypeScript is not what I
+write most days, which is exactly why I want a language server answering for me
+when I am in it — and I am in it more than that sentence suggests, because the
+places where application code meets infrastructure code tend to be the places
+where I am least fluent and most likely to edit the wrong symbol. A language
+server is cheap, silent, and most useful precisely when you are working somewhere
+you do not live.
 
 There is one more I am not naming, because it comes from a private team
 marketplace. That is itself a small illustration of the last section: a plugin
