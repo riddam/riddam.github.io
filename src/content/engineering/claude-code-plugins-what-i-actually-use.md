@@ -26,6 +26,12 @@ because only one of those reasons is a reason to uninstall anything. Then the
 method, so you can run it against your own set, and a starting ladder if you have
 none yet.
 
+None of it is about prompting or about how I decide what to build — those are the
+[AI coding playbook](/engineering/ai-assisted-coding-playbook/) and
+[spec-driven development](/engineering/spec-driven-development-tdd-bdd-ai-agents/)
+respectively. This is only about the tools sitting in the session while that work
+happens.
+
 Every number was counted on 6 October 2026 from my own session logs.
 
 ## What is in the box
@@ -35,13 +41,14 @@ what somebody put in it.
 
 [A Claude Code plugin](https://code.claude.com/docs/en/plugins) is a directory
 with a manifest and any combination of skills, subagents, slash commands, hooks
-and MCP servers. "Any combination" is literal, and you can see it in the four I
-have open right now: `superpowers` ships skills and hooks; `code-simplifier`
-ships a single agent and nothing else; `code-review` ships one command;
-`deploy-on-aws` ships skills, hooks and three MCP servers. Four plugins, four
-different shapes. The word tells you how something was delivered, not what it is.
+and MCP servers. I went through the shapes of my own in
+[the companion post](/engineering/harness-engineering-vocabulary/#how-it-is-packaged),
+and the short version is that they have almost nothing in common structurally:
+one ships a single agent, another a single command, another three MCP servers.
 
-Which means you cannot judge a plugin without knowing those parts:
+That matters here for one practical reason. "Is this plugin worth it" is never
+one question — it is a question about whatever is inside, and the parts have very
+different costs and very different trigger behaviour:
 
 | Layer | Answers | Triggered by |
 | --- | --- | --- |
@@ -67,8 +74,8 @@ One line carries over, and it explains most of what follows:
 A skill is advice the model may route around when the session gets long. A hook
 is the harness executing code. Both are useful; only one comes with a guarantee.
 I defend that properly in the other post — here it matters because it is the
-reason roughly a third of my installed plugins have never fired. They are good
-tools wired to a trigger that depends on me remembering them.
+reason for one of the groups in my idle list below: good tools wired to a trigger
+that depends on me remembering them, which I reliably do not.
 
 **Before any number: what this method cannot see.** I counted skill invocations
 and MCP tool calls, because those are what the logs record. Plugins that work
@@ -87,35 +94,42 @@ installed. It is bad at valuing the ones that never needed your attention.
 Five, in order of how much they changed my work. Counts are invocations from my
 session logs, 6 October 2026.
 
-**superpowers — 91 invocations.** ([obra/superpowers](https://github.com/obra/superpowers))
+**superpowers — 59 invocations.** ([obra/superpowers](https://github.com/obra/superpowers))
 Far and away the one that mattered, and the reason this list is short rather than
-long. The breakdown is more interesting than the total: systematic-debugging 25,
-brainstorming 23, writing-plans 12, test-driven-development 10, then
-executing-plans, verification-before-completion and subagent-driven-development
-behind them. What it replaced is not a tool — it is a habit. I used to start
+long. The breakdown is more interesting than the total: systematic-debugging 16,
+brainstorming 16, writing-plans 8, then test-driven-development and
+subagent-driven-development at 5 each, with executing-plans and
+verification-before-completion behind them. What it replaced is not a tool — it is a habit. I used to start
 coding before I had decided what I was building, and brainstorming-then-spec is
 now the thing that happens instead. The cost is real and it is the point: it is
 opinionated, and it slows the start of every piece of work on purpose. On a
-genuinely small change that friction is not worth paying, and I skip it.
+genuinely small change that friction is not worth paying, and I skip it. That
+deliberate slowness is also the thing I would least want a junior engineer to
+turn off, for reasons I set out in
+[learning to build software when AI writes the code](/leadership/learning-to-build-software-when-ai-writes-the-code/).
 
-**deploy-on-aws — 43 MCP tool calls.** Three MCP servers covering AWS
+**deploy-on-aws — 33 MCP tool calls.** Three MCP servers covering AWS
 documentation, pricing and infrastructure-as-code validation. It replaced
 tab-switching to the AWS docs and guessing at what something would cost, which
 are two of the slowest parts of infrastructure work. The cost is the clearest
 example of the context tax in my whole setup: three servers' worth of tool
 definitions sit in every session I open, whether or not I touch AWS that day.
 
-**frontend-design — 6 invocations.** Fires when I am building UI, and the output
+**frontend-design — 6 invocations**, three of them logged before Claude Code
+started namespacing skill names, which is a wrinkle I come back to below. Fires
+when I am building UI, and the output
 stops looking like a template with the colours changed. Narrow by design — it
 does nothing at all for the infrastructure work that is most of my week, which is
 why six is the right number rather than a disappointing one.
 
-**context7 — 2 MCP tool calls.** ([upstash/context7](https://github.com/upstash/context7))
-Pulls current library documentation in over MCP. Two calls is not a strong
-endorsement and I am not going to dress it up as one. I keep it because of what
-those two calls were for: the specific failure where a model confidently writes
-an API that was renamed two versions ago, which costs an hour of debugging
-something that was never going to work. Low frequency, high cost when it hits.
+**context7 — 1 MCP tool call.** ([upstash/context7](https://github.com/upstash/context7))
+Pulls current library documentation in over MCP. One call is not an endorsement
+and I am not going to dress it up as one. I keep it because of what that call was
+for: the specific failure where a model confidently writes an API that was
+renamed two versions ago, which costs an hour of debugging something that was
+never going to work. Low frequency, high cost when it hits. If it stays at one
+call a quarter I will drop it, and by the standard of this post I should probably
+have dropped it already.
 
 **mattpocock-skills — 1 invocation.** Its `codebase-design` skill gave me a
 vocabulary for module boundaries. I used it once, it changed how I named a seam,
@@ -126,11 +140,12 @@ out would have made my set look tidier than it is.
 
 Here is the part I did not expect to write.
 
-My first pass at this counted thirteen uses of the `code-review` plugin and put
-it confidently in the list above. It is not in the list above, because that count
-was wrong. The thirteen were Claude Code's **built-in** review skill, which is
-not a plugin at all. The plugin's own skill — the one that only exists because I
-installed it — has been invoked **zero** times.
+My first pass at this counted a dozen-odd uses of the `code-review` plugin and
+put it confidently in the list above. It is not in the list above, because that
+count was wrong. Every one of those calls went to a Claude Code **built-in** —
+`/review` six times and the built-in `code-review` four — neither of which is a
+plugin at all. The plugin's own skill, the one that only exists because I
+installed it, has been invoked **zero** times.
 
 I had been using a built-in for months and crediting a plugin for it. Nothing
 about my experience would ever have told me otherwise: the work got done, the
@@ -206,24 +221,49 @@ The method is two commands. Claude Code keeps session transcripts as JSONL under
 `~/.claude/projects/`, and every skill invocation and tool call is in there.
 
 ```bash
-# Which plugin skills actually fired
-grep -rhoE '"skill":"[a-z0-9_-]+:[a-z0-9_:-]+"' ~/.claude/projects --include='*.jsonl' \
-  | sort | uniq -c | sort -rn
+# Which skills fired, deduplicated by tool-call id
+grep -rhoE '"id":"toolu_[A-Za-z0-9]+","name":"Skill","input":\{"skill":"[^"]+"' \
+  ~/.claude/projects --include='*.jsonl' \
+  | sed 's/.*"id":"\(toolu_[A-Za-z0-9]*\)".*"skill":"\([^"]*\)"/\1 \2/' \
+  | sort -u | awk '{print $2}' | sort | uniq -c | sort -rn
 
-# Which plugin MCP tools were called
-grep -rho '"name":"mcp__plugin_[a-z0-9_-]*' ~/.claude/projects --include='*.jsonl' \
-  | sed 's/.*mcp__plugin_//' | cut -d_ -f1 | sort | uniq -c | sort -rn
+# Which plugin MCP tools were called, same treatment
+grep -rhoE '"id":"toolu_[A-Za-z0-9]+","name":"mcp__plugin_[a-z0-9_-]+' \
+  ~/.claude/projects --include='*.jsonl' \
+  | sed 's/.*"id":"\(toolu_[A-Za-z0-9]*\)","name":"mcp__plugin_\([a-z0-9-]*\).*/\1 \2/' \
+  | sort -u | awk '{print $2}' | sort | uniq -c | sort -rn
 ```
 
-The detail that matters is in the first regex, and it is the one I got wrong the
-first time: match the **namespaced** form, `plugin:skill`. An unqualified name in
-those logs may be a built-in that happens to share a name with something you
-installed. Counting unqualified names is how I ended up crediting a plugin with
-thirteen uses it never had.
+Those are uglier than they need to be, and the ugliness is the lesson. Three
+things will give you wrong numbers if you take the obvious shortcut, and I hit
+all three.
 
-Two limits. The counts are retention-bound — you are measuring the sessions still
-on disk, not all of history. And, as above, hook-driven and language-server
-plugins will not show up at all, so read a zero as "no recorded invocation"
+**Deduplicate by tool-call id.** A single call is written into the transcript
+more than once — the assistant's tool-use block and a later echo of the same
+inputs land on the same line. A naive `grep -c` counts both. My first set of
+figures was inflated by about 1.6x for exactly this reason, which I only found
+because someone re-derived them. That is why both commands above pull the
+`toolu_` id and `sort -u` on it.
+
+**Do not filter on the namespaced form alone.** It is tempting to match only
+`plugin:skill`, because that reliably identifies a plugin. But Claude Code
+started namespacing skill names partway through the period I was measuring, so
+plugin calls in older transcripts are recorded bare. Filtering on the colon
+silently drops them — it hid three of my six `frontend-design` calls.
+
+**A namespaced name is not automatically a plugin.** The first command returns
+bundled skill sets alongside real plugins. Check anything it reports against your
+actual installed list rather than assuming the two agree.
+
+Then there is the inverse of that last point, which is how I got caught: a bare
+name may be a built-in *or* an old plugin record. The only way to tell is to look
+at whether you have a plugin by that name and when the calls happened. My
+`code-review` calls were recent, after namespacing began, so they were the
+built-in.
+
+Two further limits. The counts are retention-bound — you are measuring the
+sessions still on disk, not all of history. And, as above, hook-driven and
+language-server plugins never appear, so read a zero as "no recorded invocation"
 rather than "did nothing". If you would rather not grep, the official
 `session-report` plugin produces a per-session breakdown of tokens, subagents and
 skills.
@@ -258,10 +298,10 @@ something I rely on starts acting differently, instead of assuming I imagined it
 
 ## Where to start, if you are starting now
 
-A ladder, not a catalogue. Everything here is from the
-[official marketplace](https://github.com/anthropics/claude-plugins-official) and
-authored by Anthropic — 39 of its 315 plugins are, and these are the ones I would
-reach for first.
+A ladder, not a catalogue. Everything here is Anthropic-authored and from the
+[official marketplace](https://github.com/anthropics/claude-plugins-official),
+which is large enough that browsing it is its own afternoon. These are the ones I
+would reach for first.
 
 - **First, before anything**: `claude-code-setup`. It reads *your* codebase and
   recommends hooks, skills and subagents for it. Letting it tell you what you
@@ -290,14 +330,12 @@ will fire, rather than trusting yourself to remember.
 
 The last piece is how any of this reaches other people.
 
-A [marketplace](https://code.claude.com/docs/en/plugin-marketplaces) is a git
-repository with a manifest listing plugins. The official one is public; nothing
-stops a team from running its own. Put your deployment runbooks, your house
-conventions, your review rules in a plugin, publish it from a private repo, and
-installing it becomes one command for everyone who needs it.
+Running a private marketplace is a pattern I covered mechanically in the
+companion post, so here is only the part that belongs in a post about what to
+install: **why a team should bother**, when the obvious alternative is one long
+shared `CLAUDE.md` that everyone already has.
 
-The reason I prefer that to the obvious alternative — one long shared
-`CLAUDE.md` — is everything this post has been about. A shared instructions file
+The answer is everything this post has been about. A shared instructions file
 is always-loaded, so every rule in it taxes every prompt from every person,
 including the rules that only matter to one repository. A plugin versions
 properly, scopes to the repos that need it, and its skills load on demand. The
