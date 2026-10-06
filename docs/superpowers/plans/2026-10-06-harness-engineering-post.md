@@ -29,6 +29,8 @@ Every task's requirements implicitly include this section.
 - **No push to `origin`.** Riddam pushes. Commit locally only.
 - **Length gate: 20 minutes.** Reading time is computed at 220 wpm (`src/utils/reading-time.ts`), so the hard ceiling is ~4,400 words of body prose. Target **3,200–3,900 words**. Check with the command in Task 5, not by eye.
 - **Even-handed on Copilot.** A Copilot user must read the comparison as a guide, not an advert for Claude Code. Describe, do not rank.
+- **Every external claim carries a link.** Inline, to the primary source — the vendor's own documentation, not a blog summary of it. A reader who wants the detail should never have to search for it. The closing `## References and further reading` section is required, matching the convention in `spec-driven-development-tdd-bdd-ai-agents`.
+- **Only URLs from the verified list below.** Every one returned HTTP 200 on 2026-10-06. Do not invent a documentation URL and do not guess a path from a pattern — a 404 in a reference list is worse than no link.
 - **Paste the verified facts below exactly.** Do not re-derive them from memory and do not paraphrase the paths.
 
 ### Verified facts (2026-10-06)
@@ -78,6 +80,40 @@ All Copilot facts below were read from `code.visualstudio.com/docs/agent-customi
 
 Copilot reads `CLAUDE.md`, `.claude/skills/`, `~/.claude/skills/`, `.claude/agents` and `~/.claude/agents`, and both harnesses use `SKILL.md`. That is documented behaviour, not inference. Lead the comparison section with it.
 
+### Verified reference URLs (all returned HTTP 200 on 2026-10-06)
+
+**Claude Code documentation**
+- Overview — `https://code.claude.com/docs/en/overview`
+- Memory and `CLAUDE.md` — `https://code.claude.com/docs/en/memory`
+- Skills — `https://code.claude.com/docs/en/skills`
+- Subagents — `https://code.claude.com/docs/en/sub-agents`
+- Slash commands — `https://code.claude.com/docs/en/slash-commands`
+- Hooks — `https://code.claude.com/docs/en/hooks`
+- MCP — `https://code.claude.com/docs/en/mcp`
+- Settings — `https://code.claude.com/docs/en/settings`
+- Permissions / IAM — `https://code.claude.com/docs/en/iam`
+- Plugins — `https://code.claude.com/docs/en/plugins`
+- Plugin marketplaces — `https://code.claude.com/docs/en/plugin-marketplaces`
+- Common workflows (plan mode, background tasks) — `https://code.claude.com/docs/en/common-workflows`
+- Output styles — `https://code.claude.com/docs/en/output-styles`
+
+**GitHub Copilot documentation**
+- Customization overview — `https://code.visualstudio.com/docs/copilot/customization/overview`
+- Custom instructions — `https://code.visualstudio.com/docs/agent-customization/custom-instructions`
+- Agent skills — `https://code.visualstudio.com/docs/agent-customization/agent-skills`
+- Custom agents — `https://code.visualstudio.com/docs/agent-customization/custom-agents`
+- Hooks — `https://code.visualstudio.com/docs/agent-customization/hooks`
+- MCP servers — `https://code.visualstudio.com/docs/agent-customization/mcp-servers`
+- Custom agents for the cloud agent — `https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/create-custom-agents`
+- Custom agents changelog (GA date) — `https://github.blog/changelog/2025-10-28-custom-agents-for-github-copilot/`
+
+**Background and standards**
+- Model Context Protocol — `https://modelcontextprotocol.io/`
+- `AGENTS.md` — `https://agents.md/`
+- Anthropic, effective context engineering for AI agents — `https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents`
+- Anthropic, equipping agents for the real world with agent skills — `https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills`
+- Anthropic, Claude Code best practices — `https://www.anthropic.com/engineering/claude-code-best-practices`
+
 **Do not claim** that Claude Code supports `.claude/rules` — VS Code's docs mention it, but it was not verified against Claude Code's own documentation for this plan. Either verify it first or leave it out.
 
 ---
@@ -101,7 +137,8 @@ Failure modes the spec implies that no task's prose exercises by itself. Each is
 2. **A link to the not-yet-written plugins post.** The spec says the plugins post links back here, not the reverse, but the drafter will be tempted. Task 1's test fails on it; Task 5 re-checks.
 3. **The post runs past the 20-minute gate.** Nine sections is a lot. Pinned to Task 5's word count, with the spec's named fallback (merge section 7 into 4, shorten section 2).
 4. **It restates the playbook or the SDD post.** The no-duplication rule. Pinned to Task 5's audit step, which greps both posts for the overlapping topics rather than trusting memory.
-5. **A stale or invented Copilot path.** Every one of them moves monthly. Pinned to Task 4, which diffs the drafted table against the verified-facts block above, character by character.
+5. **An invented documentation URL.** A reference list with a 404 in it costs more trust than it buys. Pinned to Task 5, which resolves every external link in the post rather than eyeballing it.
+6. **A stale or invented Copilot path.** Every one of them moves monthly. Pinned to Task 4, which diffs the drafted table against the verified-facts block above, character by character.
 
 ---
 
@@ -219,6 +256,8 @@ Then the body skeleton — these ten H2s and nothing else yet:
 ## Picking the right part
 
 ## What this does not fix
+
+## References and further reading
 ```
 
 - [ ] **Step 4: Run the test and the build to verify both pass**
@@ -447,7 +486,21 @@ The honest close. A harness makes a capable model reliable; it does not make a w
 
 Target 150–250 words.
 
-- [ ] **Step 4: Verify the table against the verified-facts block**
+- [ ] **Step 4: Write "References and further reading"**
+
+Grouped, in this order, using only URLs from the verified-reference list in this plan. Match the house style in `spec-driven-development-tdd-bdd-ai-agents`: a bullet per source, the link label carrying the title, a short parenthetical where the reader needs to know what it is.
+
+Three groups, with a one-line lead-in each rather than a bare dump:
+
+- **Claude Code** — overview, memory, skills, subagents, slash commands, hooks, MCP, settings, permissions, plugins, plugin marketplaces. Pair related ones on a single bullet where it reads better (skills and subagents together; plugins and marketplaces together).
+- **GitHub Copilot** — the customization overview first as the entry point, then custom instructions, agent skills, custom agents, hooks, MCP servers, and the GitHub changelog for the GA date.
+- **Background** — the Model Context Protocol site, `AGENTS.md`, and the three Anthropic engineering posts on context engineering, agent skills and Claude Code practice.
+
+Beyond this section, the body must already carry inline links at the points where a reader would want the detail: the first mention of skills, subagents, hooks, MCP, plugins and permissions in sections 3–7, and every Copilot row concept in section 8. If a section you wrote in Tasks 2–4 makes a claim about a documented behaviour and has no link, add one now from the verified list.
+
+Do not link the same URL more than twice in the body. The references section is where repetition belongs.
+
+- [ ] **Step 5: Verify the table against the verified-facts block**
 
 This is the step Review Focus item 5 exists for. Do it literally, not by reading:
 
@@ -458,7 +511,7 @@ grep -nE '\.github/|\.claude/|~/\.copilot|\.mcp\.json|mcp-config\.json|SKILL\.md
 
 Compare every path printed against the verified-facts block in this plan, character by character. Any path in the post that is not in that block is either unverified or invented — remove it or verify it against primary docs and add it to the block.
 
-- [ ] **Step 5: Verify**
+- [ ] **Step 6: Verify**
 
 Run: `npm test`
 Expected: PASS, 17 tests.
@@ -466,11 +519,11 @@ Expected: PASS, 17 tests.
 Run: `npm run build`
 Expected: succeeds.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 7: Commit**
 
 ```bash
 git add src/content/engineering/harness-engineering-vocabulary.md
-git commit -m "Harness post: the Copilot map, the decision list and the close"
+git commit -m "Harness post: the Copilot map, the decision list and the references"
 ```
 
 ---
@@ -540,7 +593,19 @@ grep -niE 'coolblue|/engineering/claude-code-plugins' \
 ```
 Expected: no output.
 
-- [ ] **Step 4: Full verification**
+- [ ] **Step 4: Resolve every external link**
+
+Review Focus item 5. Check them, do not trust them:
+
+```bash
+grep -ohE 'https?://[^) ]+' src/content/engineering/harness-engineering-vocabulary.md \
+  | sed 's/[.,]$//' | sort -u \
+  | while read -r u; do printf '%s %s\n' "$(curl -s -o /dev/null -w '%{http_code}' -L "$u")" "$u"; done
+```
+
+Expected: every line starts with `200`. Anything else — remove the link or replace it with one from the verified-reference list. Do not leave a redirect chain unexamined: if a URL only resolves after a redirect to a different page, link the destination.
+
+- [ ] **Step 5: Full verification**
 
 Run: `npm test`
 Expected: PASS, 17 tests.
@@ -554,14 +619,14 @@ grep -c 'harness-engineering-vocabulary' dist/engineering/index.html
 ```
 Expected: `OK`, and a count of at least 1 — the post appears in its section listing.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add src/content/engineering/harness-engineering-vocabulary.md
 git commit -m "Harness post: audit pass for length, duplication and policy"
 ```
 
-- [ ] **Step 6: Hand back to Riddam**
+- [ ] **Step 7: Hand back to Riddam**
 
 Do not push. Report four things: the final word count and reading time, any first-person or opinion claims in the post that are Riddam's to confirm, anything cut for length, and any Copilot fact that could not be verified and was therefore left out.
 
