@@ -147,12 +147,180 @@ Where that plugin actually belongs is the first group of the next section.
 
 ## The eleven I don't
 
+Before the names: **idle is not the same as bad**, and of the four reasons a
+plugin sits unused, only one is a reason to uninstall anything. The reason is the
+whole lesson here. "I don't use it" tells you about my week; it tells you nothing
+about the plugin.
+
+**Doing a job something else already does.** `code-review` — the one the count
+caught — because Claude Code's built-in review does it and I reach for that
+without thinking. `code-simplifier`, because the cleanup it offers overlaps the
+review pass I already run. `skill-creator`, because `superpowers` ships its own
+skill-authoring tooling and I use that instead. This is the only group where
+"remove it" is reasonable advice, and even then it is *pick one*, not *this one is
+worse*. Two tools competing for the same moment is a cost, because the model has
+to choose between them and you will not see which it chose.
+
+**Right job, wrong role.** The big group, and the reason a best-plugins list
+without a job title attached is nearly useless. `superdesign` is dead weight on
+my infrastructure work and would be somebody's most-used plugin if they designed
+interfaces for a living. `claude-security` is a deliberate deep scan that I run
+occasionally and that a security consultant would run weekly. `datadog` belongs
+to whoever owns the dashboards, which on my team is not me. `typescript-lsp`
+earns its place in a TypeScript product codebase; mine is AWS CDK, where the win
+is thinner. Nothing is wrong with any of these. They are not wrong *for me*, and
+that is a different sentence.
+
+**Right job, wrong trigger.** `claude-md-management` and `hookify` are both good
+and both wait for me to remember a command. I don't. This is the slash-command
+failure mode showing up in my own data, which is a more uncomfortable way to
+learn it than reading about it.
+
+**Measured as zero, probably not zero.** `security-guidance` works through hooks
+and `typescript-lsp` through a language server, so neither can appear in a count
+of invocations. I am listing them in the idle section because that is where the
+numbers put them, and flagging that the numbers are wrong about them.
+
+Two things follow, and they are the useful output of the whole exercise.
+
+For the role group: keep it if you expect to change hats, drop it if you don't —
+and if you are ever recommending a set to a team, split the recommendation by
+role rather than publishing one list and letting everyone take the whole thing.
+Most of what I don't use would be somebody else's core.
+
+For the trigger group: the fix is not more discipline. I have had months to
+remember those commands and I have not. The fix is to change the trigger — move
+the behaviour to a hook, or put a line in `CLAUDE.md` so the model raises it
+instead of waiting for me. That is the rule from the top of this post, applied to
+my own set, and it is the one change I am actually going to make.
+
 ## Count your own
+
+The method is two commands. Claude Code keeps session transcripts as JSONL under
+`~/.claude/projects/`, and every skill invocation and tool call is in there.
+
+```bash
+# Which plugin skills actually fired
+grep -rhoE '"skill":"[a-z0-9_-]+:[a-z0-9_:-]+"' ~/.claude/projects --include='*.jsonl' \
+  | sort | uniq -c | sort -rn
+
+# Which plugin MCP tools were called
+grep -rho '"name":"mcp__plugin_[a-z0-9_-]*' ~/.claude/projects --include='*.jsonl' \
+  | sed 's/.*mcp__plugin_//' | cut -d_ -f1 | sort | uniq -c | sort -rn
+```
+
+The detail that matters is in the first regex, and it is the one I got wrong the
+first time: match the **namespaced** form, `plugin:skill`. An unqualified name in
+those logs may be a built-in that happens to share a name with something you
+installed. Counting unqualified names is how I ended up crediting a plugin with
+thirteen uses it never had.
+
+Two limits. The counts are retention-bound — you are measuring the sessions still
+on disk, not all of history. And, as above, hook-driven and language-server
+plugins will not show up at all, so read a zero as "no recorded invocation"
+rather than "did nothing". If you would rather not grep, the official
+`session-report` plugin produces a per-session breakdown of tokens, subagents and
+skills.
+
+Run it against your own set before you trust anyone's recommendations, including
+mine. It takes a minute and it is the only way to find out whether your setup is
+helping you or just resident.
 
 ## What a plugin costs you
 
+Three costs, in the order you will meet them.
+
+**Context.** Every installed plugin's skill descriptions, and every connected MCP
+server's full tool definitions, are in your prompt before you type a character.
+Skills are cheap — a name and a line. MCP servers are not: a server exposes its
+whole tool list with names, descriptions and parameter schemas. My own largest
+bill is `deploy-on-aws`, which is three servers, and I pay it on days I never
+touch AWS. That is a trade I have decided to make; the point is that it is a
+trade and most people have never priced it.
+
+**Trigger collisions.** When two things have overlapping descriptions the model
+picks one, and you do not get told which. My own set has the built-in review
+skill competing with the `code-review` plugin — the exact collision that produced
+my miscount — and two different `skill-creator`s. Nothing breaks. You just stop
+being able to reason about which thing ran.
+
+**Drift.** Plugins install from a git repository and update under you. A workflow
+that behaved one way last month can behave differently today, and the first sign
+is usually output that feels subtly off rather than an error. I do not pin mine,
+because I would rather have the improvements — but I read the release notes when
+something I rely on starts acting differently, instead of assuming I imagined it.
+
 ## Where to start, if you are starting now
+
+A ladder, not a catalogue. Everything here is from the
+[official marketplace](https://github.com/anthropics/claude-plugins-official) and
+authored by Anthropic — 39 of its 315 plugins are, and these are the ones I would
+reach for first.
+
+- **First, before anything**: `claude-code-setup`. It reads *your* codebase and
+  recommends hooks, skills and subagents for it. Letting it tell you what you
+  need beats copying someone else's list, including this one.
+- **One workflow plugin**: `superpowers` for the full process ladder, or
+  `feature-dev` if you want something lighter and feature-shaped.
+- **Review**: `code-review`, or `pr-review-toolkit` if you would rather have
+  reviewers separated by concern — tests, error handling, type design.
+- **Language intelligence**: `pyright-lsp`, `typescript-lsp`, `gopls-lsp`,
+  `rust-analyzer-lsp` and the rest. Nearly free in prompt terms and they stop a
+  whole class of edits to the wrong symbol.
+- **Safety nets**: `security-guidance`, which is hook-driven and therefore works
+  without you remembering anything, and `claude-security` for a deliberate deep
+  scan.
+- **Housekeeping**: `commit-commands`, `claude-md-management`, `session-report`.
+- **Building your own**: `plugin-dev` for a plugin, `skill-creator` for a single
+  skill.
+
+Three of those — `code-review`, `claude-security` and `claude-md-management` —
+are in my idle list above. That is not a contradiction I want to hide: they are
+recommended on their merits, and they are idle for me for role and trigger
+reasons. If you install them, the thing worth doing is deciding up front how they
+will fire, rather than trusting yourself to remember.
 
 ## Marketplaces your team controls
 
+The last piece is how any of this reaches other people.
+
+A [marketplace](https://code.claude.com/docs/en/plugin-marketplaces) is a git
+repository with a manifest listing plugins. The official one is public; nothing
+stops a team from running its own. Put your deployment runbooks, your house
+conventions, your review rules in a plugin, publish it from a private repo, and
+installing it becomes one command for everyone who needs it.
+
+The reason I prefer that to the obvious alternative — one long shared
+`CLAUDE.md` — is everything this post has been about. A shared instructions file
+is always-loaded, so every rule in it taxes every prompt from every person,
+including the rules that only matter to one repository. A plugin versions
+properly, scopes to the repos that need it, and its skills load on demand. The
+difference is not organisational tidiness. It is that one of them scales with
+your team and the other gets slowly worse as it grows.
+
 ## References and further reading
+
+Checked on 6 October 2026.
+
+**Claude Code documentation**
+
+- [Plugins](https://code.claude.com/docs/en/plugins) and
+  [plugin marketplaces](https://code.claude.com/docs/en/plugin-marketplaces) —
+  what a plugin contains, and how to publish or install a marketplace.
+- [Skills](https://code.claude.com/docs/en/skills) and
+  [slash commands](https://code.claude.com/docs/en/slash-commands) — the two
+  triggers that most plugin behaviour arrives through.
+- [Hooks](https://code.claude.com/docs/en/hooks) and
+  [settings](https://code.claude.com/docs/en/settings) — the deterministic layer,
+  and the fix for everything in my "wrong trigger" group.
+- [MCP](https://code.claude.com/docs/en/mcp) — the protocol behind the most
+  expensive plugins in context terms.
+- [Memory and `CLAUDE.md`](https://code.claude.com/docs/en/memory) — the
+  always-loaded alternative that a team marketplace replaces.
+
+**The marketplace and the plugins named above**
+
+- [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official)
+  — the official marketplace.
+- [Superpowers](https://github.com/obra/superpowers), by Jesse Vincent.
+- [Context7](https://github.com/upstash/context7), by Upstash.
