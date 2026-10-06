@@ -4,6 +4,7 @@ description: "Skills, subagents, hooks, MCP, slash commands, plugins, scopes —
 pubDate: 2026-10-06
 tags: ["harness-engineering", "claude-code", "github-copilot", "ai-assisted-coding"]
 cover: mirror
+coverVariant: 2
 draft: false
 ---
 
@@ -77,6 +78,12 @@ The wording of the request still matters, and I have written up
 [how I keep that side reliable](/engineering/ai-assisted-coding-playbook/)
 separately. This post is about the machinery, not the sentence.
 
+One honest note about that earlier post: it tells you to bake your
+non-negotiables into an instructions file, and gives "every logic change ships
+with a test" as an example. I would put that sentence somewhere else today, for
+the reason the section after next explains. The advice to write the rule down
+still stands. Where it goes is what I have changed my mind about.
+
 ## What the model sees, and when
 
 The first question, and the one most people get wrong in the same direction.
@@ -134,13 +141,23 @@ one you picked.
 
 **You, explicitly.** A [slash command](https://code.claude.com/docs/en/slash-commands)
 is a saved prompt you fire by name. Copilot's equivalent is a
-[prompt file](https://code.visualstudio.com/docs/agent-customization/custom-instructions).
+[prompt file](https://code.visualstudio.com/docs/agent-customization/prompt-files).
 The guarantee is exact in both directions: it runs when you invoke it, and it
 never runs when you do not. That precision is the whole point for work you want
 to be deliberate about — a release checklist, a migration you run twice a year.
 It is also the failure mode. A command you forget is a command that does nothing,
 and "I keep forgetting to run it" is not a discipline problem, it is evidence you
 chose the wrong trigger.
+
+One correction before the rows, because the table makes them look like three
+kinds of file and they are not. In Claude Code, custom commands
+[have been merged into skills](https://code.claude.com/docs/en/slash-commands):
+`.claude/commands/deploy.md` and `.claude/skills/deploy/SKILL.md` both give you
+`/deploy`. Which trigger a skill answers to is frontmatter — `user-invocable` and
+`disable-model-invocation` — and Copilot's skills carry the same two fields. So
+rows one and two are not different artefacts. They are the same artefact with a
+different answer to *who is allowed to start this*, which is exactly why that
+question is the one worth asking first.
 
 **The model, on judgement.** A skill is a file of expertise the model pulls in
 when it decides the situation calls for it; the decision is made from the skill's
@@ -183,9 +200,12 @@ that blocks, unless the thing it is stopping is genuinely unrecoverable. An
 irritating guard has a half-life measured in days.
 
 Which returns us to the engineer at the top of this post. *Always run the tests
-before committing* is row three wearing row two's clothes. As a line in an
-instructions file it is a suggestion that competes with sixty turns of other
-context. As a hook on the commit tool, it is a fact.
+before committing* is a row-three rule filed in row two. As a line in an
+instructions file it is a suggestion competing with sixty turns of other context.
+As a hook, it is a fact — and the
+[spec-driven development post](/engineering/spec-driven-development-tdd-bdd-ai-agents/)
+has the working version, a `Stop` hook that will not let a session finish while
+the tests are red.
 
 ## What it can reach
 
@@ -243,7 +263,7 @@ four different shapes. The word tells you how it was delivered, not what it does
 
 A [marketplace](https://code.claude.com/docs/en/plugin-marketplaces) is a git repo
 with a manifest listing plugins. The official one carried 315 plugins when I
-wrote this, 40 of them Anthropic-authored. Copilot has the same concept under the
+wrote this, 39 of them Anthropic-authored. Copilot has the same concept under the
 name agent plugins. A team can run its own: publish your deployment runbooks and
 house conventions as a plugin from a private repo, and installing it is one
 command for everyone who needs it.
@@ -262,7 +282,7 @@ tasks** let a long build or test run keep going while you work. **Parallel
 subagents** fan independent work out across separate contexts, which is the
 practical reason the context arithmetic from earlier matters. Claude Code's
 [common workflows](https://code.claude.com/docs/en/common-workflows) documents
-these; Copilot has its own plan mode, generally available since March 2026.
+these; Copilot has its own plan agent, with the maturity caveats below.
 
 The thread connecting them is where a human checkpoint goes. More autonomy is not
 the goal — more *review-shaped* autonomy is. Approve the plan, then let it run;
@@ -276,31 +296,38 @@ and I will not restate it here.
 Everything above is worth learning because it is not one vendor's furniture.
 
 The strongest evidence is not that the two harnesses have similar ideas — it is
-that Copilot reads Claude Code's own files. Copilot's
-[agent skills](https://code.visualstudio.com/docs/agent-customization/agent-skills)
+that they have started reading each other's files.
+
+Copilot's [agent skills](https://code.visualstudio.com/docs/agent-customization/agent-skills)
 load from `.claude/skills/` and `~/.claude/skills/` as well as its own
 directories. Its [custom agents](https://code.visualstudio.com/docs/agent-customization/custom-agents)
-load from `.claude/agents` and `~/.claude/agents`. Its
-[instructions](https://code.visualstudio.com/docs/agent-customization/custom-instructions)
-include `CLAUDE.md` alongside `AGENTS.md` and its own
-`.github/copilot-instructions.md`. And both harnesses define a skill the same
-way: a directory containing a `SKILL.md` whose frontmatter carries a `name` and a
-`description` saying what it does and when to use it.
+load from `.claude/agents` and `~/.claude/agents`. And both define a skill the
+same way: a directory containing a `SKILL.md` whose description tells the model
+when to use it.
 
-That is documented behaviour in Copilot's own docs, checked on 6 October 2026,
-not a pattern I am inferring. Here is the mapping:
+Instructions files are the more interesting case, because the answer depends on
+which agent you are running inside VS Code rather than on the editor. Copilot's
+own agent host uses `.github/copilot-instructions.md` or `AGENTS.md`; the Claude
+agent host uses `CLAUDE.md`; the local agent
+[reads any of the three](https://code.visualstudio.com/docs/agent-customization/custom-instructions).
+So "VS Code reads `CLAUDE.md`" is true, and "Copilot reads `CLAUDE.md`" is not —
+a distinction worth keeping, because it tells you the convergence is happening at
+the editor layer first.
+
+All of that is documented behaviour in Copilot's own docs, checked on 6 October
+2026, not a pattern I am inferring. Here is the mapping:
 
 | Concept | Claude Code | GitHub Copilot |
 | --- | --- | --- |
-| Always-loaded project instructions | `CLAUDE.md` | `.github/copilot-instructions.md`, `AGENTS.md` — and it reads `CLAUDE.md` too |
+| Always-loaded project instructions | `CLAUDE.md` | `.github/copilot-instructions.md` or `AGENTS.md` (VS Code's local agent reads `CLAUDE.md` too) |
 | Scoped instructions | `.claude/rules/*.md`, scoped by a `paths` glob | `*.instructions.md`, attached by an `applyTo` glob |
 | Skills | `SKILL.md` under `.claude/skills/` | `SKILL.md` under `.github/skills/`, `.claude/skills/` or `.agents/skills/` |
 | Subagents / custom agents | `.claude/agents/*.md` | `*.agent.md` under `.github/agents` or `.claude/agents` |
 | User-invoked | Slash commands | `*.prompt.md` prompt files, migrating to agent skills |
-| Deterministic | Hooks in settings | Hooks from `.github/hooks/*.json` |
+| Deterministic | Hooks in settings | Hooks from `.github/hooks/*.json` (in preview) |
 | External systems | MCP, `.mcp.json` | MCP, `.mcp.json` or `~/.copilot/mcp-config.json` |
 | Packaging | Plugins and marketplaces | Agent plugins and a marketplace |
-| Scopes | User, project | User, workspace, organisation |
+| Scopes | User, project, organisation | User, workspace, organisation |
 
 Two rows deserve a note. Scoped instructions are the same idea in both, with
 different spellings: Copilot's `*.instructions.md` carries an `applyTo` glob —
@@ -322,9 +349,14 @@ expect it to run. What you can copy is the judgement: knowing that this belongs 
 a hook rather than an instructions file is the expensive part, and it transfers
 intact.
 
-For the record on maturity: Copilot's custom agents, sub-agents, plan mode and
-MCP support
-[reached general availability on 11 March 2026](https://github.blog/changelog/2025-10-28-custom-agents-for-github-copilot/).
+Maturity is uneven, and worth checking rather than assuming. Custom agents,
+sub-agents and the plan agent
+[reached general availability in Copilot for JetBrains IDEs on 11 March 2026](https://github.blog/changelog/2026-03-11-major-agentic-capabilities-improvements-in-github-copilot-for-jetbrains-ides/);
+agent hooks were still in public preview in that same release, and VS Code's
+hooks documentation also carries a preview banner. Claude Code's hooks are not in
+preview. If you are deciding what to build a team workflow on, that asymmetry
+matters more than the table does.
+
 The same shapes are turning up in other tools too, which is the real signal — this
 is an industry converging on a vocabulary, not two products copying each other.
 
@@ -340,10 +372,9 @@ The whole post, as a list you can keep:
 - True for everyone on the repo → project scope; true only for you → user scope.
 - You want other teams to have it → package it.
 
-If you are unsure between two rows, the question that usually settles it is the
-one this post opened with: what happens on the day the model decides your
-instruction is less important than something else in its context? If the answer
-is "something I cannot accept", you are in row one.
+If two rows both look plausible, the question that settles it is: what happens on
+the day the model decides your instruction matters less than something else in
+its context? If the answer is "something I cannot accept", you are in row one.
 
 ## What this does not fix
 
