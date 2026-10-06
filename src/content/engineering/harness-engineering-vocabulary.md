@@ -122,11 +122,149 @@ made. Delegate the search, keep the argument.
 
 ## Who decides
 
+This is the spine. Every extension point in every harness answers to one of three
+triggers, and almost all the confusion in this area comes from not noticing which
+one you picked.
+
+| Trigger | Parts | Guarantee | Right for |
+| --- | --- | --- | --- |
+| You, explicitly | Slash commands, prompt files | Runs when invoked, never otherwise | Deliberate, occasional work |
+| The model, on judgement | Skills, subagents, tool calls | Usually fires, sometimes not | Expertise that applies *sometimes*, where the model can tell when |
+| The harness, deterministically | Hooks, permissions, settings | Always, by construction | Anything with "always" or "never" in it |
+
+**You, explicitly.** A [slash command](https://code.claude.com/docs/en/slash-commands)
+is a saved prompt you fire by name. Copilot's equivalent is a
+[prompt file](https://code.visualstudio.com/docs/agent-customization/custom-instructions).
+The guarantee is exact in both directions: it runs when you invoke it, and it
+never runs when you do not. That precision is the whole point for work you want
+to be deliberate about — a release checklist, a migration you run twice a year.
+It is also the failure mode. A command you forget is a command that does nothing,
+and "I keep forgetting to run it" is not a discipline problem, it is evidence you
+chose the wrong trigger.
+
+**The model, on judgement.** A skill is a file of expertise the model pulls in
+when it decides the situation calls for it; the decision is made from the skill's
+name and description, which is why those two fields matter more than the body.
+Subagents and ordinary tool calls work the same way. This trigger is the right
+one for things that apply *sometimes*, where recognising the moment is itself a
+judgement — how to write a migration in this codebase, how to debug a flaky test.
+The guarantee is honest about itself: usually fires, sometimes does not. That is
+not a defect. A skill that fired every time would just be a bigger system prompt,
+and you would be back to paying for it on every turn.
+
+**The harness, deterministically.** A [hook](https://code.claude.com/docs/en/hooks)
+is a command the harness runs at a fixed point in the loop — before a tool call,
+after an edit, when a session ends — with the ability to block the action. A
+[permission rule](https://code.claude.com/docs/en/iam) is the same idea applied
+to what the model may do at all. Neither involves the model's judgement. They are
+code, executed by the harness, and they are the only parts of this list that come
+with a guarantee rather than a tendency.
+
+Which gives the rule this whole post exists to deliver:
+
+> **If your instruction contains the word "always" or the word "never", the
+> advisory layer is the wrong home for it.**
+
+Wanting something to happen every time is a statement about determinism, and
+determinism is what hooks and settings provide. Writing it into an instructions
+file and hoping is the mistake, and it is a mistake that survives for weeks
+because advisory layers work *most* of the time.
+
+The honest counter-argument, because this rule is easy to over-apply: a
+deterministic rule that fires too broadly gets switched off by the person it
+annoys, and a disabled hook enforces nothing at all. Scope them narrowly — this
+path, this file type, this tool. Prefer the hook that prints a warning to the one
+that blocks, unless the thing it is stopping is genuinely unrecoverable. An
+irritating guard has a half-life measured in days.
+
+Which returns us to the engineer at the top of this post. *Always run the tests
+before committing* is row three wearing row two's clothes. As a line in an
+instructions file it is a suggestion that competes with sixty turns of other
+context. As a hook on the commit tool, it is a fact.
+
 ## What it can reach
+
+Tools are the model's hands. Reading a file, running a command, editing code:
+each one is a function the harness has described to the model and will execute on
+its behalf. Everything the model does to the world, it does through one.
+
+The [Model Context Protocol](https://modelcontextprotocol.io/) is how you lend it
+somebody else's hands. An MCP server is a process exposing a set of tools over a
+standard protocol — your ticket tracker, your observability platform, your cloud
+provider's documentation — and both harnesses speak it:
+[Claude Code](https://code.claude.com/docs/en/mcp) and
+[Copilot](https://code.visualstudio.com/docs/agent-customization/mcp-servers)
+both read a portable `.mcp.json` at the project root.
+
+The cost is the part people discover late. An MCP server charges you before you
+use it, because every tool it exposes has a name, a description and a parameter
+schema, and all of that sits in the prompt from the first turn. A server with two
+hundred tools is a large, permanent tax on a context you were already managing
+carefully. The mitigations are worth knowing: toolsets, which let you enable a
+subset; and deferred or searchable tools, where the harness holds only the names
+and fetches a schema when the model actually wants one.
+
+[Permissions](https://code.claude.com/docs/en/iam) are the layer that makes any of
+this survivable. Allow and deny lists decide which tool calls run without asking,
+which prompt, and which are refused outright. The honest framing is that an
+allowlist is not a convenience setting — it is a written record of what you have
+decided to stop looking at. That is a reasonable trade, and it is a trade; the
+list deserves re-reading occasionally rather than growing by one entry every time
+something interrupts you.
+
+One rule I would not bend: anything touching production is read-only by default.
+Give the agent the query, the logs and the dashboards; make changes land as code
+through the pipeline that already has review and rollback. The harness is good at
+investigation and the pipeline is good at safety, and there is no reason to make
+either do the other's job.
 
 ## How it is packaged
 
+Start with **scope**, because scope decides who else benefits from your work.
+Both harnesses put the same artefact in different places depending on reach: a
+skill in your home directory is yours alone, the same skill committed to the repo
+belongs to everyone who clones it, and Copilot adds an organisation level that
+pushes configuration across repositories. Nothing about the file changes. Where
+you put it decides who gets it.
+
+A **plugin** is a bundle of the things this post has already covered.
+[In Claude Code](https://code.claude.com/docs/en/plugins) it is a directory with a
+small manifest and any combination of `skills/`, `agents/`, `commands/`, `hooks/`
+and MCP server declarations — and "any combination" is meant literally. Looking at
+the ones installed on this machine: `superpowers` ships skills and hooks;
+`code-simplifier` ships a single agent and nothing else; `code-review` ships one
+command; `deploy-on-aws` ships skills, hooks and three MCP servers. Four plugins,
+four different shapes. The word tells you how it was delivered, not what it does.
+
+A [marketplace](https://code.claude.com/docs/en/plugin-marketplaces) is a git repo
+with a manifest listing plugins. The official one carried 315 plugins when I
+wrote this, 40 of them Anthropic-authored. Copilot has the same concept under the
+name agent plugins. A team can run its own: publish your deployment runbooks and
+house conventions as a plugin from a private repo, and installing it is one
+command for everyone who needs it.
+
+Which of them are actually worth installing is a question with a different shape
+and its own post, coming next.
+
 ## How you work it
+
+The last structural piece is how you drive the loop, and it is short because the
+discipline lives elsewhere.
+
+**Plan mode** separates deciding from doing: the harness reads and researches but
+cannot edit, so you get a plan to approve before anything is written. **Background
+tasks** let a long build or test run keep going while you work. **Parallel
+subagents** fan independent work out across separate contexts, which is the
+practical reason the context arithmetic from earlier matters. Claude Code's
+[common workflows](https://code.claude.com/docs/en/common-workflows) documents
+these; Copilot has its own plan mode, generally available since March 2026.
+
+The thread connecting them is where a human checkpoint goes. More autonomy is not
+the goal — more *review-shaped* autonomy is. Approve the plan, then let it run;
+read the diff, not the keystrokes. Where the checkpoints belong when an agent is
+writing the code is the subject of my post on
+[spec-driven development](/engineering/spec-driven-development-tdd-bdd-ai-agents/),
+and I will not restate it here.
 
 ## The same map in Copilot
 
