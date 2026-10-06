@@ -268,8 +268,153 @@ and I will not restate it here.
 
 ## The same map in Copilot
 
+Everything above is worth learning because it is not one vendor's furniture.
+
+The strongest evidence is not that the two harnesses have similar ideas — it is
+that Copilot reads Claude Code's own files. Copilot's
+[agent skills](https://code.visualstudio.com/docs/agent-customization/agent-skills)
+load from `.claude/skills/` and `~/.claude/skills/` as well as its own
+directories. Its [custom agents](https://code.visualstudio.com/docs/agent-customization/custom-agents)
+load from `.claude/agents` and `~/.claude/agents`. Its
+[instructions](https://code.visualstudio.com/docs/agent-customization/custom-instructions)
+include `CLAUDE.md` alongside `AGENTS.md` and its own
+`.github/copilot-instructions.md`. And both harnesses define a skill the same
+way: a directory containing a `SKILL.md` whose frontmatter carries a `name` and a
+`description` saying what it does and when to use it.
+
+That is documented behaviour in Copilot's own docs, checked on 6 October 2026,
+not a pattern I am inferring. Here is the mapping:
+
+| Concept | Claude Code | GitHub Copilot |
+| --- | --- | --- |
+| Always-loaded project instructions | `CLAUDE.md` | `.github/copilot-instructions.md`, `AGENTS.md` — and it reads `CLAUDE.md` too |
+| Scoped instructions | — | `*.instructions.md`, attached by an `applyTo` glob |
+| Skills | `SKILL.md` under `.claude/skills/` | `SKILL.md` under `.github/skills/`, `.claude/skills/` or `.agents/skills/` |
+| Subagents / custom agents | `.claude/agents/*.md` | `*.agent.md` under `.github/agents` or `.claude/agents` |
+| User-invoked | Slash commands | `*.prompt.md` prompt files, migrating to agent skills |
+| Deterministic | Hooks in settings | Hooks from `.github/hooks/*.json` |
+| External systems | MCP, `.mcp.json` | MCP, `.mcp.json` or `~/.copilot/mcp-config.json` |
+| Packaging | Plugins and marketplaces | Agent plugins and a marketplace |
+| Scopes | User, project | User, workspace, organisation |
+
+Two rows deserve a note. Copilot's scoped instructions have no Claude Code
+equivalent in this table: an `*.instructions.md` file carries an `applyTo` glob —
+`applyTo: '**/*.py'` — and attaches itself only when the files being edited match.
+It is a genuinely nice idea, and the nearest Claude Code equivalent is a skill the
+model loads when it judges it relevant, which is a different trigger from the
+second column of the table above. And Copilot's prompt files are documented as
+migrating to agent skills; I am reporting that, not predicting when it finishes.
+
+Now the limit, which matters more than the table. **The concepts port. The
+configuration does not.** VS Code's documentation is explicit that supported
+events, event names, matchers, command properties, tool names, payloads and
+output decisions all differ between harnesses — Copilot's
+[hooks](https://code.visualstudio.com/docs/agent-customization/hooks) use lower
+camel case event names where the local harness uses PascalCase, and that is the
+small end of the differences. You cannot copy a hook configuration across and
+expect it to run. What you can copy is the judgement: knowing that this belongs in
+a hook rather than an instructions file is the expensive part, and it transfers
+intact.
+
+For the record on maturity: Copilot's custom agents, sub-agents, plan mode and
+MCP support
+[reached general availability on 11 March 2026](https://github.blog/changelog/2025-10-28-custom-agents-for-github-copilot/).
+The same shapes are turning up in other tools too, which is the real signal — this
+is an industry converging on a vocabulary, not two products copying each other.
+
 ## Picking the right part
+
+The whole post, as a list you can keep:
+
+- Must happen every time → a hook or a setting.
+- Should happen when relevant, and the model can tell → a skill.
+- Needs its own context, or can run in parallel → a subagent.
+- You will decide when → a slash command or a prompt file.
+- Needs data or actions from outside the repo → an MCP server.
+- True for everyone on the repo → project scope; true only for you → user scope.
+- You want other teams to have it → package it.
+
+If you are unsure between two rows, the question that usually settles it is the
+one this post opened with: what happens on the day the model decides your
+instruction is less important than something else in its context? If the answer
+is "something I cannot accept", you are in row one.
 
 ## What this does not fix
 
+A good harness makes a capable model reliable. It does not make a weak model
+capable, and — this is the part worth sitting with — it does not make a wrong
+design right.
+
+Everything above is machinery for getting intent executed faithfully. None of it
+has an opinion about whether the intent was any good. The failure that survives
+every hook, every skill and every permission rule is the one where the agent
+builds exactly what you asked for and you asked for the wrong thing, quickly,
+with tests. That failure gets cheaper to produce as the harness gets better, which
+is an uncomfortable thing to be true.
+
+The defence is upstream of all of this: decide what you are building, write it
+down, and get the argument over with while it is still a document. That is the
+subject of my post on spec-driven development, linked above, and it is the one
+part of this job that has not been automated.
+
+The vocabulary is worth an hour. It will save you the week you would otherwise
+spend concluding the tool is broken.
+
 ## References and further reading
+
+Everything below was checked on 6 October 2026. Both products ship monthly, so
+treat any specific path as a pointer to the current page rather than a permanent
+fact.
+
+**Claude Code**
+
+- [Overview](https://code.claude.com/docs/en/overview) and
+  [common workflows](https://code.claude.com/docs/en/common-workflows), which
+  covers plan mode and background tasks.
+- [Memory and `CLAUDE.md`](https://code.claude.com/docs/en/memory) — the
+  always-loaded layer.
+- [Skills](https://code.claude.com/docs/en/skills) and
+  [subagents](https://code.claude.com/docs/en/sub-agents) — the two parts the
+  model triggers on its own judgement.
+- [Slash commands](https://code.claude.com/docs/en/slash-commands) — the parts you
+  trigger.
+- [Hooks](https://code.claude.com/docs/en/hooks),
+  [settings](https://code.claude.com/docs/en/settings) and
+  [permissions](https://code.claude.com/docs/en/iam) — the deterministic layer,
+  and the one most people under-use.
+- [MCP](https://code.claude.com/docs/en/mcp) — connecting external systems.
+- [Plugins](https://code.claude.com/docs/en/plugins) and
+  [plugin marketplaces](https://code.claude.com/docs/en/plugin-marketplaces) — how
+  all of the above gets packaged and shared.
+- [Output styles](https://code.claude.com/docs/en/output-styles), for the part of
+  the system prompt you can shape yourself.
+
+**GitHub Copilot**
+
+Start with the [customization overview](https://code.visualstudio.com/docs/copilot/customization/overview),
+which is the best single map of Copilot's extension points.
+
+- [Custom instructions](https://code.visualstudio.com/docs/agent-customization/custom-instructions)
+  — `copilot-instructions.md`, `AGENTS.md`, `CLAUDE.md` and the `applyTo` glob on
+  scoped instructions.
+- [Agent skills](https://code.visualstudio.com/docs/agent-customization/agent-skills)
+  and [custom agents](https://code.visualstudio.com/docs/agent-customization/custom-agents),
+  including the `.claude/` directories both read.
+- [Hooks](https://code.visualstudio.com/docs/agent-customization/hooks) — read this
+  one before assuming a Claude Code hook will port.
+- [MCP servers](https://code.visualstudio.com/docs/agent-customization/mcp-servers)
+  — `.vscode/mcp.json`, the portable `.mcp.json`, and user-level configuration.
+- [Creating custom agents for the cloud agent](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/create-custom-agents)
+  on GitHub Docs, and the
+  [custom agents changelog](https://github.blog/changelog/2025-10-28-custom-agents-for-github-copilot/)
+  for availability dates.
+
+**Background**
+
+- The [Model Context Protocol](https://modelcontextprotocol.io/) specification —
+  the standard both harnesses implement.
+- [`AGENTS.md`](https://agents.md/) — the cross-tool instructions format.
+- Anthropic on
+  [effective context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents),
+  [agent skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills),
+  and [Claude Code best practices](https://www.anthropic.com/engineering/claude-code-best-practices).
