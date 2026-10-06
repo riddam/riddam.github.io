@@ -1,7 +1,8 @@
 # Claude Code plugins — what I actually use, and what a plugin even is
 
 **Date:** 2026-10-06
-**Status:** approved design, ready for implementation planning
+**Status:** approved design, blocked on a dependency — see "Publication order"
+
 **Section:** `engineering`
 **Slug:** `claude-code-plugins-what-i-actually-use`
 
@@ -9,29 +10,41 @@
 
 Two problems, and the post has to solve both or it is just a listicle.
 
-**The vocabulary problem.** Claude Code now has six places a behaviour can live:
-a skill, a subagent, a slash command, a hook, an MCP server, and plain
-configuration (`settings.json`, `CLAUDE.md`). A *plugin* is none of those — it is
-a box that ships any combination of them. People reach for the wrong layer
-constantly: they write a skill for something that must happen every time (that is
-a hook), or they put a tool integration in `CLAUDE.md` (that is an MCP server).
-Nothing on this site explains the distinction, and the official docs explain each
-layer separately rather than against each other.
+**The vocabulary problem.** A plugin is not a skill, a subagent, a command, a
+hook, an MCP server or a setting — it is a box that ships any combination of
+them. You cannot reason about which plugins are worth installing without that
+vocabulary, and nothing on this site teaches it.
+
+That problem is big enough to be its own post, and it now is: see
+`2026-10-06-harness-engineering-design.md`, which teaches the whole harness
+surface across Claude Code and GitHub Copilot. **This post assumes it.** Its job
+is narrower and more practical: which plugins actually make a working engineer
+faster, and how to tell.
 
 **The honesty problem.** Every "best plugins" post lists what the author
 installed. Install rate is not usage rate. I have seventeen plugins installed and
 I genuinely use six of them. The interesting half of that sentence is the other
 eleven, and nobody writes that half.
 
+## Publication order
+
+The harness-engineering post publishes first. This post opens with a short recap
+and links to it rather than re-teaching the layers. If that order changes,
+section 2 has to grow enough to stand alone — flag it rather than quietly
+expanding.
+
 ## Goal
 
-A reader finishes able to (a) say which of the six layers a given behaviour
-belongs in and why, (b) audit their own plugin set against real usage instead of
+A reader finishes able to (a) judge whether a given plugin earns its place for
+*their* role, (b) audit their own plugin set against real usage instead of
 vibes, and (c) pick a starting set from the official marketplace without
 installing seventeen things first.
 
 ## Non-goals
 
+- **No teaching the layers.** Section 2 is a recap with a link. The moment it
+  starts explaining how the model chooses a skill, or what a hook intercepts,
+  that text belongs in the harness-engineering post.
 - **No prompting advice.** That is the
   [AI coding playbook](/engineering/ai-assisted-coding-playbook/). Link, never
   restate.
@@ -102,27 +115,31 @@ ships skills and hooks; `code-simplifier` ships one agent and nothing else;
 `code-review` ships one command; `deploy-on-aws` ships skills, hooks and three MCP
 servers. The point lands because the directory listing proves it.
 
-### 2. Six layers, six questions
+### 2. What is in the box (recap, not a lesson)
 
-The table that does the real work. Each layer, the question it answers, who
-triggers it, and the failure mode of using it for the wrong job.
+A compact table, one line per layer, as a refresher — then a link to the
+harness-engineering post, which teaches this properly. This post does not define
+the terms; it assumes them.
 
-| Layer | Answers | Triggered by | Wrong-job failure |
-| --- | --- | --- | --- |
-| Skill | "How do I do X well?" | The model, on judgement | Silently skipped when it matters |
-| Subagent | "Who should do X, in its own context?" | The model delegating | Context you needed stays in the subagent |
-| Slash command | "Run X now" | You, explicitly | Nothing happens unless you remember |
-| Hook | "This must happen every time" | The harness, deterministically | — (this is the one people under-use) |
-| MCP server | "Talk to a system outside the repo" | Tool call | Hundreds of tool definitions eat context |
-| Settings / CLAUDE.md | "What is always true here?" | Always loaded | Grows into a document nobody reads |
+| Layer | Answers | Triggered by |
+| --- | --- | --- |
+| Skill | "How do I do X well?" | The model, on judgement |
+| Subagent | "Who should do X, in its own context?" | The model delegating |
+| Slash command | "Run X now" | You, explicitly |
+| Hook | "This must happen every time" | The harness, deterministically |
+| MCP server | "Talk to a system outside the repo" | Tool call |
+| Settings / CLAUDE.md | "What is always true here?" | Always loaded |
 
-### 3. The rule
+Keep this under 150 words of prose around the table. If it starts explaining,
+it belongs in the other post.
 
-One rule, stated once and defended: **anything that must happen every time is a
-hook or a setting, never a skill.** A skill is advice the model may route around;
-a hook is the harness executing. The corollary — if you find yourself writing
-"always" or "never" in a skill, you picked the wrong layer — and the honest
-caveat that hooks that fire too often get disabled, so scope them narrowly.
+### 3. The one rule this post needs
+
+**Anything that must happen every time is a hook or a setting, never a skill.**
+Stated once, defended in a paragraph, and used later: it is the reason half my
+installed plugins sit idle, and it is the fix I recommend in section 5. The
+*why* — how the model decides to invoke a skill, and why a hook is categorically
+different — goes in the harness-engineering post.
 
 ### 4. My working set
 
@@ -147,21 +164,31 @@ one cost. Order by how much it changed my work.
 
 ### 5. The half I don't use
 
-Named, with a one-line reason each, grouped by *why* they sit idle — because
-three different reasons hide in that list and the reasons are the lesson:
+The framing that matters: *idle is not bad*. A plugin sits idle for one of three
+reasons, and only one of them is a reason to uninstall. Name each plugin, say
+which group it is in, and say who it would be right for.
 
-- **Wrong job for me**: `superdesign`, `datadog` (I read Datadog through a
-  different route), `typescript-lsp` (my TypeScript is CDK, where the win is
-  small).
-- **Right job, wrong trigger**: `claude-security`, `code-simplifier`,
-  `claude-md-management` — all good, all require me to remember a command, and I
-  don't. This is the slash-command failure mode from section 2, showing up in my
-  own data.
-- **Solved a problem I stopped having**: `skill-creator`, `hookify`.
+- **Doing a job something else already does.** `code-simplifier` overlaps the
+  review pass I already run; `skill-creator` overlaps `superpowers`' own skill
+  tooling. Duplication is the honest reason to remove one, and the only group
+  where "uninstall it" is the advice.
+- **Right job, wrong role.** This is the big one, and it is why a "best plugins"
+  list is useless without knowing whose desk it came from. `superdesign` is
+  dead weight on my infrastructure work and would be central for a designer.
+  `claude-security` is a deliberate deep-scan tool I reach for rarely and a
+  security consultant would run weekly. `datadog` belongs to whoever owns the
+  dashboards. `typescript-lsp` earns its place in a TypeScript product codebase;
+  mine is CDK, where the win is smaller. Nothing is wrong with any of them —
+  they are not wrong *for me*.
+- **Right job, wrong trigger.** `claude-md-management` and `hookify` are both
+  good and both wait for me to remember a command. That is the slash-command
+  failure mode, showing up in my own data.
 
-Close with the uncomfortable bit: the fix for group two is not better discipline,
-it is converting the trigger — a hook, or a line in `CLAUDE.md`. That is section
-3 applied to my own set.
+Close on the two actions that follow. For group two, keep the plugin if you
+expect to change hats, drop it if you don't — and if you are handing a set to a
+team, split the recommendation by role rather than publishing one list. For group
+three, the fix is not better discipline, it is converting the trigger to a hook
+or a line in `CLAUDE.md`.
 
 ### 6. Count your own
 
@@ -238,6 +265,8 @@ draft: false
 
 - `ai-assisted-coding-playbook` — prompting, model choice, context hygiene.
 - `spec-driven-development-tdd-bdd-ai-agents` — the spec loop itself.
+- The harness-engineering post — the vocabulary this one assumes. Linked from
+  section 2 and from the intro.
 - `learning-to-build-software-when-ai-writes-the-code` — one pointer, for the
   "don't let the tool do the learning" angle when discussing `superpowers`'
   deliberate slowness.
