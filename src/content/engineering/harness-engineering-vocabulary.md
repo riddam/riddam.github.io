@@ -165,6 +165,11 @@ Which gives the rule this whole post exists to deliver:
 > **If your instruction contains the word "always" or the word "never", the
 > advisory layer is the wrong home for it.**
 
+This is not my reading of the tools — it is what the vendors say about their own
+advisory layers. Anthropic's memory documentation puts it flatly: Claude "treats
+them as context, not enforced configuration," and if you want to block an action
+"regardless of what Claude decides," you use a hook.
+
 Wanting something to happen every time is a statement about determinism, and
 determinism is what hooks and settings provide. Writing it into an instructions
 file and hoping is the mistake, and it is a mistake that survives for weeks
@@ -288,7 +293,7 @@ not a pattern I am inferring. Here is the mapping:
 | Concept | Claude Code | GitHub Copilot |
 | --- | --- | --- |
 | Always-loaded project instructions | `CLAUDE.md` | `.github/copilot-instructions.md`, `AGENTS.md` — and it reads `CLAUDE.md` too |
-| Scoped instructions | — | `*.instructions.md`, attached by an `applyTo` glob |
+| Scoped instructions | `.claude/rules/*.md`, scoped by a `paths` glob | `*.instructions.md`, attached by an `applyTo` glob |
 | Skills | `SKILL.md` under `.claude/skills/` | `SKILL.md` under `.github/skills/`, `.claude/skills/` or `.agents/skills/` |
 | Subagents / custom agents | `.claude/agents/*.md` | `*.agent.md` under `.github/agents` or `.claude/agents` |
 | User-invoked | Slash commands | `*.prompt.md` prompt files, migrating to agent skills |
@@ -297,13 +302,14 @@ not a pattern I am inferring. Here is the mapping:
 | Packaging | Plugins and marketplaces | Agent plugins and a marketplace |
 | Scopes | User, project | User, workspace, organisation |
 
-Two rows deserve a note. Copilot's scoped instructions have no Claude Code
-equivalent in this table: an `*.instructions.md` file carries an `applyTo` glob —
-`applyTo: '**/*.py'` — and attaches itself only when the files being edited match.
-It is a genuinely nice idea, and the nearest Claude Code equivalent is a skill the
-model loads when it judges it relevant, which is a different trigger from the
-second column of the table above. And Copilot's prompt files are documented as
-migrating to agent skills; I am reporting that, not predicting when it finishes.
+Two rows deserve a note. Scoped instructions are the same idea in both, with
+different spellings: Copilot's `*.instructions.md` carries an `applyTo` glob —
+`applyTo: '**/*.py'` — while Claude Code's
+[`.claude/rules/`](https://code.claude.com/docs/en/memory) files carry a `paths`
+list in their frontmatter. Either way the file stays out of context until you
+touch a file it matches, which is the cheapest win in this entire post for a repo
+with several stacks in it. And Copilot's prompt files are documented as migrating
+to agent skills; I am reporting that, not predicting when it finishes.
 
 Now the limit, which matters more than the table. **The concepts port. The
 configuration does not.** VS Code's documentation is explicit that supported
