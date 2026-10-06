@@ -204,14 +204,25 @@ said about it, instead of asking them to summarise it for me. The honest value i
 not speed — it is that the answer I give is based on their actual situation
 rather than my reconstruction of it.
 
-A note on where these come from, because it matters for the point this post keeps
-making. All four exist as plugins in the official marketplace: `github`, `slack`,
-`teamcity-cli` — that one authored by JetBrains, and a skill around their CLI
-rather than an MCP server — and `datadog`. But several of them are *also*
-available as connectors you can enable without installing a plugin at all, and if
-you have the connector you do not need the plugin. Check which one you are
-actually running before you install the other. I did not, which is how I ended up
-with the story in the previous section.
+A note on where these actually come from, because it is the point this post keeps
+making and this section is the clearest example of it.
+
+**None of these four reach me the same way.** GitHub and Slack I run as MCP
+connectors — enabled once, no plugin installed, nothing in my plugin list to show
+for them. Datadog is a plugin. TeamCity is available as one, `teamcity-cli`,
+authored by JetBrains and built around their command-line tool rather than an MCP
+server.
+
+Four integrations, three different delivery mechanisms, and from inside a session
+they are indistinguishable: all four show up as tools the model can call. Which
+is exactly why "how many plugins do you have" is the wrong question. My installed
+list does not mention GitHub or Slack at all, and they are two of the four things
+in this post I would least want taken away.
+
+The practical version: **check whether you already have the connector before you
+install the plugin.** They overlap, you only need one, and running both gives you
+two sets of tool definitions in your context doing the same job. This is the same
+confusion as the `code-review` story above, pointed in the other direction.
 
 ## The ones I don't
 
@@ -378,12 +389,12 @@ would reach for first.
 - **Building your own**: `plugin-dev` for a plugin, `skill-creator` for a single
   skill.
 
-Then, separately from that ladder, the integrations: `github`, `slack`,
-`datadog`, and `teamcity-cli` if you are on TeamCity. These are not
-Anthropic-authored — `teamcity-cli` is JetBrains', the others are vendor
-integrations — and they are the ones I would add first after the basics, for the
-reasons in the section above. Check whether you already have the equivalent as a
-connector before installing any of them.
+Then, separately from that ladder, the integrations — the ones I would add first
+after the basics, for the reasons in the section above. `datadog`, and
+`teamcity-cli` if you are on TeamCity. For GitHub and Slack, look at the
+connectors before the plugins: that is how I run both, and it is one less thing
+installed. None of these are Anthropic-authored; they are vendor integrations,
+which is worth knowing mainly because it tells you who to raise a bug with.
 
 Several of those — `feature-dev`, `code-review`, `claude-security`,
 `claude-md-management` — are in my idle list above. That is not a contradiction I
