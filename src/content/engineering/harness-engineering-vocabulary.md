@@ -268,8 +268,9 @@ name agent plugins. A team can run its own: publish your deployment runbooks and
 house conventions as a plugin from a private repo, and installing it is one
 command for everyone who needs it.
 
-Which of them are actually worth installing is a question with a different shape
-and its own post, coming next.
+Which of them are actually worth installing is a question with a different shape,
+so it has its own post:
+[what I actually use, and what a plugin even is](/engineering/claude-code-plugins-what-i-actually-use/).
 
 ## How you work it
 
