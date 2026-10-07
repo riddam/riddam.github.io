@@ -255,11 +255,13 @@ you put it decides who gets it.
 A **plugin** is a bundle of the things this post has already covered.
 [In Claude Code](https://code.claude.com/docs/en/plugins) it is a directory with a
 small manifest and any combination of `skills/`, `agents/`, `commands/`, `hooks/`
-and MCP server declarations — and "any combination" is meant literally. Looking at
-the ones installed on this machine: `superpowers` ships skills and hooks;
-`code-simplifier` ships a single agent and nothing else; `code-review` ships one
-command; `deploy-on-aws` ships skills, hooks and three MCP servers. Four plugins,
-four different shapes. The word tells you how it was delivered, not what it does.
+and MCP server declarations — and "any combination" is meant literally. One
+plugin is a single subagent and nothing else. Another is one slash command.
+Another is three MCP servers with no skills at all. They have almost nothing in
+common structurally, which is why "I installed a plugin" tells you how something
+arrived and nothing about what it does. The useful question is always which of
+the parts above are inside, because that is what decides the cost and the
+trigger.
 
 A [marketplace](https://code.claude.com/docs/en/plugin-marketplaces) is a git repo
 with a manifest listing plugins. The official one carried 315 plugins when I

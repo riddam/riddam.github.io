@@ -42,10 +42,10 @@ what somebody put in it.
 
 [A Claude Code plugin](https://code.claude.com/docs/en/plugins) is a directory
 with a manifest and any combination of skills, subagents, slash commands, hooks
-and MCP servers. I went through the shapes of my own in
-[the companion post](/engineering/harness-engineering-vocabulary/#how-it-is-packaged),
-and the short version is that they have almost nothing in common structurally:
-one ships a single agent, another a single command, another three MCP servers.
+and MCP servers. Mine have almost nothing in common structurally: `superpowers`
+ships skills and hooks, `code-simplifier` is a single subagent and nothing else,
+`code-review` is one slash command, and `deploy-on-aws` is skills, hooks and
+three MCP servers. Four plugins, four shapes.
 
 That matters here for one practical reason. "Is this plugin worth it" is never
 one question — it is a question about whatever is inside, and the parts have very
