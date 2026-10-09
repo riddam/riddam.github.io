@@ -154,6 +154,12 @@ into context the way you would attach a file. A *prompt* would be a ready-made
 "write a release note from these issues" workflow that you pick from a menu,
 which then does the asking on your behalf.
 
+If you want the same three in a reference table with the direction of travel
+marked, the AI architecture guide has one in
+[§09, tool use and MCP](/guides/ai-architecture-master-guide/#09--tool-use--mcp),
+alongside the design advice on writing tool descriptions that get picked
+correctly.
+
 In the wild, the overwhelming majority of servers expose tools and nothing else.
 Partly that is because tools alone are enough to be useful, and partly because
 host support for the other two has been patchier. It is worth knowing resources
