@@ -60,3 +60,17 @@ test('the portable AI platform series is registered', () => {
   assert.equal(series.slugs.length, 4, 'the series is four posts');
   assert.equal(series.slugs[1], 'connecting-cloud-and-on-premises', 'post 2 is second');
 });
+
+test('the AI Foundations model-internals series is registered', () => {
+  const series = SERIES.find((s) => s.title === 'AI from the inside out');
+  assert.ok(series, 'track 1 series missing');
+  assert.equal(series.sectionId, 'engineering');
+  assert.deepEqual(series.slugs, [
+    'what-a-model-actually-is',
+    'why-it-sounds-certain-when-its-wrong',
+    'the-context-window-is-the-entire-memory',
+    'how-it-learned-to-follow-instructions',
+    'embeddings-and-why-retrieval-beats-memorising',
+    'reading-a-model-card-without-guessing',
+  ], 'track 1 is six posts in ladder order');
+});

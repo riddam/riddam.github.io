@@ -69,6 +69,21 @@ export const SERIES: Series[] = [
       'extraction-data-modelling-with-provenance',
     ],
   },
+  {
+    // Track 1 of AI Foundations. The ladder is registered in full on the commit
+    // that publishes post 1; [section]/[...slug].astro filters slugs with no
+    // published post, so the series nav fills in as the rest land.
+    title: 'AI from the inside out',
+    sectionId: 'engineering',
+    slugs: [
+      'what-a-model-actually-is',
+      'why-it-sounds-certain-when-its-wrong',
+      'the-context-window-is-the-entire-memory',
+      'how-it-learned-to-follow-instructions',
+      'embeddings-and-why-retrieval-beats-memorising',
+      'reading-a-model-card-without-guessing',
+    ],
+  },
 ];
 
 export const SECTIONS: Section[] = [
