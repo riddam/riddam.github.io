@@ -84,6 +84,24 @@ export const SERIES: Series[] = [
       'reading-a-model-card-without-guessing',
     ],
   },
+  {
+    // Track 2 of AI Foundations. Registered in full on the commit that
+    // publishes the first of its posts; the series nav filters unpublished slugs.
+    title: 'How your AI coding tool works',
+    sectionId: 'engineering',
+    slugs: [
+      'what-happens-when-you-press-enter',
+      'a-tool-call-is-a-request-not-an-action',
+      'mcp-explained-without-the-spec',
+      'build-a-small-mcp-server',
+      'what-can-go-wrong-with-an-mcp-server',
+      'where-the-context-comes-from',
+      'who-is-allowed-to-do-what',
+      'how-a-skill-gets-found-and-loaded',
+      'subagents-why-isolation-is-the-point',
+      'the-whole-thing-annotated',
+    ],
+  },
 ];
 
 export const SECTIONS: Section[] = [

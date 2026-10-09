@@ -74,3 +74,21 @@ test('the AI Foundations model-internals series is registered', () => {
     'reading-a-model-card-without-guessing',
   ], 'track 1 is six posts in ladder order');
 });
+
+test('the AI Foundations harness series is registered', () => {
+  const series = SERIES.find((s) => s.title === 'How your AI coding tool works');
+  assert.ok(series, 'track 2 series missing');
+  assert.equal(series.sectionId, 'engineering');
+  assert.deepEqual(series.slugs, [
+    'what-happens-when-you-press-enter',
+    'a-tool-call-is-a-request-not-an-action',
+    'mcp-explained-without-the-spec',
+    'build-a-small-mcp-server',
+    'what-can-go-wrong-with-an-mcp-server',
+    'where-the-context-comes-from',
+    'who-is-allowed-to-do-what',
+    'how-a-skill-gets-found-and-loaded',
+    'subagents-why-isolation-is-the-point',
+    'the-whole-thing-annotated',
+  ], 'track 2 is ten posts in ladder order');
+});
