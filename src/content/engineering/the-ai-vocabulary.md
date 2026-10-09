@@ -198,9 +198,14 @@ tools, resources and prompts over that protocol. *Installing one is installing
 software with access to whatever you configured it to reach. Read it like you
 would read any other dependency.*
 
-**MCP client** — The side that connects to servers and hands their tools to the
-model: in practice, your editor or assistant. *You are almost always the client.
-The host application around it is what asks you for permission.*
+**MCP host** — The application you are actually using — your editor, your
+assistant — which decides what connects, asks you for permission, and owns every
+security decision the protocol does not make. *This is the side you are on,
+though you rarely write any of it.*
+
+**MCP client** — The piece inside the host that maintains the connection to one
+server; one client per server. *A detail that matters once: two servers are two
+independent connections that have never heard of each other.*
 
 ## Knowing whether it works
 

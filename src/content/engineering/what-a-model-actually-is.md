@@ -153,7 +153,7 @@ ids = tok(prompt, return_tensors="pt")
 print("tokens:", [tok.decode([i]) for i in ids["input_ids"][0]])
 
 with torch.no_grad():
-    logits = model(**ids).logits[0, -1]
+    logits = model(**ids).logits[0, -1].float()   # softmax in float32
 print("vocabulary size:", logits.shape[0])
 
 probs = torch.softmax(logits / 0.7, dim=-1)
@@ -165,11 +165,11 @@ for p, i in zip(top.values, top.indices):
 ```text
 tokens: ['Q', ':', ' What', ' is', ' the', ' capital', ' of', ' the', ' Netherlands', '?\n', 'A', ':']
 vocabulary size: 151936
-  61.33%  ' Amsterdam'
-  32.81%  ' The'
-   1.44%  ' Ha'
+  61.19%  ' Amsterdam'
+  32.75%  ' The'
+   1.57%  ' Ha'
    1.44%  ' Am'
-   0.87%  ' Rotterdam'
+   0.92%  ' Rotterdam'
 ```
 
 Read that list carefully, because almost everything in this series is visible in
@@ -181,6 +181,12 @@ a sentence like "The capital is Amsterdam". `' Ha'` is the beginning of "Hague",
 which is wrong but is the sort of thing that appears near this question in text.
 `' Rotterdam'` is a Dutch city that is not the capital, sitting at just under
 one per cent.
+
+(One note on that `.float()` in the snippet, because it cost me an hour. The
+model's own arithmetic runs at reduced precision, and dividing by a small
+temperature there rounds badly enough that the tables below stop agreeing with
+each other. Converting to full precision before the softmax fixes it. If you
+reproduce this and your numbers drift, that is the first thing to check.)
 
 Nothing in that list is marked true or false. They are all just continuations,
 ranked by how well they fit the text so far. The model has no separate store of
@@ -254,28 +260,31 @@ single forward pass — only the dial moves:
 ```text
 temperature 0.0001
   100.00%  ' Amsterdam'
-    0.00%  '#'
-    0.00%  '%'
 
 temperature 0.7
-   61.33%  ' Amsterdam'
-   32.81%  ' The'
-    1.44%  ' Ha'
+   61.19%  ' Amsterdam'
+   32.75%  ' The'
+    1.57%  ' Ha'
     1.44%  ' Am'
-    0.87%  ' Rotterdam'
+    0.92%  ' Rotterdam'
 
 temperature 1.5
-   14.45%  ' Amsterdam'
-   11.28%  ' The'
+   14.76%  ' Amsterdam'
+   11.03%  ' The'
     2.67%  ' Ha'
-    2.51%  ' Am'
-    2.09%  ' Rotterdam'
+    2.57%  ' Am'
+    2.08%  ' Rotterdam'
 ```
 
-At near-zero temperature the favourite takes essentially all the probability:
-the model will say the same thing every time. At 1.5 the top five barely account
-for a third of the total — the remaining two-thirds is spread across a long tail
-of 151,931 other tokens, any of which might get picked.
+I have trimmed the first block to one line, and the reason is itself instructive:
+at a temperature that small, the favourite rounds to 100 per cent and *every
+other token in the vocabulary* rounds to zero. The four runners-up the script
+printed were arbitrary — ties between tokens whose probability had underflowed.
+There is no meaningful ordering below the top at this setting, which is the point.
+
+At 0.7 the top five account for 97.9 per cent of the probability between them. At
+1.5 they account for 33.1 per cent — the other two-thirds is spread across a long
+tail of tokens, any of which might now get picked.
 
 Here is the part worth internalising. The *order* barely changed. Amsterdam is
 first at every setting. Temperature did not make the model more or less correct;
@@ -288,7 +297,7 @@ Temperature has a sibling you will meet in API documentation. Top-p, sometimes
 called nucleus sampling, throws away the long tail before anything is picked: at
 0.9 it keeps only the most likely tokens whose probabilities add up to nine
 tenths and ignores everything else. In the 1.5 table above, that would discard
-most of those 151,931 other tokens before the dice are rolled. It is a useful
+almost all of that two-thirds tail before the dice are rolled. It is a useful
 safety rail against genuinely strange output, and it is worth saying clearly
 that it does the same kind of thing temperature does — it changes which
 candidates are in play. Neither dial has any access to whether a candidate is

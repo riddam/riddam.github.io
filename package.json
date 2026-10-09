@@ -25,6 +25,7 @@
     "unist-util-visit": "^5.1.0"
   },
   "devDependencies": {
+    "jsdom": "^30.1.2",
     "pagefind": "^1.5.2"
   }
 }
