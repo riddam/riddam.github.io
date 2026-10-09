@@ -2,6 +2,7 @@
 title: "Claude Code Plugins: What I Actually Use, and What a Plugin Even Is"
 description: "I checked which Claude Code plugins I actually reach for, and found one I was certain I used and never had. What a plugin really is, the integrations that let me find developer-experience gaps instead of guessing at them, why an idle plugin is usually a role mismatch rather than a bad one, and where to start."
 pubDate: 2026-10-06
+updatedDate: 2026-10-16
 tags: ["claude-code", "ai-assisted-coding", "developer-productivity", "plugins"]
 cover: agent
 coverVariant: 2
@@ -113,6 +114,10 @@ tab-switching to the AWS docs and guessing at what something would cost, which
 are two of the slowest parts of infrastructure work. The cost is the clearest
 example of the context tax in my whole setup: three servers' worth of tool
 definitions sit in every session I open, whether or not I touch AWS that day.
+
+If "MCP server" is a phrase you have been nodding along to, [here is what it
+actually is](/engineering/mcp-explained-without-the-spec/) — including how to
+measure the context tax above for yourself rather than taking my word for it.
 
 **datadog.** An MCP server over logs, metrics, traces, dashboards and monitors,
 plus a few skills for setting it up. This one is in my day-to-day rather than my

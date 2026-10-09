@@ -2,10 +2,15 @@
 title: "AI Architecture: A Practitioner's Field Guide (2026)"
 description: "A practitioner's blueprint covering every layer of modern AI systems — foundation model selection, RAG, fine-tuning, agentic patterns, LLMOps, safety, cloud platforms, and the trade-offs behind each decision."
 pubDate: 2026-07-11
-updatedDate: 2026-09-27
+updatedDate: 2026-10-16
 tags: ["ai-architecture", "llm", "rag", "agents"]
 cover: ai
 ---
+
+*New to this? This guide assumes you already know what a token, an embedding and
+an agent are. If any of those are fuzzy, start with [what a model actually
+is](/engineering/what-a-model-actually-is/) and come back — this guide will make
+a great deal more sense afterwards.*
 
 *This is the guide I wish I'd had when I first started designing AI systems: every layer, pattern, and trade-off in one place. I keep it current and reach for it whenever I'm helping someone architect something new.*
 

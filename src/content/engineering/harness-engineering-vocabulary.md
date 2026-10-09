@@ -2,6 +2,7 @@
 title: "Harness Engineering: The Words for the Layer Around the Model"
 description: "Skills, subagents, hooks, MCP, slash commands, plugins, scopes — what each part of an AI coding harness is actually for, organised by who pulls the trigger, and mapped across Claude Code and GitHub Copilot."
 pubDate: 2026-10-06
+updatedDate: 2026-10-16
 tags: ["harness-engineering", "claude-code", "github-copilot", "ai-assisted-coding"]
 cover: mirror
 coverVariant: 2
@@ -219,7 +220,11 @@ standard protocol — your ticket tracker, your observability platform, your clo
 provider's documentation — and both harnesses speak it:
 [Claude Code](https://code.claude.com/docs/en/mcp) and
 [Copilot](https://code.visualstudio.com/docs/agent-customization/mcp-servers)
-both read a portable `.mcp.json` at the project root.
+both read a portable `.mcp.json` at the project root. If that sentence is one you
+have been nodding along to without quite knowing what crosses the wire,
+[MCP, explained without the spec](/engineering/mcp-explained-without-the-spec/)
+takes a real handshake apart line by line — and shows why `.mcp.json` is not the
+full list of servers a session loads.
 
 The cost is the part people discover late. An MCP server charges you before you
 use it, because every tool it exposes has a name, a description and a parameter
