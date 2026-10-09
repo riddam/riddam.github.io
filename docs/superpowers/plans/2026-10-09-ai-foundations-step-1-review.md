@@ -49,20 +49,13 @@ work the prose cannot do as compactly.
 The vocabulary page having none is worth keeping as a rule, not an accident: a
 glossary with a flowchart on it looks like it is hiding something.
 
-One finding for step 2. The plan's own content test only checks that a Mermaid
-fence is closed, non-empty and starts with a known diagram type. It does not
-check that the diagram *parses*, which was exactly the failure the plan's Review
-Focus named. A headless check using the site's own Mermaid version and `jsdom`
-does catch it, and running it is thirty seconds:
-
-```js
-// scratchpad only, not committed: jsdom + mermaid.parse() over every fence in src/content
-// result on this branch: parsed 34 diagrams, 0 failed
-```
-
-Step 2 should decide whether that becomes a committed test (cost: `jsdom` as a
-devDependency) or stays an authoring-time habit. My recommendation is the
-devDependency, once there are twenty more diagrams on the site.
+One finding, raised in review and now fixed. The plan's content test only checks
+that a Mermaid fence is closed, non-empty and starts with a known diagram type —
+none of which is a syntax check, so `flowchart LR\n A["unclosed` passes it. That
+was exactly the failure the plan's Review Focus named. `src/content/mermaid-syntax.test.ts`
+now parses every fence with the site's own Mermaid 11 under `jsdom` (34 diagrams,
+0 failures), verified by breaking a bracket and watching it fail. The cost is
+`jsdom` as a devDependency and about half a second on `npm test`.
 
 ## Reading time
 
@@ -109,6 +102,28 @@ post in their own senses; the vocabulary page's harness section is one line per
 term pointing at the harness post rather than summarising it; "tokeniser" appears
 only in the two new posts.
 
+## Corrected in review
+
+Two things a reader could have caught, both found by the whole-branch review and
+both fixed before this document was finalised.
+
+**The temperature tables in 1.1 did not agree with each other.** The numbers were
+real and reproducible, but the softmax ran in the model's own reduced precision,
+so dividing the logits by each temperature rounded differently — and a reader
+back-solving the logit gaps from the 0.7 table and the 1.5 table would get
+different answers. Running the softmax in float32 fixes it at the cause: the gaps
+now agree exactly (0.4375, 2.5625, 2.6250, 2.9375 at both settings). The post
+says why, because anyone reproducing it will hit the same thing. The near-zero
+table is trimmed to its one meaningful row, with the reason stated.
+
+The general lesson for step 2: when a post's credibility rests on printed
+numbers, check that the printed numbers are consistent *with each other*, not
+only that the script ran.
+
+**2.3 said it was "the third post in" a series whose nav renders "Part 1 of 1".**
+Correct prose, correct nav, contradiction on the page — a direct consequence of
+writing out of order. It now says so.
+
 ## Every reference resolves
 
 All six external URLs across the three posts return 200 as of 2026-10-09,
@@ -129,12 +144,15 @@ Code MCP page. The MCP revision is current, not archived.
    only that a series has *one* published post, not its first. Track 2 was
    registered with 2.3 and the suite stayed green. Say that in the plan so the
    next executor does not think the pairing is load-bearing.
-4. **Specify the measurement, not the snippet.** The plan's 1.1 snippet used a
+4. **Check numbers against each other, not just against the script.** See
+   "Corrected in review". A plan that says "paste the real output" is not enough;
+   it should say what relationship between the printed numbers has to hold.
+5. **Specify the measurement, not the snippet.** The plan's 1.1 snippet used a
    prompt whose top token on a base model is `' __'`, a fill-in-the-blank
    artefact — real output, useless teaching. A Q/A-shaped prompt on the same model
    gave the distribution the post needed. Plans should state what the number has
    to demonstrate and leave the prompt to the writer.
-5. **Say which posts can be written without a hosted model.** Three of this
+6. **Say which posts can be written without a hosted model.** Three of this
    step's seven could; four could not, and that was discovered during execution
    rather than during planning. Step 2's plan should mark each post with what it
    needs to run: nothing, a local model, an API key, or a live MCP server.
