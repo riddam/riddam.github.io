@@ -2,6 +2,7 @@
 title: "Learning to Build Software When AI Writes the Code"
 description: "A working process for junior developers in the AI era — taking a ticket from question to production, what to hand to the AI and what to keep, how to learn without letting the tool learn for you, and what reviewers actually look for."
 pubDate: 2026-09-27
+updatedDate: 2026-11-12
 tags: ["mentoring", "junior-developers", "ai-assisted-coding", "career-growth"]
 cover: steps
 coverVariant: 2
@@ -169,7 +170,48 @@ Plan and first draft from Claude Code. Edge-case tests written by me.
 
 Then learn from the review. Treat every comment as a lesson, not a verdict. If you don't understand why a change was requested, ask — *"can you help me understand why?"* is a question good seniors are glad to hear. Keep a list of the comments you get more than once. That list is your personal curriculum.
 
-## 9. What seniors actually look for
+## 9. Reviewing code you didn't write
+
+Sooner than you expect, you'll be on the other side of section 8 — reading a
+change somebody produced with an agent. It happens earlier in your career than it
+used to, and it's a different job from reviewing a colleague's hand-written code,
+because the signal you normally lean on is missing. You can't think *this person
+knew what they were doing here* and move on. Nobody was thinking at that line.
+
+**Read the tests first, then the edges, then the happy path.** That order is
+deliberate. The happy path is the part most likely to be correct and the part
+your eye wants to start with. The tests tell you what the author believed the
+change should do — and if the tests only cover the happy path, you've learned
+something important before reading a line of the implementation.
+
+**Four failure shapes recur.** Plausible-but-wrong API usage: a method that reads
+perfectly and doesn't exist, or exists with different semantics. Error handling
+that swallows — a caught exception, a log line, and execution carrying on with
+bad state. A correct implementation of a misunderstood requirement, which passes
+every test because the tests were written from the same misunderstanding. And
+code that duplicates something your repository already has, because the agent
+couldn't see it.
+
+**Telling plausible from correct is the whole skill.** Fluent, confident and
+well-structured is the default output, not evidence of anything —
+[why it sounds certain when it's wrong](/engineering/why-it-sounds-certain-when-its-wrong/)
+explains why that's the mechanism working as designed rather than a bug. Two
+things cut through it: run the change yourself, and check one factual claim
+against a primary source. One. Whichever claim the change most depends on. If it
+holds, your confidence is earned rather than borrowed; if it doesn't, you've
+usually found the whole problem.
+
+**What to ask the author.** Not "did you use AI" — that question puts people on
+the defensive and tells you nothing, because the answer is increasingly yes for
+everyone. Ask *"which part are you least sure about?"* and *"what did you
+verify?"* Both are answerable honestly, both are useful whoever wrote the code,
+and a vague answer to the second one is itself the finding.
+
+None of this is a separate discipline. It's the judgement in the next section,
+applied to somebody else's change instead of your own — which is also why
+reviewing is the fastest way to build that judgement in the first place.
+
+## 10. What seniors actually look for
 
 Not how fast you produce code. Anyone with an AI assistant can produce code quickly now, which is exactly why speed no longer sets you apart. What does:
 
@@ -180,7 +222,7 @@ Not how fast you produce code. Anyone with an AI assistant can produce code quic
 - **Owning outcomes after merge.** Watching your change in production, and fixing what breaks without being asked — whoever, or whatever, wrote it.
 - **Writing clearly.** Specs, pull request descriptions, questions in chat. Clear writing is clear thinking made visible, and it's a skill AI makes more valuable, not less.
 
-## 10. A weekly checklist
+## 11. A weekly checklist
 
 - [ ] Worked out the core logic of at least one problem myself before asking the AI.
 - [ ] Wrote a short spec before starting a piece of work, with requirements from the people who asked for it.
