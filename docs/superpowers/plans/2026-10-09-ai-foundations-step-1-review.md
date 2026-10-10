@@ -1,22 +1,29 @@
-# AI Foundations — Step 1 Review (partial)
+# AI Foundations — Step 1 Review
 
-**Status: step 1 is three of its seven posts.** Tasks 3, 4, 5 and 6 — posts 1.2,
-1.3, 2.1 and 2.2 — were not written, because every one of them is built on
-measurements that need a hosted model and `ANTHROPIC_API_KEY` was not available
-in the execution environment. The plan forbids invented output, and rightly. The
-decision to proceed with the rest rather than stall was Riddam's, taken on
-2026-10-09.
+**Status: complete.** All seven posts, both `SERIES` registrations, the content
+tests, and the entry points from the published posts.
 
-What shipped:
+The one substitution worth recording up front. The plan specified that four of
+these posts take their measurements from a hosted Claude model. No
+`ANTHROPIC_API_KEY` was available, and no `ant` profile either. Rather than
+invent output — which the plan forbids and which would have been the single
+worst thing to do in a series whose pitch is "these are real numbers, go and
+check" — every capture was re-run against a **local** model (`Qwen2.5-0.5B` for
+the probability work, `Qwen2.5-3B-Instruct` for everything conversational).
+
+That turned out better than the plan's design, for a reason worth carrying into
+step 2: a reader with no API key and no account can reproduce every number in
+the series on a laptop. The constraint improved the work.
 
 | Post | Slug | Read | Diagrams |
 |---|---|---|---|
 | Vocabulary page | `the-ai-vocabulary` | 10 min | 0 (deliberate) |
 | 1.1 What a Model Actually Is | `what-a-model-actually-is` | 12 min | 2 |
+| 1.2 Why It Sounds Certain When It's Wrong | `why-it-sounds-certain-when-its-wrong` | 12 min | 2 |
+| 1.3 The Context Window Is the Entire Memory | `the-context-window-is-the-entire-memory` | 13 min | 2 |
+| 2.1 What Actually Happens When You Press Enter | `what-happens-when-you-press-enter` | 15 min | 3 |
+| 2.2 A Tool Call Is a Request, Not an Action | `a-tool-call-is-a-request-not-an-action` | 12 min | 2 |
 | 2.3 MCP, Explained Without the Spec | `mcp-explained-without-the-spec` | 15 min | 2 |
-
-Plus the four content-rule tests, both `SERIES` registrations, and three entry
-points from the published posts.
 
 ## Voice and depth
 
@@ -152,16 +159,59 @@ Code MCP page. The MCP revision is current, not archived.
    artefact — real output, useless teaching. A Q/A-shaped prompt on the same model
    gave the distribution the post needed. Plans should state what the number has
    to demonstrate and leave the prompt to the writer.
-6. **Say which posts can be written without a hosted model.** Three of this
-   step's seven could; four could not, and that was discovered during execution
-   rather than during planning. Step 2's plan should mark each post with what it
-   needs to run: nothing, a local model, an API key, or a live MCP server.
+6. **Plan for a local model first, not as a fallback.** This step's four hardest
+   posts were specified against a hosted model and delivered against a local
+   one, and the local version is strictly better for the reader: no key, no
+   account, no cost, and the script in the post is the script they run. Step 2
+   should mark each post with what it needs — nothing, a local model, an API
+   key, a live MCP server — and prefer the lowest rung that demonstrates the
+   point.
+
+7. **Name the model in every post that prints model output.** Four posts
+   initially did not, which quietly broke the reproduction promise their own
+   ledes made. Make it part of the post anatomy.
+
+## What the second review caught
+
+A fresh review of the four local-capture posts found nine things. Two were the
+kind a reader could catch, and both are instructive for step 2.
+
+**1.3's narrative contradicted its own measurement.** The prose said turn 1 was
+the file paste; turn 1 measured 65 tokens, and the paste was turn 2. Worse, the
+growth it attributed to "carrying the file" was mostly the model's own answers
+accumulating. The fix made the post better — section 03 now shows the per-turn
+deltas and tells the more interesting story — but the lesson is that a number
+can be real, correctly captured, and still be described wrongly in the sentence
+next to it.
+
+**1.2 presented an editorial summary as captured output.** Two control questions
+were shown as a hand-written "runs 1-5: ... (all five identical, and correct)"
+line inside a ```text fence, in the post whose lede promises verbatim output.
+Nothing in it was false. The *form* claimed capture, which in this series is the
+thing that cannot be allowed to drift. Replaced with the ten real lines.
+
+The rest: a cited Claude Code docs URL that had the wrong page behind it
+(`/docs/en/iam` is Authentication; permissions are `/docs/en/permissions`); a
+cache-cost figure that assumed a 90/10 split it never stated; a section labelled
+a control experiment that changed two variables; `stop_reason` narrated as a
+field the local capture returned when the loop in fact derives it; two claims
+asserted rather than run; and — the one that mattered most for the whole
+substitution — no post named the model it used.
+
+## A correction owed to a published post
+
+`harness-engineering-vocabulary.md` cites `https://code.claude.com/docs/en/iam`
+in three places as the reference for permissions. That page is now
+**Authentication**; the permission system lives at `/docs/en/permissions`, with
+`/docs/en/permission-modes` for modes. Left unfixed here because it is outside
+this plan's range and belongs to a published post, but it should be corrected —
+and the post's own advice about path rot is the reason it needs doing on a
+schedule rather than once.
 
 ## Not done
 
-- **Visual check of all four diagrams in light and dark theme at a narrow
-  viewport.** No browser in the execution environment. All four parse under the
-  site's own Mermaid 11 and render as `pre.mermaid` in `dist`, and they use the
-  same constructs as the thirty existing diagrams, but a human has not looked at
-  them.
-- **Posts 1.2, 1.3, 2.1, 2.2**, and the harness post's pointer into 2.1.
+- **Visual check of the thirteen new diagrams in light and dark theme at a
+  narrow viewport.** No browser in the execution environment. All thirteen parse
+  under the site's own Mermaid 11 and render as `pre.mermaid` in `dist`, and
+  they use the same constructs as the existing diagrams, but a human has not
+  looked at them. This is the one open item before publishing.
