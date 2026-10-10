@@ -18,7 +18,7 @@ Everything stays local. Nothing was pushed.
 | 2.7 Who Is Allowed to Do What | `who-is-allowed-to-do-what` | 19 min | 2 | `gate`/4 |
 | 2.8 How a Skill Gets Found and Loaded | `how-a-skill-gets-found-and-loaded` | 16 min | 2 | `assist`/2 |
 | 2.9 Subagents: Why Isolation Is the Point | `subagents-why-isolation-is-the-point` | 16 min | 2 | `agent`/3 |
-| 2.10 The Whole Thing, Annotated | `the-whole-thing-annotated` | 15 min | 2 | `mirror`/3 |
+| 2.10 The Whole Thing, Annotated | `the-whole-thing-annotated` | 16 min | 2 | `mirror`/3 |
 | S2 AI Foundations: Start Here | `ai-foundations-start-here` | 6 min | 0 (deliberate) | `personas`/2 |
 
 Reading times run 14–19 minutes, all inside the twenty-minute gate. The map is
@@ -187,40 +187,107 @@ machine. Clean. Every `~/.claude/...` path in the posts is a documented location
 with a `<slug>` or `<project>` placeholder, not a real one. The one scratchpad
 path, in 2.3's stderr paste, is already elided to `.../scratchpad/mcpdemo`.
 
+## The whole-branch review, and the second fix wave
+
+The finished branch went to a whole-branch review, which came back *ship after
+three one-line fixes* — and called the series' voice and shape better than
+eleven independent agents has any right to produce, with the no-duplication rule
+holding across all sixteen posts. Four of the five findings this sweep had
+skipped were upheld as genuinely fine. Ten findings came back; all ten are now
+fixed.
+
+**The three that blocked.**
+
+1. **The map promised a cold start its own routes deny.** "Each goes straight to
+   the post that explains it, and none of them needs the ones before it" — and
+   all four targets open by naming a prerequisite in their second paragraph.
+   It is the first sentence a lost reader reads. Reworded: each route still goes
+   straight to the question, and the page now says each post names what it
+   assumes within a paragraph, so you back up only when told to.
+2. **The false promise fixed in 2.9 survived in 2.8.** Its closing also said the
+   post after next "puts a whole assembled request on the page at once". Fixed
+   the same way.
+3. **"The description is the trigger" survived on the map.** 2.8 measured this
+   and disproved it; its own TL;DR says the name *and* the description. The
+   earlier decision to leave 2.8's heading alone stands, because the corrected
+   caption sits right under it — but the map has no caption and is where a
+   reader meets the claim first. The map now says both.
+
+**The seven others.** 2.9's ~36,000-token child-window floor was attributed to
+2.6's ladder, which 2.6 measures at 23k and 29,732; three numbers for one
+mechanism with nothing reconciling the third, now named as three vantage points
+with the gap acknowledged rather than papered over. 2.7's most quotable sentence
+— "an instruction file held thirteen times in fifteen" — now carries its
+instrument in both places it appears; it was the only claim in the series the
+reviewer found outrunning its evidence. The capstone gained the spec-mandated
+**Try it yourself**, which it is better suited to than any other post in the
+series because every script in it runs against the reader's own transcripts with
+no model and no key; 2.5 still has none, deliberately, because exercises there
+would be attack recipes. 2.6 gained the house date-hedging preamble, which it
+needed most of any post and had least. 2.10's "27 tests" now reconciles with the
+28 a reader will actually see, without falsifying the snapshot it describes.
+2.10's description said "to merged change" when nothing merged; it now says
+landed commits, as the post itself does.
+
+**The model-ID finding did not survive checking.** It looked like an
+inconsistency — 2.6, 2.9 and 2.10 cite `claude-opus-5` against 1.6's table of
+`claude-opus-5-5` — but checked against the `claude-api` skill, both are real,
+current, differently priced models in the same line, and 1.6's claim that every
+ID is a pinned snapshot is exactly right. Renaming anything would have made
+three posts misreport what they ran on. 1.6 gained one clause instead: read the
+whole string, because `claude-opus-5` is the previous model in that line, not a
+short form of `claude-opus-5-5`.
+
+**The two revisits.** `updatedDate` is gone from 2.3 and from
+`what-a-model-actually-is` — both unpublished, both had the field set by this
+series' own work, and on an unpublished post it is noise that will mislead
+later. It stays on `harness-engineering-vocabulary`,
+`claude-code-plugins-what-i-actually-use` and `ai-assisted-coding-playbook`,
+which are genuinely published and genuinely were revised afterwards. And 1.2 and
+1.3 swapped `pubDate`, so reading order and publication order now agree in the
+section index, the archive and RSS.
+
+## Refresh schedule
+
+The reviewer's dating of what will rot first, kept here because nothing else in
+the repository records it.
+
+| Within | What to re-check |
+|---|---|
+| Three months | 1.6's price table and its cost script — the prices are current as of writing and are the fastest-moving numbers in the series. |
+| Three to six months | The MCP wire-versus-page split across 2.3, 2.4 and 2.5. The day an SDK negotiates `2026-07-28` through `initialize`, all three need re-reading together. |
+| Three to six months | Claude Code version facts: the 2.1.205 captures, `onFailure: "block"`, the `/context` output format, `plugin details`, the subagent default, and the `subagents/*.jsonl` layout. |
+| Six to twelve months | The fourteen `code.claude.com/docs/en/*` paths, plus the VS Code and Copilot pages. Four already moved during this one sweep. |
+
+On the open question of whether to centralise the "fetched on 10 October 2026 …
+paths move" preamble: the ruling is to leave it as house form. Four posts
+repeating one disclosure sentence is cheaper than a shared partial, and a fix
+wave is the wrong place to add a mechanism.
+
 ## Still open for the repo owner
 
-1. **`updatedDate` on unpublished posts.** 2.3's is now `2026-11-01`, after its
-   own `pubDate` of `2026-10-16`, because the whole series is scheduled into the
-   future and nothing here is pushed. If "updated" is meant to mean *updated
-   after publication*, the field is premature on every AI Foundations post that
-   carries one, including 1.1 and the vocabulary page from step 1. One decision
-   covers all of them.
-2. **Post 1.2 and 1.3 publish out of order.** 1.2's `pubDate` is `2026-10-13`
-   and 1.3's is `2026-10-12`. The series ladder is explicit so it reads
-   correctly, but the section index, the archive and RSS will show 1.3 first.
-   This predates step 2; fixing it is a one-line date swap.
-3. **Five parked minors were skipped on purpose.** The two test and component
-   nits from task 1 (`content-rules.test.ts` asserts string presence rather than
-   the variant-to-transform mapping; `Cover.astro` rebuilds its lookup object
-   per render) are brief-mandated code and harmless. Task 12's assertion only
-   matches `/engineering/<slug>/`, so a future `ai-foundations` post in
-   `leadership/` would fail it falsely — real, but it is the brief's code
-   verbatim and the series has no cross-section post yet. Task 8's
-   "twenty-five session transcripts" is covered by the post's own snapshot
-   caveat. Task 9's two soft echoes of the disproved "the description is the
-   interface" framing were judged survivable by the re-reviewer and the caption
-   underneath carries the correction; changing them means changing a
-   brief-mandated diagram node.
-4. **Two diagrams are reinforcement rather than explanation** — 2.10's triage
-   tree and 1.5's chunk-boundary tree. Both are defensible. If the house rule
-   is tightened to "a diagram must show something the prose cannot", these are
+1. **Four skipped parked findings stand**, upheld on review: the
+   `content-rules.test.ts` variant assertion and the `Cover.astro` per-render
+   lookup (both brief-mandated and harmless), 2.8's "twenty-five session
+   transcripts" (covered by the post's own snapshot caveat), and task 12's
+   assertion matching only `/engineering/<slug>/`, which would falsely fail a
+   future `ai-foundations` post filed under `leadership/`. That last one is the
+   only one with a future cost, and it is cheap to fix the day a cross-section
+   post exists.
+2. **2.8's section 03 heading still reads "The description is the interface".**
+   The map is fixed and 2.8's corrected caption sits under the heading, so this
+   is no longer anywhere a reader meets the claim cold. Changing it means
+   changing a brief-mandated diagram node; left as a judgement call.
+3. **Two diagrams are reinforcement rather than explanation** — 2.10's triage
+   tree and 1.5's chunk-boundary tree. Both defensible. If the house rule is
+   ever tightened to "a diagram must show something the prose cannot", these are
    the two to revisit.
-5. **The MCP wire-versus-page split will go stale by itself.** Three posts now
-   turn on the fact that implementations negotiate `2025-11-25` while the
-   published revision is `2026-07-28`. The day the SDK ships `2026-07-28`
-   through `initialize`, 2.3's new paragraph, 2.4's section on it and 2.5's
-   revision comparison all need re-reading together. Worth a calendar note
-   rather than a code comment.
+4. **2.10's timeline diagram is 2,190 px wide**, the widest in the series, after
+   its solid edges were labelled. It scrolls in its container as the house rules
+   intend, and reads correctly in both themes, but it is the one to trim if
+   scrolling diagrams ever stop being acceptable.
+5. **Nothing is pushed.** Eighteen posts, two complete tracks and a map are
+   sitting on `main` locally, waiting on a publishing decision that is yours.
 
 ## What steps 3 and 4 should change in the spec
 
@@ -228,6 +295,11 @@ path, in 2.3's stderr paste, is already elided to `.../scratchpad/mcpdemo`.
   number in sixteen posts came off `Qwen2.5-0.5B`, `Qwen2.5-3B-Instruct` or
   `all-MiniLM-L6-v2` on a laptop. Steps 3 and 4 should state it as the method up
   front instead of specifying hosted models and discovering the constraint again.
+- **Name the instrument every time the number is quotable.** The one claim the
+  whole-branch review found outrunning its evidence was 2.7's "held thirteen
+  times in fifteen", disclosed properly at the top of the post and then repeated
+  twice without it. The rule is not "disclose once"; it is "disclose wherever
+  the sentence could be lifted out".
 - **Two diagrams per post looks like the right number.** The only three-diagram
   post in the series, 2.1, draws the loop twice — once as a flowchart and once
   as a sequence diagram of the same round trip. Both are good drawings and the
@@ -237,13 +309,18 @@ path, in 2.3's stderr paste, is already elided to `.../scratchpad/mcpdemo`.
   the URLs were wrong when written; it was that nothing in the post pinned the
   revision to a date the author could check later. Every spec-citing post in
   steps 3 and 4 should carry the revision in its opening italic line, the way
-  2.5 does.
+  2.5 does — and every post citing a living vendor page should carry the
+  fetched-on preamble, which 2.6 was missing and needed most.
 - **Budget a measured control for every comparison.** The 1.5 cosine problem was
   one number placed beside another from a different distribution. It cost one
   script and ninety seconds to fix properly. The spec should ask for the control
   at write time rather than at review time.
-- **The reference preamble is now boilerplate across four posts.** "Every vendor
-  page below was fetched on <date>. These are living pages with no revision of
-  their own and their paths move." It is correct and it is the largest source of
-  text duplication in the series. Either accept it as a house form or move it to
-  a single page the posts link.
+- **A forward promise made in one post is a cross-post claim.** The same false
+  promise about the capstone appeared in 2.8 and 2.9, written by different
+  tasks, and the first sweep caught only one of them. Any sentence describing a
+  post that does not exist yet should be checked against that post the day it
+  lands, in every post that makes it.
+- **The entry page is the last thing to write and the first thing to re-check.**
+  The map's opening sentence contradicted four posts it routes to, which could
+  only have been caught by reading the map against its targets after they
+  existed. Steps 3 and 4 should schedule that read explicitly.

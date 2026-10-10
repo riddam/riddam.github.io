@@ -192,7 +192,11 @@ started with 37,097, and did not know what it was missing.
 Read the last summary line too, because it is the bill. That 36,000-token floor
 is not the brief. It is the always-loaded ladder from post 2.6 — system prompt,
 tools, instruction files, the skills listing — assembled again, in full, for
-each new window. Across twenty-six dispatches that came to 942,506 tokens spent
+each new window. That is a third measurement of the same ladder, and the three
+do not agree: 2.6 read 23k from `/context` and 29,732 from billing, both in the
+main window, and a child's own tool set and briefing push it higher again. Three
+vantage points on one mechanism; I can say which condition produced which
+number, not why the arithmetic between them lands where it does. Across twenty-six dispatches that came to 942,506 tokens spent
 before a single one of them did any work. Four briefings cost four briefings,
 and the briefing is not cheap.
 
@@ -512,8 +516,9 @@ asking the parent about them produces a reconstruction rather than a memory.
 
 **Using a subagent for something one tool call would answer.** Section 03 priced
 the floor on this machine: roughly 36,000 tokens to assemble a new window before
-any work starts. Yours will differ — the figure is the always-loaded ladder from
-post 2.6, and that ladder is as long as your own setup makes it.
+any work starts. Yours will differ — the figure is post 2.6's always-loaded
+ladder measured in a child window rather than the main one, where 2.6 put it at
+23k and 29,732, and that ladder is as long as your own setup makes it.
 VS Code's own guidance agrees — "For a quick lookup or a small edit, a direct
 request is usually enough."
 

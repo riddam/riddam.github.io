@@ -1,6 +1,6 @@
 ---
 title: "The Whole Thing, Annotated"
-description: "One real piece of work from first prompt to merged change, with every mechanism from the two tracks labelled where it fires — what entered context on turn one, what a tool call actually returned, why compaction never bit in seven and a half hours, and the turn where a correct command destroyed a file nobody was thinking about."
+description: "One real piece of work from first prompt to landed commits, with every mechanism from the two tracks labelled where it fires — what entered context on turn one, what a tool call actually returned, why compaction never bit in seven and a half hours, and the turn where a correct command destroyed a file nobody was thinking about."
 pubDate: 2026-10-31
 tags: ["ai-foundations", "harness-engineering", "claude-code", "ai-assisted-coding"]
 cover: mirror
@@ -478,7 +478,8 @@ was still in review when I counted.
 Every commit was gated on the same list, and the list is not generic good
 practice — each item is a scar:
 
-- `npm test`, 27 tests. They check for emoji in a series that bans them, for two
+- `npm test`, 27 tests at that moment and 28 now — the commit that added the
+  start-here map added an assertion too. They check for emoji in a series that bans them, for two
   posts sharing a piece of cover art, for an unclosed Mermaid fence, for a
   missing references section, and — the one that matters most here — for an
   internal link pointing at a post that does not exist yet. Every one of those
@@ -570,6 +571,23 @@ session in front of you. Claude Code is writing the file as it goes, for every
 window including the children, which is the only reason this post exists. If a
 session's record matters to you in Copilot, export it deliberately rather than
 assuming a file is already waiting on disk.
+
+## Try it yourself
+
+Every script above runs against your own transcripts, and none of them needs a
+model, an API key or a budget. Thirty minutes, on a session you already have.
+
+1. **Read your own turn one.** Point `turn_one.py` at any session's `.jsonl`
+   and compare what you typed against what was sent. The ratio is the number
+   that changes how you think about a prompt, and it is different on every
+   machine because the ladder is different on every machine.
+2. **Price one tool call.** Run `first_turns.py` and find the most expensive
+   early turn. If a file read cost less than the file, the harness summarised
+   it; if a skill cost five figures, you now know what loading one is worth.
+3. **Find the thing you were told and did not use.** `knew.py` is the one worth
+   the half hour. It checks whether the fact that would have prevented a bad
+   turn was already in the window when the turn happened. Run it after your
+   next surprise, and expect the uncomfortable answer.
 
 ## Common mistakes
 

@@ -523,6 +523,10 @@ chooses almost all of it, and your sentence is still the smallest part.
 
 ## References and further reading
 
+Every vendor page below, and every vendor page linked in the body, was fetched
+on 10 October 2026. These are living pages with no revision of their own and
+their paths move; treat each as a pointer to the current page.
+
 - [The context window is the entire memory](/engineering/the-context-window-is-the-entire-memory/)
   — the prerequisite. Open it for why the whole pile is resent every turn, what
   that costs across a long session, and the three-way diagnostic for "it forgot".
@@ -536,13 +540,16 @@ chooses almost all of it, and your sentence is still the smallest part.
   — what to put in an instruction file in the first place, and the correction at
   the end of that section about which rules do not belong there.
 - [How Claude remembers your project](https://code.claude.com/docs/en/memory)
-  — Anthropic's own page, checked 10 October 2026, for the two sentences this
-  post leans on: that instruction files are delivered as a user message, and
-  that they are treated as context rather than enforced configuration.
+  — Anthropic's own page, for the two sentences this post leans on: that
+  instruction files are delivered as a user message, and that they are treated
+  as context rather than enforced configuration.
 - [Manage costs effectively](https://code.claude.com/docs/en/costs) and
-  [Hooks](https://code.claude.com/docs/en/hooks) — both checked 10 October 2026.
-  The first for MCP tool deferral, the two-hundred-line guidance and what
-  `/context` is for; the second for the layer that executes instead of asking.
+  [Hooks](https://code.claude.com/docs/en/hooks) — the first for MCP tool
+  deferral, the two-hundred-line guidance and what `/context` is for; the second
+  for the layer that executes instead of asking. Section 09's Copilot
+  comparison rests on one more living page, VS Code's
+  [custom instructions](https://code.visualstudio.com/docs/agent-customization/custom-instructions),
+  linked where it is used.
 - [OWASP Top 10 for LLM Applications 2025, `LLM07:2025 System Prompt Leakage`](https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/)
   — section 07 under its security name, with the mitigations written for people
   who have to explain this to a risk function.

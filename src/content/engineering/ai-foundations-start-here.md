@@ -14,7 +14,9 @@ written down, and the people who said they could not follow them were right.*
 ## Start from what surprised you
 
 Pick the line that sounds like your week. Each goes straight to the post that
-explains it, and none of them needs the ones before it.
+answers it. Each of those four also opens by naming what it assumes — usually
+one earlier post — so you will know within a paragraph whether to read that one
+first. Start where the question is; back up only when the post tells you to.
 
 - **It said something confidently wrong** →
   [Why It Sounds Certain When It's Wrong](/engineering/why-it-sounds-certain-when-its-wrong/)
@@ -69,11 +71,11 @@ shows the same thing concretely in Claude Code.
 7. [Who Is Allowed to Do What](/engineering/who-is-allowed-to-do-what/)
    — asking an agent not to, versus actually stopping it.
 8. [How a Skill Gets Found and Loaded](/engineering/how-a-skill-gets-found-and-loaded/)
-   — the description is the trigger, and two similar ones fight.
+   — the name and the description together are the trigger, and two similar ones fight.
 9. [Subagents: Why Isolation Is the Point](/engineering/subagents-why-isolation-is-the-point/)
    — a fresh context with a narrow brief; parallelism is the side effect.
 10. [The Whole Thing, Annotated](/engineering/the-whole-thing-annotated/) — one
-    real session, first prompt to merged change, every mechanism labelled where it fires.
+    real session, first prompt to landed commits, every mechanism labelled where it fires.
 
 ## Track 3 — using it well, day to day
 

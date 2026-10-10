@@ -86,7 +86,7 @@ checkable, and most people skim past the ones that bind.
 
 | Field | What it actually constrains |
 |---|---|
-| Model ID | What you are billed for and what you can reproduce. On the current Claude lineup every ID is a pinned snapshot, so `claude-opus-5-5` today is the same weights as `claude-opus-5-5` next month. |
+| Model ID | What you are billed for and what you can reproduce. On the current Claude lineup every ID is a pinned snapshot, so `claude-opus-5-5` today is the same weights as `claude-opus-5-5` next month. Read the whole string: `claude-opus-5` is not a short form of `claude-opus-5-5` but the previous model in that line, still served, at a different price. |
 | Context window | The ceiling on one request: your whole resent conversation plus the reply, in tokens. Not a target. See [post 1.3](/engineering/the-context-window-is-the-entire-memory/). |
 | Max output tokens | A second, much smaller ceiling, on the reply alone — and on current models the model's own thinking counts against it. |
 | Input price per million | What it costs to resend the pile. This is the number that compounds across a long session. |

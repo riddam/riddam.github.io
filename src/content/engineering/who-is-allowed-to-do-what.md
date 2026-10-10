@@ -617,7 +617,7 @@ series.
 ## Common mistakes
 
 **Writing security rules in an instruction file.** It is a user message. Mine
-held thirteen times in fifteen, which is what makes it dangerous — a control that
+held thirteen times in fifteen on a 3B model, which is what makes it dangerous — a control that
 fails one time in seven and never says which one is worse than no control,
 because you planned around it.
 
@@ -685,6 +685,6 @@ mechanisms with published edges, and the edges are the whole subject.
 
 Two things to keep. **Ask which of these needs me to be paying attention, and
 which of these holds if the agent stops cooperating.** And: signs are not
-worthless. An instruction file held thirteen times in fifteen, and most of your
-day is made of the thirteen. Put your conventions there and mean them — just
+worthless. An instruction file held thirteen times in fifteen on the small local
+model I tested, and most of your day is made of the thirteen. Put your conventions there and mean them — just
 never put anything there you would be unable to undo.

@@ -652,7 +652,8 @@ program deciding what to put in a prompt.
 Which is good news, because the lever is in your hands and it is one line long.
 The next post in this track is about the other way to stop a context window
 filling up — giving work to something with a window of its own — and the one
-after that puts a whole assembled request on the page at once.
+after that runs one real session end to end, labelling each mechanism at the
+turn where it fires.
 
 Until then: go and read your own spines. Not the bodies, which are probably fine.
 The one line at the top of each file, asking whether it names a moment you would
