@@ -142,7 +142,7 @@ procrastination wearing a lab coat.
 
 **Every number in this table is invented.** It is here to show the shape of a
 finished log and what you can and cannot read off one, not to report a result.
-Mine is not in this post; see the note at the top for why.
+I have not run this fortnight myself: this post is the method, not my answer.
 
 | Task | Kind | Agent | To reviewable | Rounds | Tokens |
 |---|---|---|---|---|---|
@@ -263,14 +263,16 @@ unusually direct.
 METR ran a randomised controlled trial on this question in 2025 — 16 experienced
 open-source developers, 246 real tasks in repositories they already maintained,
 each task randomly assigned to allow or forbid AI. The developers expected to be
-24% faster. They were 19% *slower*. Afterwards, having been slowed down, they
-still reported that AI had made them 20% faster. That last figure is the one to
-carry around.
+24% faster. They were 19% *slower* — and that figure carries a confidence
+interval of +2% to +39%, which is wide, so treat the direction as the finding
+rather than the number. Afterwards, having been slowed down, they still reported
+that AI had made them 20% faster. That last figure is the one to carry around.
 
 METR then repeated it with late-2025 tools: 57 developers, 143 repositories, more
-than 800 tasks. The point estimates flipped to a modest speedup, and the
-confidence intervals were wide enough to include zero in both groups, so the
-result establishes very little on its own. The interesting part is why. Between
+than 800 tasks. The point estimates moved the other way — 18% faster for the
+developers returning from the first study, 4% faster for the new ones — but both
+intervals include zero (−38% to +9%, and −15% to +9%), so the result establishes
+very little on its own. The interesting part is why. Between
 30% and 50% of participants said they had skipped submitting some tasks rather
 than do them without AI. One developer completed none of their AI-disallowed
 tasks. METR describe their own data as an unreliable signal and are redesigning
@@ -310,8 +312,8 @@ average.
 
 - [Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/)
   (METR, 10 July 2025) — the randomised trial behind section 07: 16 developers,
-  246 tasks, 19% slower with AI against an expectation of 24% faster, and the 20%
-  perceived speedup afterwards. Read the limitations section too; the authors are
+  246 tasks, 19% slower with AI (CI +2% to +39%) against an expectation of 24%
+  faster, and the 20% perceived speedup afterwards. Read the limitations section too; the authors are
   careful about what the sample does and does not support.
 - [An update on our uplift study](https://metr.org/blog/2026-02-24-uplift-update/)
   (METR, 24 February 2026) — the follow-up on late-2025 tools, and the more

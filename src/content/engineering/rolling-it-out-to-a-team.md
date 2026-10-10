@@ -91,8 +91,10 @@ personal per-project file beats the team's committed file. Your personal
 everywhere file loses to it. So a teammate who sets something in
 `~/.claude/settings.json` and finds the project overriding it has not hit a bug;
 they have hit level four beating level five, exactly as documented. The escape
-hatch is level three, the per-project local file, which is yours and is kept out
-of git.
+hatch is level three, the per-project local file, which is yours. Claude Code
+adds it to your git excludes when it creates the file itself; if you create it
+by hand, add it to `.gitignore` yourself before you commit your own settings to
+the team's repository.
 
 Two more details that save arguments. **Lists merge rather than override**: when
 two files both add permission rules, you get both sets, so a team file can add
@@ -113,11 +115,12 @@ nobody should run from a session, the migration command that is fine in one
 environment and not another. Hooks the team has agreed on. The plugins this
 repository actually needs.
 
-It also means the committed file should be short. Every rule in an always-loaded
-instruction file is paid for on every prompt by every person, including the rules
-that matter to one directory. A file that has grown to four hundred lines because
-nobody wanted to delete anybody's contribution is not a configuration; it is a
-tax, and the enforcement is advisory anyway.
+It also means the committed file should be short, for reasons the playbook's
+[section on repository ergonomics](/engineering/ai-assisted-coding-playbook/#12-repository-ergonomics-what-an-agent-reads-first)
+sets out — along with the rest of what makes a codebase workable for an agent.
+The team version of that argument is only this: a shared file grows, because
+adding to it is easy and deleting somebody else's line is awkward, and the cost
+of the growth is paid by everyone on every prompt.
 
 What does not belong there: anything that encodes how one person likes to work.
 Model preference, output verbosity, which editor mode, how much the tool should
@@ -184,16 +187,19 @@ because the override rules differ per key.
 Every item here is something your team controls, and none of it is a tool
 rollout.
 
-1. **Make the repository work in one command.** One command to install, one to
-   test, one to run. If a new person needs a page of instructions, so does an
-   agent, and the agent will not ask you to clarify step four.
-2. **Write the short instruction file.** What the project is, how to test, what
-   not to touch. Short enough that nobody minds it loading on every prompt.
-   [Where the context comes from](/engineering/where-the-context-comes-from/)
-   covers what it is and is not.
+1. **Make the repository agent-ready first.** A fast test command, scripts in
+   place of documented steps, directory boundaries that explain themselves, and a
+   short instruction file. That list is the playbook's
+   [repository ergonomics](/engineering/ai-assisted-coding-playbook/#12-repository-ergonomics-what-an-agent-reads-first)
+   section and I won't repeat it here; the only thing to add for a team is that
+   it is step one, not step four.
+2. **Decide who maintains that.** Section 05's rule, applied the moment there is
+   more than one of you: a name against the shared file, or no shared file.
 3. **Commit the permission rules.** Start restrictive; the annoyance of an extra
-   prompt is cheaper than the alternative, and lists merge, so people can add
-   their own.
+   prompt is cheaper than the alternative. Lists merge, so people can add
+   permissions the team file says nothing about — but a teammate cannot allow
+   their way out of a team `deny` or `ask`, because rules are evaluated deny,
+   then ask, then allow, whatever file they came from.
 4. **Give them one real task.** Not a demo, not a toy. Something small from the
    actual backlog, where they will see both the help and the failure.
 5. **Review that change together.** This is the step that is always cut and is
@@ -202,8 +208,8 @@ rollout.
    and applies to everybody, not only to juniors.
 6. **Stop.** No mandate, no dashboard, no adoption target.
 
-Steps one and two are most of the value, and both of them are improvements to
-the repository that pay off whether or not anybody adopts anything.
+Step one is most of the value, and it is an improvement to the repository that
+pays off whether or not anybody adopts anything.
 
 ## 07 — The failures that are not technical
 
@@ -250,9 +256,8 @@ performs and nobody believes.
 If you lead a team and you want one paragraph: measure before you mandate, make
 the repository agent-ready regardless, and let adoption follow. The measuring
 costs two weeks of a spreadsheet and tells you which work this helps with. The
-repository work — a fast test command, scripts instead of documented steps, a
-short honest instruction file — improves your team's week whether or not a single
-agent ever runs. Neither of those is a mandate, and a mandate issued before both
+repository work improves your team's week whether or not a single agent ever
+runs. Neither of those is a mandate, and a mandate issued before both
 of them is a decision you cannot defend when somebody asks what it bought.
 
 ## Common mistakes

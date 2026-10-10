@@ -352,10 +352,10 @@ twelve steps to set up will still produce a bad afternoon.
 **A test command fast enough to be the feedback loop.** This is the single
 highest-leverage item on the list. If the suite takes ten minutes, the agent
 will not run it between changes — and neither will you. It will write code,
-assert that it looks correct, and hand you something unverified. Name the
-threshold you actually work to: mine is that the tests for the thing I'm
-changing run in under thirty seconds, with the full suite reserved for CI. If
-you only do one thing in this section, make a fast subset runnable by one
+assert that it looks correct, and hand you something unverified. Pick a
+threshold and hold the repository to it — the tests for the thing you're
+changing in seconds rather than minutes, with the full suite reserved for CI.
+If you only do one thing in this section, make a fast subset runnable by one
 command.
 
 **Scripts instead of explanations.** Twelve documented steps become one command.
