@@ -2,6 +2,7 @@
 title: "What a Model Actually Is"
 description: "A language model does one thing: given some text, guess what comes next. What a token is, why the model never looks anything up, what temperature changes, and why it cannot count the letters in a word — with the probabilities printed from a real model."
 pubDate: 2026-10-11
+updatedDate: 2026-10-16
 tags: ["ai-foundations", "model-internals", "llm", "ai-assisted-coding"]
 cover: ai
 coverVariant: 2
@@ -304,8 +305,8 @@ candidates are in play. Neither dial has any access to whether a candidate is
 true. Providers generally advise changing one of the two, not both, because
 their effects compound in ways that are hard to reason about.
 
-What that costs you, and what actually helps, is the subject of the next post in
-this series.
+What that costs you, and what actually helps, is
+[why it sounds certain when it's wrong](/engineering/why-it-sounds-certain-when-its-wrong/).
 
 ## 07 — Going deeper: why context is not free
 
@@ -319,8 +320,8 @@ grows faster than that.
 That is the reason a long session gets slower and more expensive in a way that
 feels out of proportion to what you added, and it is why "just give it
 everything" is a strategy with a cliff in it. No maths required beyond that
-sentence; the practical consequences are the subject of the post on the context
-window, further up this series' list.
+sentence; the practical consequences are
+[the context window is the entire memory](/engineering/the-context-window-is-the-entire-memory/).
 
 ## Try it yourself
 

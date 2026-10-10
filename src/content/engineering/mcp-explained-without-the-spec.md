@@ -2,6 +2,7 @@
 title: "MCP, Explained Without the Spec"
 description: "What the Model Context Protocol actually is, in plain words: the problem it solves, what a server offers, which side your editor is on, what local and remote transports really change, and what crosses the wire — shown on a real handshake."
 pubDate: 2026-10-16
+updatedDate: 2026-10-16
 tags: ["ai-foundations", "harness-engineering", "mcp", "claude-code"]
 cover: gate
 coverVariant: 2
@@ -27,13 +28,13 @@ on my laptop while I wrote this.*
 
 ## Where this sits
 
-This belongs to **How your AI coding tool works**, a series I am writing out of
-order — the two posts that come before it are not published yet. So here is the
-one thing they establish, which this post assumes throughout: the model never
-runs anything. It emits a structured request, and your harness decides whether to
-honour it. MCP makes very little sense until that is solid, because MCP is
-nothing but an agreement about the shape of those requests and where the answers
-come from.
+This is the third post in **How your AI coding tool works**, and it assumes the
+one before it:
+[a tool call is a request, not an action](/engineering/a-tool-call-is-a-request-not-an-action/).
+The model never runs anything. It emits a structured request, and your harness
+decides whether to honour it. MCP makes very little sense until that is solid,
+because MCP is nothing but an agreement about the shape of those requests and
+where the answers come from.
 
 Unfamiliar words have one-line entries in the
 [AI vocabulary](/engineering/the-ai-vocabulary/). The parts of the harness MCP
