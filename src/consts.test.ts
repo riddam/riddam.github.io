@@ -92,3 +92,13 @@ test('the AI Foundations harness series is registered', () => {
     'the-whole-thing-annotated',
   ], 'track 2 is ten posts in ladder order');
 });
+
+test('the AI Foundations day-to-day series is registered', () => {
+  const series = SERIES.find((s) => s.title === 'Working with AI, day to day');
+  assert.ok(series, 'track 3 series missing');
+  assert.equal(series.sectionId, 'engineering');
+  assert.deepEqual(series.slugs, [
+    'is-it-actually-making-you-faster',
+    'rolling-it-out-to-a-team',
+  ], 'track 3 is two posts');
+});

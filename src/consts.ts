@@ -102,6 +102,17 @@ export const SERIES: Series[] = [
       'the-whole-thing-annotated',
     ],
   },
+  {
+    // Track 3 of AI Foundations. Two posts only: the playbook, the spec-driven
+    // post, the junior post and the plugins post already cover this ground, so
+    // the other three planned posts became added sections in those instead.
+    title: 'Working with AI, day to day',
+    sectionId: 'engineering',
+    slugs: [
+      'is-it-actually-making-you-faster',
+      'rolling-it-out-to-a-team',
+    ],
+  },
 ];
 
 export const SECTIONS: Section[] = [

@@ -94,12 +94,16 @@ most of its ground is already published:
 - [Claude Code Plugins: What I Actually Use](/engineering/claude-code-plugins-what-i-actually-use/)
   — what to install, and what a plugin even is.
 
-Two more posts are planned and **neither is written yet**, so there is nothing to
-click: one on whether it is actually making you faster — what to measure, what
-the numbers hide, and how to run that comparison honestly for two weeks — and
-one on rolling it out to a team, covering which configuration belongs to the
-repository rather than the person, and the adoption failures that turn out to be
-social. This section gets links when they exist.
+The two posts written for this track:
+
+- [Is It Actually Making You Faster?](/engineering/is-it-actually-making-you-faster/)
+  — what to measure, what the numbers hide, and how to run the comparison
+  honestly for two weeks.
+
+One more is planned and **not written yet**, so there is nothing to click: rolling
+it out to a team, covering which configuration belongs to the repository rather
+than the person, and the adoption failures that turn out to be social. This
+section gets its link when it exists.
 
 ## Track 4 — putting AI in your own product
 
