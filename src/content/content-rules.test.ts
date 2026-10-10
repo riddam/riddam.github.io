@@ -115,3 +115,15 @@ test('cover variants 1 through 4 are all accepted and distinct', () => {
     assert.match(cover, new RegExp(`\\.cover\\.v${n} svg > g`), `variant ${n} hue rule missing`);
   }
 });
+
+test('the start-here page links every published AI Foundations post', () => {
+  const page = foundations().find((p) => p.path.endsWith('ai-foundations-start-here.md'));
+  assert.ok(page, 'start-here page missing');
+  const missing: string[] = [];
+  for (const { path } of foundations()) {
+    const slug = path.replace(/^.*[/\\]/, '').replace(/\.md$/, '');
+    if (slug === 'ai-foundations-start-here') continue;
+    if (!page.body.includes(`/engineering/${slug}/`)) missing.push(slug);
+  }
+  assert.deepEqual(missing, [], `start-here is missing: ${missing.join(', ')}`);
+});
