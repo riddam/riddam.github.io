@@ -112,24 +112,39 @@ weight of a layer, and on my machine, in this repository, on that day:
 | Layer | Tokens | Share of the 29,732 |
 |---|---|---|
 | System prompt | 2,087 | 7% |
-| Built-in tool definitions | 18,592 | 63% |
-| Instruction files, auto memory, custom agents | 3,375 | 11% |
+| Built-in tool definitions, fully loaded | 18,592 | 63% |
+| Everything `--safe-mode` turns off: instruction files, auto memory, custom agents, commands, output styles, plugins, workflows | 3,375 | 11% |
 | Skills (names and descriptions only) | 3,756 | 13% |
 | MCP servers | 1,922 | 6% |
 | **What I typed** | **about 5** | **0.02%** |
 
 The sentence I sent was *Reply with exactly: ok*. It is the last row.
 
-Two honest qualifications before anyone builds a spreadsheet on this. The
-system prompt carries per-machine sections — working directory, date, git
-status — so the first row moves by fifty or seventy tokens between runs; I saw
-2,087, 2,111, 2,183 and 2,085 across four runs of the same command. And the MCP
-row is the smallest here only because Claude Code now holds MCP tool
-definitions back: by default
+Three honest qualifications before anyone builds a spreadsheet on this.
+
+**The first row wobbles.** The system prompt carries per-machine sections —
+working directory, date, git status — so it moves by fifty or seventy tokens
+between runs; I saw 2,087, 2,111, 2,183 and 2,085 across four runs of the same
+command.
+
+**The MCP row is small because of deferral, not because MCP is cheap.** Claude
+Code now holds MCP tool definitions back: by default
 [only the names and the server instructions go into context](https://code.claude.com/docs/en/costs),
 and a schema is fetched when the model actually wants one. On a configuration
 without that deferral, the same servers would have been several times heavier
 than the system prompt.
+
+**And the tool row is a ceiling, not what an ordinary session carries.**
+Deferral is not an MCP-only arrangement: part of the built-in set is held back
+the same way. The second rung of the ladder uses `--safe-mode`, which loads all
+of it, so 18,592 is what the full set weighs when nothing is deferred. The
+`/context` report in section 06, taken from an ordinary session in this same
+repository, splits the same tools into 12.7k loaded and 11.9k held back. Two
+conditions and two accountings — a difference between billed requests against
+the harness's own estimate — and I can name which produced which number but not
+why the arithmetic between them does not close, because I did not measure that.
+Either way the proportion the table exists to argue survives: the tool
+definitions outweigh everything you wrote by a factor of thousands.
 
 That is the fixed part of the folder — what is in the envelope before you type.
 Now the part that grows.
@@ -146,7 +161,21 @@ typed in that session, tokenised locally:
 from transformers import AutoTokenizer
 
 tok = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-3B-Instruct")
-TYPED = [...]        # the five messages I actually sent, verbatim
+
+TYPED = [  # the five messages I sent in that session, verbatim
+    "Read src/utils/reading-time.ts and tell me in one sentence how it counts words.",
+    "Now read src/content/engineering/the-context-window-is-the-entire-memory.md and"
+    " src/content/engineering/what-happens-when-you-press-enter.md. In two sentences"
+    " each, say what each post owns.",
+    "Two decisions to carry for the rest of this session. First, in this repo we call"
+    " the 220 figure in reading-time.ts the editorial constant, and it is never changed"
+    " without updating every post that cites it. Second, diagram caption colour is"
+    " always left to the theme and never set by hand. Acknowledge in one line, no files.",
+    "Read src/content/engineering/harness-engineering-vocabulary.md and list its three"
+    " organising questions, then say which section answers each.",
+    "Read src/content/engineering/ai-assisted-coding-playbook.md and summarise section"
+    " 11 in two sentences.",
+]
 
 total = sum(len(tok(t)["input_ids"]) for t in TYPED)
 print(f"all five messages: {sum(len(t) for t in TYPED)} characters, {total} tokens")
@@ -404,13 +433,25 @@ repository:
 | Free space             | 177k   | 88.5%      |
 ```
 
-Two things to read carefully there, and both took me a second pass. The rows
-marked *deferred* are not in the 23k — add up the rest and you get 22.9k. They
-are telling you what those schemas *would* cost if they were loaded, which is
-the deferral from section 02 shown as a saving. And the report calls itself an
-estimate, which it means: for the same configuration, the API billed 29,732
-tokens where `/context` said 23k. Use `/context` to see the shape and the
-proportions. Use the usage numbers when you need the truth.
+Three things to read carefully there, and all three took me a second pass.
+
+The rows marked *deferred* are not in the 23k — add up the rest and you get
+22.9k. They are telling you what those schemas *would* cost if they were
+loaded. Note that there are two of them: deferral is not an MCP-only
+arrangement, and part of the built-in tool set is held back the same way.
+
+Which is where this table and section 02's tool row part company, and I would
+rather point at that than let you find it: 18,592 tokens there, 12.7k loaded
+plus 11.9k deferred here. Section 02's figure was measured with `--safe-mode`,
+which loads the built-in set in full; this one is an ordinary session, where
+some of it is deferred. Two conditions, two accountings. Which number applies
+to you depends on which situation you are in, and when you run `/context`
+yourself you are in this one.
+
+And the report calls itself an estimate, which it means: for the same
+configuration, the API billed 29,732 tokens where `/context` said 23k. Use
+`/context` to see the shape and the proportions. Use the usage numbers when you
+need the truth.
 
 Run the same command deep in a long session and the shape inverts. On the
 five-turn session from section 02 it read 65.6k of 200k, with 43.9k of that in
@@ -488,7 +529,9 @@ chooses almost all of it, and your sentence is still the smallest part.
 - [Harness engineering: the words for the layer around the model](/engineering/harness-engineering-vocabulary/)
   — open this for which layer each part belongs to, and for the rule this post
   measures: if the instruction says *always* or *never*, the advisory layer is
-  the wrong home.
+  the wrong home. Its companion,
+  [the AI vocabulary](/engineering/the-ai-vocabulary/), has context window,
+  compaction, instruction file, skill and hook in one line each.
 - [My AI-assisted coding playbook, section 11](/engineering/ai-assisted-coding-playbook/)
   — what to put in an instruction file in the first place, and the correction at
   the end of that section about which rules do not belong there.
@@ -503,9 +546,6 @@ chooses almost all of it, and your sentence is still the smallest part.
 - [OWASP Top 10 for LLM Applications 2025, `LLM07:2025 System Prompt Leakage`](https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/)
   — section 07 under its security name, with the mitigations written for people
   who have to explain this to a risk function.
-- [The AI vocabulary](/engineering/the-ai-vocabulary/) — context window,
-  compaction, instruction file, skill, hook, in one line each.
-
 ## Final thoughts
 
 The briefing pack is assembled by someone else, and the someone else is a
