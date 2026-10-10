@@ -8,8 +8,9 @@ coverVariant: 2
 draft: false
 ---
 
-*The five runs below are verbatim. The right answer is checked against the
-library's own release notes, and the script fits on a postcard.*
+*The runs below are verbatim output from a small model you can run on a laptop
+(`Qwen/Qwen2.5-3B-Instruct`, via `uv run --with transformers --with torch`). The
+right answer is checked against the library's own release notes.*
 
 ## TL;DR
 
@@ -135,8 +136,10 @@ a signal.
 
 So let us ask something checkable.
 
-I asked a model the same question five times at temperature 0.7, with sampling
-on, and printed every answer verbatim. The question has a specific answer that
+I asked `Qwen/Qwen2.5-3B-Instruct` — a small instruction-tuned model, running
+locally, and note that it is *not* the base model the temperature table above
+came from — the same question five times at temperature 0.7, with sampling on,
+and printed every answer verbatim. The question has a specific answer that
 can be verified against the library's own release notes:
 
 ```python
@@ -189,23 +192,46 @@ For contrast, I asked the same model two questions it does know, under identical
 settings:
 
 ```text
-######## Which version of Python introduced the walrus operator :=?
---- runs 1-5: "The walrus operator := was introduced in Python 3.8."  (all five identical, and correct)
+######## Which version of Python introduced the walrus operator :=? Answer in one short sentence.
+--- run 1
+The walrus operator := was introduced in Python 3.8.
+--- run 2
+The walrus operator := was introduced in Python 3.8.
+--- run 3
+The walrus operator := was introduced in Python 3.8.
+--- run 4
+The walrus operator := was introduced in Python 3.8.
+--- run 5
+The walrus operator := was introduced in Python 3.8.
 
-######## Which version of Python introduced the match statement?
---- runs 1-5: "The match statement was introduced in Python 3.10."    (all five identical, and correct)
+######## Which version of Python introduced the match statement? Answer in one short sentence.
+--- run 1
+The match statement was introduced in Python 3.10.
+--- run 2
+The match statement was introduced in Python 3.10.
+--- run 3
+The match statement was introduced in Python 3.10.
+--- run 4
+The match statement was introduced in Python 3.10.
+--- run 5
+The match statement was introduced in Python 3.10.
 ```
+
+Both of those are right: the walrus operator arrived in Python 3.8, the match
+statement in 3.10.
 
 Identical confidence. Identical phrasing pattern. Identical lack of hedging.
 Three questions, two right and one wrong, and **nothing in the output tells you
 which is which.** That is the entire post in one experiment, and it takes about
 four minutes to run yourself on a laptop.
 
-One honest note on method: I used a small model, because small models are easy
-to run and fail more readily. A larger model gets this particular question right.
-It does not stop doing this — it does it on more obscure questions, which is
-worse, because the questions where you cannot easily check are exactly the ones
-where you need to.
+Two honest notes on method. I used a small model because small models are easy
+to run and fail more readily; a larger one may well get this particular question
+right, and I could not test that here, so take it as the likely case rather than
+a measured one. What does not change with size is the behaviour itself. Bigger
+models move the line — they are wrong about more obscure things — and moving the
+line is worse than it sounds, because the questions you cannot easily check are
+exactly the ones on the far side of it.
 
 ## 05 — Why it does not say "I don't know"
 

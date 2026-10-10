@@ -1,6 +1,6 @@
 ---
 title: "What Actually Happens When You Press Enter"
-description: "An AI coding tool is a loop around a model that can only produce text. What gets assembled and sent, what comes back, who runs the tools, and why the whole thing goes round again — traced through a real session, then shown in about forty lines of code."
+description: "An AI coding tool is a loop around a model that can only produce text. What gets assembled and sent, what comes back, who runs the tools, and why the whole thing goes round again — shown in about forty lines of code you can run yourself, against a real repository."
 pubDate: 2026-10-14
 tags: ["ai-foundations", "harness-engineering", "claude-code", "ai-assisted-coding"]
 cover: bootstrap
@@ -8,8 +8,9 @@ coverVariant: 2
 draft: false
 ---
 
-*The forty-line loop at the centre of this post is real, runs on a laptop with
-no API key, and reads this blog's own `package.json`.*
+*The loop at the centre of this post is real: about forty lines of Python
+around `Qwen/Qwen2.5-3B-Instruct`, running locally with no API key, reading this
+blog's own `package.json`.*
 
 ## TL;DR
 
@@ -142,7 +143,8 @@ mean the harness did X. The model contributed one box.
 
 ## 03 — The two things a reply can be
 
-What comes back is one of two shapes, and the response itself says which.
+What comes back is one of two shapes, and with a hosted API the response tells
+you which.
 
 Either it is **text for you** — an explanation, an answer, a question — and the
 turn is over. Or it is **a request to use a tool**: a structured block naming a
@@ -154,8 +156,8 @@ it hit the output limit mid-sentence — in which case the harness has a truncat
 answer and must decide whether to continue it or start over. It can stop because
 a safety classifier declined. It can pause. Each of those is a different branch
 in the harness, and a harness that only checks "did I get a tool call?" will
-mishandle the rest. If you are building one of these, the enumeration in your
-provider's documentation is the thing to read first.
+mishandle the rest. If you are building one of these, your provider's own
+enumeration of stop reasons is the thing to read first.
 
 Here is that distinction made concrete. I wrote a small loop around a local
 model, gave it one tool, and asked it a question about this blog's repository.
@@ -180,10 +182,15 @@ string, which is more robust and conceals the same fact: a tool call is
 characters the model generated because the system prompt told it that is how you
 ask for things.
 
-`stop_reason` is the field that tells the harness which shape it got. On turn 1
-it is `tool_use`: the model has stopped mid-task to ask for something. No text
-was produced for me at all. The model has not read anything — it has named a
-file and waited.
+Hosted APIs report which shape you got in a field called `stop_reason`, and the
+harness branches on it: `tool_use` means the model stopped mid-task to ask for
+something, `end_turn` means it is finished. I should be precise about my own
+capture, though — a local model returns no such field, so my loop *derives* the
+label by checking whether it found a tool call in the text. The label in the
+output above is mine. The distinction it marks is real either way.
+
+On turn 1 the model produced no text for me at all. It has not read anything —
+it has named a file and waited.
 
 ## 04 — Who actually does the work
 
@@ -243,8 +250,10 @@ asked it to read is now part of the conversation and will be resent on every
 subsequent turn, which is [post 1.3](/engineering/the-context-window-is-the-entire-memory/)
 arriving in practice rather than in principle.
 
-Here is the whole loop. This is not pseudocode or a simplification; it is the
-program that produced the output above, minus the model-loading boilerplate:
+Here is the loop itself. This is not pseudocode or a simplification; it is the
+program that produced the output above, with the model loading, the tool
+definition and the `ask` helper stripped out — those are the other twenty-odd
+lines:
 
 ```python
 messages = [{"role": "user", "content": "What does package.json say the test script is?"}]
@@ -431,9 +440,11 @@ loop in section 05. That is the whole of it.
 - [Claude Code security](https://code.claude.com/docs/en/security) — open this
   for where the permission box in section 04 actually sits in a shipping
   product, and what it does and does not cover.
-- [Claude Code IAM and permissions](https://code.claude.com/docs/en/iam) — the
-  configuration surface for that box: permission modes, allowlists, and what
-  runs without asking you.
+- [Configure permissions in Claude Code](https://code.claude.com/docs/en/permissions)
+  — the configuration surface for that box: which tool types ask before running,
+  allow and deny rules, and the
+  [permission modes](https://code.claude.com/docs/en/permission-modes) that
+  change what happens without you.
 - [The AI vocabulary](/engineering/the-ai-vocabulary/) — harness, agent, tool
   call, subagent, compaction, in one line each.
 

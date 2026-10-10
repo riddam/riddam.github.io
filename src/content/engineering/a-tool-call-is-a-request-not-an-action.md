@@ -8,8 +8,9 @@ coverVariant: 2
 draft: false
 ---
 
-*Three experiments, all run for real: two tools competing for one question, a
-deliberately vague description, and a tool that throws.*
+*Three experiments, all run for real against `Qwen/Qwen2.5-3B-Instruct` on a
+laptop: two tools competing for one question, a deliberately vague description,
+and a tool that throws.*
 
 ## TL;DR
 
@@ -179,10 +180,10 @@ the description.
 
 ## 05 — What a bad description costs
 
-Now the control experiment. Same model, same settings, same question, one tool.
-The only thing I changed was the description — from *"Read a UTF-8 text file
-from the current project and return its contents"* to *"Gets stuff."* — and I
-removed the example from the `path` field.
+Now the other direction. Same model, same settings, same question, one tool —
+and a deliberately degraded definition: the description cut to *"Gets stuff."*
+and the example removed from the `path` field. Two changes at once, which I will
+come back to, because untangling them is where the real finding is.
 
 ```text
   [precise] <tool_call>
@@ -197,12 +198,23 @@ removed the example from the `path` field.
 The tool was available. The tool was perfectly capable. The model did not use
 it, and instead asked me to do its job.
 
-I want to be precise about what this does and does not show, because I found it
-by accident and it surprised me. My first version of the `path` description was
-just *"Path relative to the project root"*, with no example — and with that
-wording the model also declined to call the tool and asked me for a path
-instead. Adding seven words, *"e.g. package.json or src/index.ts"*, was the
-entire difference between a tool that got used and a tool that sat there.
+Now the untangling, and it is the part worth your time, because I found it by
+accident and it surprised me.
+
+That degraded version changed two things. So which one mattered? My *first*
+version of this tool had the full, precise description and a `path` field
+described only as *"Path relative to the project root"* — no example. With that
+definition the model also declined to call the tool, and asked me for a path in
+almost the same words. Adding seven words to the field, *"e.g. package.json or
+src/index.ts"*, was the entire difference between a tool that got used and a
+tool that sat there untouched.
+
+So the headline is not quite "a vague description costs you". It is sharper and
+less obvious: **the weakest link was the field description, not the tool
+description**, and the thing it was missing was not explanation but an example.
+I cannot tell you from this experiment how much "Gets stuff." contributed on its
+own, because I did not isolate it — and the finding I can stand behind is the
+more useful one anyway.
 
 ```mermaid
 flowchart LR
@@ -269,11 +281,13 @@ than to fail the request. A loop that hides failures produces a model reasoning
 about an imaginary world.
 
 There is a second reason to return errors that has nothing to do with this turn.
-An error that reaches the model becomes part of the conversation, and the model
-will avoid repeating the mistake for the rest of the session — it has read that
-`CONTRIBUTING.md` does not exist and will not ask for it again. An error you
-swallowed teaches nothing, and you get to watch the same failed call three more
-times.
+An error that reaches the model becomes part of the conversation, and stays
+there — the fact that `CONTRIBUTING.md` does not exist is now in the context for
+every subsequent pass. Whether that stops a repeat call is not guaranteed, for
+the reason [post 1.3](/engineering/the-context-window-is-the-entire-memory/)
+gives: nothing in a context window is pinned, and a fact can be present and
+still be outweighed. My capture is two turns long and does not test it. But an
+error you swallowed is not in the context at all, and cannot help.
 
 The caveat is real, though. An error message is text, and text in context is
 read as something to continue from. A specific error produces a specific
@@ -355,9 +369,9 @@ one can be correct. Two tools, two descriptions, two clear choices.
 - [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/llm-top-10/)
   — `LLM05:2025 Improper Output Handling` and `LLM06:2025 Excessive Agency` are
   section 07 under the names they need in a design review.
-- [Claude Code IAM and permissions](https://code.claude.com/docs/en/iam) — where
-  the "is this allowed?" step in the diagram is actually configured in a
-  shipping product.
+- [Configure permissions in Claude Code](https://code.claude.com/docs/en/permissions)
+  — where the "is this allowed?" step in the diagram is actually configured in a
+  shipping product: which tool types ask, and the allow and deny rules.
 - [Harness engineering: the words for the layer around the model](/engineering/harness-engineering-vocabulary/)
   — the full map of the layer these tools plug into.
 

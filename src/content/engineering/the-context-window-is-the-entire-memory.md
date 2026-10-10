@@ -101,8 +101,11 @@ replay.
 
 ## 03 — What that costs, measured
 
-Here is an ordinary five-turn conversation: I paste a small TypeScript file and
-ask four follow-up questions about it. Nothing unusual, nothing long.
+Here is an ordinary five-turn conversation against a local model
+(`Qwen/Qwen2.5-3B-Instruct`, so you can run the same script). Turn 1 is a
+one-sentence instruction. Turn 2 pastes a small TypeScript file and asks what it
+does. Turns 3 to 5 are short follow-up questions about it. Nothing unusual,
+nothing long.
 
 The script counts exactly what gets sent each turn, by rendering the full
 message list through the model's own chat template and tokenising it:
@@ -135,16 +138,33 @@ run to [three and a half thousand tokens on their own](/engineering/mcp-explaine
 every turn, whether or not you use it. Your real turn 1 starts somewhere in the
 thousands, and everything below compounds from there rather than from 65.
 
-Read the shape, not the size. My fourth follow-up question was eleven words
-long. Sending it cost 1,122 tokens, because those eleven words arrived carrying
-the file, the four earlier questions and four earlier answers on their back. The
-last turn is **17 times** the first, and I never typed anything long.
+Read the shape, not the size, and read the gaps between the rows:
+
+| | tokens sent | growth on the previous turn | what I typed |
+|---|---|---|---|
+| turn 1 | 65 | — | one sentence |
+| turn 2 | 579 | +514 | a file, and "what does it do?" |
+| turn 3 | 760 | +181 | nine words |
+| turn 4 | 938 | +178 | seven words |
+| turn 5 | 1,122 | +184 | eleven words |
+
+Turn 2's jump is the file, as you would expect. The interesting rows are the
+last three. I typed twenty-seven words in total across them and the context grew
+by 543 tokens — because each of those turns carries the previous turn's *answer*
+back with it. Past the first paste, most of what you are paying to resend is not
+your input at all. It is the model's own output, accumulating.
+
+My last question was eleven words long. Sending it cost 1,122 tokens, because
+those eleven words arrived carrying the file, three earlier questions and four
+earlier answers on their back. The last turn is **17 times** the first, and I
+never typed anything long.
 
 Now the money, and I want to be precise about what kind of number this is. The
 token counts above are measured. The costs below are **arithmetic** on those
 counts at Anthropic's published list prices, checked on 10 October 2026: Claude
 Opus 5.5 at $4.00 per million input tokens, Claude Sonnet 5.5 at $2.00, Claude
-Haiku 5.5 at $0.10.
+Haiku 5.5 at $0.10 for prompts under 100,000 tokens, above which it rises — a
+boundary the larger projections below cross.
 
 | | cumulative input tokens | at Opus 5.5 | at Sonnet 5.5 |
 |---|---|---|---|
@@ -160,8 +180,9 @@ post lands.
 
 Two honest qualifications. **Prompt caching changes these numbers a lot**: the
 unchanging front of the prompt can be re-read at $0.20 per million instead of
-$4.00, which on the 40-turn row takes $8.00 down to roughly $1.16 if nearly all
-of it hits the cache. And **output tokens cost five times more than input**, so
+$4.00. On the 40-turn row, if 90 per cent of those tokens are cache reads and
+10 per cent are paid in full, the sum is `0.9 × $0.20 + 0.1 × $4.00` per
+million — about $1.16 instead of $8.00. A higher hit rate approaches $0.40. And **output tokens cost five times more than input**, so
 a session full of long answers has a second bill this table does not show.
 Neither changes the shape. Both make it more important to know what is in the
 pile.
@@ -196,8 +217,11 @@ I ran the same question against the same model twice. In the first run, the
 model has the whole conversation. In the second, the oldest turn has been
 dropped — exactly what a harness does when it needs to make room.
 
-Turn one established a fact: the 220-words-per-minute figure was chosen by the
-editorial team. Several turns later, I asked who chose it.
+Turn one established a fact — a fixture I invented for the experiment, not a
+claim about this blog: that the 220-words-per-minute figure in the utility was
+chosen by the editorial team. It is a short turn, and the 51-token difference
+between the two runs below is exactly its weight. Several turns later, I asked
+who chose it.
 
 ```text
 === A: full history (620 tokens sent)
