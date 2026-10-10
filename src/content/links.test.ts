@@ -36,14 +36,28 @@ function posts(): { path: string; body: string }[] {
   return out;
 }
 
+/** Every `section/slug` pair with a file behind it, draft included. */
+function allSlugs(): Set<string> {
+  const found = new Set<string>();
+  for (const { path } of posts()) found.add(`/${path.replace(/\.md$/, '')}/`);
+  return found;
+}
+
 test('every internal post link resolves to a published content file', () => {
+  // A published post may only link published posts -- a link out of the live
+  // site to a draft is a 404. A draft may also link a draft: neither is on the
+  // live site, so nothing is broken for a reader, and a track written as a
+  // whole before it ships has to be able to cross-reference itself.
   const known = slugs();
+  const drafted = allSlugs();
   const broken: string[] = [];
   let seen = 0;
   for (const { path, body } of posts()) {
+    const isDraft = /^draft:\s*true$/m.test(body);
+    const resolves = isDraft ? drafted : known;
     for (const [, href] of body.matchAll(INTERNAL)) {
       seen += 1;
-      if (!known.has(href)) broken.push(`${path} -> ${href}`);
+      if (!resolves.has(href)) broken.push(`${path} -> ${href}`);
     }
   }
   assert.deepEqual(broken, [], `broken internal links:\n${broken.join('\n')}`);
