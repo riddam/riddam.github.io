@@ -41,7 +41,14 @@ async function loadMermaid() {
   });
   globalThis.HTMLElement = dom.window.HTMLElement as never;
   const { default: mermaid } = await import('mermaid');
-  mermaid.initialize({ startOnLoad: false, securityLevel: 'loose' });
+  // Mirror src/layouts/Base.astro. In particular: do NOT set securityLevel.
+  // The site uses mermaid's default ('strict'), which sanitises HTML in labels
+  // -- validating under 'loose' passes markup that renders wrongly in a browser.
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'base',
+    flowchart: { curve: 'basis', htmlLabels: true, padding: 14 },
+  });
   return mermaid;
 }
 

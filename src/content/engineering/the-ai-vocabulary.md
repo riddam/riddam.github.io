@@ -48,24 +48,22 @@ which is why a model that benchmarks well can still make a bad product.
 
 ```mermaid
 flowchart TD
-  T["<b>Training</b><br/>pretraining · fine-tuning"]
-  T -- "produces the weights, once,<br/>long before you type anything" --> M
+  T["Training<br/>pretraining · fine-tuning"]
+  R["Assembled fresh every turn<br/>Talking to it · prompts<br/>Giving it your data · RAG<br/>Giving it hands · tools, MCP"]
+  M["The model itself<br/>tokens · context window<br/>temperature · hallucination"]
+  L["The layer around it<br/>harness · agent · hooks"]
+  E["Knowing whether it works<br/>evals · golden sets"]
 
-  subgraph REQ["Assembled fresh every single turn"]
-    P["<b>Talking to it</b><br/>prompt · system prompt"]
-    D["<b>Giving it your data</b><br/>retrieval · RAG"]
-    H["<b>Giving it hands</b><br/>tools · MCP"]
-  end
-
-  REQ -- "one request" --> M["<b>The model itself</b><br/>tokens · context window<br/>temperature · hallucination"]
-  M -- "text, and only text" --> L["<b>The layer around it</b><br/>harness · agent · hooks"]
-  L -- "runs the tools,<br/>then sends it all again" --> REQ
-  E["<b>Knowing whether it works</b><br/>evals · golden sets"] -. "measures the whole loop,<br/>never the model alone" .-> L
+  T -- "produces the weights, once" --> M
+  R -- "one request" --> M
+  M -- "text, and only text" --> L
+  L -- "runs the tools, sends it again" --> R
+  E -. "measures the whole loop" .-> L
 ```
 
-*Each box is a section of this page, in the order they appear below. Notice how
-small the model's box is: most of the words people struggle with are not about
-the model at all, they are about the machinery around it.*
+*Each box is one section of this page. Notice how small the model's box is:
+most of the words people struggle with are not about the model at all, they are
+about the machinery around it.*
 
 ## The model itself
 
