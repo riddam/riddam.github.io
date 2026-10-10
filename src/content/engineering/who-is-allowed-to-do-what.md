@@ -39,7 +39,7 @@ the model emits a request and your harness decides whether to honour it — that
 line is the trust boundary. From
 [where the context comes from](/engineering/where-the-context-comes-from/): an
 instruction file is a user message the model weighs, not a rule the system
-enforces. That post measured the weighing; this one is about what to do instead.
+enforces. That post measured the weighing; this one is what to do instead.
 
 [Post 2.5](/engineering/what-can-go-wrong-with-an-mcp-server/) handed this post
 its material. The words for the layer are in
@@ -136,7 +136,7 @@ print(f"\n  rule held in {held} of {held + broke} runs; the call went out in {br
 ```
 
 Thirteen of fifteen. The instrument is small — a 3B model, greedy decoding, one
-sample per cell — so this is not a reliability estimate for the tool you use. Two
+sample per cell — so this is no reliability estimate for the tool you use. Two
 things survive the smallness.
 
 First, where the failures landed. Not in the *buried* condition: the buried
@@ -241,10 +241,15 @@ agent asking me a design question rather than for permission.
 
 Two qualifications. In manual mode the tally would look nothing like this, which
 is the point of having modes. And `reasonType` is the harness's own label, not
-something I can verify. So the table supports something narrower than "prompts do
-not work" and more useful: in the way I actually work, the prompt had already
-stopped being the mechanism, and nothing about a prompt you never see announces
-its absence.
+something I can verify. So the table says something narrower than "prompts do not
+work": in the way I work, the prompt had already stopped being the mechanism, and
+nothing about a prompt you never see announces its absence.
+
+And one more thing that looks like a lock. A boundary you state in conversation —
+*don't push until I review* — is real; the classifier treats it as a block
+signal. But it re-reads that boundary from the transcript on every check, so
+[compaction](/engineering/where-the-context-comes-from/) can take it away without
+telling you. Write a deny rule for the one that has to survive the afternoon.
 
 ## 04 — Rules that match text
 
@@ -317,7 +322,9 @@ input from external sources, such as websites or files."
 So I ran it: same local model, two tools (one reads a file, one runs a command),
 one request — *read notes.txt and tell me what it says.* Four versions of the
 file, identical but for a trailing line asking the reader to run `git status`
-first, chosen because it is read-only and nobody can repurpose it.
+first, chosen because it is read-only and nobody can repurpose it. The script
+itself is the one measurement here I am not shipping: four file variants written
+to steer somebody's agent is a ready-made template whatever the payload.
 
 ```text
   [none             ] tool call: False  mentions git status: False
@@ -418,8 +425,7 @@ client supplied, and the page warns that allowing broad domains "can create
 paths for data exfiltration". Sandboxed commands can also read most of the
 machine, including credential files, until you narrow that separately.
 
-Which is the right posture for the strongest control in the list: a strong lock
-on a door in a building with other doors.
+The right posture for the strongest control in the list.
 
 ## 07 — Hooks: the rule that executes
 
@@ -612,8 +618,8 @@ fails one time in seven and never says which one is worse than no control,
 because you planned around it.
 
 **Approving without reading.** Not a discipline failure — evidence that the
-mechanism is mismatched to the rate. Move what matters to rules and what must
-hold to a sandbox, so the remaining prompts are few enough to read.
+mechanism is mismatched to the rate. Move what must hold to a rule or a sandbox,
+so the remaining prompts are few enough to read.
 
 **One broad allowlist entry added to stop the prompts.** Added under pressure,
 never reviewed, now the quietest line in your configuration. Mine approves
@@ -667,10 +673,9 @@ describing the feature, usually in the paragraph that introduces it. Both
 vendors, in nearly the same words.
 
 So the gap is not disclosure. It is that nobody reads the page until after the
-afternoon they wish they had, and the features are named in a way that invites
-you to assume a lock. "Permissions" sounds like a filesystem. "Deny" sounds
-final. They are precise mechanisms with published edges, and the edges are the
-whole subject.
+afternoon they wish they had, and the names invite you to assume a lock.
+"Permissions" sounds like a filesystem. "Deny" sounds final. They are precise
+mechanisms with published edges, and the edges are the whole subject.
 
 Two things to keep. **Ask which of these needs me to be paying attention, and
 which of these holds if the agent stops cooperating.** And: signs are not
