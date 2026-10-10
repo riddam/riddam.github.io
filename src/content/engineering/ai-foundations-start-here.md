@@ -80,8 +80,17 @@ shows the same thing concretely in Claude Code.
 ## Track 3 — using it well, day to day
 
 **For working developers, and the tech leads deciding whether this is worth it.**
-Assumes nothing, and a non-engineer can follow it. This track is short because
-most of its ground is already published:
+Assumes nothing, and a non-engineer can follow it. Two posts:
+
+1. [Is It Actually Making You Faster?](/engineering/is-it-actually-making-you-faster/)
+   — what to measure, what the numbers hide, and how to run the comparison
+   honestly for two weeks.
+2. [Rolling It Out to a Team](/engineering/rolling-it-out-to-a-team/) — which
+   configuration belongs to the repository rather than the person, who owns the
+   shared skills, and the adoption failures that turn out to be social.
+
+The track is short because most of its ground was already published, and those
+two link out to it rather than restate it. Already written:
 
 - [Making AI Coding Assistants Reliable: My Playbook](/engineering/ai-assisted-coding-playbook/)
   — how to prompt, ground and correct it. The prompting technique lives here and
@@ -93,17 +102,6 @@ most of its ground is already published:
   — for anyone early in their career, and for whoever is reviewing their work.
 - [Claude Code Plugins: What I Actually Use](/engineering/claude-code-plugins-what-i-actually-use/)
   — what to install, and what a plugin even is.
-
-The two posts written for this track:
-
-- [Is It Actually Making You Faster?](/engineering/is-it-actually-making-you-faster/)
-  — what to measure, what the numbers hide, and how to run the comparison
-  honestly for two weeks.
-
-One more is planned and **not written yet**, so there is nothing to click: rolling
-it out to a team, covering which configuration belongs to the repository rather
-than the person, and the adoption failures that turn out to be social. This
-section gets its link when it exists.
 
 ## Track 4 — putting AI in your own product
 
