@@ -21,11 +21,51 @@ example, because a definition without an example teaches you a phrase rather
 than an idea, and a phrase is exactly what gets you into trouble in a design
 review.
 
+If you are not sure which group your word is in, the map in the next section
+places all seven of them.
+
 A word on what is deliberately missing. Where a term has a whole post behind it,
 the entry here is a pointer, not a summary. The layer around the model in
 particular — skills, hooks, subagents, plugins — is mapped properly in
 [the words for the layer around the model](/engineering/harness-engineering-vocabulary/),
 and repeating it here badly would help nobody.
+
+## Where these words sit
+
+Before the lists, one picture of how the groups below relate — because the most
+common reason a term is confusing is not the definition, it is not knowing which
+part of the system it belongs to.
+
+In words, for anyone who would rather have it that way. **Training** happens
+once, long before you type anything, and what it produces is the model's
+weights. After that, on **every single turn**, a program assembles a request out
+of three things — what you say to it, whatever data you have gone and fetched
+for it, and the list of tools it is allowed to ask for. That request goes to
+**the model**, which returns text and nothing but text. **The layer around it**
+reads that text, runs any tool the model asked for, and sends the whole thing
+round again. **Evals** sit outside all of it and measure the loop as a whole,
+which is why a model that benchmarks well can still make a bad product.
+
+```mermaid
+flowchart TD
+  T["<b>Training</b><br/>pretraining · fine-tuning"]
+  T -- "produces the weights, once,<br/>long before you type anything" --> M
+
+  subgraph REQ["Assembled fresh every single turn"]
+    P["<b>Talking to it</b><br/>prompt · system prompt"]
+    D["<b>Giving it your data</b><br/>retrieval · RAG"]
+    H["<b>Giving it hands</b><br/>tools · MCP"]
+  end
+
+  REQ -- "one request" --> M["<b>The model itself</b><br/>tokens · context window<br/>temperature · hallucination"]
+  M -- "text, and only text" --> L["<b>The layer around it</b><br/>harness · agent · hooks"]
+  L -- "runs the tools,<br/>then sends it all again" --> REQ
+  E["<b>Knowing whether it works</b><br/>evals · golden sets"] -. "measures the whole loop,<br/>never the model alone" .-> L
+```
+
+*Each box is a section of this page, in the order they appear below. Notice how
+small the model's box is: most of the words people struggle with are not about
+the model at all, they are about the machinery around it.*
 
 ## The model itself
 
