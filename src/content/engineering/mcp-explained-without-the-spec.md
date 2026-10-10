@@ -2,6 +2,7 @@
 title: "MCP, Explained Without the Spec"
 description: "What the Model Context Protocol actually is, in plain words: the problem it solves, what a server offers, which side your editor is on, what local and remote transports really change, and what crosses the wire — shown on a real handshake."
 pubDate: 2026-10-16
+updatedDate: 2026-11-01
 tags: ["ai-foundations", "harness-engineering", "mcp", "claude-code"]
 cover: gate
 coverVariant: 2
@@ -93,7 +94,7 @@ flowchart LR
 shape first.*
 
 That is the whole pitch. The
-[specification](https://modelcontextprotocol.io/specification/2025-11-25) is
+[specification](https://modelcontextprotocol.io/specification/2026-07-28) is
 explicit that it takes its inspiration from the Language Server Protocol, which
 did the same thing for editors and programming languages: before LSP, every
 editor needed a plugin per language; after it, a language ships one server and
@@ -223,6 +224,12 @@ First, the handshake. Both sides state a protocol version and what they support:
 
 It is JSON-RPC 2.0 over newline-delimited stdin and stdout. That is all. The
 server reports that it offers tools, and that it may tell me if the list changes.
+
+One thing to notice before you read on: the revision both sides agree on here is
+`2025-11-25`, not the `2026-07-28` this post cites throughout. The published
+revision and the revision implementations actually negotiate are two different
+things, and the next post takes that apart on a server you build yourself —
+[build a small MCP server and watch the wire](/engineering/build-a-small-mcp-server/).
 
 Then the server wrote this to standard error, unprompted:
 
@@ -365,7 +372,7 @@ internal network, whether a token is accepted that was never issued for this
 server — lives in the host and in the server, and in your configuration of both.
 
 The specification maintains a
-[security best practices](https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices)
+[security best practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices)
 page devoted to the ways that goes wrong. Its named risks are worth knowing by
 name even if you never implement one: the **confused deputy**, where a proxy
 server's static client ID plus a leftover consent cookie lets an attacker obtain
@@ -373,12 +380,15 @@ authorization without the user ever approving it; **token passthrough**, which
 the authorization spec forbids outright, where a server accepts a token that was
 never issued for it and forwards it downstream; **server-side request forgery**,
 where a malicious server hands the client a URL pointing at `169.254.169.254` and
-the client obligingly fetches your cloud credentials; **session hijacking**; and
-**local server compromise**, where the malicious part is the install command
+the client obligingly fetches your cloud credentials; **state handle hijacking**,
+called session hijacking before this revision dropped protocol-level sessions;
+and **local server compromise**, where the malicious part is the install command
 itself.
 
-Each of those deserves its own treatment with worked examples, and it is getting
-one later in this series. What this post owes you is the honest headline: none of
+Each of those deserves its own treatment with worked examples, and it gets one
+two posts later in
+[what can go wrong with an MCP server](/engineering/what-can-go-wrong-with-an-mcp-server/),
+which works through the specification's list with the normative language intact. What this post owes you is the honest headline: none of
 it is handled for you by virtue of using a standard protocol, and reading the
 word "secure" in a server's name — as in `secure-filesystem-server` above — is
 not evidence of anything.
@@ -419,16 +429,18 @@ common way an MCP setup leaks something.
 
 ## References and further reading
 
-- [The Model Context Protocol specification](https://modelcontextprotocol.io/specification/2025-11-25),
-  revision `2025-11-25` — open this when a vendor's description and another
+- [The Model Context Protocol specification](https://modelcontextprotocol.io/specification/2026-07-28),
+  revision `2026-07-28` — open this when a vendor's description and another
   vendor's disagree. Start with the overview and the security section; both are
   short and neither assumes you are implementing anything.
-- [MCP security best practices](https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices)
+- [MCP security best practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices)
   — open this before you write a server or run one you did not read. Every named
   risk in section 08 comes from here, with the mitigations the spec requires.
-- [MCP transports](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports)
+- [MCP transports](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports)
   — open this if you need the exact framing rules, the `Origin` validation
-  requirement, or the session-management details for the HTTP transport.
+  requirement, or the per-request metadata headers the HTTP transport mirrors.
+  Revision `2026-07-28` removed protocol-level sessions; the page says what
+  replaced them.
 - [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp) — open
   this for the scopes, the precedence order and the non-interactive approval
   behaviour quoted in section 07. It changes often; check it rather than

@@ -373,8 +373,11 @@ files the children opened, only 12 were opened by more than one of them — the
 briefs were narrow enough that the children mostly worked on disjoint material.
 The exception is the shared rulebook every child had to read: 8,204 bytes, read
 by fifteen of them. As arithmetic over that measured size, at the usual rough
-four characters per token, that is about 2,000 tokens paid fifteen times, so
-roughly 28,700 tokens of pure duplication — around one per cent of the 2,680,033.
+four characters per token, that is about 2,050 tokens per read. Fourteen of the
+fifteen reads are the duplication — the first one had to happen — so roughly
+28,700 tokens were spent re-reading the same file. That is around one per cent
+of the 2,680,033 tokens the children read between them, and since that total is
+itself a floor, the true share is if anything smaller.
 
 That is the honest shape of it. In this run, re-reading was a rounding error,
 because the thing being shared was small. Make the shared thing a 200-kilobyte
@@ -385,9 +388,11 @@ schema and the same structure turns that rounding error into the dominant cost.
 So if it was not faster, why do it at all? Because of the number in section 04
 that is easy to skip past: the parent's largest prompt was 273,116 tokens, after
 seven hours, with no compaction. Two and a half million tokens of reading,
-drafting and discarding happened in windows the parent never saw. Inline, that
-session would have hit the ceiling repeatedly and lost most of its own history
-to compaction each time.
+drafting and discarding happened in windows the parent never saw. I did not run
+the same work inline to compare, so what follows is arithmetic rather than a
+measurement: two and a half million tokens will not fit in a window that held
+273,116 at its largest, so an inline run would have had to compact repeatedly,
+and compaction is lossy by construction.
 
 That is the trade, and it makes a two-question decision.
 
@@ -506,7 +511,9 @@ ends, the files ruled out, the judgement behind a recommendation — all gone, a
 asking the parent about them produces a reconstruction rather than a memory.
 
 **Using a subagent for something one tool call would answer.** Section 03 priced
-the floor: roughly 36,000 tokens to assemble a new window before any work starts.
+the floor on this machine: roughly 36,000 tokens to assemble a new window before
+any work starts. Yours will differ — the figure is the always-loaded ladder from
+post 2.6, and that ladder is as long as your own setup makes it.
 VS Code's own guidance agrees — "For a quick lookup or a small edit, a direct
 request is usually enough."
 
@@ -549,11 +556,12 @@ from drowning in its own reading.
 
 That is a better reason anyway, and it is the one that survives the arithmetic.
 Isolation is purchasable; attention is not. You can always buy another context
-window for about thirty-six thousand tokens. What you cannot buy is a window
+window — for about thirty-six thousand tokens on the setup I measured. What you cannot buy is a window
 that stays useful after you have filled it with four jobs' worth of material.
 
 The next post in this track takes everything these nine have pulled apart and
-puts one whole assembled request on the page at once, annotated line by line.
+runs it over one real session end to end, labelling each mechanism at the turn
+where it fires — including this one, from the other side of the fan-out.
 
 Until then: before you fan out, ask the first question. Do the parts need each
 other's answers? If they do, you do not have four briefings. You have a meeting,

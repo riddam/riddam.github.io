@@ -246,9 +246,13 @@ work": in the way I work, the prompt had already stopped being the mechanism, an
 nothing about a prompt you never see announces its absence.
 
 And one more thing that looks like a lock. A boundary you state in conversation —
-*don't push until I review* — is real; the classifier treats it as a block
-signal. But it re-reads that boundary from the transcript on every check, so
-[compaction](/engineering/where-the-context-comes-from/) can take it away without
+*don't push until I review* — is real, and the documentation is explicit that it
+is: [boundaries you state in conversation](https://code.claude.com/docs/en/permission-modes#boundaries-you-state-in-conversation)
+says the classifier "treats boundaries you state in the conversation as a block
+signal", and that one stays in force until you lift it. The same page gives the
+catch in the next paragraph: boundaries are not stored as rules, the classifier
+re-reads them from the transcript on every check, and
+[compaction](/engineering/where-the-context-comes-from/) can take one away without
 telling you. Write a deny rule for the one that has to survive the afternoon.
 
 ## 04 — Rules that match text
@@ -647,7 +651,9 @@ the current page.
   [choose a permission mode](https://code.claude.com/docs/en/permission-modes) —
   the first for deny-ask-allow precedence, settings scopes and the *what a Bash
   rule doesn't match* table section 04 rests on; the second for what each mode
-  stops asking about.
+  stops asking about, and for the *boundaries you state in conversation* section
+  behind the claim in 03 that a spoken boundary blocks but does not survive
+  compaction.
 - [Configure the sandboxed Bash tool](https://code.claude.com/docs/en/sandboxing)
   and [hooks](https://code.claude.com/docs/en/hooks) — the enforcement sentence
   section 06 quotes and a candid *Limitations* section; then the hook event list,
@@ -656,8 +662,8 @@ the current page.
   and [`LLM06:2025 Excessive Agency`](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/)
   — sections 05 and 09 under the names a risk function recognises, with the
   mitigation lists written for people who have to sign something.
-- [Zero risk isn't the job: a CISO's guide to agentic AI](https://claude.com/blog/ciso-guide-to-agentic-ai)
-  (Anthropic, July 2026) — for when the question stops being your laptop and
+- [Zero risk isn't the job: a CISO's guide to agentic AI](https://claude.com/resources/articles/ciso-guide-to-agentic-ai)
+  (Jason Clinton, Anthropic, 17 July 2026) — for when the question stops being your laptop and
   becomes your organisation: narrowest capability that completes the task,
   credentials outside the loop, removing a verb rather than forbidding it.
 - [Harness engineering: the words for the layer around the model](/engineering/harness-engineering-vocabulary/)

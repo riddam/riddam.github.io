@@ -129,11 +129,11 @@ knowledge is fine.
 
 Now read the rest. The model emits `<|endoftext|>`, the marker that one document
 has ended and another begins, and starts a new one. It opens with `Human:`.
-Qwen does not publish what this model was trained on, so I cannot tell you how
-much of the pile was scraped chat transcripts — but `Human:` directly after an
-end-of-document marker is the shape of that kind of file, and the model has
-clearly read enough text in that shape for it to be the favourite continuation
-here. Then it asks itself the difference between a load balancer and a load
+Qwen publishes the token count for this model's pretraining but not the mix, so
+I cannot tell you how much of the pile was scraped chat transcripts — but
+`Human:` directly after an end-of-document marker is the shape of that kind of
+file, and the model has evidently read enough text in that shape for it to be
+the favourite continuation here. Then it asks itself the difference between a load balancer and a load
 balancer, and does that again until it runs out of budget.
 
 None of this is a malfunction. The base model was never answering. It was

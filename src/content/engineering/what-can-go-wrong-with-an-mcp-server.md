@@ -353,11 +353,11 @@ go to the provider and revoke it.
 
 ## References and further reading
 
-- [MCP security best practices](https://modelcontextprotocol.io/specification/2026-07-28/basic/security_best_practices),
+- [MCP security best practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices),
   revision `2026-07-28` — the authority this post summarises. Every attack class
   above is one of its sections, with the full mitigation lists I compressed to a
   line each.
-- [MCP security best practices](https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices),
+- [MCP security best practices](https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices),
   revision `2025-11-25` — open this for session hijacking as it applies to
   server-assigned session IDs, the form implementations still meet on the wire.
 - [MCP authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization),
@@ -386,14 +386,14 @@ cookies, redirect URIs, SSRF during discovery, guessable handles, over-broad
 scopes. Revision `2026-07-28` names eleven attack sections in all; the three I
 have left to the specification — mix-up attacks, localhost redirect URI
 impersonation, and trust policies for client metadata documents — are OAuth
-server-side concerns, which only sharpens the point. The two classes specific to
+concerns, which only sharpens the point. The two classes specific to
 this world are the two about running a command somebody else wrote. There is no
 exotic AI attack in that document, and that is reassuring rather than
 disappointing: the engineering judgement you already have transfers intact.
 
 So the useful posture is not suspicion. It is the one you would take with a
 contractor who needs a key: grant narrowly, know who has a copy, be able to
-change the lock without a project. Every mitigation above is one of those three.
+change the lock without a project. Every mitigation above is a version of one of those three.
 
 One line the series owes you, said plainly rather than implied. This post
 explains mechanisms, from a specification anyone can read. It is not a security

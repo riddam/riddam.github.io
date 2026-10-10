@@ -158,6 +158,9 @@ substitute for them.
 - [Making AI Coding Assistants Reliable: My Playbook](/engineering/ai-assisted-coding-playbook/)
   — open this when you want technique rather than mechanism. Nothing in the four
   tracks repeats it.
+- [Spec-Driven Development: How It Differs from TDD and BDD, and How to Run It with AI Agents](/engineering/spec-driven-development-tdd-bdd-ai-agents/)
+  — open this for the workflow the tracks assume and never re-explain: how a
+  spec, a plan and a task brief get an agent to build the thing you meant.
 - [Learning to Build Software When AI Writes the Code](/leadership/learning-to-build-software-when-ai-writes-the-code/)
   — open this if the person you are handing this map to is early in their career,
   or is the one reviewing the output.

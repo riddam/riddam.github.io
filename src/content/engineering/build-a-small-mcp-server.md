@@ -45,8 +45,8 @@ One boundary, stated up front so you are not waiting for it. The security of MCP
 servers — prompt injection through tool output, the confused deputy, token
 passthrough, what a malicious server does to a machine it was installed on — is
 the subject of the next post, and this one deliberately stops short. I will say
-that read-only is the right default and that `stdio` beats an open port, give you
-one line of reasoning for each, and leave the rest where it belongs.
+that read-only is the right default and that `stdio` beats an open port, give the
+short reason for each, and leave the rest where it belongs.
 
 The analogy, and it holds all the way through: **a service counter.** You decide
 what is on the menu. You decide who may order from it. You decide what the answer
@@ -396,7 +396,7 @@ do it.
 ## 05 — Writing a description the model reads correctly
 
 In the Python SDK, writing a tool description is writing a docstring. That is
-convenient and quietly dangerous, because docstrings are the one kind of text
+convenient and easy to get wrong, because docstrings are the one kind of text
 engineers are most practised at writing badly: short, for themselves, assuming
 the reader can see the code.
 
@@ -438,7 +438,7 @@ only above the counter if the customer can see it.
 
 ## 06 — Why read-only, and why stdio
 
-Two defaults, one line of reasoning each.
+Two defaults, and the short reason for each.
 
 **Read-only** because the cost of being wrong is asymmetric. A read tool that
 misfires returns text nobody wanted; a write tool that misfires changes
@@ -572,7 +572,7 @@ allowed.
 - [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp) — open
   this for the `claude mcp add` syntax, the three scopes and the `/mcp` command.
   It changes often; check it rather than trusting this paragraph in six months.
-- [Extending Copilot Chat with MCP](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp/extend-copilot-chat-with-mcp)
+- [Extending Copilot Chat with MCP](https://docs.github.com/en/copilot/how-tos/copilot-in-your-ide/customize-copilot/extend-copilot-with-tools-and-context/extend-copilot-chat-with-mcp)
   — open this for the `.vscode/mcp.json` and `settings.json` locations referenced
   in section 06.
 - [MCP, explained without the spec](/engineering/mcp-explained-without-the-spec/)

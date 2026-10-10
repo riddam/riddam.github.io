@@ -166,12 +166,13 @@ your own distribution and pick from that.
 ```mermaid
 flowchart LR
   Q["'how does a change<br/>reach production?'"] -- "turned into<br/>a position" --> N{"What is<br/>nearby?"}
-  N -- "0.32" --> A["'releases go out<br/>once a PR lands'"]
-  N -- "0.26" --> B["'the deploy pipeline<br/>runs on every merge'"]
-  N -- "0.08" --> C["'the coffee machine<br/>is on floor two'"]
+  N -- "0.344" --> T["'shipping a change needs a green<br/>pipeline and one approval'"]
+  N -- "0.315" --> A["'releases go out<br/>once a PR lands'"]
+  N -- "0.256" --> B["'the deploy pipeline<br/>runs on every merge'"]
+  N -- "0.075" --> C["'the coffee machine<br/>is on floor two'"]
 ```
 
-*Neither nearby sentence shares a content word with the question. That is the whole trick.*
+*The top match is 0.344 — the top of this model's range on this shape of comparison, not a 34% confidence. Two of the three above the coffee machine share no content word with the question. That is the whole trick.*
 
 On the 384: there is no reading them. Dimension 112 is not "about deployment".
 The numbers are a coordinate system the training produced for its own
@@ -437,19 +438,45 @@ common. The bad news is the same property. Embeddings work on the gist, and a
 gist is exactly the wrong representation for a ticket number, a version string
 or an error code, because the entire value of those is being exact. Here is the
 same model, same `util.cos_sim`, run over three pairs that differ only in the
-identifier:
+identifier — and, for scale, two pairs of the same shape that are about
+genuinely different things:
+
+```python
+from sentence_transformers import SentenceTransformer, util
+
+m = SentenceTransformer("all-MiniLM-L6-v2")
+pairs = [
+    ("The fix landed in v2.11.3.", "The fix landed in v2.1.13."),
+    ("See ticket INC-4471.", "See ticket INC-4714."),
+    ("The error was ERR_CONN_RESET.", "The error was ERR_CONN_REFUSED."),
+    ("See ticket INC-4471.", "The quiet rooms on floor three can be booked an hour at a time."),
+    ("The error was ERR_CONN_RESET.", "Lost badges are replaced at the reception desk."),
+]
+for a, b in pairs:
+    s = util.cos_sim(m.encode(a, convert_to_tensor=True), m.encode(b, convert_to_tensor=True))
+    print(f"{s.item():.3f}  {a!r} vs {b!r}")
+```
+
+`uv run --with sentence-transformers python exact.py`, and the real output:
 
 ```text
 0.885  'The fix landed in v2.11.3.' vs 'The fix landed in v2.1.13.'
 0.950  'See ticket INC-4471.' vs 'See ticket INC-4714.'
 0.805  'The error was ERR_CONN_RESET.' vs 'The error was ERR_CONN_REFUSED.'
+0.222  'See ticket INC-4471.' vs 'The quiet rooms on floor three can be booked an hour at a time.'
+0.087  'The error was ERR_CONN_RESET.' vs 'Lost badges are replaced at the reception desk.'
 ```
 
-Two different tickets, two different releases, two different errors, scoring
-0.95, 0.89 and 0.81 — against a top score of 0.344 for a genuinely relevant
-match back in section 02. To this model, "connection reset" and "connection
-refused" are near-synonyms, which in English they nearly are and in an incident
-they are not at all. Old-fashioned keyword search — the term-frequency kind,
+Read the five scores as one group and nothing else, because that is the only way
+they can be read. Every pair here is a short statement against a short statement,
+so they share a distribution — and in that distribution, unrelated statements sit
+at 0.09 and 0.22 while two different tickets sit at 0.95. The identifier is the
+only thing that differs and it moves the score almost not at all. Resist setting
+0.95 beside the 0.344 from section 02: that one was a *question* against a
+statement, a different shape with a different range, and comparing the two
+numbers is exactly the percentage thinking section 02 warned about. To this
+model, "connection reset" and "connection refused" are near-synonyms, which in
+English they nearly are and in an incident they are not at all. Old-fashioned keyword search — the term-frequency kind,
 usually BM25 — is excellent at precisely what embeddings are bad at, and bad at
 precisely what they are good at. Which is why the production baseline is not
 either one. It is both, run in parallel, results merged. The architecture guide

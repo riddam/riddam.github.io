@@ -308,10 +308,11 @@ print(f"  of those, run by a window that had been warned          : {sum(destruc
   of those, run by a window that had been warned          : 1
 ```
 
-Twenty-two child windows were handed a status naming a modified tracked file,
-and twenty-one of those named this exact one. The agent that destroyed it was
-one of the twenty-one. The line was in its context from its very first token,
-and it ran the command anyway.
+Twenty-two child windows were handed a status naming a modified tracked file.
+The script above does not go further than that; reading the transcripts by hand,
+twenty-one of the twenty-two named this exact file, and the window that ran the
+destructive command was one of the twenty-one. The line was in its context from
+its very first token, and it ran the command anyway.
 
 So this is not an ignorance failure, and calling it one would be the comfortable
 lie. It is an attention failure. The window held the fact; the model was
@@ -388,8 +389,8 @@ eleven dispatches from a run of good outcomes into something closer to
 enforcement — with the caveat
 [who is allowed to do what](/engineering/who-is-allowed-to-do-what/) insists on,
 that a deny rule matches the text of a command and not its intent. Its sections
-04 and 07 are the two recipes. I had read both and still reached for the
-sentence.
+04 and 07 are the two recipes, and they had been read inside this very session,
+to write that post. The sentence got reached for anyway.
 
 ## 06 — The parts you cannot see
 
@@ -457,7 +458,9 @@ measured a real compaction elsewhere so you can see what was avoided.
 Two reconciliations, because the two posts took snapshots at different moments
 of a session that was still running. Post 2.9 counted 26 children and a 273,116
 peak; by the time I ran the script above the same session had reached 29 and
-291,532. Nothing moved except the clock.
+291,532. The same clock explains the third difference: 2.9 calls this a
+seven-hour session and this post calls it seven and a half. Nothing moved except
+the clock.
 
 **The second invisible thing is the briefing.** Of the twenty-nine dispatches,
 eleven wrote something and eighteen checked it. The main window's entire record
@@ -504,11 +507,11 @@ fired.
 
 ```mermaid
 flowchart LR
-  T1["Hour 0<br/>28 words typed"] --> T2["Hour 0<br/>first tool call"]
-  T2 --> T3["Hours 0-7<br/>29 child windows"]
-  T3 --> T4["Hour 4<br/>right command,<br/>wrong blast radius"]
-  T4 --> T5["Hour 5.6<br/>correction, in prose"]
-  T5 --> T6["Hour 7.6<br/>27 tests pass,<br/>build green"]
+  T1["Hour 0<br/>28 words typed"] -- "assembled into<br/>51,717 tokens" --> T2["Hour 0<br/>first tool call"]
+  T2 -- "1,018 tokens<br/>come back" --> T3["Hours 0-7<br/>29 child windows"]
+  T3 -- "the reading<br/>happens elsewhere" --> T4["Hour 4<br/>right command,<br/>wrong blast radius"]
+  T4 -- "noticed<br/>1.6 hours later" --> T5["Hour 5.6<br/>correction, in prose"]
+  T5 -- "main window<br/>never compacts" --> T6["Hour 7.6<br/>27 tests pass,<br/>build green"]
   T1 -. "context assembly" .-> N1["post 2.6"]
   T2 -. "tool round trip" .-> N2["post 2.2"]
   T3 -. "isolation" .-> N5["post 2.9"]
@@ -616,7 +619,7 @@ each as a pointer to the current page rather than a stable address.
   — the vocabulary used throughout, with
   [the AI vocabulary](/engineering/the-ai-vocabulary/) for single terms.
 - [Explore the .claude directory](https://code.claude.com/docs/en/claude-directory)
-  and [chat sessions in Visual Studio Code](https://code.visualstudio.com/docs/copilot/chat/chat-sessions)
+  and [chat sessions in Visual Studio Code](https://code.visualstudio.com/docs/agents/run/sessions/manage-sessions)
   — where each tool keeps the record, and the source of both quotations in
   section 08, including the retention period and the plaintext warning.
 

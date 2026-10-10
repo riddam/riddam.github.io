@@ -572,10 +572,9 @@ nothing about what it does. The mitigations are the dull ones — install from
 sources you can name, read the files first, keep an inventory. Two things make
 this sharper than ordinary dependency hygiene. A plugin that auto-updates changes
 under you, so "the files you reviewed can change on disk". And the content
-arrives through the door
-[post 2.5](/engineering/what-can-go-wrong-with-an-mcp-server/) and
-[post 2.7](/engineering/who-is-allowed-to-do-what/) spent their length on: text
-in the context window, with nothing marking it as data rather than orders.
+arrives through the door [post 2.5](/engineering/what-can-go-wrong-with-an-mcp-server/)
+and [post 2.7](/engineering/who-is-allowed-to-do-what/) spent their length on:
+text in the context window, with nothing marking it as data rather than orders.
 
 ## Try it yourself
 

@@ -139,10 +139,10 @@ Deferral is not an MCP-only arrangement: part of the built-in set is held back
 the same way. The second rung of the ladder uses `--safe-mode`, which loads all
 of it, so 18,592 is what the full set weighs when nothing is deferred. The
 `/context` report in section 06, taken from an ordinary session in this same
-repository, splits the same tools into 12.7k loaded and 11.9k held back. Two
-conditions and two accountings — a difference between billed requests against
-the harness's own estimate — and I can name which produced which number but not
-why the arithmetic between them does not close, because I did not measure that.
+repository, reports for the tools 12.7k loaded and 11.9k held back. Two
+conditions and two accountings — one read off billed requests, one off the
+harness's own estimate — and I can name which produced which number but not why
+the arithmetic between them does not close, because I did not measure that.
 Either way the proportion the table exists to argue survives: the tool
 definitions outweigh everything you wrote by a factor of thousands.
 
@@ -463,7 +463,7 @@ GitHub Copilot assembles the same kinds of layer with different file names, and
 one difference is worth knowing. Its always-loaded instruction files are
 `.github/copilot-instructions.md` and `AGENTS.md` — same idea, same advisory
 status. But it also has
-[targeted `.instructions.md` files](https://code.visualstudio.com/docs/copilot/customization/custom-instructions)
+[targeted `.instructions.md` files](https://code.visualstudio.com/docs/agent-customization/custom-instructions)
 in `.github/instructions`, each with an `applyTo` glob, which load only when a
 matching file is in play. That is a genuinely different answer to section 03's
 problem: rather than one file that is always in context and always being
@@ -546,6 +546,7 @@ chooses almost all of it, and your sentence is still the smallest part.
 - [OWASP Top 10 for LLM Applications 2025, `LLM07:2025 System Prompt Leakage`](https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/)
   — section 07 under its security name, with the mitigations written for people
   who have to explain this to a risk function.
+
 ## Final thoughts
 
 The briefing pack is assembled by someone else, and the someone else is a
