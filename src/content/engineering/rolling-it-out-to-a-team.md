@@ -197,8 +197,9 @@ rollout.
 4. **Give them one real task.** Not a demo, not a toy. Something small from the
    actual backlog, where they will see both the help and the failure.
 5. **Review that change together.** This is the step that is always cut and is
-   the one that teaches. The reviewing method is in the junior-developer post and
-   applies to everybody, not only to juniors.
+   the one that teaches. The reviewing method is in
+   [learning to build software when AI writes the code](/leadership/learning-to-build-software-when-ai-writes-the-code/#9-reviewing-code-you-didnt-write)
+   and applies to everybody, not only to juniors.
 6. **Stop.** No mandate, no dashboard, no adoption target.
 
 Steps one and two are most of the value, and both of them are improvements to

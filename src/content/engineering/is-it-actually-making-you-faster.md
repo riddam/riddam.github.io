@@ -72,13 +72,16 @@ boxes; it is that there are four of them and most claims only discuss the
 second.
 
 ```mermaid
-flowchart LR
+flowchart TB
   subgraph BEFORE["Without an agent"]
+    direction LR
     A1["understand"] --> A2["write"] --> A3["test"] --> A4["review"]
   end
   subgraph AFTER["With an agent"]
+    direction LR
     B1["understand"] --> B2["write"] --> B3["test"] --> B4["review"]
   end
+  BEFORE ~~~ AFTER
 ```
 
 *Draw this with your own numbers. The writing box shrinks; whether the total does
@@ -118,8 +121,9 @@ something. This is the number that catches work moved from you to a colleague,
 and almost nobody records it. Read it off the pull request afterwards.
 
 **Token spend per task.** What the session cost. Most tools report this per
-session or per day; if yours does not, the model card post covers reading it off
-the provider's usage page. It is the only one of the four you can know exactly
+session or per day; if yours does not,
+[reading a model card without guessing](/engineering/reading-a-model-card-without-guessing/)
+covers reading it off the provider's usage page. It is the only one of the four you can know exactly
 rather than estimate, which makes it tempting to over-weight: a real cost, and a
 weak proxy for value.
 
@@ -215,7 +219,9 @@ Four things the six columns will not capture, all of them real.
 
 **Learning.** Time spent working something out is how you become someone who does
 not have to work it out next time. A scheme that counts it as cost will quietly
-recommend you stop learning.
+recommend you stop learning;
+[learning to build software when AI writes the code](/leadership/learning-to-build-software-when-ai-writes-the-code/)
+is the long version of that argument and I will not restate it here.
 
 **The cost of reviewing code you did not write.** More tiring than writing it,
 and it lands on whoever reads your pull request — which is how a team measures
