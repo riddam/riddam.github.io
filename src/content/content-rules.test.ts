@@ -117,13 +117,32 @@ test('cover variants 1 through 4 are all accepted and distinct', () => {
 });
 
 test('the start-here page links every published AI Foundations post', () => {
+  // Published only. A live page cannot link a draft -- that is a 404 for a
+  // reader -- so a drafted post is named on the map instead (next test), and
+  // this assertion turns the link on the moment the draft flag comes off.
   const page = foundations().find((p) => p.path.endsWith('ai-foundations-start-here.md'));
   assert.ok(page, 'start-here page missing');
   const missing: string[] = [];
-  for (const { path } of foundations()) {
+  for (const { path, body } of foundations()) {
     const slug = path.replace(/^.*[/\\]/, '').replace(/\.md$/, '');
     if (slug === 'ai-foundations-start-here') continue;
+    if (/^draft:\s*true$/m.test(body)) continue;
     if (!page.body.includes(`/engineering/${slug}/`)) missing.push(slug);
   }
   assert.deepEqual(missing, [], `start-here is missing: ${missing.join(', ')}`);
+});
+
+test('the start-here page names every drafted AI Foundations post', () => {
+  // The map has to account for the whole series, published or not, so a track
+  // written ahead of publication cannot quietly go missing from it.
+  const page = foundations().find((p) => p.path.endsWith('ai-foundations-start-here.md'));
+  assert.ok(page, 'start-here page missing');
+  const missing: string[] = [];
+  for (const { path, body } of foundations()) {
+    if (!/^draft:\s*true$/m.test(body)) continue;
+    const title = body.match(/^title:\s*"(.+)"$/m)?.[1];
+    assert.ok(title, `${path} has no title`);
+    if (!page.body.includes(title)) missing.push(title);
+  }
+  assert.deepEqual(missing, [], `start-here does not name: ${missing.join(', ')}`);
 });

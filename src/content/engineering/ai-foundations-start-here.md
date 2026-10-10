@@ -108,19 +108,27 @@ two link out to it rather than restate it. Already written:
 **For engineers shipping a feature with a model behind it.** A different reader
 from the other three: not somebody using an AI tool on their work, but somebody
 putting a model inside something other people will use. Assumes tracks 1 and 2.
+It is the only track whose code you keep: an agent loop and an eval harness, both
+written by hand, both short enough to read in one sitting.
 
-**None of it is written yet.** Four posts are planned: writing the agent loop
-yourself with a step budget and an approval gate; knowing whether it works, where
-the assertion is "good enough" rather than equality; customising a model, and the
-cases where you should not; and running it in production, with caching, retries, a
-cost ceiling that trips, prompt injection, and what you may legally send.
+All four are written and go live together; until they do, this is what is
+coming, so you know whether to wait for it.
 
-Until they land, the nearest published material is the three guides —
+1. **Writing the Agent Loop Yourself** — a step budget, an approval gate,
+   reasoning printed each turn, and the four ways it actually went wrong.
+2. **Knowing Whether It Works** — twenty cases where the assertion is "good
+   enough" rather than equality, and a real regression the suite catches.
+3. **Making the Model Yours — and When Not To** — a real fine-tune, before and
+   after, and what happened when I tried to teach it a fact instead of a manner.
+4. **Running It in Production** — streaming, the two cost levers, a ceiling that
+   trips, injection against a service, and what you may legally send.
+
+The three guides —
 [AI architecture](/guides/ai-architecture-master-guide/),
 [training, fine-tuning and evaluation](/guides/model-training-finetuning-eval/)
-and [MLOps and production operations](/guides/mlops-production-guide/). They are
-breadth-first catalogues for people who already know the shape of the problem,
-which is precisely the gap this track is meant to close.
+and [MLOps and production operations](/guides/mlops-production-guide/) — are the
+breadth-first catalogues this track points into. They assume you already know the
+shape of the problem; these four posts are where you get it.
 
 ## The reference pages
 
