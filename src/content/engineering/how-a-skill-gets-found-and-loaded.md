@@ -1,6 +1,6 @@
 ---
 title: "How a Skill Gets Found and Loaded"
-description: "A skill is a folder, not a prompt, and its description is the only thing deciding whether it ever runs. Why loading on demand is a context decision rather than tidiness, and what happens when two skills describe themselves the same way."
+description: "A skill is a folder, not a prompt, and its name and description together are the only thing deciding whether it ever runs. Why loading on demand is a context decision rather than tidiness, and what happens when two skills describe themselves the same way."
 pubDate: 2026-10-29
 tags: ["ai-foundations", "harness-engineering", "skills", "claude-code"]
 cover: assist
@@ -20,8 +20,8 @@ so.*
 
 - A skill is a folder of files on disk, not a prompt you send. The harness reads
   it and decides what to put in the context window.
-- The description is the trigger — the only part the model sees before deciding,
-  which makes it an interface rather than a label.
+- The name and the description are the trigger. They are what the harness puts
+  in front of the model, which makes them an interface rather than a label.
 - The body loads on demand because loading it up front would cost what post 2.6
   measured. On this machine the bodies are 31 times the size of the descriptions.
 - A description that names the topic instead of the moment produces a skill that
@@ -49,8 +49,8 @@ is. This one is about why the ones you installed do or do not run.
 
 The analogy, and it runs to the end: **a reference shelf with one-line spines.**
 Nobody standing in front of that shelf reads the books to decide which to take
-down. They read the spines, and a book with a bad spine is invisible no matter
-how good it is inside.
+down. They read the spines, and a book with a bad spine is invisible however good
+it is inside.
 
 ## 01 — The thing you have already noticed
 
@@ -63,8 +63,8 @@ It has never run.
 Not once. You have watched the agent do that exact task, badly, in the way the
 skill exists to prevent, while the skill sat on disk being correct. And there is
 nothing to fix, because nothing failed. No error, no warning, no line in any log
-saying *considered and rejected*. The file is valid, the agent is working, and
-the skill is simply not in the session.
+saying *considered and rejected*. The file is valid and the skill is simply not
+in the session.
 
 The reflex is to improve the body — more detail, clearer steps, an example. That
 is the wrong half of the file. The model never read the body. It made one
@@ -72,8 +72,7 @@ decision from one line, and that line is the only thing you can change.
 
 ## 02 — What is actually on disk
 
-So let us open one. A skill is a directory, and the required part is one markdown
-file in it:
+So let us open one. A skill is a directory with one required markdown file:
 
 ```text
 blog-tools/skills/post-length/
@@ -109,7 +108,7 @@ subject of this post.
 The front matter is read when the session starts. The name and the description go
 into a listing of every skill the harness can see, and that listing is in the
 context window on turn one and on turn ninety — the *always loaded* route from
-the vocabulary post, same as an instruction file.
+the vocabulary post, like an instruction file.
 
 The body is read when, and only when, the skill is invoked. Anthropic's
 documentation puts it in one sentence: "Unlike CLAUDE.md content, a skill's body
@@ -165,12 +164,14 @@ built a shelf of five skills, kept four spines fixed, and rewrote the fifth six
 times — from one that names the moment the user is in, down to one that says
 nothing — then asked for the thing it does, five different ways.
 
-The measurement is a forced choice rather than a generation: I score every skill
-name as a continuation and take the highest. That isolates the selection step,
-without the model's willingness to emit a tool call getting in the way; post 2.7
-found this 3B model narrates far more readily than it calls anything. The margin
-is the gap in mean log-probability between winner and runner-up, so a large
-number means the choice was not close.
+The measurement is a forced choice rather than a generation, and I should say
+why. I tried generation first and threw it away: given a tool for loading a
+skill, this model emitted a call in nought of twenty-five cells, including with
+the best description — post 2.7 found the same thing, that it narrates far more
+readily than it calls anything. So instead I score every skill name as a
+continuation and take the highest, which isolates the selection step from the
+model's willingness to act on it. The margin is the gap in mean log-probability
+between winner and runner-up, so a large number means the choice was not close.
 
 ```python
 # Which skill does the model pick when all it has is the names and the one-line
@@ -272,7 +273,7 @@ for label, (name, desc) in VERSIONS.items():
 
 Read the hit rate down the right: five, four, one, two, two, nought. Then the
 margins. Condition one wins every ask by six to ten — not a close call anywhere.
-Take the *use when* clause away and the margins fall by two thirds, with one ask
+Take the *use when* clause away and the margins fall by about half, with one ask
 already lost. By condition three, where the spine names the subject and nothing
 else, the skill wins once in five.
 
@@ -288,18 +289,18 @@ survives the noise is the two ends.
 usually `diagram-review`, which has nothing to do with read times, and sometimes
 `none`. The ranking does not degrade gracefully. It stops meaning anything.
 
-**The name is half the spine**, and that was the surprise. Condition six carries
-the identical description to condition five; the only change is the folder name,
+**The name counts too**, and that was the surprise. Condition six carries the
+identical description to condition five; the only change is the folder name,
 `post-length` becoming `wordsmith`. It goes from two in five to nought. A vague
 description under an obvious name was still winning two asks on the strength of
-the name alone. So the description is the trigger, and so is the name — a clever
-name spends half of your one line before you have written it.
+the name alone. One name pair, five asks, one sample each — nowhere near enough
+to put a number on how much of the trigger a name is. Enough to say it is not
+nothing, and that a clever name spends part of the one line you get.
 
 ## 04 — Why it is not just loaded up front
 
-The obvious objection to all of this is: why make the model choose at all? Put
-every skill in the context window, let it read everything, stop losing good
-advice to bad spines.
+The obvious objection: why make the model choose at all? Put every skill in the
+context window, let it read everything, stop losing good advice to bad spines.
 
 Post 2.6 answers that, and the answer is arithmetic rather than taste: everything
 always-loaded is charged on every request for the lifetime of the session. So the
@@ -342,9 +343,9 @@ print(f"  longest single spine    : {max(spines)} characters (the cap is 1,536)"
 ```
 
 Two million characters — arithmetic on that at four characters a token puts the
-bodies somewhere over half a million tokens, on a two hundred thousand token
-window. They do not merely cost a lot. They do not fit. "Load everything" was
-never an option.
+bodies over half a million tokens, on a two hundred thousand token window. They
+do not merely cost a lot. They do not fit. "Load everything" was never an
+option.
 
 The vendor's own estimator shows the same trade on one pair of files. I made a
 throwaway plugin with two skills: one with a seventeen-line body, one with a
@@ -397,7 +398,7 @@ full text."
 
 That is the quietest failure in this post. A skill you have never invoked is
 first to lose its spine, and a skill without a spine cannot be chosen, so it
-stays uninvoked. The way out of that ratchet is fewer skills, not better ones.
+stays uninvoked. The way out of that ratchet is fewer skills.
 
 ## 05 — When two skills collide
 
@@ -477,8 +478,8 @@ way round flipped three of the five. Nothing else changed — same names, same
 descriptions, same tasks, same greedy scoring — only which one came first.
 
 And the loser does not lose narrowly. Look at the gaps in the second block:
-eight, ten, twelve. Listed first, `commit-writer` does not scrape a win, it wins
-by a mile. The ranking is confident about an answer that position alone decided.
+eight, ten, twelve. Listed first, `commit-writer` does not scrape a win. The
+ranking is confident about an answer that position alone decided.
 
 The limit, plainly: **I did not run this in Claude Code**, and I will not tell
 you a frontier model breaks ties the way a 3B model does. What this shows is
@@ -488,10 +489,9 @@ reports which way it went.
 
 The documentation settles one narrower case. When two skills share a *name*,
 there is a published precedence: enterprise beats personal, personal beats
-project. That is a rule about file paths. It says nothing about two
-differently-named skills describing themselves the same way — that contest is
-decided inside the model, by the process that decided whether your skill was
-relevant at all.
+project. That is a rule about file paths. It says nothing about differently-named
+skills describing themselves the same way — that contest is decided inside the
+model, by the process that decided whether your skill was relevant at all.
 
 ## 06 — Writing one that fires
 
@@ -506,14 +506,14 @@ trim it to a target.* Anthropic's own guidance is the same shape: "put the key
 use case first."
 
 **Name the user's words, not yours.** Condition four was my own in-house
-phrasing, and it is the one I would have shipped, because inside a team it reads
-as precise. Nobody types *editorial calibration*. A private noun belongs in the
+phrasing, and the one I would have shipped, because inside a team it reads as
+precise. Nobody types *editorial calibration*. A private noun belongs in the
 body, which is read by something that has already decided to care.
 
 **One job per skill.** Three jobs produce three vague clauses instead of one
-specific one, and the specific clause is the entire mechanism. It also puts you
-one step from section 05: a skill half-covering three areas collides with every
-skill that fully covers one of them.
+specific one, and the specific clause is the mechanism. It also puts you one step
+from section 05: a skill half-covering three areas collides with every skill that
+fully covers one of them.
 
 **Keep the body out of the trigger.** The description is charged on every request
 for the life of the session; the body is charged once, when it fires. Writing
@@ -539,12 +539,13 @@ the turn that invokes the skill, the one place this post touches
 [the permission layer](/engineering/who-is-allowed-to-do-what/).
 
 Three things to try when one will not fire. Asking the session *what skills are
-available?* tells you whether it can see yours at all. `/doctor` estimates what
-the listing costs and names the biggest contributors. `/skill-doctor` finds the
-ones that never fire. The transcript grep for which have ever actually run is in
+available?* tells you whether it can see yours. `/doctor` estimates what the
+listing costs and names the biggest contributors. `/skill-doctor` finds the ones
+that never fire. The transcript grep is in
 [the plugins post](/engineering/claude-code-plugins-what-i-actually-use/).
 
-**Where Copilot differs.** The convergence is nearly complete: its agent skills
+**Where Copilot differs.** The convergence is nearly complete: its
+[agent skills](https://code.visualstudio.com/docs/agent-customization/agent-skills)
 load from `.claude/skills/` and `~/.claude/skills/` as well as its own
 directories, and the file is the same `SKILL.md` with a `name` and a
 `description`. Its description cap is 1,024 characters rather than 1,536, so a
@@ -559,8 +560,8 @@ One consequence of the folder being a folder: install a plugin and you install
 files that enter your context as instructions, next to scripts that run.
 Anthropic states the first half plainly — a plugin's skills, commands and agents
 "enter Claude's context as instructions, so they influence what Claude does with
-the tools it already has" — and the second half more plainly still: "A Claude
-Code plugin you install can execute arbitrary code on your machine with your user
+the tools it already has" — and the second more plainly still: "A Claude Code
+plugin you install can execute arbitrary code on your machine with your user
 privileges." Post 2.7 found that sentence attached to hooks. Here it is attached
 to something you installed because it had a good spine.
 
@@ -568,10 +569,10 @@ OWASP files this as [`LLM03:2025 Supply Chain`](https://genai.owasp.org/llmrisk/
 and its central complaint fits exactly: there are no strong provenance assurances
 for the components, so a published description of what something is tells you
 nothing about what it does. The mitigations are the dull ones — install from
-sources you can name, read the files before you trust them, keep an inventory.
-Two things make this sharper than ordinary dependency hygiene. A plugin that
-auto-updates changes under you, so "the files you reviewed can change on disk".
-And the content arrives through the door
+sources you can name, read the files first, keep an inventory. Two things make
+this sharper than ordinary dependency hygiene. A plugin that auto-updates changes
+under you, so "the files you reviewed can change on disk". And the content
+arrives through the door
 [post 2.5](/engineering/what-can-go-wrong-with-an-mcp-server/) and
 [post 2.7](/engineering/who-is-allowed-to-do-what/) spent their length on: text
 in the context window, with nothing marking it as data rather than orders.
@@ -585,39 +586,39 @@ in the context window, with nothing marking it as data rather than orders.
 2. **Loosen it until it stops.** Rewrite the description to name the topic
    instead of the trigger, then to your team's private phrasing, then to
    something generically nice, asking the same question each time. The wording at
-   which it goes quiet is the edge you have been writing on the wrong side of.
+   which it goes quiet is the edge you have been writing on.
 3. **Find one you installed that has never fired.** Use `/skill-doctor`, or the
    transcript grep from the plugins post. Then open its `SKILL.md` and read only
    the description. Usually the clause that should say *use when the user asks…*
-   is missing, and the skill was never in the running.
+   is missing, and it was never in the running.
 
 ## Common mistakes
 
 **A description that names the topic instead of the trigger.** *Database
 migrations.* Accurate, useless. It says what the book is about and nothing about
-when to take it down, and the model is only ever answering the second question.
+when to take it down, and only the second question is being asked.
 
 **One skill doing three jobs.** Three jobs produce a description vague about all
 three — section 03's failure and section 05's collision at once. Three sharp
 spines beat one summary.
 
 **The whole instruction in the description.** Charged on every request, truncated
-at 1,536 characters, and not followed anyway: the description is matched against,
-not obeyed. Put it in the body, which is free until it fires.
+at 1,536 characters, and not followed anyway: it is matched against, not obeyed.
+Put it in the body, which is free until it fires.
 
 **Two skills with near-identical descriptions.** Nothing errors, nothing warns,
 and the winner is decided by something that is not about your task. Merge them,
 or make each name a moment the other does not.
 
 **Assuming a skill is in context.** It is a name and a line until it fires, and
-afterwards a message in the conversation like any other — one compaction can
-shorten and a long session can bury. If the rule has to hold every time, the
+afterwards a message like any other — one compaction can shorten and a long
+session can bury. If the rule has to hold every time, the
 vocabulary post already said where it belongs, and it is not here.
 
 ## References and further reading
 
-Every vendor page below was fetched on 10 October 2026. These are living pages
-whose paths move; treat each as a pointer to the current page.
+Every vendor page below was fetched on 10 October 2026. Their paths move; treat
+each as a pointer to the current page.
 
 - [Where the context comes from](/engineering/where-the-context-comes-from/) —
   the prerequisite. Open it for the layer-by-layer weighing of an assembled
@@ -628,7 +629,7 @@ whose paths move; treat each as a pointer to the current page.
   which of your skills have ever fired.
 - [Skills](https://code.claude.com/docs/en/skills) — the primary source for the
   front matter fields, the 1,536-character cap and the listing budget. Read
-  *Skill descriptions are cut short* even if you read nothing else.
+  *Skill descriptions are cut short* if nothing else.
 - [Plugins overview](https://code.claude.com/docs/en/plugins) and
   [plugin security and trust](https://code.claude.com/docs/en/plugins/security) —
   the first for what an enabled plugin adds to every session; the second for
@@ -651,8 +652,8 @@ program deciding what to put in a prompt.
 
 Which is good news, because the lever is in your hands and it is one line long.
 The next post in this track is about the other way to stop a context window
-filling up — giving work to something with a context window of its own — and the
-one after that puts a whole assembled request on the page at once.
+filling up — giving work to something with a window of its own — and the one
+after that puts a whole assembled request on the page at once.
 
 Until then: go and read your own spines. Not the bodies, which are probably fine.
 The one line at the top of each file, asking whether it names a moment you would
