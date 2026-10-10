@@ -161,6 +161,20 @@ const jsonLd = article ? [articleLd, breadcrumbLd].filter(Boolean) : websiteLd;
     <meta name="twitter:image:alt" content={title ?? SITE_TITLE} />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    {
+      /* GoatCounter pageview beacon: cookie-free, no personal data, so no
+         consent banner. Production only, so local dev hits don't inflate the
+         counts. Dashboard: https://riddam.goatcounter.com */
+      import.meta.env.PROD && (
+        <script
+          is:inline
+          data-goatcounter="https://riddam.goatcounter.com/count"
+          async
+          src="https://gc.zgo.at/count.js"
+        />
+      )
+    }
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
