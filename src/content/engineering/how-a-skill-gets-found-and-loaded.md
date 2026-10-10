@@ -156,8 +156,8 @@ flowchart LR
   L --> A["The model works<br/>with its instructions"]
 ```
 
-*Notice that the body never gets a chance to be relevant. The description does
-all the deciding.*
+*Notice that the body never gets a chance to be relevant. The name and the
+description do all the deciding.*
 
 So the question worth measuring is how much the wording changes the answer. I
 built a shelf of five skills, kept four spines fixed, and rewrote the fifth six
