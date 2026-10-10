@@ -172,7 +172,7 @@ and you would be back to paying for it on every turn.
 **The harness, deterministically.** A [hook](https://code.claude.com/docs/en/hooks)
 is a command the harness runs at a fixed point in the loop — before a tool call,
 after an edit, when a session ends — with the ability to block the action. A
-[permission rule](https://code.claude.com/docs/en/iam) is the same idea applied
+[permission rule](https://code.claude.com/docs/en/permissions) is the same idea applied
 to what the model may do at all. Neither involves the model's judgement. They are
 code, executed by the harness, and they are the only parts of this list that come
 with a guarantee rather than a tendency.
@@ -229,7 +229,7 @@ carefully. The mitigations are worth knowing: toolsets, which let you enable a
 subset; and deferred or searchable tools, where the harness holds only the names
 and fetches a schema when the model actually wants one.
 
-[Permissions](https://code.claude.com/docs/en/iam) are the layer that makes any of
+[Permissions](https://code.claude.com/docs/en/permissions) are the layer that makes any of
 this survivable. Allow and deny lists decide which tool calls run without asking,
 which prompt, and which are refused outright. The honest framing is that an
 allowlist is not a convenience setting — it is a written record of what you have
@@ -420,8 +420,9 @@ fact.
   trigger.
 - [Hooks](https://code.claude.com/docs/en/hooks),
   [settings](https://code.claude.com/docs/en/settings) and
-  [permissions](https://code.claude.com/docs/en/iam) — the deterministic layer,
-  and the one most people under-use.
+  [permissions](https://code.claude.com/docs/en/permissions) and
+  [permission modes](https://code.claude.com/docs/en/permission-modes) — the
+  deterministic layer, and the one most people under-use.
 - [MCP](https://code.claude.com/docs/en/mcp) — connecting external systems.
 - [Plugins](https://code.claude.com/docs/en/plugins) and
   [plugin marketplaces](https://code.claude.com/docs/en/plugin-marketplaces) — how
