@@ -128,11 +128,13 @@ model produces later in this post. Pretraining put the knowledge there, and the
 knowledge is fine.
 
 Now read the rest. The model emits `<|endoftext|>`, the marker that one document
-has ended and another begins, and starts a new one. It opens with `Human:`,
-because a great deal of its reading was scraped chat transcripts and `Human:` is
-what follows an end-of-document marker in a file full of those. Then it asks
-itself the difference between a load balancer and a load balancer, and does that
-again until it runs out of budget.
+has ended and another begins, and starts a new one. It opens with `Human:`.
+Qwen does not publish what this model was trained on, so I cannot tell you how
+much of the pile was scraped chat transcripts — but `Human:` directly after an
+end-of-document marker is the shape of that kind of file, and the model has
+clearly read enough text in that shape for it to be the favourite continuation
+here. Then it asks itself the difference between a load balancer and a load
+balancer, and does that again until it runs out of budget.
 
 None of this is a malfunction. The base model was never answering. It was
 continuing a plausible document that happened to begin with an instruction, and
@@ -237,21 +239,31 @@ the template wrote four. The system prompt did something, and what it did was
 move probability around, because text in that position followed by compliance is
 the pattern the model spent its post-training absorbing.
 
-Then look past `<|im_end|>`. In normal use the harness stops there and you never
-see another character. With the stop disabled, the model sails straight on,
-emits an end-of-document marker, and falls back into `Human:` — the same
-scraped-transcript behaviour as the base model, from the same weights, two lines
-after perfect compliance. It never left. It was papered over.
+Then look past `<|im_end|>`, and be precise about what you are looking at. The
+model complied, in one sentence, and then emitted its end-of-turn token — which
+is correct behaviour, and which is where the harness normally stops reading. The
+flag in the script forces generation onwards anyway. What follows is not the
+rule breaking. It is a model that has finished its turn and has nothing left to
+continue, doing the thing the reading taught it to do when a document ends:
+begin another one, in the transcript shape the base model reached for too. The
+rule is in fact still holding while it does so — look at the forced second
+answer, which is also exactly one sentence.
 
-This is the most load-bearing sentence in this post, so I will put it plainly.
-**A system prompt is a trained habit, not an enforced rule.** It is a strong
-statistical pull in a system that has no mechanism for guarantees. It competes
-with everything else in the context window on the same terms, which is why
+That is the useful part of this run. Post-training did not replace the
+text-continuing reader underneath; it put a habit on top of one that is still
+entirely there, in the same weights, one token past the end of a turn.
+
+Which gives the most load-bearing sentence in this post. **A system prompt is a
+trained habit, not an enforced rule.** It is a strong statistical pull in a
+system that has no mechanism for guarantees, and it competes with everything
+else in the context window on the same terms. That is why
 [the context post's](/engineering/the-context-window-is-the-entire-memory/)
 third failure mode — the instruction was there and lost — is not an excuse but a
-direct consequence. Four hundred tokens of urgent-looking stack trace outweighing
-one sentence of policy is the pull being overcome, and after three weeks of
-compliance, one long Tuesday conversation is enough to do it.
+direct consequence. To be clear about which mechanism is which: four hundred
+tokens of urgent-looking stack trace outweighing one sentence of policy is
+dilution in a long context, which is that post's subject and not what the run
+above shows. One long Tuesday conversation is enough to do it, after three weeks of
+compliance, because a pull can be outweighed and a rule cannot.
 
 Everything you build on a system prompt inherits that. If the rule is the only
 thing standing between a user and something expensive, you do not have a
@@ -381,9 +393,9 @@ Pin your version and re-run your evaluations on an upgrade.
   prerequisite. Section 04's claim that there is no privileged instruction
   channel is just the ranked-list mechanism from that post, restated.
 - [Qwen2.5-0.5B-Instruct model card](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct)
-  — the instruct model measured here. Its model tree names `Qwen/Qwen2.5-0.5B`
-  as the base it was post-trained from, which is what makes the comparison in
-  this post a clean one.
+  — the instruct model measured here, read at repository revision `7ae5576`,
+  25 September 2024. Its model tree names `Qwen/Qwen2.5-0.5B` as the base it was
+  post-trained from, which is what makes the comparison in this post a clean one.
 - [Training language models to follow instructions with human feedback](https://arxiv.org/abs/2203.02155)
   — Ouyang et al., arXiv:2203.02155, 4 March 2022. The paper that set the
   recipe. Open it for the result quoted in section 03: a 1.3B instruction-tuned
@@ -405,9 +417,10 @@ The thing you are talking to is two things stacked. Underneath, a reader that
 has absorbed an enormous amount of text and will extend any document you hand
 it. On top, a thin and cheap layer of conversation practice that makes it act
 like a participant. The knowledge is all downstairs; the behaviour is all
-upstairs. And the layer on top is a habit, not a guarantee — which you can watch
-give way two lines past `<|im_end|>`, in output from the same weights that had
-just complied perfectly.
+upstairs. And the layer on top is a habit rather than a guarantee, sitting on a
+reader that never went anywhere — which you can watch resume the moment you read
+past `<|im_end|>`, in output from the same weights that had just complied
+perfectly.
 
 That is not a flaw awaiting a later version. It is what the architecture is.
 Once you see it, "why did it ignore my instruction" stops being a mystery and
