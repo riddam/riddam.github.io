@@ -72,12 +72,12 @@ and the bottom costs $0.10.
 Then someone, reasonably, over-corrected. They moved a *different* step — the
 one that reads a pull request diff and writes the reviewer a summary — down to
 the cheap tier, because the cheap tier had been fine for routing. The summaries
-kept arriving. They read well. One of them described a change that was not in
-the diff, a reviewer approved on the strength of it, and that is section 04.
+kept arriving and they read well. One described a change that was not in the
+diff, a reviewer approved on the strength of it, and that is section 04.
 
 Both decisions were made the same way: by reading about the model instead of
 measuring it on the job. The rest of this post is the numbers you can read off
-a card, the numbers you cannot, and what happens when you measure instead.
+a card, the numbers you cannot, and what happens when you measure.
 
 ## 02 — The numbers that mean something
 
@@ -114,26 +114,25 @@ Four things in that table are worth stopping on.
 
 **Latency is a word.** "Slower", "Moderate", "Fast", "Fastest" — a rank, not a
 rate, and the page says why: actual latency depends on prompt length, output
-length and how much the model decides to think. There is no honest tokens-per-
-second number to publish, because it is not a property of the model alone. If
-you need a number, you have to measure it on your own prompts, and the number
-you get will be yours and nobody else's.
+length and how much the model decides to think. There is no honest
+tokens-per-second number to publish, because it is not a property of the model
+alone. If you need one, you measure it on your own prompts, and it is yours and
+nobody else's.
 
 **"From $0.10."** That word is doing real work. The cheapest tier's price is
-tiered by prompt size: $0.10 per million input and $0.50 output for prompts up
-to 100,000 tokens, and $0.50 / $2.50 above it. A five-times step change,
-triggered by a threshold your conversation crosses silently in the middle of a
-long session. If you budgeted at the headline rate and your sessions grow, your
-unit cost quintuples without a single line of code changing.
+tiered by prompt size: $0.10 per million input and $0.50 output up to 100,000
+tokens, and $0.50 / $2.50 above it. A five-times step change, triggered by a
+threshold your conversation crosses silently mid-session. Budget at the headline
+rate and your unit cost quintuples without a line of code changing.
 
 **The defaults are not the same across the family.** Two of those four models
 default to `medium` effort and two to `high`. Carry a request body from one to
 another and you have changed how hard the model works without touching your
 code.
 
-**Three of those rows have the same context window and the same max output.**
-On this lineup, context length no longer discriminates between tiers at all. It
-is a field that used to be a decision input and has quietly stopped being one.
+**All four rows have the same context window and the same max output.** On this
+lineup, context length no longer discriminates between tiers at all: a field
+that used to be a decision input and has quietly stopped being one.
 
 Now the part everyone gets wrong, which is that both prices are real:
 
@@ -150,9 +149,8 @@ flowchart LR
 is cheap; a chatty model is not.*
 
 Two sums, not one, at rates that differ by a factor of five. Which is why a
-task with a short prompt and a long answer — a summary, an explanation, a
-generated file — bills almost entirely on the output side, and why "we gave it
-a shorter prompt" is often the wrong lever.
+task with a short prompt and a long answer bills almost entirely on the output
+side, and why "we gave it a shorter prompt" is often the wrong lever.
 
 ## 03 — The numbers that mislead
 
@@ -191,11 +189,10 @@ sizes quote exactly the same context length. Context and capability are not the
 same axis, and on this family they are not even correlated.
 
 This matters less than it used to, for a reason worth saying out loud: **no
-current frontier model publishes a parameter count at all.** It is not in the
-table in section 02 because it is not on the card. If your model-choice
-conversation is about parameter counts, you are discussing a number the vendor
-has stopped supplying, usually as a proxy for a capability you could just
-measure.
+current frontier model publishes a parameter count at all.** It is missing from
+the table in section 02 because it is missing from the card. A model-choice
+conversation about parameter counts is a conversation about a number the vendor
+has stopped supplying, standing in for a capability you could just measure.
 
 **Leaderboard positions.** A benchmark is a fixed set of questions with known
 answers. It is real evidence — about that set of questions. The practical
@@ -204,7 +201,7 @@ standard has been replaced twice in recent years as the top of the table
 bunched up near the ceiling, and a one-point gap between two models at the top
 of a saturated benchmark is noise dressed as a ranking. The catalogue of which
 benchmark measures what, and which ones are retired, is
-[section 07 of the training and evaluation guide](/guides/model-training-finetuning-eval/) —
+[section 07 of the training and evaluation guide](/guides/model-training-finetuning-eval/#07--evaluation-harnesses--benchmarks) —
 I am not going to restate it here. The point for *this* post is narrower: the
 benchmark's task is not your task, and the gap between them is where your
 decision lives.
@@ -311,11 +308,10 @@ is entirely about.
 
 The middle model got both routing changes right and **silently omitted the new
 function**. Nothing in its answer is false. A reviewer would simply never learn
-that a new code path exists. That is the more dangerous of the two, because
-there is nothing to catch.
+a new code path exists — the more dangerous of the two, because there is nothing
+to catch.
 
-The largest model described all three changes correctly and named the thing to
-check.
+The largest model described all three changes correctly and named what to check.
 
 | | input tokens | output tokens | wall clock | tokens/sec | usable? |
 |---|---|---|---|---|---|
@@ -361,12 +357,12 @@ Opus 5.5    $0.003320/call | $ 13.28 for 4000 | 75% output |  40.0x
 Fable 5.1   $0.008300/call | $ 33.20 for 4000 | 75% output | 100.0x
 ```
 
-Four thousand pull requests a month is a busy platform team, and the entire
-range is thirty-three dollars. **Three quarters of every row is the output
-side** — 125 tokens out against 205 in, at five times the rate.
+Four thousand pull requests a month is a busy platform team, and the whole range
+is thirty-three dollars. **Three quarters of every row is output** — 125 tokens
+out against 205 in, at five times the rate.
 
-Two honest caveats about that table. The token counts come from a different
-tokenizer than the one those models use, so the absolute cents would move if
+Two honest caveats about that table. **The token counts come from a different
+tokenizer than the one those models use**, so the absolute cents would move if
 you re-ran it against them; the ratios between the rows would not. And this is
 a short task — on a long agent session the input side dominates instead, which
 is the arithmetic in [post 1.3](/engineering/the-context-window-is-the-entire-memory/),
@@ -379,8 +375,8 @@ step in section 01, running on every ticket with a four-word answer, is exactly
 the shape where the cheap tier wins — and is where the hundredfold ratio
 actually lands on your bill.
 
-That is the whole skill. Not "which model is best", but "which of my steps is
-which shape".
+That is the whole skill. Not "which model is best", but "which shape is this
+step".
 
 ## 05 — When thinking is worth paying for
 
@@ -484,7 +480,7 @@ flowchart TD
   T["A task"] --> A{"Is being wrong<br/>expensive?"}
   A -- "no" --> F["Cheapest tier<br/>that is usable"]
   A -- "yes" --> B{"Does it need<br/>multi-step reasoning?"}
-  B -- "no" --> M["Mid tier,<br/>no thinking budget"]
+  B -- "no" --> M["Mid tier,<br/>effort turned down"]
   B -- "yes" --> R["Top tier with thinking.<br/>Pay for it knowingly."]
 ```
 
@@ -496,7 +492,7 @@ Work it on the two steps from section 01. Ticket routing: being wrong is cheap
 usable tier with effort turned down. Pull request summaries: being wrong is
 expensive — it is wrong *into* a code review, which is the one place a confident
 summary is least likely to be questioned — but it is reading and compression,
-not derivation. Mid tier, no thinking budget. Neither branch ends at the top
+not derivation. Mid tier, effort turned down. Neither branch ends at the top
 tier, and that is the usual outcome.
 
 ## 06 — Going deeper: build your own benchmark
@@ -509,21 +505,19 @@ Twenty cases. That is the number. Twenty real inputs from your actual system
 with the answer you wanted written next to each, in a file, in the repository.
 It is an afternoon.
 
-Twenty is enough to catch a model that merges two changes into one, or drops a
-new function, or routes access tickets to hardware — those failures are
-structural, not rare, and they show up in twenty samples. Twenty is also small
-enough that you can read every output by hand the first time, which is where you
-learn what "usable" means for your task. That definition is the real artefact;
-the score is secondary.
+Twenty is enough to catch a model that merges two changes into one, drops a new
+function, or routes access tickets to hardware — those failures are structural,
+not rare. Twenty is also small enough that you can read every output by hand the
+first time, which is where you learn what "usable" means for your task. That
+definition is the real artefact; the score is secondary.
 
 Three properties separate a set that helps from one that flatters:
 
-- **Written after the model shipped, and never published.** This is your defence
-  against contamination, and it only works if the file stays private.
+- **Written after the model shipped, and never published.** Your defence against
+  contamination, and it only works if the file stays private.
 - **Graded on the thing you care about**, not on string similarity. For the
-  diff task the grade is "does it mention every change, and invent none" — two
-  booleans a human can apply in ten seconds, or a stronger model can apply at
-  scale.
+  diff task: "does it mention every change, and invent none" — two booleans a
+  human applies in ten seconds, or a stronger model applies at scale.
 - **Run on every tier, including the cheap one, every time you consider
   switching.** The cheap tier's result on *your* twenty is the only number that
   settles the section 01 argument.
@@ -531,9 +525,9 @@ Three properties separate a set that helps from one that flatters:
 Doing this properly — grading rubrics, judge models, regression gates in CI —
 is a discipline with a literature, and this series will have a post on it in a
 later track. Until then,
-[section 10 of the AI architecture guide](/guides/ai-architecture-master-guide/)
+[section 10 of the AI architecture guide](/guides/ai-architecture-master-guide/#10--llmops--evaluation)
 covers the LLMOps side of evaluation and
-[section 07 of the training and evaluation guide](/guides/model-training-finetuning-eval/)
+[section 07 of the training and evaluation guide](/guides/model-training-finetuning-eval/#07--evaluation-harnesses--benchmarks)
 covers the harnesses. But do not wait for any of it: twenty cases in a text
 file, graded by eye, beats a leaderboard you did not run.
 
@@ -541,36 +535,33 @@ file, graded by eye, beats a leaderboard you did not run.
 
 1. **Price your last week.** Take one route in your system, get its real input
    and output token counts from your logs, and do the two sums at your tier's
-   current published rates. Then do them at the tier below. The gap is the
-   number you have been guessing at.
+   published rates. Then do them at the tier below. The gap is the number you
+   have been guessing at.
 2. **Run one task on two tiers and read the outputs side by side.** Not the
    scores — the outputs. Decide whether the cheap one is *usable*, which is a
-   different question from whether it is worse. Most of the time it is both
-   worse and usable, and that is the decision.
+   different question from whether it is worse. Usually it is both, and that is
+   the decision.
 3. **Read one model card end to end and write down the three numbers that bind
-   your job.** For most people they are the output price, the max output tokens
-   and the retirement date. Check how far down the page the third one was.
+   your job.** For most people: the output price, the max output tokens and the
+   retirement date. Check how far down the page the third one was.
 
 ## Common mistakes
 
 **Comparing on price alone.** The cheap tier is a saving only if its output is
-usable. A wrong summary that a reviewer acts on costs more than the entire
-annual difference between two tiers, and section 04 is the measurement of how
-cheaply wrong arrives.
+usable. One wrong summary a reviewer acts on costs more than the entire annual
+difference between two tiers, and section 04 measures how cheaply wrong arrives.
 
 **Comparing on benchmarks alone.** You are reading evidence about a population
 you are not in. Twenty of your own cases outrank any public table, and a
 one-point gap near the top of a saturated benchmark is noise.
 
 **Using the biggest model for routing and classification.** Four words out, on
-every request, at a hundred times the rate. This is the single most common
-overspend and it never shows up as a quality problem, so nothing prompts anyone
-to look.
+every request, at a hundred times the rate. The most common overspend there is,
+and it never shows up as a quality problem, so nothing prompts anyone to look.
 
 **Forgetting that output tokens cost more.** Usually five times more. A task
-with a short prompt and a long answer bills almost entirely on the side most
-people never optimise, and the measured table in section 04 is 75 per cent
-output across every tier.
+with a short prompt and a long answer bills almost entirely on the side nobody
+optimises — 75 per cent of every row in section 04.
 
 **Assuming a bigger context removes the need to curate.** It raises the ceiling
 and leaves the discipline exactly where it was — and now that every tier quotes
@@ -579,28 +570,43 @@ the same window, it does not even distinguish them.
 ## References and further reading
 
 - [Claude models overview](https://platform.claude.com/docs/en/models/overview)
-  — the card index itself. Open it to see what a well-made comparison table
-  looks like, and to notice that latency is a word, parameter count is absent,
-  and there is a retirement date.
-- [Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing) —
-  read on 10 October 2026 for every figure in this post. Open it for the two
-  things the overview page compresses: the tiered rate above 100,000 tokens,
-  and the note that the current tokenizer produces roughly 30 per cent more
-  tokens for the same text.
-- [Effort](https://platform.claude.com/docs/en/build-with-claude/effort) — the
-  parameter that replaced the thinking budget, with the sentence worth quoting
-  at anyone who treats it as a cap: it is a behavioural signal, not a strict
-  token budget.
-- [Choosing a model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model)
-  — the vendor's own guide, which arrives at "write your own eval set" before
-  it arrives at any model name. Open it for the efficiency-first and
-  capability-first starting strategies.
+  and [Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing)
+  — both read on 10 October 2026; between them, every price, ID, context length
+  and effort default here. Open the first for what is *not* on a good card:
+  latency is a word, parameter count is absent, and there is a retirement date.
+  Open the second for the tiered rate above 100,000 tokens and the tokenizer
+  note behind section 03.
+- [Effort](https://platform.claude.com/docs/en/build-with-claude/effort) and
+  [Choosing a model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model)
+  — the parameter that replaced the thinking budget, with the sentence worth
+  quoting at anyone who treats it as a cap; and the vendor's own selection
+  guide, which arrives at "write your own eval set" before it arrives at any
+  model name.
+- The model cards for everything measured here:
+  [Qwen2.5-0.5B-Instruct](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct)
+  (`7ae5576`), [Qwen2.5-1.5B-Instruct](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct)
+  (`989aa79`) and [Qwen2.5-3B-Instruct](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct)
+  (`aa8e725`), all 25 September 2024, plus
+  [Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) (`c1899de`, 26 July
+  2025). The cards to practise on, and they make section 03's point for me:
+  each publishes a **non-embedding** parameter count beside the headline one —
+  0.36B of the "0.5B", 1.31B of the "1.5B" — the honest number, and the one
+  nobody quotes.
 - [The context window is the entire memory](/engineering/the-context-window-is-the-entire-memory/)
-  — the prerequisite. Section 03 there does the same arithmetic over a growing
-  session, which is the other half of your bill.
-- [Model training, fine-tuning and evaluation](/guides/model-training-finetuning-eval/)
-  — open section 07 for which benchmark measures what, which are saturated or
-  retired, and the eval traps list that section 03 above points at.
+  — post 1.3, the prerequisite. Its section 03 does this arithmetic over a
+  growing session: the other half of your bill, and the half that dominates
+  once a task runs longer than one call.
+- [AI Architecture: A Practitioner's Field Guide](/guides/ai-architecture-master-guide/#02--foundation-models--selection)
+  and [Model training, fine-tuning and evaluation](/guides/model-training-finetuning-eval/#07--evaluation-harnesses--benchmarks)
+  — section 02 of the first is the model-selection framework this post is the
+  ground-level version of; section 16 is the trade-off master reference, which
+  puts model tier beside every other dial. Section 07 of the second is the
+  benchmark catalogue and the eval traps list.
+- [The AI vocabulary](/engineering/the-ai-vocabulary/) — one-line entries for
+  parameters, context window, tokeniser, reasoning model, thinking budget,
+  prompt caching, eval and golden set. Its **thinking budget** entry is the
+  control section 05 says has been retired: vocabulary outlives APIs, and you
+  still need the word.
 
 ## Final thoughts
 
@@ -608,13 +614,12 @@ A model card is a van's spec sheet. Payload, consumption, top speed: all true,
 all measured, none of them about your loading bay.
 
 Six posts ago this series started with what a model is doing when it produces a
-token. It ends on the practical consequence, which is that you now know enough
-to stop reading about models and start measuring them. Tokens, the window, the
-loop, where confidence comes from, what training can and cannot fix, what
-retrieval is for — every one of those was a thing you could check on a laptop,
-and so is this one.
+token. It ends on the practical consequence: you now know enough to stop reading
+about models and start measuring them. Tokens, the window, the loop, where
+confidence comes from, what training can and cannot fix, what retrieval is for —
+every one of those was a thing you could check on a laptop, and so is this one.
 
 The last trick, if it is a trick, is that the questions which settle a model
 choice are not questions about models. Is being wrong expensive here. What does
-usable mean for this step. How many of these do I run a day. Answer those three
-and the card tells you the rest in about ninety seconds.
+usable mean for this step. How many do I run a day. Answer those three and the
+card tells you the rest in about ninety seconds.
