@@ -113,6 +113,19 @@ export const SERIES: Series[] = [
       'rolling-it-out-to-a-team',
     ],
   },
+  {
+    // Track 4 of AI Foundations: for engineers shipping a feature with a model
+    // behind it, not engineers using an AI tool on their own work. Assumes
+    // tracks 1 and 2.
+    title: 'Shipping AI in your own product',
+    sectionId: 'engineering',
+    slugs: [
+      'writing-the-agent-loop-yourself',
+      'knowing-whether-it-works',
+      'making-the-model-yours',
+      'running-it-in-production',
+    ],
+  },
 ];
 
 export const SECTIONS: Section[] = [

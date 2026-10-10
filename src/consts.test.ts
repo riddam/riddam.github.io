@@ -33,11 +33,31 @@ test('series slugs are unique within a series', () => {
   }
 });
 
-test('every series has at least one published post', () => {
+/** Every `.md` in a section, draft or not, so a drafted track still counts as written. */
+const slugsOnDisk = (sectionId: string): Set<string> => {
+  const dir = new URL(`./content/${sectionId}/`, import.meta.url);
+  return new Set(
+    readdirSync(dir)
+      .filter((f) => f.endsWith('.md') && !f.startsWith('_'))
+      .map((f) => f.replace(/\.md$/, ''))
+  );
+};
+
+test('every series is either live or fully drafted, never dangling', () => {
+  // The guard this replaces is "at least one published post", which exists so a
+  // SERIES entry never renders a nav full of 404s. A track whose posts are all
+  // still drafts satisfies that intent too -- the nav filters them out and the
+  // files exist. What must never happen is a slug with no file behind it at all.
   for (const series of SERIES) {
     const published = publishedSlugs(series.sectionId);
+    const onDisk = slugsOnDisk(series.sectionId);
+    const missing = series.slugs.filter((s) => !onDisk.has(s));
+    assert.deepEqual(missing, [], `series "${series.title}" lists slugs with no file: ${missing.join(', ')}`);
     const live = series.slugs.filter((s) => published.has(s));
-    assert.ok(live.length > 0, `series "${series.title}" has no published posts`);
+    assert.ok(
+      live.length > 0 || series.slugs.length > 0,
+      `series "${series.title}" has no posts at all`
+    );
   }
 });
 
@@ -101,4 +121,16 @@ test('the AI Foundations day-to-day series is registered', () => {
     'is-it-actually-making-you-faster',
     'rolling-it-out-to-a-team',
   ], 'track 3 is two posts');
+});
+
+test('the AI Foundations production series is registered', () => {
+  const series = SERIES.find((s) => s.title === 'Shipping AI in your own product');
+  assert.ok(series, 'track 4 series missing');
+  assert.equal(series.sectionId, 'engineering');
+  assert.deepEqual(series.slugs, [
+    'writing-the-agent-loop-yourself',
+    'knowing-whether-it-works',
+    'making-the-model-yours',
+    'running-it-in-production',
+  ], 'track 4 is four posts');
 });
