@@ -93,8 +93,8 @@ one section below moved between the two; I say so where it applies.
 
 ## 03 — The confused deputy
 
-An MCP proxy server sits between you and a third-party API, and acts as a single
-OAuth client to that API — one fixed client ID for everybody. The attack lets a
+An MCP proxy server sits between you and a third-party API and acts as a single
+OAuth client to it — one fixed client ID for everybody. The attack lets a
 malicious client "obtain authorization codes without proper user consent by
 exploiting the combination of static client IDs, dynamic client registration,
 and consent cookies".
@@ -176,7 +176,7 @@ server-side deployments. The specification adds one warning worth repeating:
 do not hand-roll the IP check, because "attackers exploit encoding tricks
 (octal, hex, IPv4-mapped IPv6) that custom parsers often miss".
 
-## 06 — Session hijacking
+## 06 — Session hijacking, now state handle hijacking
 
 A session ID is a handle the server gave your client, and the attack is somebody
 else obtaining or guessing it and acting as you. The condition is a server that
@@ -295,8 +295,8 @@ of the key, not the lock.
 
 ## 10 — The same question in Claude Code
 
-Three things are documented here that change what you can actually do, and none
-of them is the scopes-and-precedence material in the previous post.
+Three documented things change what you can actually do, and none of them is the
+scopes-and-precedence material in the previous post.
 
 **Reviewing the repository's file does not tell you what loads.** The security
 page states it outright: servers at other scopes and claude.ai connectors "are
@@ -313,9 +313,9 @@ generalises: every registry you will meet is a catalogue, not an assessment.
 file deployed to a system path takes exclusive control — only the servers it
 defines load, and `claude mcp add` refuses. Softer patterns filter what users
 configure, with `allowedMcpServers` and `deniedMcpServers`. One trap there is
-flagged as a warning rather than buried: matching by `serverName` "is not a
-security control", because the name is a label the user chose — "a user can call
-any server `github`". Match on `serverCommand` or `serverUrl`.
+flagged as a warning: matching by `serverName` "is not a security control",
+because the name is a label the user chose — "a user can call any server
+`github`". Match on `serverCommand` or `serverUrl`.
 
 What the host does with a server *after* it loads — permission modes, sandboxes,
 where a hook can intervene — is the next post, and it is where the other half of
@@ -360,40 +360,40 @@ go to the provider and revoke it.
 - [MCP security best practices](https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices),
   revision `2025-11-25` — open this for session hijacking as it applies to
   server-assigned session IDs, the form implementations still meet on the wire.
-- [MCP authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization)
-  — open this for the normative token rules behind section 04, including the
-  audience-validation requirement and the scope selection strategy.
+- [MCP authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization),
+  revision `2026-07-28` — open this for the normative token rules behind section
+  04, including the audience-validation requirement and the scope selection
+  strategy.
 - [OWASP SSRF Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)
-  — the specification links here itself. Open it if you are the one writing the
-  URL validation in section 05, rather than choosing a client that has it.
+  — unversioned and revised in place, last changed October 2026; linked from the
+  specification's own SSRF section at revision `2026-07-28`. Open it if you are
+  writing the URL validation in section 05 yourself.
 - [Claude Code security](https://code.claude.com/docs/en/security) and
   [managed MCP configuration](https://code.claude.com/docs/en/managed-mcp) —
   open these for section 10: the statement about `.mcp.json`, the directory
-  disclaimer, and the admin controls with the `serverName` warning.
+  disclaimer, and the admin controls with the `serverName` warning. Living pages
+  with no revision of their own, and they change often; check them.
 - [OWASP `LLM03:2025 Supply Chain`](https://genai.owasp.org/llmrisk/llm032025-supply-chain/)
   — open this for the wider framing. Its observation that "currently there are no
   strong provenance assurances in published models" applies word for word to
   published servers.
-- [MCP, explained without the spec](/engineering/mcp-explained-without-the-spec/)
-  and [build a small MCP server](/engineering/build-a-small-mcp-server/) — open
-  these first if host, client, scopes or transports felt assumed above. The
-  [AI vocabulary](/engineering/the-ai-vocabulary/) has one-line definitions for
-  the rest.
 
 ## Final thoughts
 
-What strikes me about that list is how ordinary it is. Six of the eight classes
-are OAuth problems that predate MCP by a decade — audience validation, consent
+What strikes me is how ordinary that list is. Six of the eight classes above are
+OAuth problems that predate MCP by a decade — audience validation, consent
 cookies, redirect URIs, SSRF during discovery, guessable handles, over-broad
-scopes. The two specific to this world are the two about running a command
-somebody else wrote. There is no exotic AI attack in the specification's security
-document, and that is reassuring rather than disappointing: the engineering
-judgement you already have transfers intact.
+scopes. Revision `2026-07-28` names eleven attack sections in all; the three I
+have left to the specification — mix-up attacks, localhost redirect URI
+impersonation, and trust policies for client metadata documents — are OAuth
+server-side concerns, which only sharpens the point. The two classes specific to
+this world are the two about running a command somebody else wrote. There is no
+exotic AI attack in that document, and that is reassuring rather than
+disappointing: the engineering judgement you already have transfers intact.
 
 So the useful posture is not suspicion. It is the one you would take with a
 contractor who needs a key: grant narrowly, know who has a copy, be able to
-change the lock without a project. Every mitigation above is a version of one of
-those three.
+change the lock without a project. Every mitigation above is one of those three.
 
 One line the series owes you, said plainly rather than implied. This post
 explains mechanisms, from a specification anyone can read. It is not a security
