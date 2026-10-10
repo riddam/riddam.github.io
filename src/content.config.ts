@@ -12,11 +12,14 @@ const postSchema = z.object({
   /** Abstract cover-art motif (see src/components/Cover.astro). Optional. */
   cover: z.enum(COVER_MOTIFS).optional(),
   /**
-   * Which rendering of that motif to use. Every motif is now used by more than
-   * one post; set this to 2 on the second so the pair does not render as the
-   * same picture. Defaults to 1.
+   * Which rendering of that motif to use. The 22 motifs ran out, so a motif can
+   * now carry four posts: 1 as drawn, 2 mirrored horizontally, 3 rotated 180,
+   * 4 flipped vertically — each with its own hue shift, so no two read as the
+   * same picture in a listing. Defaults to 1.
    */
-  coverVariant: z.union([z.literal(1), z.literal(2)]).optional(),
+  coverVariant: z
+    .union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+    .optional(),
 });
 
 const makeCollection = (name: string) =>

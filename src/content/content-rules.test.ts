@@ -101,3 +101,17 @@ test('every AI Foundations post links the vocabulary page and cites references',
   }
   assert.deepEqual(missing, [], `${missing.join('\n')}`);
 });
+
+test('cover variants 1 through 4 are all accepted and distinct', () => {
+  const schema = readFileSync(join(CONTENT, '../content.config.ts'), 'utf8');
+  for (const n of [1, 2, 3, 4]) {
+    assert.match(schema, new RegExp(`z\\.literal\\(${n}\\)`), `variant ${n} not in schema`);
+  }
+  const cover = readFileSync(join(CONTENT, '../components/Cover.astro'), 'utf8');
+  assert.match(cover, /translate\(1200,0\) scale\(-1,1\)/, 'variant 2 transform missing');
+  assert.match(cover, /translate\(1200,380\) scale\(-1,-1\)/, 'variant 3 transform missing');
+  assert.match(cover, /translate\(0,380\) scale\(1,-1\)/, 'variant 4 transform missing');
+  for (const n of [2, 3, 4]) {
+    assert.match(cover, new RegExp(`\\.cover\\.v${n} svg > g`), `variant ${n} hue rule missing`);
+  }
+});
