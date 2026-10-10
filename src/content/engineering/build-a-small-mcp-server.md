@@ -242,13 +242,10 @@ unchanged. `uv --directory` matters because `ROOT` in the server is
 `Path.cwd()`: the server's idea of "the project" is whatever directory it was
 started in, and the client will not pick that for you.
 
-`--scope local` is the default and means this project, for you alone, stored in
-your home directory. `--scope project` writes `.mcp.json` in the repository and
-shares the server with everyone who clones it. `--scope user` applies it across
-all your projects. The three scopes, the precedence order between them, and the
-fact that plugins and connectors bring their own servers that no scope file
-mentions are all covered in the previous post; the short version is that the
-file in front of you is not the list.
+`--scope local` is the default: this project, for you alone, stored in your home
+directory, which is the right scope for a server you are still writing. The
+previous post has all three scopes, the precedence order between them, and the
+servers that plugins and connectors add without appearing in any scope file.
 
 Confirm it loaded from the terminal rather than from the editor's UI, because
 this tells you the client actually launched the process and completed a
@@ -305,8 +302,9 @@ scope and willing to be asked a question mid-call. My server uses neither.
 
 One detail worth a sentence because it will confuse you otherwise. The current
 specification revision is `2026-07-28`, and the SDK knows it — but the version
-negotiated here is `2025-11-25`. In this SDK, `2025-11-25` is the newest revision
-reachable through the `initialize` handshake at all; the newer one uses a
+negotiated here is `2025-11-25`. In current implementations — the SDK's and the
+editor's alike — `2025-11-25` is the newest revision reachable through the
+`initialize` handshake at all; the newer one uses a
 different, per-request shape and is discovered a different way. So the date on
 the wire is not the date on the specification, and a mismatch between them is not
 necessarily a bug.
@@ -421,39 +419,22 @@ title the SDK generated from the variable name. In section 04 that field carried
 *"Project-relative path to a Markdown file, e.g. README.md or docs/notes.md"*.
 The difference is three lines of Python.
 
-It is also the difference between a tool that gets used and one that does not. I
-put both payloads in front of `Qwen/Qwen2.5-3B-Instruct` running locally,
-converted to the tool format the model's chat template expects, with the same
-question each time — *"How long is this project's README?"* — and greedy
-decoding:
+Three lines that matter a great deal: in
+[a tool call is a request, not an action](/engineering/a-tool-call-is-a-request-not-an-action/)
+I measured a seven-word example in exactly that field being the whole difference
+between a tool a model called and one it left untouched.
 
-```text
-  [terse]   Could you please provide me with the path to the README file?
-            I need that information to count the words in it.
+So the question for a server author is not what to write. It is where the words
+end up. `Annotated[str, Field(description=...)]` puts your text inside
+`inputSchema`, attached to the parameter, which is where a client renders it and
+where anything reading the schema will find it. A Google-style `Args:` block in
+the docstring is also accepted — but those words land in the tool's description
+text and the `path` property stays bare, exactly as it is above. The same
+sentence, written two reasonable ways, arrives in two different places.
 
-  [precise] <tool_call>
-            {"name": "word_count", "arguments": {"path": "README.md"}}
-            </tool_call>
-```
-
-Same model, same question, same tool, same code behind it. One version asks you
-to do its job; the other calls the tool. The underlying effect — that the
-example in the *field* description is doing most of the work — is measured and
-explained in
-[a tool call is a request, not an action](/engineering/a-tool-call-is-a-request-not-an-action/),
-and I am not going to repeat the argument here.
-
-What is new, and specific to writing a server, is where you have to put it. The
-SDK takes `Annotated[str, Field(description=...)]` and puts your text inside
-`inputSchema`, which is where a client renders it and where a model looking at
-the schema will find it. If you instead write a Google-style `Args:` block in the
-docstring, the SDK is perfectly happy — but the words land in the tool's
-description text and the `path` property stays bare. That may be good enough. It
-is not the same thing, and you only find out which by looking at the wire.
-
-The working rule for the menu above the counter: say what the tool does, when to
-use it, what it returns, and give one example of each argument's shape. Four
-lines. Then tee the traffic once and read what you actually sent.
+Neither is wrong, and you cannot tell which one you chose by reading your own
+code. Tee the traffic once and look at where your sentence came out. The menu is
+only above the counter if the customer can see it.
 
 ## 06 — Why read-only, and why stdio
 
@@ -485,18 +466,13 @@ flowchart LR
 *Notice the third arrow. It is the only difference that matters when choosing a
 transport for a local server.*
 
-The specification is blunt about that third arrow. For Streamable HTTP it
-requires servers to validate the `Origin` header on every incoming connection to
-prevent DNS rebinding, says they should bind only to localhost when running
-locally, and says they should implement proper authentication — because "without
-these protections, attackers could use DNS rebinding to interact with local MCP
-servers from remote websites." All three obligations are yours. None of them
-exists on stdio, because there is no port to find.
+The specification knows about that arrow and puts three obligations on anyone who
+opens a local port — `Origin` validation, localhost-only binding, authentication
+— none of which exists on stdio, because there is no port to find.
 
-Everything past that sentence — what a hostile server does with the access it was
-given, what arrives in your context when tool output is attacker-controlled, and
-what to check before you install one — is the next post's job, and it gets the
-room it deserves there.
+That is the whole of the security argument this post is making. What a hostile
+server does with the access it was given, and what to check before you install
+one, is the next post's subject and gets the room it deserves there.
 
 **Where Copilot differs.** The server above is unchanged; only the registration
 moves. GitHub's documentation puts MCP configuration for a repository in
@@ -506,8 +482,8 @@ advises configuring a given server in one place only, because duplicates
 conflict. You confirm you trust a server before it starts, and the tools are
 discovered the same way. The transferable parts are the ones in this post: a
 server is a program, the docstring is the interface, the transport decides who
-can reach it. The part that does not transfer is which file to edit, which is
-the part that changes every few months anyway.
+can reach it. The part that does not transfer is which file to edit, and that is
+a thing to look up on the day rather than carry around.
 
 ## 07 — Going deeper: what a write tool obliges you to add
 
@@ -591,8 +567,8 @@ allowed.
   SDK's class and decorator names rather than trusting any example, including
   mine, after a few months.
 - [Streamable HTTP transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http)
-  — open this before you put a local server on a port. The `Origin` validation
-  requirement and the localhost binding advice quoted in section 06 are here.
+  — open this before you put a local server on a port; the three obligations
+  named in section 06 are specified here, with the reasoning behind them.
 - [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp) — open
   this for the `claude mcp add` syntax, the three scopes and the `/mcp` command.
   It changes often; check it rather than trusting this paragraph in six months.
@@ -614,6 +590,7 @@ you have counted the tokens two tools cost on every turn, the question of how
 many servers to leave installed answers itself.
 
 None of that is advanced. It is the difference between reading about a mechanism
-and running one. The server is sixty-two lines; the log is forty. Build it, tee
-it, read it once, and the next server you install is a program you can reason
-about rather than a box of tools that appeared.
+and running one. The server is sixty-two lines; the whole log above is fifteen
+messages — seven requests, seven replies and one notification. Build it, tee it,
+read it once, and the next server you install is a program you can reason about
+rather than a box of tools that appeared.
