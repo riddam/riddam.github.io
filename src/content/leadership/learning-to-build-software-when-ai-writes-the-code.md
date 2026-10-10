@@ -58,7 +58,7 @@ flowchart LR
 
 **Test the edge cases yourself.** Let the AI suggest test cases, but write the edge-case tests yourself, straight from the spec. They prove you understood the problem, and they're the tests a reviewer reads first.
 
-**Review your own diff.** Read all of it, top to bottom, as if a stranger wrote it — because partly, one did. Apply the explain-back test from [my definition of done](/engineering/ai-assisted-coding-playbook/#13-definition-of-done-for-ai-assisted-changes): if you can't explain why a line is there, it doesn't ship.
+**Review your own diff.** Read all of it, top to bottom, as if a stranger wrote it — because partly, one did. Apply the explain-back test from [my definition of done](/engineering/ai-assisted-coding-playbook/#14-definition-of-done-for-ai-assisted-changes): if you can't explain why a line is there, it doesn't ship.
 
 **Open the pull request, and learn from the review.** Section 8 covers this properly.
 
@@ -74,7 +74,7 @@ flowchart LR
 | Understanding the problem and the requirements | Keep | Nobody can do this for you |
 | Debugging, at least the first attempt | Keep | This is where the learning gap was widest |
 | Design decisions and trade-offs | Ask for options, decide yourself | It doesn't know your budget, deadline or technical debt — and you'll be defending the choice |
-| Security-sensitive code: auth, permissions, personal data | Keep, and ask for senior review | See [the safety rules](/engineering/ai-assisted-coding-playbook/#12-safe-usage-rules-security--privacy) |
+| Security-sensitive code: auth, permissions, personal data | Keep, and ask for senior review | See [the safety rules](/engineering/ai-assisted-coding-playbook/#13-safe-usage-rules-security--privacy) |
 | Your pull request description | Keep | It's your understanding, on the record |
 
 The rule underneath the table: **delegate what you already understand; keep what you're still learning.** The line moves as you grow. Code you'd write by hand in your first month is reasonable to delegate in your second year. What shouldn't change is that you *could* have written it.
@@ -89,7 +89,7 @@ An AI assistant knows an enormous amount about software in general and almost no
 
 **Estimate with the whole picture.** An AI can estimate the coding. It doesn't know that the work depends on another team's API that isn't ready, that a higher-priority project will pull you away next sprint, or that the release needs an approval only one person can give. Use AI for the coding estimate if you like, then add what it can't see — dependencies, priorities, reviews, the release process — or give it that context explicitly. A fast first draft is not a finished feature, and I've written before about why [an estimate mostly measures what you don't know yet](/leadership/leading-without-authority/#10-your-estimate-measures-what-you-dont-know-yet).
 
-**Give it read access, never admin.** To give an assistant context, it's tempting to hand it an admin token for the ticket system, the cloud console or the database. Don't. Connect it through [MCP](https://modelcontextprotocol.io/) servers — the Model Context Protocol, the standard way assistants plug into tools — configured with read-only permissions and scoped to what the task needs. If a tool only offers admin access, that's a reason not to connect it, not a reason to grant admin. An agent that can only read can't delete a production table because it misunderstood you. The playbook's [safety rules](/engineering/ai-assisted-coding-playbook/#12-safe-usage-rules-security--privacy) cover the rest of this ground.
+**Give it read access, never admin.** To give an assistant context, it's tempting to hand it an admin token for the ticket system, the cloud console or the database. Don't. Connect it through [MCP](https://modelcontextprotocol.io/) servers — the Model Context Protocol, the standard way assistants plug into tools — configured with read-only permissions and scoped to what the task needs. If a tool only offers admin access, that's a reason not to connect it, not a reason to grant admin. An agent that can only read can't delete a production table because it misunderstood you. The playbook's [safety rules](/engineering/ai-assisted-coding-playbook/#13-safe-usage-rules-security--privacy) cover the rest of this ground.
 
 **You own it, whoever typed it.** The AI can do the work. It can't take the responsibility. Your name is on the commit and the pull request, and when the change breaks, "the AI wrote it" is not an answer anyone accepts — nor should it be. If you wouldn't defend a line in review, it isn't ready to merge.
 

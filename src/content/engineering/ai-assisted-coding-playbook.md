@@ -2,7 +2,7 @@
 title: "Making AI Coding Assistants Reliable: My Playbook"
 description: "The working discipline I've settled on for getting dependable, secure, low-regret results from AI coding assistants — prompting frameworks, model selection, context hygiene, and safety rules, learned the hard way."
 pubDate: 2026-06-04
-updatedDate: 2026-10-06
+updatedDate: 2026-11-12
 tags: ["ai-assisted-coding", "github-copilot", "prompting", "developer-productivity"]
 cover: assist
 ---
@@ -339,7 +339,52 @@ The most common cause of hallucination is a lack of grounding. Instruction files
 
 One refinement I'd add to that, written up later in [the words for the layer around the model](/engineering/harness-engineering-vocabulary/): an instruction file is *advisory*. The model reads it and weighs it against everything else in context, so on a long session it can lose. If a rule genuinely must hold every time — tests before commit, never touch production — a hook enforces it and an instruction file only asks. Write the rule down either way; just put the non-negotiable ones where they're executed rather than read.
 
-## 12. Safe Usage Rules (Security & Privacy)
+## 12. Repository Ergonomics: What an Agent Reads First
+
+Section 11 is about the rules you write down. This one is about everything else
+the repository tells an agent, which it reads whether or not you wrote it.
+
+An agent's first act on any task is to look around: run something, open a few
+files, work out where things live. What it finds there decides the quality of
+everything after. A well-grounded instruction file in a repository that takes
+twelve steps to set up will still produce a bad afternoon.
+
+**A test command fast enough to be the feedback loop.** This is the single
+highest-leverage item on the list. If the suite takes ten minutes, the agent
+will not run it between changes — and neither will you. It will write code,
+assert that it looks correct, and hand you something unverified. Name the
+threshold you actually work to: mine is that the tests for the thing I'm
+changing run in under thirty seconds, with the full suite reserved for CI. If
+you only do one thing in this section, make a fast subset runnable by one
+command.
+
+**Scripts instead of explanations.** Twelve documented steps become one command.
+A `Makefile`, a `scripts/` directory, or a `uv run` entry point is agent
+documentation that cannot go stale, because it either works or fails loudly.
+Prose describing the same twelve steps rots silently and is read as a suggestion.
+This applies to setup, to seeding a local database, to deploying to a sandbox —
+anything where the current answer is "ask someone who knows".
+
+**Structure that keeps it out of the wrong half.** Clear directory boundaries do
+more work than a paragraph asking the agent to stay away from generated code.
+If `generated/`, `vendor/` and `migrations/` are separate directories with
+obvious names, you rarely have to write the rule at all. If everything lives in
+one `src/` with historical naming, no amount of instruction-file text will
+reliably keep an agent out of the parts you meant.
+
+**Short instruction files survive.** Everything in section 11 still applies, with
+one addition from the other direction: an always-loaded file is paid for on every
+prompt, so length is a real cost, and a file nobody is willing to delete from has
+stopped being a configuration. [Where the context comes from](/engineering/where-the-context-comes-from/)
+covers the mechanism — what is actually in the window, and what compaction throws
+away — and I won't repeat it here.
+
+The pattern across all four: an agent is worst exactly where a new joiner is
+worst, and for the same reasons. Every item above pays off whether or not anyone
+on your team ever runs an agent, which is what makes it the cheapest work in this
+whole playbook.
+
+## 13. Safe Usage Rules (Security & Privacy)
 
 AI-assisted coding is now a real attack vector — both for leaking your data and for pulling malicious code in.
 
@@ -367,7 +412,7 @@ Never blind-merge AI code. A meaningful share of AI suggestions still contains s
 - Run scanners in pre-commit: `ruff`, `bandit`, `checkov`.
 - **Check for phantom dependencies.** Verify every new import actually exists in your lockfile. Attackers register packages under names AI models commonly hallucinate ("slopsquatting") — an import that "looks right" can be a supply-chain attack.
 
-## 13. Definition of Done for AI-Assisted Changes
+## 14. Definition of Done for AI-Assisted Changes
 
 Because AI is probabilistic, "done" needs a verification loop. My PR checklist:
 
@@ -385,7 +430,7 @@ Automate the tail end by ending agent prompts with:
 
 > "When finished, provide a verification report: 1) files changed, 2) the exact command you ran to test, 3) confirmation that no new libraries were added."
 
-## 14. Going Deeper
+## 15. Going Deeper
 
 **Learn to verify, not just to prompt.** The skills that matter most for auditing AI output:
 
@@ -396,7 +441,7 @@ Automate the tail end by ending agent prompts with:
 
 **References worth your time:** the [VS Code AI documentation](https://code.visualstudio.com/docs/agents/overview) and [agents guide](https://code.visualstudio.com/docs/agents/run/agent-harnesses), plus [Anthropic's prompt-engineering docs](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview) — most of it transfers directly to any coding assistant.
 
-## 15. Expert-Level Pitfalls
+## 16. Expert-Level Pitfalls
 
 - **Avoid vibe coding.** Never accept code because it looks clean and the AI sounds confident. Run the tests. Confidence is a UI feature, not a correctness signal.
 - **Combat context rot.** Models get less sharp as the window fills. `/compact` often; new chat per ticket.

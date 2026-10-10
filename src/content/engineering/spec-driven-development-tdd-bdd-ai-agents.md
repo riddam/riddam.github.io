@@ -254,7 +254,7 @@ Tools name the steps differently, but the loop is the same everywhere:
 4. **Design, then plan.** How: components, data model, interfaces, which existing code to reuse, and the alternatives you rejected. The agent can propose options; choosing between them means weighing them against budget, time, people and existing debt, and that stays yours. **Checkpoint: you approve the design and the plan.** This is where you catch the new dependency, the needless abstraction, the rewrite of something that works.
 5. **Tasks.** Small, ordered, each independently testable.
 6. **Implement.** One task at a time, test first, commit per task.
-7. **Verify.** Check the code against the spec, not just against the tests. **Checkpoint: you review the diff with the spec open**, using a [definition of done](/engineering/ai-assisted-coding-playbook/#13-definition-of-done-for-ai-assisted-changes).
+7. **Verify.** Check the code against the spec, not just against the tests. **Checkpoint: you review the diff with the spec open**, using a [definition of done](/engineering/ai-assisted-coding-playbook/#14-definition-of-done-for-ai-assisted-changes).
 
 > **If the plan surprises you, fix the spec, not the plan.** A surprising plan means the spec left something open. Patch the plan and you've fixed this run; patch the spec and you've fixed every run after it — including the next person's.
 
@@ -379,7 +379,7 @@ It's easy to come away from a post like this wanting to spec everything. Don't.
 - **Exploration.** When you don't yet know what you want, a spec is premature. Spike it, throw the spike away, then write the spec with what you learned.
 - **Specs nobody maintains.** A spec-first spec starts rotting at merge. Either treat it as scaffolding and let it go, or keep it spec-anchored and update it in the same pull request as the code. The worst option is the common one: keeping it and letting it lie.
 - **Waterfall in markdown.** A ten-page spec for a two-day feature means the feature is too big or the spec is doing the plan's job. Size the spec to the change, and when one sprawls, split the feature.
-- **Rubber-stamped specs.** If the agent drafts the spec and you approve it unread, you've moved [vibe coding](/engineering/ai-assisted-coding-playbook/#15-expert-level-pitfalls) up a level, not removed it. The spec is now the most important thing you review. Read it like it matters.
+- **Rubber-stamped specs.** If the agent drafts the spec and you approve it unread, you've moved [vibe coding](/engineering/ai-assisted-coding-playbook/#16-expert-level-pitfalls) up a level, not removed it. The spec is now the most important thing you review. Read it like it matters.
 
 ## Final thoughts
 
