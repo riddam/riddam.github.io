@@ -1,11 +1,11 @@
 ---
 title: "How a Skill Gets Found and Loaded"
 description: "A skill is a folder, not a prompt, and its name and description together are the only thing deciding whether it ever runs. Why loading on demand is a context decision rather than tidiness, and what happens when two skills describe themselves the same way."
-pubDate: 2026-10-29
+pubDate: 2026-10-22
 tags: ["ai-foundations", "harness-engineering", "skills", "claude-code"]
 cover: assist
 coverVariant: 2
-draft: false
+draft: true
 ---
 
 *Everything below was measured on 10 October 2026, and none of it needed an API

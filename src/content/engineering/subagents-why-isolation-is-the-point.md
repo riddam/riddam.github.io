@@ -1,11 +1,11 @@
 ---
 title: "Subagents: Why Isolation Is the Point"
 description: "A subagent is a fresh context with a narrow brief, and that — not parallelism — is the reason to use one. What it can and cannot see, when fanning out saves a long session, and when it just pays to read the same files four times."
-pubDate: 2026-10-30
+pubDate: 2026-10-23
 tags: ["ai-foundations", "harness-engineering", "subagents", "claude-code"]
 cover: agent
 coverVariant: 3
-draft: false
+draft: true
 ---
 
 *The numbers below were read out of one real session's own transcripts on 10

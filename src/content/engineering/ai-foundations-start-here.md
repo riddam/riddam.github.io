@@ -1,11 +1,11 @@
 ---
 title: "AI Foundations: Start Here"
 description: "Four short series explaining how these systems actually work — what the model is doing, what your coding tool is doing around it, how to work with it day to day, and how to ship it in your own product. Which one to read depends on what surprised you."
-pubDate: 2026-11-01
+pubDate: 2026-10-17
 tags: ["ai-foundations", "model-internals", "harness-engineering"]
 cover: personas
 coverVariant: 2
-draft: false
+draft: true
 ---
 
 *This page exists because two posts went out that named a whole layer nobody had
@@ -22,10 +22,10 @@ first. Start where the question is; back up only when the post tells you to.
   [Why It Sounds Certain When It's Wrong](/engineering/why-it-sounds-certain-when-its-wrong/)
 - **It forgot something I told it** →
   [The Context Window Is the Entire Memory](/engineering/the-context-window-is-the-entire-memory/)
-- **It did something I did not expect** →
-  [What Actually Happens When You Press Enter](/engineering/what-happens-when-you-press-enter/)
-- **I do not know what MCP is** →
-  [MCP, Explained Without the Spec](/engineering/mcp-explained-without-the-spec/)
+- **It did something I did not expect** → **What Actually Happens When You Press
+  Enter**, with track 2 on 24 October
+- **I do not know what MCP is** → **MCP, Explained Without the Spec**, with
+  track 2 on 24 October
 
 If none of those is it, the four tracks below are sorted by who they are for,
 not by difficulty. Read the one that matches you and stop.
@@ -56,38 +56,42 @@ explain** — the readers who got lost. Assumes track 1, or a willingness to
 follow its links. Each post explains the mechanism in general terms first, then
 shows the same thing concretely in Claude Code.
 
-1. [What Actually Happens When You Press Enter](/engineering/what-happens-when-you-press-enter/)
-   — the loop end to end, in about forty lines you can run.
-2. [A Tool Call Is a Request, Not an Action](/engineering/a-tool-call-is-a-request-not-an-action/)
-   — the model never runs anything; your harness decides whether to honour it.
-3. [MCP, Explained Without the Spec](/engineering/mcp-explained-without-the-spec/)
-   — what a server offers, which side your editor is on, what crosses the wire.
-4. [Build a Small MCP Server and Watch the Wire](/engineering/build-a-small-mcp-server/)
-   — a hundred lines, two read-only tools, every message logged.
-5. [What Can Go Wrong With an MCP Server](/engineering/what-can-go-wrong-with-an-mcp-server/)
-   — the attack classes the specification itself names, and what to check before installing one.
-6. [Where the Context Comes From](/engineering/where-the-context-comes-from/)
-   — your message is the smallest part of the request; compaction throws some of the rest away.
-7. [Who Is Allowed to Do What](/engineering/who-is-allowed-to-do-what/)
-   — asking an agent not to, versus actually stopping it.
-8. [How a Skill Gets Found and Loaded](/engineering/how-a-skill-gets-found-and-loaded/)
-   — the name and the description together are the trigger, and two similar ones fight.
-9. [Subagents: Why Isolation Is the Point](/engineering/subagents-why-isolation-is-the-point/)
-   — a fresh context with a narrow brief; parallelism is the side effect.
-10. [The Whole Thing, Annotated](/engineering/the-whole-thing-annotated/) — one
-    real session, first prompt to landed commits, every mechanism labelled where it fires.
+All ten are written and go live together on **24 October**; until then, this is
+what is coming, so you know whether to wait for it.
+
+1. **What Actually Happens When You Press Enter** — the loop end to end, in
+   about forty lines you can run.
+2. **A Tool Call Is a Request, Not an Action** — the model never runs anything;
+   your harness decides whether to honour it.
+3. **MCP, Explained Without the Spec** — what a server offers, which side your
+   editor is on, what crosses the wire.
+4. **Build a Small MCP Server and Watch the Wire** — a hundred lines, two
+   read-only tools, every message logged.
+5. **What Can Go Wrong With an MCP Server** — the attack classes the
+   specification itself names, and what to check before installing one.
+6. **Where the Context Comes From** — your message is the smallest part of the
+   request; compaction throws some of the rest away.
+7. **Who Is Allowed to Do What** — asking an agent not to, versus actually
+   stopping it.
+8. **How a Skill Gets Found and Loaded** — the name and the description together
+   are the trigger, and two similar ones fight.
+9. **Subagents: Why Isolation Is the Point** — a fresh context with a narrow
+   brief; parallelism is the side effect.
+10. **The Whole Thing, Annotated** — one real session, first prompt to landed
+    commits, every mechanism labelled where it fires.
 
 ## Track 3 — using it well, day to day
 
 **For working developers, and the tech leads deciding whether this is worth it.**
 Assumes nothing, and a non-engineer can follow it. Two posts:
 
-1. [Is It Actually Making You Faster?](/engineering/is-it-actually-making-you-faster/)
-   — what to measure, what the numbers hide, and how to run the comparison
-   honestly for two weeks.
-2. [Rolling It Out to a Team](/engineering/rolling-it-out-to-a-team/) — which
-   configuration belongs to the repository rather than the person, who owns the
-   shared skills, and the adoption failures that turn out to be social.
+Both go live on **31 October**.
+
+1. **Is It Actually Making You Faster?** — what to measure, what the numbers
+   hide, and how to run the comparison honestly for two weeks.
+2. **Rolling It Out to a Team** — which configuration belongs to the repository
+   rather than the person, who owns the shared skills, and the adoption failures
+   that turn out to be social.
 
 The track is short because most of its ground was already published, and those
 two link out to it rather than restate it. Already written:
@@ -111,8 +115,8 @@ putting a model inside something other people will use. Assumes tracks 1 and 2.
 It is the only track whose code you keep: an agent loop and an eval harness, both
 written by hand, both short enough to read in one sitting.
 
-All four are written and go live together; until they do, this is what is
-coming, so you know whether to wait for it.
+All four are written and go live together on **7 November**; until they do, this
+is what is coming, so you know whether to wait for it.
 
 1. **Writing the Agent Loop Yourself** — a step budget, an approval gate,
    reasoning printed each turn, and the four ways it actually went wrong.
@@ -132,16 +136,19 @@ shape of the problem; these four posts are where you get it.
 
 ## The reference pages
 
-Two pages here are not rungs on any ladder. They are meant to sit open in a
+Three pages here are not rungs on any ladder. They are meant to sit open in a
 second tab while you read the rest.
 
-- [The AI Vocabulary: Forty Terms That Unlock Everything Else](/engineering/the-ai-vocabulary/)
+- [The AI Vocabulary: Seventy Terms That Unlock Everything Else](/engineering/the-ai-vocabulary/)
   — one sentence and one concrete example each, grouped by what you are trying to
   understand rather than alphabetically. Sendable on its own.
 - [Harness Engineering: The Words for the Layer Around the Model](/engineering/harness-engineering-vocabulary/)
   — the same job for the layer *around* the model: skill, hook, subagent, plugin,
   permission mode, organised by who pulls the trigger. Track 2 uses these words
   without redefining them.
+- [Running the Code in These Posts](/engineering/running-the-code-in-these-posts/)
+  — the ten-minute setup for the seven posts that print numbers from a model on
+  your own laptop. No GPU, no API key, one command.
 
 ## What this series is not
 

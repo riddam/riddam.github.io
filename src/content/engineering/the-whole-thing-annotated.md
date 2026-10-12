@@ -1,11 +1,11 @@
 ---
 title: "The Whole Thing, Annotated"
 description: "One real piece of work from first prompt to landed commits, with every mechanism from the two tracks labelled where it fires — what entered context on turn one, what a tool call actually returned, why compaction never bit in seven and a half hours, and the turn where a correct command destroyed a file nobody was thinking about."
-pubDate: 2026-10-31
+pubDate: 2026-10-24
 tags: ["ai-foundations", "harness-engineering", "claude-code", "ai-assisted-coding"]
 cover: mirror
 coverVariant: 3
-draft: false
+draft: true
 ---
 
 *Every number below was read out of one real session's own transcripts on 10

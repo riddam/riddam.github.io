@@ -193,9 +193,9 @@ code that duplicates something your repository already has, because the agent
 couldn't see it.
 
 **Telling plausible from correct is the whole skill.** Fluent, confident and
-well-structured is the default output, not evidence of anything —
-[why it sounds certain when it's wrong](/engineering/why-it-sounds-certain-when-its-wrong/)
-explains why that's the mechanism working as designed rather than a bug. Two
+well-structured is the default output, not evidence of anything. The entry for
+*hallucination* in [the AI vocabulary](/engineering/the-ai-vocabulary/) is the
+short version: it is the mechanism working as designed rather than a bug. Two
 things cut through it: run the change yourself, and check one factual claim
 against a primary source. One. Whichever claim the change most depends on. If it
 holds, your confidence is earned rather than borrowed; if it doesn't, you've

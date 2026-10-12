@@ -1,11 +1,11 @@
 ---
 title: "What Actually Happens When You Press Enter"
 description: "An AI coding tool is a loop around a model that can only produce text. What gets assembled and sent, what comes back, who runs the tools, and why the whole thing goes round again — shown in about forty lines of code you can run yourself, against a real repository."
-pubDate: 2026-10-14
+pubDate: 2026-10-18
 tags: ["ai-foundations", "harness-engineering", "claude-code", "ai-assisted-coding"]
 cover: bootstrap
 coverVariant: 2
-draft: false
+draft: true
 ---
 
 *The loop at the centre of this post is real: about forty lines of Python

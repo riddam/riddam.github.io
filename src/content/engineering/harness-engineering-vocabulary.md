@@ -26,10 +26,9 @@ Claude Code and GitHub Copilot whose entire purpose is *this must happen every
 time*, enforced by the harness rather than requested of the model, and the
 sentence belonged there.
 
-If any of the words below are doing more work than you can follow, start with
-[what actually happens when you press enter](/engineering/what-happens-when-you-press-enter/)
-— it traces the loop these parts sit in — and come back. This post names the
-parts; that one shows them moving.
+If any of the words below are doing more work than you can follow, *What
+Actually Happens When You Press Enter* traces the loop these parts sit in. It
+arrives on 24 October. This post names the parts; that one shows them moving.
 
 That is the shape of almost every complaint I hear about these tools. Not "the
 model is not smart enough" but "I told it and it ignored me" — which is a
@@ -226,10 +225,10 @@ provider's documentation — and both harnesses speak it:
 [Claude Code](https://code.claude.com/docs/en/mcp) and
 [Copilot](https://code.visualstudio.com/docs/agent-customization/mcp-servers)
 both read a portable `.mcp.json` at the project root. If that sentence is one you
-have been nodding along to without quite knowing what crosses the wire,
-[MCP, explained without the spec](/engineering/mcp-explained-without-the-spec/)
-takes a real handshake apart line by line — and shows why `.mcp.json` is not the
-full list of servers a session loads.
+have been nodding along to without quite knowing what crosses the wire, *MCP,
+Explained Without the Spec* takes a real handshake apart line by line — and shows
+why `.mcp.json` is not the full list of servers a session loads. It is published
+on 24 October.
 
 The cost is the part people discover late. An MCP server charges you before you
 use it, because every tool it exposes has a name, a description and a parameter

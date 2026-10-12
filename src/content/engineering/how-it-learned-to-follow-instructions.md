@@ -1,11 +1,11 @@
 ---
 title: "How It Learned to Follow Instructions"
 description: "A model that has only read the internet does not answer questions — it continues text. What pretraining gives you, what post-training adds, why a system prompt works at all, and where the knowledge cutoff comes from, shown on a base model and its instruction-tuned sibling."
-pubDate: 2026-10-20
+pubDate: 2026-10-15
 tags: ["ai-foundations", "model-internals", "training", "llm"]
 cover: training
 coverVariant: 2
-draft: false
+draft: true
 ---
 
 *Measured on `Qwen/Qwen2.5-0.5B` and `Qwen/Qwen2.5-0.5B-Instruct` — the same

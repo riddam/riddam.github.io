@@ -1,11 +1,11 @@
 ---
 title: "Who Is Allowed to Do What"
 description: "The difference between asking an agent not to and actually stopping it. Permission prompts, allowlists, deny rules, sandboxes and hooks — which of them depend on your judgement in the moment, and which hold when text in a file tells the agent to do something else."
-pubDate: 2026-10-28
+pubDate: 2026-10-21
 tags: ["ai-foundations", "harness-engineering", "security", "claude-code"]
 cover: gate
 coverVariant: 4
-draft: false
+draft: true
 ---
 
 *This post explains mechanisms and names their limits. It carries no working

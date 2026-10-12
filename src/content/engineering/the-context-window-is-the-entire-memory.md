@@ -1,11 +1,11 @@
 ---
 title: "The Context Window Is the Entire Memory"
 description: "A model remembers nothing between turns — your whole conversation is resent every single time. Why that makes a long session slow and expensive, what 'it forgot' really means, and what actually falls out of the window, measured on a real conversation."
-pubDate: 2026-10-13
+pubDate: 2026-10-14
 tags: ["ai-foundations", "model-internals", "context-engineering", "ai-assisted-coding"]
 cover: pyramid
 coverVariant: 2
-draft: false
+draft: true
 ---
 
 *Measured on a real five-turn conversation, with a model small enough that you
@@ -134,7 +134,7 @@ One thing that measurement does not show, because I ran it bare: in a real
 coding tool, turn 1 is never 65 tokens. Before your first word there is a system
 prompt, the definitions of every tool the harness offers, and whatever
 instruction files the project loads. A single MCP server's tool definitions can
-run to [three and a half thousand tokens on their own](/engineering/mcp-explained-without-the-spec/),
+run to three and a half thousand tokens on their own,
 every turn, whether or not you use it. Your real turn 1 starts somewhere in the
 thousands, and everything below compounds from there rather than from 65.
 

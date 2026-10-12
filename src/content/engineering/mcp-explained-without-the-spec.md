@@ -1,11 +1,11 @@
 ---
 title: "MCP, Explained Without the Spec"
 description: "What the Model Context Protocol actually is, in plain words: the problem it solves, what a server offers, which side your editor is on, what local and remote transports really change, and what crosses the wire — shown on a real handshake."
-pubDate: 2026-10-16
+pubDate: 2026-10-19
 tags: ["ai-foundations", "harness-engineering", "mcp", "claude-code"]
 cover: gate
 coverVariant: 2
-draft: false
+draft: true
 ---
 
 *Every number and every line of JSON below came out of a real MCP server running

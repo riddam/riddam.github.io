@@ -1,7 +1,7 @@
 ---
 title: "Knowing Whether It Works"
 description: "Tests where the assertion is not equality but good enough. A twenty-case eval harness that fails the build on a real regression, why retrieval and generation have to be scored separately, and where a model judging a model quietly lies."
-pubDate: 2026-11-21
+pubDate: 2026-11-05
 tags: ["ai-foundations", "ai-in-production", "evaluation", "testing"]
 cover: mirror
 coverVariant: 4

@@ -1,11 +1,11 @@
 ---
 title: "Where the Context Comes From"
 description: "Your message is the smallest part of what gets sent. The assembly order of a real request, why an instruction file is advice the model weighs rather than a rule the system enforces, and what compaction throws away."
-pubDate: 2026-10-27
+pubDate: 2026-10-20
 tags: ["ai-foundations", "harness-engineering", "context-engineering", "claude-code"]
 cover: pyramid
 coverVariant: 3
-draft: false
+draft: true
 ---
 
 *Every number below was measured on 10 October 2026, in this blog's own

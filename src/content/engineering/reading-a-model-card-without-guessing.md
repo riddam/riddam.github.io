@@ -1,11 +1,11 @@
 ---
 title: "Reading a Model Card Without Guessing"
 description: "Parameters, context length, price per million tokens, tokens per second, and what a reasoning model actually changes. How to read a benchmark score without being misled, and one real task costed across three models."
-pubDate: 2026-10-22
+pubDate: 2026-10-17
 tags: ["ai-foundations", "model-internals", "model-selection", "cost"]
 cover: speed
 coverVariant: 2
-draft: false
+draft: true
 ---
 
 *One real task — summarising a pull request diff — run on three model sizes on
