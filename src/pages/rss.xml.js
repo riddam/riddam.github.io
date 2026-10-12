@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import MarkdownIt from 'markdown-it';
 import sanitizeHtml from 'sanitize-html';
 import { SITE_TITLE, SITE_DESCRIPTION, SECTIONS } from '../consts';
+import { isVisible } from '../utils/visibility';
 
 const parser = new MarkdownIt({ html: true, linkify: true });
 const SITE = 'https://riddam.github.io';
@@ -24,7 +25,7 @@ function toFeedHtml(body = '') {
 export async function GET(context) {
   const items = [];
   for (const section of SECTIONS) {
-    const entries = await getCollection(section.id, ({ data }) => !data.draft);
+    const entries = await getCollection(section.id, isVisible);
     for (const entry of entries) {
       items.push({
         title: entry.data.title,

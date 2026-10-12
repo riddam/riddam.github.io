@@ -4,11 +4,12 @@ import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
 import { SECTIONS } from '../../consts';
 import { readingStats } from '../../utils/reading-time';
+import { isVisible } from '../../utils/visibility';
 
 export async function getStaticPaths() {
   const all = [];
   for (const s of SECTIONS) {
-    const entries = await getCollection(s.id, ({ data }) => !data.draft);
+    const entries = await getCollection(s.id, isVisible);
     for (const e of entries) {
       all.push({
         href: `/${s.id}/${e.id}/`,

@@ -1,6 +1,7 @@
 import { getCollection } from 'astro:content';
 import { OGImageRoute } from 'astro-og-canvas';
 import { SITE_TITLE, SITE_DESCRIPTION, SECTIONS } from '../../consts';
+import { isVisible } from '../../utils/visibility';
 
 // Build one entry per published post, keyed by "<section>/<id>".
 const pages: Record<string, { title: string; description: string }> = {
@@ -8,7 +9,7 @@ const pages: Record<string, { title: string; description: string }> = {
 };
 
 for (const section of SECTIONS) {
-  const entries = await getCollection(section.id, ({ data }) => !data.draft);
+  const entries = await getCollection(section.id, isVisible);
   for (const entry of entries) {
     pages[`${section.id}/${entry.id}`] = {
       title: entry.data.title,

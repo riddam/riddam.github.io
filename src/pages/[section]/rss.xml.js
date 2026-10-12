@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import MarkdownIt from 'markdown-it';
 import sanitizeHtml from 'sanitize-html';
 import { SITE_TITLE, SECTIONS } from '../../consts';
+import { isVisible } from '../../utils/visibility';
 
 const parser = new MarkdownIt({ html: true, linkify: true });
 const SITE = 'https://riddam.github.io';
@@ -31,7 +32,7 @@ export function getStaticPaths() {
 
 export async function GET(context) {
   const { section } = context.props;
-  const entries = await getCollection(section.id, ({ data }) => !data.draft);
+  const entries = await getCollection(section.id, isVisible);
   const items = entries
     .map((entry) => ({
       title: entry.data.title,

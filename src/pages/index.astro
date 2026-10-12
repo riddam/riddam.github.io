@@ -5,11 +5,12 @@ import PostList from '../components/PostList.astro';
 import Cover from '../components/Cover.astro';
 import { SITE_DESCRIPTION, SECTIONS } from '../consts';
 import { readingStats } from '../utils/reading-time';
+import { isVisible } from '../utils/visibility';
 
 const posts = (
   await Promise.all(
     SECTIONS.map(async (section) => {
-      const entries = await getCollection(section.id, ({ data }) => !data.draft);
+      const entries = await getCollection(section.id, isVisible);
       return entries.map((entry) => ({
         href: `/${section.id}/${entry.id}/`,
         title: entry.data.title,

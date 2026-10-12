@@ -3,11 +3,12 @@ import { getCollection, render } from 'astro:content';
 import Post from '../../layouts/Post.astro';
 import { SECTIONS, SERIES } from '../../consts';
 import { readingStats } from '../../utils/reading-time';
+import { isVisible } from '../../utils/visibility';
 
 export async function getStaticPaths() {
   const paths = [];
   for (const section of SECTIONS) {
-    const entries = await getCollection(section.id, ({ data }) => !data.draft);
+    const entries = await getCollection(section.id, isVisible);
     for (const entry of entries) {
       paths.push({
         params: { section: section.id, slug: entry.id },
@@ -26,7 +27,7 @@ const { words, minutes: minutesRead } = readingStats(entry.body ?? '');
 // Gather every published post across sections, tagged with its section label.
 const all = [];
 for (const s of SECTIONS) {
-  const entries = await getCollection(s.id, ({ data }) => !data.draft);
+  const entries = await getCollection(s.id, isVisible);
   for (const e of entries) {
     all.push({
       id: e.id,
