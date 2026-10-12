@@ -1,7 +1,7 @@
 ---
 title: "What a Model Actually Is"
 description: "A language model does one thing: given some text, guess what comes next. What a token is, why the model never looks anything up, what temperature changes, and why it cannot count the letters in a word — with the probabilities printed from a real model."
-pubDate: 2026-10-12
+pubDate: 2026-10-17
 tags: ["ai-foundations", "model-internals", "llm", "ai-assisted-coding"]
 cover: ai
 coverVariant: 2

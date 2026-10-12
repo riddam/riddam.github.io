@@ -1,7 +1,7 @@
 ---
 title: "Embeddings, and Why Retrieval Beats Memorising"
 description: "What a vector actually is, built by hand on ten sentences so you can watch similarity work. Then retrieval in thirty lines with no vector database — and the same code broken on purpose with a bad chunk size, producing a confidently wrong answer."
-pubDate: 2026-10-16
+pubDate: 2026-10-17
 tags: ["ai-foundations", "model-internals", "rag", "embeddings"]
 cover: network
 coverVariant: 3

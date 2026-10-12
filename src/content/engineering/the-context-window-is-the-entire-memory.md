@@ -1,7 +1,7 @@
 ---
 title: "The Context Window Is the Entire Memory"
 description: "A model remembers nothing between turns — your whole conversation is resent every single time. Why that makes a long session slow and expensive, what 'it forgot' really means, and what actually falls out of the window, measured on a real conversation."
-pubDate: 2026-10-14
+pubDate: 2026-10-17
 tags: ["ai-foundations", "model-internals", "context-engineering", "ai-assisted-coding"]
 cover: pyramid
 coverVariant: 2

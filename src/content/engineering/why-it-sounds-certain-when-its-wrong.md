@@ -1,7 +1,7 @@
 ---
 title: "Why It Sounds Certain When It's Wrong"
 description: "Hallucination is not a bug in the model — it is the mechanism working exactly as designed. What temperature and top-p actually do to the guess, why 'I don't know' is rare, and which of the usual fixes genuinely help, shown on the same question asked five times."
-pubDate: 2026-10-13
+pubDate: 2026-10-17
 tags: ["ai-foundations", "model-internals", "hallucination", "ai-assisted-coding"]
 cover: scales
 coverVariant: 2

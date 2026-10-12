@@ -1,7 +1,7 @@
 ---
 title: "Running the Code in These Posts"
 description: "Every snippet in the AI Foundations series runs on an ordinary laptop with no GPU, no API key and no cloud account. Here is the ten-minute setup, what gets downloaded, where it lands, and how to get the disk space back."
-pubDate: 2026-10-11
+pubDate: 2026-10-17
 tags: ["ai-foundations", "local-models", "llm", "ai-assisted-coding"]
 cover: bootstrap
 coverVariant: 3
