@@ -2,7 +2,7 @@
 title: "Making AI Coding Assistants Reliable: My Playbook"
 description: "The working discipline I've settled on for getting dependable, secure, low-regret results from AI coding assistants — prompting frameworks, model selection, context hygiene, and safety rules, learned the hard way."
 pubDate: 2026-06-04
-updatedDate: 2026-11-12
+updatedDate: 2026-10-12
 tags: ["ai-assisted-coding", "github-copilot", "prompting", "developer-productivity"]
 cover: assist
 ---

@@ -2,7 +2,7 @@
 title: "Claude Code Plugins: What I Actually Use, and What a Plugin Even Is"
 description: "I checked which Claude Code plugins I actually reach for, and found one I was certain I used and never had. What a plugin really is, the integrations that let me find developer-experience gaps instead of guessing at them, why an idle plugin is usually a role mismatch rather than a bad one, and where to start."
 pubDate: 2026-10-06
-updatedDate: 2026-10-16
+updatedDate: 2026-10-12
 tags: ["claude-code", "ai-assisted-coding", "developer-productivity", "plugins"]
 cover: agent
 coverVariant: 2

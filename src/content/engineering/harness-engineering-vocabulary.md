@@ -2,7 +2,7 @@
 title: "Harness Engineering: The Words for the Layer Around the Model"
 description: "Skills, subagents, hooks, MCP, slash commands, plugins, scopes — what each part of an AI coding harness is actually for, organised by who pulls the trigger, and mapped across Claude Code and GitHub Copilot."
 pubDate: 2026-10-06
-updatedDate: 2026-10-16
+updatedDate: 2026-10-12
 tags: ["harness-engineering", "claude-code", "github-copilot", "ai-assisted-coding"]
 cover: mirror
 coverVariant: 2

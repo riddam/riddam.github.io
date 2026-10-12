@@ -2,7 +2,7 @@
 title: "Learning to Build Software When AI Writes the Code"
 description: "A working process for junior developers in the AI era — taking a ticket from question to production, what to hand to the AI and what to keep, how to learn without letting the tool learn for you, and what reviewers actually look for."
 pubDate: 2026-09-27
-updatedDate: 2026-11-12
+updatedDate: 2026-10-12
 tags: ["mentoring", "junior-developers", "ai-assisted-coding", "career-growth"]
 cover: steps
 coverVariant: 2

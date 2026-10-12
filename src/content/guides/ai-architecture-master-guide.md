@@ -2,7 +2,7 @@
 title: "AI Architecture: A Practitioner's Field Guide (2026)"
 description: "A practitioner's blueprint covering every layer of modern AI systems — foundation model selection, RAG, fine-tuning, agentic patterns, LLMOps, safety, cloud platforms, and the trade-offs behind each decision."
 pubDate: 2026-07-11
-updatedDate: 2026-10-16
+updatedDate: 2026-10-12
 tags: ["ai-architecture", "llm", "rag", "agents"]
 cover: ai
 ---
