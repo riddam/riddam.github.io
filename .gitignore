@@ -3,3 +3,7 @@ dist/
 .astro/
 .DS_Store
 npm-debug.log*
+
+# Session plans and specs: working notes, not part of the site
+docs/superpowers/
+docs/ai-foundations-tracks.html
