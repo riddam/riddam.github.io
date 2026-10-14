@@ -18,17 +18,19 @@ claim.*
 
 ## TL;DR
 
-- The model never acts. Every control you have lives in the harness, which means
-  every control is something you configured or failed to configure.
+- The model never acts. Every control you have lives in the
+  [harness](/engineering/the-ai-vocabulary/#harness), which means every control is something you configured
+  or failed to configure.
 - A permission prompt depends on your attention. After the twentieth one, you do
   not have any.
-- A deny rule matches the text of a command, not its intent. The vendor
+- A deny rule matches the text of a command, not what it means. The vendor
   documents this plainly.
 - Instructions arrive through tool output — a file, an issue comment, a page —
-  and nothing marks them as data rather than orders.
-- Filesystem and network isolation is the only control that holds when the agent
-  stops cooperating, because the operating system enforces it rather than the
-  model obeying.
+  and nothing marks them as data rather than orders. That is
+  [prompt injection](/engineering/the-ai-vocabulary/#prompt-injection).
+- Filesystem and network isolation — a [sandbox](/engineering/the-ai-vocabulary/#sandbox) — is the only
+  control that holds when the agent stops cooperating, because the operating
+  system enforces it rather than the model obeying.
 
 ## Where this sits
 
@@ -41,15 +43,17 @@ line is the trust boundary. From
 instruction file is a user message the model weighs, not a rule the system
 enforces. That post measured the weighing; this one is what to do instead.
 
-[Post 2.5](/engineering/what-can-go-wrong-with-an-mcp-server/) handed this post
-its material. The words for the layer are in
-[harness engineering](/engineering/harness-engineering-vocabulary/) and single
-terms in [the AI vocabulary](/engineering/the-ai-vocabulary/).
+[What can go wrong with an MCP
+server](/engineering/what-can-go-wrong-with-an-mcp-server/) handed this post its
+material. The words for the layer are in [harness
+engineering](/engineering/harness-engineering-vocabulary/).
 
-The analogy, and it runs to the end: **a sign versus a lock.** A sign works on
-people who read it and intend to comply. A lock works regardless. Most of what
-gets called agent security is signage, and the useful skill is knowing which is
-which before you need it to hold.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the mechanics ever
+stop making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -64,13 +68,46 @@ working hours earlier and nothing told you. That is the subject: not whether the
 tool is safe, but which of the things you think are protecting you need you to be
 awake.
 
-## 02 — Two kinds of protection
+## 02 — A sign, and a lock
 
-The mistake that produces every unhappy story here is a sign where you needed a
-lock. So how good a sign is an instruction file? Post 2.6 has the vendor saying it is
-treated as context rather than enforced configuration. I wanted a number, so I
-ran one in fifteen conditions on a model small enough for a laptop: three
-placements of the same rule, five ways of asking for the thing it forbids.
+> There is a door at the back of the building, and you do not want people going
+> through it.
+>
+> **Option one: a sign.** *Staff only. Please do not enter.* It costs nothing,
+> it goes up this afternoon, and — this is the part people underrate — it works
+> most of the time. Most people read signs and most people comply.
+>
+> It works on everybody who (a) reads it, (b) understands it as applying to
+> them, and (c) wants to comply. Remove any one of those three and the sign is
+> paper. Someone in a hurry does not read it. Someone carrying a box does not
+> think it means them. And someone who has been told by a plausible-sounding
+> person in the corridor that the sign is out of date walks straight through.
+>
+> **Option two: a lock.** It costs more, it annoys people who have a legitimate
+> reason to go through, and it does not care about any of (a), (b) or (c). It
+> works on the hurried, the confused and the actively hostile in exactly the
+> same way, because it is not asking anyone anything.
+>
+> And then there is the third thing, which is the one that gets people.
+>
+> **Option three: a person at the door asking "are you sure?"** This feels like
+> a lock. It is not. It is a sign that needs *you* to be awake — and on the
+> twentieth person of the afternoon you are waving them through without looking
+> up. Its protection decays over the course of a day, and nothing tells you when
+> it has run out. That is section 01, and it is the single most expensive
+> misreading in this whole area.
+
+Every control in this post is one of those three, and almost every unhappy story
+is a sign where somebody needed a lock. Sections 03 to 05 are the signs and the
+person at the door. Section 06 is the only lock. Section 07 is the one control
+that is neither: a rule that runs as code.
+
+So how good a sign is an instruction file?
+[Where the context comes from](/engineering/where-the-context-comes-from/) has
+the vendor saying it is treated as context rather than enforced configuration. I
+wanted a number, so I ran one in fifteen conditions on a model small enough for
+a laptop: three placements of the same rule, five ways of asking for the thing
+it forbids.
 
 ```python
 # How often does a "never" in an instruction file actually hold?
@@ -262,9 +299,10 @@ in that order — first match deciding, specificity changing nothing. A broad de
 beats a narrow allow from any scope, and a managed deny cannot be overridden by
 anything, including the command line. The guarantee is real, and the
 documentation says where it comes from: permission rules are enforced by the
-harness, not by the model. Instructions shape what the agent tries to do; they do
-not change what the harness allows. The lock is on the other side of the line
-post 2.2 drew.
+harness, not by the model. Instructions shape what the agent tries to do; they
+do not change what the harness allows. The lock is on the other side of the line
+[a tool call is a request, not an
+action](/engineering/a-tool-call-is-a-request-not-an-action/) drew.
 
 I already had the rule in my own user settings, and a transcript of it holding.
 An earlier session in this repository, working in a scratch directory, asked to
@@ -312,16 +350,18 @@ reviews the list, so it only grows.
 ## 05 — Where the instructions can come from
 
 Every lock so far assumes the agent is trying to do roughly what you asked. The
-interesting case is when it is doing what a *file* asked. Post 2.2 established
-the mechanism: a tool result does not return to a privileged slot. It is appended
-to the conversation as text, read on the next pass with the same attention as
-everything else, with no field saying *this part is data*. A file, a comment on
-an issue, a fetched page, output from somebody else's server — all of it arrives
-through the same door as your own sentences.
+interesting case is when it is doing what a *file* asked. [A tool call is a
+request, not an action](/engineering/a-tool-call-is-a-request-not-an-action/)
+established the mechanism: a tool result does not return to a privileged slot.
+It is appended to the conversation as text, read on the next pass with the same
+attention as everything else, with no field saying *this part is data*. A file,
+a comment on an issue, a fetched page, output from somebody else's server — all
+of it arrives through the same door as your own sentences.
 
-OWASP files the consequence as `LLM01:2025 Prompt Injection`, and the variant
-that matters here is the indirect one: injections that "occur when an LLM accepts
-input from external sources, such as websites or files."
+OWASP files the consequence under *Prompt Injection* — first on its list three
+years running — and the variant that matters here is the indirect one:
+injections that "occur when an LLM accepts input from external sources, such as
+websites or files."
 
 So I ran it: same local model, two tools (one reads a file, one runs a command),
 one request — *read notes.txt and tell me what it says.* Four versions of the
@@ -434,7 +474,8 @@ The right posture for the strongest control in the list.
 ## 07 — Hooks: the rule that executes
 
 One more lock: the one the
-[playbook](/engineering/ai-assisted-coding-playbook/) promised and post 2.6
+[playbook](/engineering/ai-assisted-coding-playbook/) promised and
+[where the context comes from](/engineering/where-the-context-comes-from/)
 pointed at. A hook is a command the harness runs at a fixed point in the loop,
 able to block the action. The tool call arrives as JSON on stdin. Exit 0 and the
 normal permission flow continues; exit 2 and the call is blocked, with your
@@ -585,11 +626,13 @@ endpoint security."
 ## 09 — Going deeper: excessive agency
 
 Everything above shrinks the chance of a wrong action. The other half is what a
-wrong action costs, and OWASP files that as `LLM06:2025 Excessive Agency` — "the
-vulnerability that enables damaging actions", with three root causes that are
-three different conversations: excessive functionality (tools the task never
-needed), excessive permissions (more downstream access than they need), and
-excessive autonomy (high-impact actions running without independent approval).
+wrong action costs, and OWASP files that under [*Excessive
+Agency*](/engineering/the-ai-vocabulary/#excessive-agency), which climbed to
+third on its 2026 list — "the vulnerability that enables damaging actions", with
+three root causes that are three different conversations: excessive
+functionality (tools the task never needed), excessive permissions (more
+downstream access than they need), and excessive autonomy (high-impact actions
+running without independent approval).
 
 The mitigations are the ones this post has been circling, and Anthropic's deputy
 CISO puts the sharpest of them in one line: if a particular failure is
@@ -658,8 +701,9 @@ the current page.
   and [hooks](https://code.claude.com/docs/en/hooks) — the enforcement sentence
   section 06 quotes and a candid *Limitations* section; then the hook event list,
   the exit-code contract, and the disclaimer about full user permissions.
-- [OWASP `LLM01:2025 Prompt Injection`](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)
-  and [`LLM06:2025 Excessive Agency`](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/)
+- [OWASP's *Prompt Injection*](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)
+  and [*Excessive Agency*](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/)
+  entries — the numbers moved in the 2026 edition, so quote the names
   — sections 05 and 09 under the names a risk function recognises, with the
   mitigation lists written for people who have to sign something.
 - [Zero risk isn't the job: a CISO's guide to agentic AI](https://claude.com/resources/articles/ciso-guide-to-agentic-ai)

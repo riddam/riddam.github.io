@@ -17,12 +17,13 @@ not an assessment of any particular server.*
 
 - The protocol enforces nothing. It says so in its own text, and everything in
   this post follows from that one sentence.
-- A server is a program running with your privileges. Installing one is running
-  somebody else's code, not editing a setting.
+- An [MCP server](/engineering/the-ai-vocabulary/#mcp-server) is a program running with your privileges.
+  Installing one is running somebody else's code, not editing a setting.
 - Most of the named attacks are about **tokens and consent**, not clever prompts.
   The specification's list is an OAuth list with two local-execution entries.
-- Read-only and `stdio` remove whole classes rather than reducing them.
-- The check before installing takes four questions and about two minutes.
+- Read-only and `stdio` remove whole classes of problem rather than shrinking
+  them, which is why they are the default worth defending.
+- The check before installing is four questions and about two minutes.
 
 ## Where this sits
 
@@ -34,14 +35,15 @@ was getting its own treatment later. This is later.
 [Build a small MCP server and watch the wire](/engineering/build-a-small-mcp-server/)
 has the mechanics underneath, and deliberately stopped short of everything here.
 
-The harness words are in
-[the words for the layer around the model](/engineering/harness-engineering-vocabulary/)
-and single terms in [the AI vocabulary](/engineering/the-ai-vocabulary/). I use
-both without redefining them.
+The harness words are in [the words for the layer around the
+model](/engineering/harness-engineering-vocabulary/) and are not redefined here.
 
-The analogy, and it carries the whole post: **a contractor with a key to your
-house.** The question is never whether they seem nice. It is which doors the key
-opens, who else has a copy, and what you would notice if it were used.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the mechanics ever
+stop making sense, go back to it.
 
 One boundary. Permissions, sandboxes, hooks, and what happens when text from a
 tool result starts giving instructions belong to the next post in this series.
@@ -64,7 +66,44 @@ it means the interesting question is not whether the protocol is safe. It is wha
 the protocol undertakes to do for you, and the specification answers that one
 directly.
 
-## 02 — The protocol's own position
+## 02 — The contractor with a key
+
+> A contractor is coming to do some work. You give them a key.
+>
+> Everybody's instinct is to ask whether the contractor seems trustworthy, and
+> that is the wrong question, because it is unanswerable and because it is not
+> the one that decides what happens. Here are the four that are.
+>
+> **Which doors does this key open?** Not "do I trust them" — *what can the key
+> physically reach*. A key to the side gate and a key to the whole building are
+> different objects, and the difference was decided by you, at the moment you
+> handed it over, in about four seconds.
+>
+> **Who else has a copy?** The contractor subcontracts. Their van gets broken
+> into. The key is in a drawer in an office you have never seen. A key is not a
+> promise about one person; it is a promise about everyone that person deals
+> with, and you did not meet any of them.
+>
+> **How long is it good for?** You gave it to them for a job that took a
+> Tuesday. Eighteen months later it still turns.
+>
+> **Would you notice?** If the key were used at three in the morning, is there
+> anything — a log, a camera, a bill — that would tell you? For most people the
+> honest answer is no, and that is the one that makes the other three matter.
+>
+> And one trap that catches careful people. The contractor shows you a badge, a
+> leaflet, a van with a name on it. None of it is a key. **The paperwork is not
+> the lock**, and reading the word "secure" on the side of the van tells you
+> about the sign-writer.
+
+Sections 04 to 08 are five ways a key gets used that nobody planned for, as the
+specification itself names them. Sections 09 to 11 are the four questions above,
+turned into something you can actually ask at install time.
+
+Section 03 is the uncomfortable foundation: there is no locksmith. The
+specification says the lock is your problem, in those words.
+
+## 03 — The protocol's own position
 
 The specification's Security and Trust & Safety section opens by saying that MCP
 "enables powerful capabilities through arbitrary data access and code execution
@@ -91,7 +130,7 @@ On revisions: the current one is `2026-07-28`, which is what I quote throughout.
 The older `2025-11-25` is still what implementations negotiate on the wire, and
 one section below moved between the two; I say so where it applies.
 
-## 03 — The confused deputy
+## 04 — The confused deputy
 
 An MCP proxy server sits between you and a third-party API and acts as a single
 OAuth client to it — one fixed client ID for everybody. The attack lets a
@@ -130,7 +169,7 @@ approved client IDs per user and check it *before* forwarding to the third party
 wildcards, and **MUST NOT** set the consent cookie or session until after you
 have approved the proxy's own consent screen.
 
-## 04 — Token passthrough
+## 05 — Token passthrough
 
 Token passthrough is "an anti-pattern where an MCP server accepts tokens from an
 MCP client without validating that the tokens were properly issued *to the MCP
@@ -151,7 +190,7 @@ for them. The authorization specification is blunter still — servers **MUST**
 validate that tokens were issued for them as the intended audience, and **MUST
 NOT** "accept or transit any other tokens".
 
-## 05 — A server that makes your client fetch the wrong thing
+## 06 — A server that makes your client fetch the wrong thing
 
 This one reverses the direction. During OAuth metadata discovery your client
 fetches URLs the server supplies — the `resource_metadata` URL from a
@@ -176,7 +215,7 @@ server-side deployments. The specification adds one warning worth repeating:
 do not hand-roll the IP check, because "attackers exploit encoding tricks
 (octal, hex, IPv4-mapped IPv6) that custom parsers often miss".
 
-## 06 — Session hijacking, now state handle hijacking
+## 07 — Session hijacking, now state handle hijacking
 
 A session ID is a handle the server gave your client, and the attack is somebody
 else obtaining or guessing it and acting as you. The condition is a server that
@@ -198,7 +237,7 @@ the rename: generating handles unguessably was a **MUST** in `2025-11-25`
 **SHOULD** in `2026-07-28`, alongside a **SHOULD** to bind each handle
 server-side to the authenticated user as `<user_id>:<handle>`.
 
-## 07 — A local server you should not have run
+## 08 — A local server you should not have run
 
 A local server's configuration contains a startup command, and a startup command
 is arbitrary code. The specification is direct about it: without sandboxing and
@@ -228,10 +267,10 @@ processes, those two failures chain: script execution in the client steals the
 proxy's auth token, and the proxy spawns whatever it is asked to. The
 specification is careful that "the `stdio` transport itself is not inherently
 vulnerable" and that this applies only to proxy architectures. Its mitigations
-here are all **SHOULD** — sandbox spawned processes, restrict their filesystem
-access, log every use.
+here are all **SHOULD** — [sandbox](/engineering/the-ai-vocabulary/#sandbox)
+spawned processes, restrict their filesystem access, log every use.
 
-## 08 — Scopes, and why broad ones hurt later
+## 09 — Scopes, and why broad ones hurt later
 
 The last class has no MUST anywhere in it, which tells you it is a design problem
 rather than a bug. Broad scopes get granted up front because the server published
@@ -251,7 +290,7 @@ privileged operation is actually attempted, and never grant `*`, `all` or
 `full-access` to buy quiet. For you as an installer this is the read-only
 default, stated in OAuth terms.
 
-## 09 — What to actually check before installing
+## 10 — What to actually check before installing
 
 Six checks. Four of them are the fast path and fit in a diagram; two more are
 worth a minute each.
@@ -293,7 +332,7 @@ did something" as the complete account.
 the token at the provider, not deleting a config entry — the entry is your copy
 of the key, not the lock.
 
-## 10 — The same question in Claude Code
+## 11 — The same question in Claude Code
 
 Three documented things change what you can actually do, and none of them is the
 scopes-and-precedence material in the previous post.
@@ -324,9 +363,9 @@ this answer lives.
 **Where Copilot differs.** The shape transfers; the controls are younger. VS Code
 asks you to confirm you trust a registry server before it starts, and GitHub
 describes that registry as "a curated list of MCP servers from partners and the
-community" without saying what the curation covers. The org-level "MCP servers in
-Copilot" policy covers Business and Enterprise members and is "disabled by
-default". Same questions as section 09; fewer have a switch behind them.
+community" without saying what the curation covers. The org-level "MCP servers
+in Copilot" policy covers Business and Enterprise members and is "disabled by
+default". Same questions as section 10; fewer have a switch behind them.
 
 ## Common mistakes
 
@@ -367,16 +406,17 @@ go to the provider and revoke it.
 - [OWASP SSRF Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)
   — unversioned and revised in place, last changed October 2026; linked from the
   specification's own SSRF section at revision `2026-07-28`. Open it if you are
-  writing the URL validation in section 05 yourself.
+  writing the URL validation in section 06 yourself.
 - [Claude Code security](https://code.claude.com/docs/en/security) and
   [managed MCP configuration](https://code.claude.com/docs/en/managed-mcp) —
   open these for section 10: the statement about `.mcp.json`, the directory
   disclaimer, and the admin controls with the `serverName` warning. Living pages
   with no revision of their own, and they change often; check them.
-- [OWASP `LLM03:2025 Supply Chain`](https://genai.owasp.org/llmrisk/llm032025-supply-chain/)
+- [OWASP's *Supply Chain* entry](https://genai.owasp.org/llmrisk/llm032025-supply-chain/)
   — open this for the wider framing. Its observation that "currently there are no
   strong provenance assurances in published models" applies word for word to
-  published servers.
+  published servers. It was third on the 2025 list and fourth on the 2026 one,
+  so quote the name rather than the number.
 
 ## Final thoughts
 

@@ -16,12 +16,14 @@ blog's own `package.json`.*
 
 - The model only ever returns text. It cannot run a command, open a file, or
   touch your machine.
-- Everything else is the harness: it assembles the request, sends it, acts on
-  the reply, and goes round again.
-- A tool call is the model *asking*. Your harness decides whether to honour it.
-- The loop continues until the model stops asking for things.
-- Every feature you configure — instructions, skills, hooks, permissions, MCP —
-  is a layer in that assembly or that decision.
+- Everything else is the [harness](/engineering/the-ai-vocabulary/#harness): it builds the request, sends it,
+  acts on the reply, and goes round again.
+- A [tool call](/engineering/the-ai-vocabulary/#tool-call) is the model *asking*. Your harness decides whether
+  to honour it.
+- The loop keeps going until the model stops asking for things.
+- Every feature you configure — instruction files, [skills](/engineering/the-ai-vocabulary/#skill),
+  [hooks](/engineering/the-ai-vocabulary/#hook), permissions, [MCP](/engineering/the-ai-vocabulary/#mcp) — is a layer in that assembly or
+  that decision.
 
 ## Where this sits
 
@@ -36,13 +38,14 @@ model](/engineering/harness-engineering-vocabulary/) names all the parts and
 says what each is for. **I am not redefining any of that here.** That post is
 the map; this one shows the thing moving. If you want to know where to file an
 instruction, read that. If you want to know why the filing cabinet has those
-drawers, read this. Single terms are in
-[the AI vocabulary](/engineering/the-ai-vocabulary/).
+drawers, read this.
 
-The analogy for the whole post: **a dispatcher and a specialist on the phone.**
-The specialist is brilliant and has no hands, no files, and no memory of the
-last call. The dispatcher reads them the file, does whatever they ask, writes
-down the result, and calls again.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the mechanics ever
+stop making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -63,16 +66,68 @@ the model. The sentence is the model doing its only job: producing plausible
 text. Whether anything ran depends on a different box entirely.
 
 Once you can see the two boxes, this stops being mysterious and starts being
-diagnosable.
+something you can diagnose.
 
-## 02 — One turn, start to finish
+## 02 — Sam is on the phone, and you are the dispatcher
+
+Track 1 introduced Sam: the colleague who has read everything, answers one word
+at a time, and cannot look anything up. Track 2 is about the job *you* do around
+Sam, so here is the arrangement in full.
+
+> Sam is at the end of a phone line, in a bare room. No computer, no filing
+> cabinet, no window. Sam has a voice and nothing else.
+>
+> You are at the other end, sitting in the office with all the files. You are
+> the dispatcher.
+>
+> A request comes in: *what does package.json say the test script is?* You
+> cannot just forward it, because Sam cannot open anything. So before you dial,
+> you read Sam a briefing: the house rules, the list of things you are willing to
+> fetch — "I can read you a file if you give me a path, I can run a command if
+> you give me the command" — and then, last and shortest, the actual question.
+>
+> Sam listens and says: **"Read me package.json."**
+>
+> Stop there, because this is the sentence the whole track turns on. Sam has not
+> read anything. Sam has asked you to. Nothing has happened to any file. You are
+> now holding a request, and the next thing that happens is **your decision**.
+>
+> Say you agree. You open the file, read the contents down the phone, and — here
+> is the part people forget — Sam has no memory of the first call. So you start
+> again from the top: the house rules, the list of things you can fetch, the
+> original question, Sam's request, and now the file contents too. Every call,
+> the whole briefing, from the beginning.
+>
+> This time Sam answers in words, and you type the answer out for the person who
+> asked. Two calls for one question.
+
+Three consequences, and the rest of the post is one section each.
+
+- **Sam saying "let me check the tests" and the tests running are two different
+  events**, performed by two different people. Sam can say the sentence without
+  ever asking you to do anything, and nothing in the transcript marks the
+  difference. That is section 01's mystery, solved.
+- **Everything that touches your machine is on your side of the phone.** Not
+  Sam's. Which means every safety question is a question about you, not about
+  Sam's intentions.
+- **The briefing is almost all of what you send.** The question is the last
+  line. Change what goes in the briefing and you change the behaviour — which
+  is what nearly every setting in these tools actually does.
+
+Sam is the model. You are the harness. The rest of this post is that phone call
+in about forty lines of Python.
+
+## 03 — One turn, start to finish
 
 You press enter. Before anything reaches a model, the harness builds a request.
 
-Into it goes: a system prompt you did not write and usually cannot see; the
-definitions of every tool currently available, each with a name, a description
-and a parameter schema; whatever instruction files the project loads; the entire
-conversation so far; and — a small part of it — the sentence you just typed.
+Into it goes: a [system prompt](/engineering/the-ai-vocabulary/#system-prompt)
+you did not write and usually cannot see; the definition of every
+[tool](/engineering/the-ai-vocabulary/#tool) currently available, each with a
+name, a description and a [parameter
+schema](/engineering/the-ai-vocabulary/#tool-schema); whatever instruction files
+the project loads; the whole conversation so far; and — a small part of it — the
+sentence you just typed. That is the briefing.
 
 It is worth seeing that assembly rather than taking my word for it. My
 forty-line loop sends one tool and one sentence. Here is what actually arrives
@@ -108,9 +163,9 @@ What does package.json say the test script is?<|im_end|>
 Three things in there are worth noticing, because they are true of every one of
 these tools.
 
-**My question is the last line.** Everything above it is machinery. In a real
-coding tool, with a long system prompt and thirty tools, your sentence is a
-rounding error in the request.
+**My question is the last line.** Everything above it is machinery, exactly as
+in the phone call. In a real coding tool, with a long system prompt and thirty
+tools, your sentence is a rounding error in the request.
 
 **The tool is described in prose.** "Read a UTF-8 text file from the current
 project" is not a type signature the runtime enforces — it is a sentence the
@@ -141,7 +196,7 @@ is the harness, which is why everything you configure lives out here.*
 Keep that proportion in mind. When people say "the AI did X", they almost always
 mean the harness did X. The model contributed one box.
 
-## 03 — The two things a reply can be
+## 04 — The two things a reply can be
 
 What comes back is one of two shapes, and with a hosted API the response tells
 you which.
@@ -192,7 +247,7 @@ output above is mine. The distinction it marks is real either way.
 On turn 1 the model produced no text for me at all. It has not read anything —
 it has named a file and waited.
 
-## 04 — Who actually does the work
+## 05 — Who actually does the work
 
 This is the sentence the rest of the track rests on: **the harness runs the
 tool, not the model.**
@@ -217,10 +272,10 @@ flowchart LR
 *The line between these two boxes is where every permission, allowlist and
 sandbox lives. The model is never on the machine side of it.*
 
-Say it the other way round, because this is the part that reorganises people's
+Say it the other way round, because this is the part that rearranges people's
 thinking: **giving a model tools does not give it any ability at all.** It gives
-it a vocabulary for making requests. The abilities were always yours, and you
-lent them.
+it the words for making requests. The abilities were always yours. You lent
+them. Sam still has no hands.
 
 Everything you have ever read about AI agent safety is a statement about the
 right-hand box. The model cannot be made safe by asking it nicely, because the
@@ -229,7 +284,7 @@ permission" step is where approval prompts, allowlists and sandboxes live, and
 in my forty-line version it is a function that opens the file without asking —
 which is exactly why my version is a teaching aid and not a product.
 
-## 05 — And then it goes round again
+## 06 — And then it goes round again
 
 The harness appends the tool result to the conversation and sends the whole
 thing again. Same model, no memory of the previous call, now with one more thing
@@ -245,10 +300,12 @@ in the pile:
           This script runs all `.test.ts` files in the `src` directory using Node.js.
 ```
 
-Two round trips for one question. Note 203 tokens becoming 561 — the file I
-asked it to read is now part of the conversation and will be resent on every
-subsequent turn, which is [post 1.3](/engineering/the-context-window-is-the-entire-memory/)
-arriving in practice rather than in principle.
+Two round trips for one question. Note 203 tokens becoming 561: the file I asked
+it to read is now part of the conversation and will be resent on every
+subsequent turn. That is
+[the context window post](/engineering/the-context-window-is-the-entire-memory/)
+arriving in practice rather than in principle — the briefing got longer, and you
+read the whole thing again.
 
 Here is the loop itself. This is not pseudocode or a simplification; it is the
 program that produced the output above, with the model loading, the tool
@@ -270,11 +327,13 @@ for turn in range(1, 5):
         messages.append({"role": "tool", "name": c["name"], "content": result})
 ```
 
-That is an agent. The whole idea, start to finish: a loop, a list of messages, a
-branch on whether the model asked for something, and a function that does the
-asking-for. Everything Claude Code or Copilot adds — permissions, subagents,
-skills, hooks, compaction — is decoration on this skeleton. Useful, often
-essential decoration, but this is the shape underneath.
+That is an [agent](/engineering/the-ai-vocabulary/#agent). The whole idea, start
+to finish: a loop, a list of messages, a branch on whether the model asked for
+something, and a function that does the fetching. Everything Claude Code or
+Copilot adds — permissions,
+[subagents](/engineering/the-ai-vocabulary/#subagent), skills, hooks,
+[compaction](/engineering/the-ai-vocabulary/#compaction) — is decoration on this
+skeleton. Useful, often essential decoration, but this is the shape underneath.
 
 ```mermaid
 sequenceDiagram
@@ -292,20 +351,22 @@ sequenceDiagram
 
 *Two round trips for one question. That is the unit the whole track is built on.*
 
-One detail in that code repays attention. `messages` is the same list from
-[post 1.3](/engineering/the-context-window-is-the-entire-memory/) — the one that
-gets resent in full on every pass. The tool result is appended to it like any
+One detail in that code repays attention. `messages` is the same list from [the
+context window post](/engineering/the-context-window-is-the-entire-memory/) —
+the one resent in full on every pass. The tool result is appended to it like any
 other message, which means a tool that returns a 50,000-token file has just put
 a 50,000-token file into every remaining turn of the conversation. The
-truncation in my `run_tool` (`[:2000]`) is not laziness; it is the entire
-discipline of context engineering, in its crudest possible form.
+truncation in my `run_tool` (`[:2000]`) is not laziness. It is the whole
+discipline of [context
+engineering](/engineering/the-ai-vocabulary/#context-engineering), in its
+crudest possible form.
 
 And notice what the loop does *not* contain. There is no planner, no goal
 representation, no state machine, nothing that decides what to do next. The
 "agency" is entirely emergent from a model that can ask for things and a loop
 willing to go round again.
 
-## 06 — The same loop in your editor
+## 07 — The same loop in your editor
 
 Open a real coding tool and ask it the same kind of question, and you can map
 every visible element onto the diagram above.
@@ -314,7 +375,7 @@ The line that appears saying it is reading a file — that is a `tool_use` block
 being rendered. The expandable blob of output underneath it — that is the
 `tool_result` going into the message list. The pause before the final answer —
 that is the second round trip. A permission prompt, where you get one, is the
-"checks permission" box from section 04, surfaced. The spinner that says
+"checks permission" box from section 05, surfaced. The spinner that says
 something like "thinking" is one pass through the model.
 
 The mapping is worth doing once, deliberately, with a real session open. Most
@@ -349,12 +410,11 @@ There is one more difference, and it is the one that most changes the
 experience: real harnesses put things into the assembly step that you control.
 Your instruction files. The skills it decided were relevant. A summary of
 earlier turns, if compaction has run. The output style. Every one of those is a
-string being concatenated into the request in section 02's box — which is why
-the honest answer to "how do I make it behave differently" is almost always
-"change what goes into that box", and why so few of the answers are about the
-model.
+string being glued into the request in section 03's box — which is why the
+honest answer to "how do I make it behave differently" is almost always "change
+what goes into that box", and why so few of the answers are about the model.
 
-## 07 — Which box is broken
+## 08 — Which box is broken
 
 The practical payoff of the two-box picture is that it turns vague complaints
 into locatable ones. Every row below is something I have heard said as "the AI
@@ -373,7 +433,7 @@ Not one of those is fixed by a better model, and most of them are fixed in
 configuration you already have access to. That is the useful consequence of
 knowing where the boxes are.
 
-## 08 — Going deeper: where the loop stops
+## 09 — Going deeper: where the loop stops
 
 A loop that only exits when the model stops asking is a loop with no upper
 bound, so every real harness adds stopping conditions. A cap on iterations. A
@@ -391,12 +451,14 @@ There is a subtler failure here that is worth naming now. A tool result is
 untrusted input. It is text from a file, a web page, or somebody else's server,
 and it lands in the context where the model reads it with the same attention it
 gives your instructions. If that text contains something shaped like an
-instruction, the model has no reliable way to tell that it came from a file
-rather than from you. This is the root of prompt injection, and it is a direct
-consequence of the loop: there is only one channel, and everything shares it.
+instruction, the model has no reliable way to tell it came from a file rather
+than from you. Sam cannot hear the difference between the dispatcher's voice and
+a sentence the dispatcher is reading aloud out of a file. This is the root of
+[prompt injection](/engineering/the-ai-vocabulary/#prompt-injection), and it
+falls straight out of the loop: there is one channel, and everything shares it.
 
 Who gets to stop the loop, and what is allowed to run inside it, is the subject
-of its own post later in this track.
+of **Who Is Allowed to Do What**, later in this track.
 
 ## Try it yourself
 
@@ -406,7 +468,7 @@ of its own post later in this track.
    tool result, and read the model's next turn. Decide whether its reaction is
    one you would want unattended.
 3. **Ask for something that needs two files** and count the round trips. Then
-   ask yourself what that costs at the token counts in section 05.
+   ask yourself what that costs at the token counts in section 06.
 
 ## Common mistakes
 
@@ -426,7 +488,7 @@ is a permission configuration. "It did not run the tests" is usually an
 instruction in a layer that is advisory rather than enforced.
 
 **Assuming "agent" means something more mysterious than this.** It means the
-loop in section 05. That is the whole of it.
+loop in section 06. That is the whole of it.
 
 ## References and further reading
 
@@ -435,10 +497,10 @@ loop in section 05. That is the whole of it.
   Claude Code and Copilot, organised by who pulls the trigger. This post
   deliberately does not repeat it.
 - [The context window is the entire memory](/engineering/the-context-window-is-the-entire-memory/)
-  — why the assembly step in section 02 resends everything, and what that costs
+  — why the assembly step in section 03 resends everything, and what that costs
   across the twenty or thirty round trips of a real task.
 - [Claude Code security](https://code.claude.com/docs/en/security) — open this
-  for where the permission box in section 04 actually sits in a shipping
+  for where the permission box in section 05 actually sits in a shipping
   product, and what it does and does not cover.
 - [Configure permissions in Claude Code](https://code.claude.com/docs/en/permissions)
   — the configuration surface for that box: which tool types ask before running,

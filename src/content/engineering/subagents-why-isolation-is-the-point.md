@@ -21,8 +21,9 @@ section says so.*
 
 ## TL;DR
 
-- A subagent is not a helper with your memory. It is a second context window,
-  built from scratch, holding your brief and nothing else.
+- A [subagent](/engineering/the-ai-vocabulary/#subagent) is not a helper with your memory. It is a second
+  [context window](/engineering/the-ai-vocabulary/#context-window), built from scratch, holding your brief
+  and nothing else.
 - Isolation is the benefit. Parallelism is a sometimes-bonus, and in the run I
   measured it barely happened at all.
 - It cannot see your conversation. In twenty-six dispatches, the parent's prompt
@@ -45,18 +46,19 @@ get assembled a second time, from scratch, for somebody new.
 
 [Who is allowed to do what](/engineering/who-is-allowed-to-do-what/) owns
 permissions, including what a subagent is and is not allowed to do — this post
-takes that as settled and does not re-argue it.
-[How a skill gets found and loaded](/engineering/how-a-skill-gets-found-and-loaded/)
-owns loading on demand as a context decision, which is the same economics
-pointed at a different problem. The words for the layer are in
-[harness engineering](/engineering/harness-engineering-vocabulary/) and used
-here exactly as it defines them; single terms are one line each in
-[the AI vocabulary](/engineering/the-ai-vocabulary/).
+takes that as settled and does not re-argue it. [How a skill gets found and
+loaded](/engineering/how-a-skill-gets-found-and-loaded/) owns loading on demand
+as a context decision, which is the same economics pointed at a different
+problem. The words for the layer are in [harness
+engineering](/engineering/harness-engineering-vocabulary/) and used here exactly
+as it defines them.
 
-The analogy, and it runs to the end: **briefing four people separately rather
-than holding one four-hour meeting.** Each of the four gets a clean brief and
-nobody is distracted by the others' questions. But nobody learns from them
-either, and four briefings cost four briefings.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the mechanics ever
+stop making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -78,19 +80,63 @@ are wrong, and the right diagnosis is uncomfortable: you used the feature for
 the thing it is worst at. You wanted four people in a meeting. You held four
 separate briefings.
 
-## 02 — What a subagent actually is
+## 02 — Four briefings, not one meeting
+
+> You have four things to look into and four people who could look into them.
+> There are two ways to run the morning.
+>
+> **One meeting, four hours, everyone in the room.** Everybody hears everything.
+> The person on item three catches something said about item one and says "wait,
+> that changes mine." Nobody has to be told the background twice. It is slow,
+> everyone is in it for the whole four hours, and by hour three the room is full
+> of things nobody needs.
+>
+> **Four separate briefings, fifteen minutes each.** You sit down with each
+> person in turn, hand them a page, and send them off. Clean. Focused. Nobody is
+> distracted by anyone else's problem.
+>
+> And then the three things people do not price in.
+>
+> **Nobody you brief has been in the room.** Not "they have forgotten" — they
+> were never there. Everything they need, they need on that page, because there
+> is no corridor, no shared history, no "you remember what we agreed on
+> Tuesday." A gap in the page is a gap in the work, and they will fill it with
+> something plausible rather than come back and ask.
+>
+> **You get the write-up, not the afternoon.** Whatever they read, tried,
+> discarded and half-noticed stays with them. You get two paragraphs. The
+> interesting thing somebody mentioned in passing is unrecoverable, because when
+> you ask the follow-up nobody has any of it in front of them any more.
+>
+> **Four briefings cost four briefings.** Each one starts from the beginning:
+> who we are, what this project is, what you are allowed to touch. That
+> preamble is the expensive part, and you just paid for it four times.
+
+That is the whole post. Section 03 is the first consequence, measured — every
+child in my run started at about 36,000 tokens no matter how large the parent
+had grown. Section 04 is the second: 735 words out, 502 words back. Section 05
+is the third, and it is the one that explains why the morning did not finish any
+sooner.
+
+And note what the meeting is still better at. Work whose parts need each other's
+answers wants a room, not four pages. Section 06 is how to tell which you have.
+
+## 03 — What a subagent actually is
 
 Strip away the delegation language and a subagent is an extremely ordinary
 thing: a second run of the same loop, on the same model, against a context
-window that has been assembled from scratch.
+window assembled from scratch.
 
-Not copied. Assembled. The harness builds a prompt using the same ladder post
-2.6 walks through — a system prompt, tool definitions, instruction files,
+Not copied. Assembled. The harness builds a prompt using the same ladder [where
+the context comes from](/engineering/where-the-context-comes-from/) walks
+through — a [system prompt](/engineering/the-ai-vocabulary/#system-prompt),
+[tool](/engineering/the-ai-vocabulary/#tool) definitions, instruction files,
 whatever gets loaded by default — and then puts one thing in it that your main
-session did not have: a short written brief describing the job. Claude Code's
-documentation calls this "a delegation message that summarizes the task". Then
-the loop turns in the ordinary way until the child decides it is finished, and
-the only thing that crosses back is what it chose to write down.
+session did not have: a short written brief describing the job. That is the page
+you hand across the table. Claude Code's documentation calls this "a delegation
+message that summarizes the task". Then the loop turns in the ordinary way until
+the child decides it is finished, and the only thing that crosses back is what
+it chose to write down.
 
 ```mermaid
 flowchart LR
@@ -115,7 +161,7 @@ thing that started it. It is not a function call, where the caller can inspect
 the callee's working. It is closer to sending a letter to a competent stranger
 who will send one letter back and then cease to exist.
 
-## 03 — What it cannot see
+## 04 — What it cannot see
 
 The vendor states the exclusion directly: a subagent "doesn't see your
 conversation history, the skills you've already invoked, or the files Claude has
@@ -190,17 +236,19 @@ mechanism: the child dispatched when the parent was carrying 273,116 tokens
 started with 37,097, and did not know what it was missing.
 
 Read the last summary line too, because it is the bill. That 36,000-token floor
-is not the brief. It is the always-loaded ladder from post 2.6 — system prompt,
-tools, instruction files, the skills listing — assembled again, in full, for
-each new window. That is a third measurement of the same ladder, and the three
-do not agree: 2.6 read 23k from `/context` and 29,732 from billing, both in the
-main window, and a child's own tool set and briefing push it higher again. Three
+is not the brief. It is the always-loaded ladder from [where the context comes
+from](/engineering/where-the-context-comes-from/) — system prompt, tools,
+instruction files, the skills listing — assembled again, in full, for each new
+window. That is a third measurement of the same ladder, and the three do not
+agree: 2.6 read 23k from `/context` and 29,732 from billing, both in the main
+window, and a child's own tool set and briefing push it higher again. Three
 vantage points on one mechanism; I can say which condition produced which
-number, not why the arithmetic between them lands where it does. Across twenty-six dispatches that came to 942,506 tokens spent
-before a single one of them did any work. Four briefings cost four briefings,
-and the briefing is not cheap.
+number, not why the arithmetic between them lands where it does. Across
+twenty-six dispatches that came to 942,506 tokens spent before a single one of
+them did any work. Four briefings cost four briefings, and the briefing is not
+cheap.
 
-## 04 — What comes back
+## 05 — What comes back
 
 The second arrow is narrower than the first, and this is where people lose
 things.
@@ -278,7 +326,7 @@ six ran in the background, where the harness reports completion without that
 block, and one was still running when I took the snapshot. So 2,680,033 is a
 floor, not a total.
 
-## 05 — The measurement
+## 06 — The measurement
 
 Here is where I have to be careful, because the obvious experiment is not the
 one I ran.
@@ -293,16 +341,16 @@ a description of one run, not as a controlled result.
 The eight implementer dispatches, each one writing a whole post from a brief,
 all figures reported by the harness itself:
 
-| Dispatch | Brief out, words | Report back, words | Tokens inside | Tool calls | Minutes |
+| The post it was writing | Brief out, words | Report back, words | Tokens inside | Tool calls | Minutes |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Post 1.4 | 449 | 420 | 136,353 | 53 | 11.2 |
-| Post 1.5 | 582 | 464 | 178,224 | 99 | 52.6 |
-| Post 1.6 | 849 | 428 | 238,874 | 77 | 18.6 |
-| Post 2.4 | 772 | 511 | 174,566 | 72 | 14.1 |
-| Post 2.5 | 843 | 483 | 196,801 | 59 | 10.7 |
-| Post 2.6 | 801 | 408 | 215,990 | 101 | 23.7 |
-| Post 2.7 | 911 | 403 | 296,259 | 116 | 41.6 |
-| Post 2.8 | 916 | 213 | 262,129 | 116 | 63.0 |
+| How it learned to follow instructions | 449 | 420 | 136,353 | 53 | 11.2 |
+| Embeddings and retrieval | 582 | 464 | 178,224 | 99 | 52.6 |
+| Reading a model card | 849 | 428 | 238,874 | 77 | 18.6 |
+| Build a small MCP server | 772 | 511 | 174,566 | 72 | 14.1 |
+| What can go wrong with an MCP server | 843 | 483 | 196,801 | 59 | 10.7 |
+| Where the context comes from | 801 | 408 | 215,990 | 101 | 23.7 |
+| Who is allowed to do what | 911 | 403 | 296,259 | 116 | 41.6 |
+| How a skill gets found and loaded | 916 | 213 | 262,129 | 116 | 63.0 |
 
 Nine review dispatches added 855,158 tokens on top, and the remaining two
 account for the rest of the 2,680,033.
@@ -387,9 +435,9 @@ That is the honest shape of it. In this run, re-reading was a rounding error,
 because the thing being shared was small. Make the shared thing a 200-kilobyte
 schema and the same structure turns that rounding error into the dominant cost.
 
-## 06 — When to fan out, and when not to
+## 07 — When to fan out, and when not to
 
-So if it was not faster, why do it at all? Because of the number in section 04
+So if it was not faster, why do it at all? Because of the number in section 05
 that is easy to skip past: the parent's largest prompt was 273,116 tokens, after
 seven hours, with no compaction. Two and a half million tokens of reading,
 drafting and discarding happened in windows the parent never saw. I did not run
@@ -413,19 +461,19 @@ flowchart TD
 parallelise.*
 
 The first question disqualifies more work than people expect, and the session I
-measured demonstrates it. Post 2.7 took four dispatches, not one: an implementer,
-a reviewer, a scoped re-reviewer for the fixes, and a second re-reviewer when the
-first round was not enough. Those four could not have run at once in any
-universe, because each one's input is the previous one's output. They cost 3,036
-words of brief between them and ran strictly in order, and that is not a failure
-of the tool. It is what dependent work looks like when you insist on isolating
-it.
+measured demonstrates it. The permissions post took four dispatches, not one: an
+implementer, a reviewer, a scoped re-reviewer for the fixes, and a second
+re-reviewer when the first round was not enough. Those four could not have run
+at once in any universe, because each one's input is the previous one's output.
+They cost 3,036 words of brief between them and ran strictly in order, and that
+is not a failure of the tool. It is what dependent work looks like when you
+insist on isolating it.
 
-The second question is the one from section 05. It is a cost question, not a
+The second question is the one from section 06. It is a cost question, not a
 correctness one: fan-out still works, you just pay the reading N times. Worth it
 when the shared material is a rulebook. Not worth it when it is the codebase.
 
-## 07 — The same thing in Claude Code
+## 08 — The same thing in Claude Code
 
 A dispatch in Claude Code is a tool call like any other, with a prompt field
 carrying the brief, and the harness writes the child's whole run to its own
@@ -434,7 +482,7 @@ file arithmetic rather than instrumentation.
 
 Three details change how you use it. **Foreground or background:** a foreground
 child blocks the parent until it finishes, a background one does not, and
-section 05 showed how easy it is to think you are fanning out while actually
+section 06 showed how easy it is to think you are fanning out while actually
 queueing. **Concurrency has a ceiling:** the documentation gives a default of
 twenty running subagents per session, raised with
 `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`, with no limit on the total over a
@@ -459,7 +507,7 @@ agent can't send follow-up messages to the same subagent", where Claude Code
 lets you resume one that has already finished. If you are used to clarifying a
 report by asking the child, that habit does not port.
 
-## 08 — Going deeper: writing a brief that does not need a follow-up
+## 09 — Going deeper: writing a brief that does not need a follow-up
 
 Everything above funnels into one hard problem. The brief has to carry the
 context the parent has and the child does not — and the parent is the worst
@@ -514,9 +562,9 @@ the whole interface and anything not in it was never said.
 ends, the files ruled out, the judgement behind a recommendation — all gone, and
 asking the parent about them produces a reconstruction rather than a memory.
 
-**Using a subagent for something one tool call would answer.** Section 03 priced
+**Using a subagent for something one tool call would answer.** Section 04 priced
 the floor on this machine: roughly 36,000 tokens to assemble a new window before
-any work starts. Yours will differ — the figure is post 2.6's always-loaded
+any work starts. Yours will differ — the figure is the always-loaded
 ladder measured in a child window rather than the main one, where 2.6 put it at
 23k and 29,732, and that ladder is as long as your own setup makes it.
 VS Code's own guidance agrees — "For a quick lookup or a small edit, a direct
@@ -534,14 +582,14 @@ each as a pointer to the current page rather than a stable address.
 - [Where the context comes from](/engineering/where-the-context-comes-from/) —
   the prerequisite. Open it for the layer-by-layer weighing of an assembled
   request, which is exactly the bill a new subagent pays again, and for the
-  compaction measurement section 04 leans on.
+  compaction measurement section 05 leans on.
 - [Subagents](https://code.claude.com/docs/en/sub-agents) — the primary source
   for what a child does and does not inherit, what returns to the parent, the
   concurrency limit and the `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS` setting, and
-  the fork exception in section 07.
+  the fork exception in section 08.
 - [Use subagents in Visual Studio Code](https://code.visualstudio.com/docs/agents/run/subagents)
   — the Copilot side, for the statelessness difference and the four parts of a
-  self-contained task in section 08.
+  self-contained task in section 09.
 - [Common workflows](https://code.claude.com/docs/en/common-workflows) — the
   short, practical framing of delegation as a context-management move rather
   than a speed move, which is this post's thesis in one paragraph.

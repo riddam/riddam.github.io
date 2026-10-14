@@ -18,12 +18,14 @@ so.*
 
 ## TL;DR
 
-- A skill is a folder of files on disk, not a prompt you send. The harness reads
-  it and decides what to put in the context window.
+- A [skill](/engineering/the-ai-vocabulary/#skill) is a folder of files on disk, not a prompt you send. The
+  [harness](/engineering/the-ai-vocabulary/#harness) reads it and decides what to put in the context window.
 - The name and the description are the trigger. They are what the harness puts
   in front of the model, which makes them an interface rather than a label.
-- The body loads on demand because loading it up front would cost what post 2.6
-  measured. On this machine the bodies are 31 times the size of the descriptions.
+- The body loads on demand because loading it up front would cost what
+  [where the context comes from](/engineering/where-the-context-comes-from/)
+  measured. On this machine the bodies are 31 times the size of the
+  descriptions.
 - A description that names the topic instead of the moment produces a skill that
   never fires, and nothing anywhere reports it as a failure.
 - Two skills describing themselves the same way compete, and in my runs the
@@ -39,18 +41,20 @@ said anything. Hold onto that number — this post is about a mechanism that exi
 because of it. [Who is allowed to do what](/engineering/who-is-allowed-to-do-what/)
 owns permissions, sandboxes and hooks; where this post bumps into them, it links.
 
-The words for the layer are in
-[harness engineering](/engineering/harness-engineering-vocabulary/), used here as
-that post defines them, including its rule: anything that must happen every time
-is a hook, never a skill. Single terms are one line each in
-[the AI vocabulary](/engineering/the-ai-vocabulary/). And **this post is not about
-what to install** — [my plugins post](/engineering/claude-code-plugins-what-i-actually-use/)
-is. This one is about why the ones you installed do or do not run.
+The words for the layer are in [harness
+engineering](/engineering/harness-engineering-vocabulary/), used here as that
+post defines them, including its rule: anything that must happen every time is a
+[hook](/engineering/the-ai-vocabulary/#hook), never a skill. And **this post is
+not about what to install** — [my plugins
+post](/engineering/claude-code-plugins-what-i-actually-use/) is. This one is
+about why the ones you installed do or do not run.
 
-The analogy, and it runs to the end: **a reference shelf with one-line spines.**
-Nobody standing in front of that shelf reads the books to decide which to take
-down. They read the spines, and a book with a bad spine is invisible however good
-it is inside.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the mechanics ever
+stop making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -70,7 +74,41 @@ The reflex is to improve the body — more detail, clearer steps, an example. Th
 is the wrong half of the file. The model never read the body. It made one
 decision from one line, and that line is the only thing you can change.
 
-## 02 — What is actually on disk
+## 02 — The shelf, and the spines
+
+> A reference library, and you are working at a desk in the middle of it.
+>
+> The shelves hold a few hundred books: house procedures, worked examples, the
+> precise way this organisation does a migration. Any one of them could save you
+> an hour. You cannot read any of them, because reading one costs the hour.
+>
+> So the library does the only thing that works at that scale. Every book has a
+> **spine**: the title, and one line saying when you would want it. You stand in
+> front of the shelf, read the spines — never the books — and pull down the one
+> that matches what you are doing right now.
+>
+> Four things fall out of that, and they are the rest of the post.
+>
+> **The spine is the whole interface.** A brilliant book with a vague spine is
+> invisible. Nobody pulls down *Notes on Process* when they are trying to work
+> out how long a post should be. The book is not bad; it is unfindable, and the
+> library does not report unfindable books.
+>
+> **Reading the spines is not free either.** Three hundred spines is a wall of
+> text you walk past before every single task. Which is why the books stay shut
+> until one is chosen — and why, past some number of books, the shelf itself
+> starts to cost more than it saves.
+>
+> **Two books with near-identical spines are a coin toss.** You will take one of
+> them down and never know the other existed. Which one you got may depend on
+> nothing more than which was at eye level.
+>
+> **Anyone can put a book on this shelf.** Including people you have never met,
+> and including after you last looked.
+
+Sections 03, 04 and 05 are the first three, measured, and section 06 is how to
+write a spine that gets read. Section 08 is the fourth, which turns out to be a
+supply-chain question wearing a cardigan.
 
 So let us open one. A skill is a directory with one required markdown file:
 
@@ -105,9 +143,11 @@ Run `scripts/count.py <file>` and compare the result with the 20-minute gate.
 Those two halves are read at completely different moments, and that is the whole
 subject of this post.
 
-The front matter is read when the session starts. The name and the description go
-into a listing of every skill the harness can see, and that listing is in the
-context window on turn one and on turn ninety — the *always loaded* route from
+The front matter is read when the session starts. The name and the description
+go into a listing of every skill the harness can see, and that listing is in the
+[context window](/engineering/the-ai-vocabulary/#context-window) on turn one and
+on turn ninety — the
+*always loaded* route from
 the vocabulary post, like an instruction file.
 
 The body is read when, and only when, the skill is invoked. Anthropic's
@@ -167,11 +207,13 @@ nothing — then asked for the thing it does, five different ways.
 The measurement is a forced choice rather than a generation, and I should say
 why. I tried generation first and threw it away: given a tool for loading a
 skill, this model emitted a call in nought of twenty-five cells, including with
-the best description — post 2.7 found the same thing, that it narrates far more
-readily than it calls anything. So instead I score every skill name as a
-continuation and take the highest, which isolates the selection step from the
-model's willingness to act on it. The margin is the gap in mean log-probability
-between winner and runner-up, so a large number means the choice was not close.
+the best description; [who is allowed to do
+what](/engineering/who-is-allowed-to-do-what/) found the same thing, that it
+narrates far more readily than it calls anything. So instead I score every skill
+name as a continuation and take the highest, which isolates the selection step
+from the model's willingness to act on it. The margin is the gap in mean
+log-probability between winner and runner-up, so a large number means the choice
+was not close.
 
 ```python
 # Which skill does the model pick when all it has is the names and the one-line
@@ -302,10 +344,11 @@ nothing, and that a clever name spends part of the one line you get.
 The obvious objection: why make the model choose at all? Put every skill in the
 context window, let it read everything, stop losing good advice to bad spines.
 
-Post 2.6 answers that, and the answer is arithmetic rather than taste: everything
-always-loaded is charged on every request for the lifetime of the session. So the
-question is what the bodies weigh. This walks every `SKILL.md` on the machine and
-compares the two halves of each file — no model, no network:
+[Where the context comes from](/engineering/where-the-context-comes-from/)
+answers that, and the answer is arithmetic rather than taste: everything
+always-loaded is charged on every request for the lifetime of the session. So
+the question is what the bodies weigh. This walks every `SKILL.md` on the
+machine and compares the two halves of each file — no model, no network:
 
 ```python
 # What is on the shelf, and what would it cost to take every book down?
@@ -386,15 +429,16 @@ context window.*
 
 And the shelf itself is not unlimited, which caught me out. Seventy-one thousand
 characters of spine is roughly eighteen thousand tokens at four characters a
-token — against the 3,756 tokens post 2.6 measured for the whole skills layer on
-this same machine. The two are not quite the same population: 2.6 weighed a live
-session, this script weighs every file on disk including plugins that may not be
-enabled, so treat it as an order of magnitude rather than a subtraction. The gap
-is still far too large for enablement to explain, and the documentation says what
-is happening. The listing has a character budget that "scales at 1% of the
-model's context window", and when it overflows, "Claude Code drops descriptions
-starting with the skills you invoke least, so the skills you use most keep their
-full text."
+token — against the 3,756 tokens [where the context comes
+from](/engineering/where-the-context-comes-from/) measured for the whole skills
+layer on this same machine. The two are not quite the same population: that post
+weighed a live session, this script weighs every file on disk including plugins
+that may not be enabled, so treat it as an order of magnitude rather than a
+subtraction. The gap is still far too large for enablement to explain, and the
+documentation says what is happening. The listing has a character budget that
+"scales at 1% of the model's context window", and when it overflows, "Claude
+Code drops descriptions starting with the skills you invoke least, so the skills
+you use most keep their full text."
 
 That is the quietest failure in this post. A skill you have never invoked is
 first to lose its spine, and a skill without a spine cannot be chosen, so it
@@ -534,7 +578,9 @@ Front matter does more than name and describe. `disable-model-invocation: true`
 takes the skill off the shelf entirely — its description is not in context, and
 only you can start it by typing its name. `user-invocable: false` is the mirror
 image. `paths` limits activation to a glob, the nearest thing here to Copilot's
-targeted instruction files from post 2.6. And `allowed-tools` grants tools for
+targeted instruction files from
+[where the context comes from](/engineering/where-the-context-comes-from/). And
+`allowed-tools` grants tools for
 the turn that invokes the skill, the one place this post touches
 [the permission layer](/engineering/who-is-allowed-to-do-what/).
 
@@ -562,19 +608,23 @@ Anthropic states the first half plainly — a plugin's skills, commands and agen
 "enter Claude's context as instructions, so they influence what Claude does with
 the tools it already has" — and the second more plainly still: "A Claude Code
 plugin you install can execute arbitrary code on your machine with your user
-privileges." Post 2.7 found that sentence attached to hooks. Here it is attached
+privileges."
+[Who is allowed to do what](/engineering/who-is-allowed-to-do-what/) found that
+sentence attached to hooks. Here it is attached
 to something you installed because it had a good spine.
 
-OWASP files this as [`LLM03:2025 Supply Chain`](https://genai.owasp.org/llmrisk/llm032025-supply-chain/),
-and its central complaint fits exactly: there are no strong provenance assurances
-for the components, so a published description of what something is tells you
+OWASP files this under [*Supply
+Chain*](https://genai.owasp.org/llmrisk/llm032025-supply-chain/), and its
+central complaint fits exactly: there are no strong provenance assurances for
+the components, so a published description of what something is tells you
 nothing about what it does. The mitigations are the dull ones — install from
 sources you can name, read the files first, keep an inventory. Two things make
-this sharper than ordinary dependency hygiene. A plugin that auto-updates changes
-under you, so "the files you reviewed can change on disk". And the content
-arrives through the door [post 2.5](/engineering/what-can-go-wrong-with-an-mcp-server/)
-and [post 2.7](/engineering/who-is-allowed-to-do-what/) spent their length on:
-text in the context window, with nothing marking it as data rather than orders.
+this sharper than ordinary dependency hygiene. A plugin that auto-updates
+changes under you, so "the files you reviewed can change on disk". And the
+content arrives through the door that [what can go wrong with an MCP
+server](/engineering/what-can-go-wrong-with-an-mcp-server/) and [who is allowed
+to do what](/engineering/who-is-allowed-to-do-what/) spent their length on: text
+in the context window, with nothing marking it as data rather than orders.
 
 ## Try it yourself
 
@@ -633,8 +683,9 @@ each as a pointer to the current page.
   [plugin security and trust](https://code.claude.com/docs/en/plugins/security) —
   the first for what an enabled plugin adds to every session; the second for
   section 08, including what to read in a plugin's directory before installing.
-- [OWASP Top 10 for LLM Applications 2025, `LLM03:2025 Supply Chain`](https://genai.owasp.org/llmrisk/llm032025-supply-chain/)
-  — section 08 under the name a risk function recognises, with a mitigation list
+- [OWASP's *Supply Chain* entry](https://genai.owasp.org/llmrisk/llm032025-supply-chain/)
+  — section 08 under the name a risk function recognises. It moved from third to
+  fourth in the 2026 edition, so quote the name. With a mitigation list
   written for people who have to sign something.
 - [Harness engineering: the words for the layer around the model](/engineering/harness-engineering-vocabulary/)
   — the vocabulary this post uses without redefining, and its rule about which

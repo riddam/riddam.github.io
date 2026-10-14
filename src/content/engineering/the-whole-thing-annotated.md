@@ -18,14 +18,14 @@ window and twenty-nine more windows beneath it — so this is **excerpted**, not
 complete trace. I picked the excerpts by looking for turns where a mechanism
 this track explains is visible in the raw record: turn one, the first tool call,
 the one moment something was destroyed, and the arithmetic of the whole arc.
-Post 2.9 measured the same session's fan-out; where a figure comes from there,
-I say so and link rather than recomputing it a second way.*
+The subagents post measured the same session's fan-out; where a figure comes
+from there, I say so and link rather than recomputing it a second way.*
 
 ## TL;DR
 
 - **Context assembly.** Twenty-eight typed words went out as a 51,717-token
   request. Sixteen separate things were attached to them before the model saw
-  anything.
+  anything. The [context window](/engineering/the-ai-vocabulary/#context-window) is the whole of it.
 - **The tool round trip.** The second turn read a 69.9 KB file and added 1,018
   tokens to the window, because the harness never handed the file over. One
   skill, five turns later, cost 12,313.
@@ -43,15 +43,37 @@ best after the other nine, but you can start here: every mechanism below is one
 or two sentences and a link to the post that owns it, so the post is a map with
 the territory underneath it rather than a summary of what you have already read.
 
-There is deliberately **no new analogy here**. Every post in both tracks carried
-one — a dispatcher on the phone, a waiter taking an order, four separate
-briefings — and this one's job is to show the machinery those analogies were
-standing in for. A fresh metaphor at this point would undo nine posts of work.
+There is deliberately **no new scene here**. Every other post in both tracks
+carried one, and this post's job is to show the machinery they were standing in
+for. A fresh metaphor at this point would undo fifteen posts of work.
+
+What follows instead is the cast list, so you can hear the right scene when each
+mechanism turns up below:
+
+| The scene | The mechanism | The post |
+|---|---|---|
+| Sam, who has read everything and answers one word at a time | the model | [what a model actually is](/engineering/what-a-model-actually-is/) |
+| Sam in the witness box, reconstructing in the same calm voice | hallucination | [why it sounds certain when it's wrong](/engineering/why-it-sounds-certain-when-its-wrong/) |
+| Sam's desk, cleared every morning, rebuilt from a printed transcript | the context window | [the context window is the entire memory](/engineering/the-context-window-is-the-entire-memory/) |
+| Eighteen years in a library, then six weeks shadowing somebody | pretraining and post-training | [how it learned to follow instructions](/engineering/how-it-learned-to-follow-instructions/) |
+| The open-book exam, and the clerk with the guillotine | retrieval and chunking | [embeddings, and why retrieval beats memorising](/engineering/embeddings-and-why-retrieval-beats-memorising/) |
+| The van brochure, true in every figure and about somebody else's week | model cards | [reading a model card without guessing](/engineering/reading-a-model-card-without-guessing/) |
+| Sam on the phone, and you as the dispatcher | the agent loop | [what actually happens when you press enter](/engineering/what-happens-when-you-press-enter/) |
+| The requisition slip, and who decides to fill it | tool calls | [a tool call is a request, not an action](/engineering/a-tool-call-is-a-request-not-an-action/) |
+| The socket in the wall, which does not vouch for the appliance | MCP | [MCP, explained without the spec](/engineering/mcp-explained-without-the-spec/) |
+| Standing behind the service counter, writing the menu board | building a server | [build a small MCP server](/engineering/build-a-small-mcp-server/) |
+| The contractor with a key, and which doors it opens | MCP risk | [what can go wrong with an MCP server](/engineering/what-can-go-wrong-with-an-mcp-server/) |
+| The folder somebody else packed, with your note on top | context assembly | [where the context comes from](/engineering/where-the-context-comes-from/) |
+| A sign, a lock, and a person at the door asking "are you sure?" | permissions | [who is allowed to do what](/engineering/who-is-allowed-to-do-what/) |
+| A shelf of books nobody reads, chosen entirely by their spines | skills | [how a skill gets found and loaded](/engineering/how-a-skill-gets-found-and-loaded/) |
+| Four separate briefings instead of one four-hour meeting | subagents | [subagents: why isolation is the point](/engineering/subagents-why-isolation-is-the-point/) |
 
 The words for everything below are in
 [harness engineering](/engineering/harness-engineering-vocabulary/), used here
-exactly as it defines them, and single terms are one line each in
-[the AI vocabulary](/engineering/the-ai-vocabulary/).
+exactly as it defines them.
+
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
 
 ## 01 — The task
 
@@ -227,7 +249,8 @@ is the post for that trade.
 
 ## 04 — Where it went wrong
 
-Four hours in, an agent working on post 2.7 was asked to reword a commit
+Four hours in, an agent working on the permissions post was asked to reword a
+commit
 message. It did this:
 
 ```sh
@@ -252,7 +275,8 @@ later searched every dangling object in the repository and found nothing to
 recover. It is gone.
 
 Now the uncomfortable part. My first guess was that the agent could not have
-known — fresh window, no conversation history, the usual story from post 2.9. I
+known — fresh window, no conversation history, the usual story from
+[the subagents post](/engineering/subagents-why-isolation-is-the-point/). I
 checked, and that guess was wrong:
 
 ```python
@@ -316,18 +340,18 @@ its very first token, and it ran the command anyway.
 
 So this is not an ignorance failure, and calling it one would be the comfortable
 lie. It is an attention failure. The window held the fact; the model was
-thinking about a commit message, and
-[the context window is the entire memory](/engineering/the-context-window-is-the-entire-memory/)
-is about what is *present*, not about what gets weighed. The confident,
-carefully-hashed, entirely wrong blast-radius model it built is the behaviour
-[why it sounds certain when it's wrong](/engineering/why-it-sounds-certain-when-its-wrong/)
+thinking about a commit message, and [the context window is the entire
+memory](/engineering/the-context-window-is-the-entire-memory/) is about what is
+*present*, not about what gets weighed. The confident, carefully-hashed,
+entirely wrong blast-radius model it built is the behaviour [why it sounds
+certain when it's wrong](/engineering/why-it-sounds-certain-when-its-wrong/)
 describes: fluent reasoning over the part of the problem it had in view.
 
-And nothing stopped it, because nothing could.
-[Who is allowed to do what](/engineering/who-is-allowed-to-do-what/) draws the
-line between a sign and a lock. This repository had neither: no project
-`settings.json`, no deny rule, no hook. The only protection in the building was
-a human reading the transcript afterwards.
+And nothing stopped it, because nothing could. [Who is allowed to do
+what](/engineering/who-is-allowed-to-do-what/) draws the line between a sign and
+a lock. This repository had neither: no project `settings.json`, no deny rule,
+no [hook](/engineering/the-ai-vocabulary/#hook). The only protection in the
+building was a human reading the transcript afterwards.
 
 ## 05 — What I did about it
 
@@ -446,26 +470,29 @@ print(f"  child windows / of those compacted: {len(kids)} / {kid_compacted}")
 happened.** I expected to annotate a compaction here and there was none to
 annotate, in seven and a half hours or in any of the twenty-nine child windows.
 The main window grew from 51,717 to 291,532 tokens and stopped there, because
-fifty-four shell calls is all the reading it ever did itself. That is the
-payoff post 2.9 measured from the other side: it found the children each start
-at a floor of roughly 36,000 tokens and burned at least 2,680,033 tokens between
-them, all of it in windows the main one never saw.
-[Subagents: why isolation is the point](/engineering/subagents-why-isolation-is-the-point/)
-is the arithmetic; this is the same session's other half, and
-[where the context comes from](/engineering/where-the-context-comes-from/)
-measured a real compaction elsewhere so you can see what was avoided.
+fifty-four shell calls is all the reading it ever did itself. That is the payoff
+[the subagents post](/engineering/subagents-why-isolation-is-the-point/)
+measured from the other side: it found the children each start at a floor of
+roughly 36,000 tokens and burned at least 2,680,033 tokens between them, all of
+it in windows the main one never saw. [Subagents: why isolation is the
+point](/engineering/subagents-why-isolation-is-the-point/) is the arithmetic;
+this is the same session's other half, and [where the context comes
+from](/engineering/where-the-context-comes-from/) measured a real compaction
+elsewhere so you can see what was avoided.
 
 Two reconciliations, because the two posts took snapshots at different moments
-of a session that was still running. Post 2.9 counted 26 children and a 273,116
-peak; by the time I ran the script above the same session had reached 29 and
-291,532. The same clock explains the third difference: 2.9 calls this a
+of a session that was still running. The subagents post counted 26 children and
+a
+273,116 peak; by the time I ran the script above the same session had reached 29
+and 291,532. The same clock explains the third difference: that post calls this
+a
 seven-hour session and this post calls it seven and a half. Nothing moved except
 the clock.
 
 **The second invisible thing is the briefing.** Of the twenty-nine dispatches,
 eleven wrote something and eighteen checked it. The main window's entire record
 of what those eighteen reviewers read is their reports — an average of 502 words
-each, by post 2.9's count, against 735 words of brief going out.
+each, by that post's count, against 735 words of brief going out.
 
 ## 07 — The diff, and the review
 
@@ -513,15 +540,15 @@ flowchart LR
   T3 -- "the reading<br/>happens elsewhere" --> T4["Hour 4<br/>right command,<br/>wrong blast radius"]
   T4 -- "noticed<br/>1.6 hours later" --> T5["Hour 5.6<br/>correction, in prose"]
   T5 -- "main window<br/>never compacts" --> T6["Hour 7.6<br/>27 tests pass,<br/>build green"]
-  T1 -. "context assembly" .-> N1["post 2.6"]
-  T2 -. "tool round trip" .-> N2["post 2.2"]
-  T3 -. "isolation" .-> N5["post 2.9"]
-  T4 -. "nothing stopped it" .-> N3["post 2.7"]
-  T6 -. "the loop ends" .-> N4["post 2.1"]
+  T1 -. "context assembly" .-> N1["the folder<br/>somebody packed"]
+  T2 -. "tool round trip" .-> N2["the requisition slip"]
+  T3 -. "isolation" .-> N5["four briefings"]
+  T4 -. "nothing stopped it" .-> N3["a sign, not a lock"]
+  T6 -. "the loop ends" .-> N4["the dispatcher<br/>hangs up"]
 ```
 
-*Every dashed line is a post in this series. If one of them is still fuzzy, that
-is the one to read next.*
+*Every dashed line is a scene from the table above, and every scene is a post. If
+one of them is still fuzzy, that is the one to read next.*
 
 The checklist is the practical version of that picture, and you can run it on
 your own work tonight rather than on mine. Claude Code writes
@@ -644,7 +671,8 @@ each as a pointer to the current page rather than a stable address.
 ## Final thoughts
 
 I set out to annotate a session where compaction bit and found one where it
-never did. I expected the destroyed file to be a story about a subagent not
+never did. I expected the destroyed file to be a story about a
+[subagent](/engineering/the-ai-vocabulary/#subagent) not
 knowing what its parent knew, and the transcript said the opposite in the first
 line of its own context block. Both times the measurement won, which is the
 habit this whole series has been arguing for and the only one that survives

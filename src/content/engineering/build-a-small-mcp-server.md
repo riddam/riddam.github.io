@@ -15,43 +15,46 @@ else has been edited.*
 
 ## TL;DR
 
-- An MCP server is an ordinary program. Two tools and sixty lines is a complete
-  one, and it teaches you everything the installed ones are doing.
+- An [MCP server](/engineering/the-ai-vocabulary/#mcp-server) is an ordinary program. Two tools and sixty
+  lines is a complete one, and it teaches you everything the installed ones are
+  doing.
 - The description is the interface. In the Python SDK your docstring *is* the
   wire format, which makes it very easy to ship a bad one by accident.
-- Tee the traffic once and the protocol stops being abstract. It is four kinds
-  of message and you can read all of them.
-- Validate paths in the server. The client is not checking your arguments for
+- Copy the traffic to a file once and the protocol stops being abstract. It is
+  four kinds of message, and you can read all of them.
+- Check paths inside the server. The client is not validating your arguments for
   you, and the model is not the only thing that can call you.
-- Read-only over stdio is the default you should have to argue your way out of,
-  not the thing you argue your way into.
+- Read-only over stdio is the default you should have to argue your way *out
+  of*, not the thing you argue your way into.
 
 ## Where this sits
 
 This is the fourth post in **How your AI coding tool works**, and it needs the
-one before it:
-[MCP, explained without the spec](/engineering/mcp-explained-without-the-spec/).
-That post covers what the protocol is, which side your editor is on, what a
-server can offer, and why the transport choice is really a decision about where
-your credentials sit. I use those words here without redefining them. The parts
-of the harness a server plugs into are mapped in
-[the words for the layer around the model](/engineering/harness-engineering-vocabulary/),
-and single terms have one-line entries in
-[the AI vocabulary](/engineering/the-ai-vocabulary/).
+one before it: [MCP, explained without the
+spec](/engineering/mcp-explained-without-the-spec/). That post covers what the
+protocol is, which side your editor is on, what a server can offer, and why the
+transport choice is really a decision about where your credentials sit. I use
+those words here without redefining them. The parts of the harness a server
+plugs into are mapped in [the words for the layer around the
+model](/engineering/harness-engineering-vocabulary/), and are not redefined
+here.
+
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the mechanics ever
+stop making sense, go back to it.
 
 This post is the one where you build it.
 
 One boundary, stated up front so you are not waiting for it. The security of MCP
-servers — prompt injection through tool output, the confused deputy, token
-passthrough, what a malicious server does to a machine it was installed on — is
-the subject of the next post, and this one deliberately stops short. I will say
-that read-only is the right default and that `stdio` beats an open port, give the
-short reason for each, and leave the rest where it belongs.
-
-The analogy, and it holds all the way through: **a service counter.** You decide
-what is on the menu. You decide who may order from it. You decide what the answer
-looks like when it comes back. And the customer, however politely they ask, cannot
-reach behind the counter.
+servers — [prompt injection](/engineering/the-ai-vocabulary/#prompt-injection)
+through tool output, the confused deputy, token passthrough, what a malicious
+server does to a machine it was installed on — is the subject of the next post,
+and this one deliberately stops short. I will say that read-only is the right
+default and that `stdio` beats an open port, give the short reason for each, and
+leave the rest where it belongs.
 
 ## 01 — The thing you have already noticed
 
@@ -71,7 +74,39 @@ The cure is not more documentation. It is writing one of these yourself. Sixty
 lines makes every part of the mechanism concrete, and after that, reading
 somebody else's server stops being an act of faith.
 
-## 02 — The whole server
+## 02 — You are behind the counter now
+
+The previous post had you plugging appliances into a socket. This one has you
+building the appliance, so the scene changes.
+
+> You run a service counter. A hatch in a wall, a menu board above it, and you
+> standing behind it with everything the customer cannot reach.
+>
+> **You write the menu board.** Not the customer. Whatever is not on the board
+> cannot be ordered, and whatever *is* on the board will be ordered sooner or
+> later, including by somebody who misread it. The board is the entire
+> interface, which is why the wording on it is a design decision and not a
+> caption.
+>
+> **You check the docket before you fill it.** Somebody will slide one across
+> asking for something three streets away. It is not an attack; it is a Tuesday.
+> The counter is the only place that check can happen, because whoever wrote the
+> docket has no idea where your stockroom ends.
+>
+> **The customer never comes behind the counter.** They ask, you fetch. Every
+> safety property you have comes from that and from nothing else.
+>
+> And one more, which is the part of the job nobody plans for: **you can watch
+> the hatch.** Everything the customer says and everything you say back goes
+> through one opening, so you can write it all down and read it afterwards. Most
+> people who run a counter never do this, and it is the single most informative
+> hour available to them.
+
+Sections 03 to 06 are those four. Sections 07 and 08 are what happens the day
+somebody asks you to put something *into* the stockroom rather than take
+something out.
+
+## 03 — The whole server
 
 Two tools. `list_markdown` returns the Markdown files in a project.
 `word_count` counts the words in one of them. Both read. Neither writes, deletes,
@@ -170,10 +205,10 @@ reasonable-looking substring test; it is only after `resolve()` that it is
 obviously outside the project. Resolve first, compare second.
 
 **The docstrings are not comments.** The SDK turns each function's docstring into
-the tool's `description` and sends it to the model, and turns the type hints into
-the parameter schema. I will show the exact bytes in section 05. For now:
-whatever you write in triple quotes is what the model reads when it decides
-whether to call you.
+the tool's `description` and sends it to the model, and turns the type hints
+into the parameter schema. The exact bytes are in section 06. For now: whatever
+you write in triple quotes is what the model reads when it decides whether to
+call you.
 
 **`mcp.run(transport="stdio")`** means the client launches this as a subprocess
 and talks to it over standard input and output. The specification describes the
@@ -227,7 +262,7 @@ printf '%s\n' \
 Do this first, every time. If a server misbehaves inside an editor you are
 debugging two things at once; here you are debugging one.
 
-## 03 — Wiring it to your editor
+## 04 — Wiring it to your editor
 
 Claude Code registers a stdio server with a single command, and the flag that
 matters most is the one deciding who else gets it:
@@ -276,10 +311,10 @@ claude mcp add --scope local wordcount \
   -- ~/code/mcp-wordcount/mcp-tee.sh uv --directory ~/code/mcp-wordcount run server.py
 ```
 
-This works on any stdio server, including ones you did not write. It is the
-single most useful thing in this post.
+This works on any stdio server, including ones you did not write. It is watching
+the hatch, and it is the single most useful thing in this post.
 
-## 04 — Reading the wire
+## 05 — Reading the wire
 
 Here is a complete session. I asked the assistant to list the Markdown files,
 count the words in the README, and then deliberately ask for a path outside the
@@ -393,7 +428,7 @@ Four kinds of message, then: a handshake, a discovery, a call, a result. Every
 MCP server you install is doing exactly this, and you can now watch any of them
 do it.
 
-## 05 — Writing a description the model reads correctly
+## 06 — Writing a description the model reads correctly
 
 In the Python SDK, writing a tool description is writing a docstring. That is
 convenient and easy to get wrong, because docstrings are the one kind of text
@@ -415,7 +450,7 @@ parameter — real output from the same server, cut back to its first draft:
 ```
 
 Two words of description, and a `path` field with no description at all — just a
-title the SDK generated from the variable name. In section 04 that field carried
+title the SDK generated from the variable name. In section 05 that field carried
 *"Project-relative path to a Markdown file, e.g. README.md or docs/notes.md"*.
 The difference is three lines of Python.
 
@@ -436,7 +471,7 @@ Neither is wrong, and you cannot tell which one you chose by reading your own
 code. Tee the traffic once and look at where your sentence came out. The menu is
 only above the counter if the customer can see it.
 
-## 06 — Why read-only, and why stdio
+## 07 — Why read-only, and why stdio
 
 Two defaults, and the short reason for each.
 
@@ -485,7 +520,7 @@ server is a program, the docstring is the interface, the transport decides who
 can reach it. The part that does not transfer is which file to edit, and that is
 a thing to look up on the day rather than carry around.
 
-## 07 — Going deeper: what a write tool obliges you to add
+## 08 — Going deeper: what a write tool obliges you to add
 
 Suppose you do need one. The honest version of "add a write tool" is not one
 decorator; it is four obligations you have just taken on, none of which the
@@ -561,20 +596,20 @@ allowed.
 - [The Model Context Protocol specification](https://modelcontextprotocol.io/specification/2026-07-28),
   revision `2026-07-28` — open this when a vendor's description and another
   vendor's disagree. Note that the revision on the wire may be older than the
-  revision on the page, for the reason given in section 04.
+  revision on the page, for the reason given in section 05.
 - [Build an MCP server](https://modelcontextprotocol.io/docs/2026-07-28/develop/build-server)
   — the project's own quickstart, in seven languages. Open this for the current
   SDK's class and decorator names rather than trusting any example, including
   mine, after a few months.
 - [Streamable HTTP transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http)
   — open this before you put a local server on a port; the three obligations
-  named in section 06 are specified here, with the reasoning behind them.
+  named in section 07 are specified here, with the reasoning behind them.
 - [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp) — open
   this for the `claude mcp add` syntax, the three scopes and the `/mcp` command.
   It changes often; check it rather than trusting this paragraph in six months.
 - [Extending Copilot Chat with MCP](https://docs.github.com/en/copilot/how-tos/copilot-in-your-ide/customize-copilot/extend-copilot-with-tools-and-context/extend-copilot-chat-with-mcp)
   — open this for the `.vscode/mcp.json` and `settings.json` locations referenced
-  in section 06.
+  in section 07.
 - [MCP, explained without the spec](/engineering/mcp-explained-without-the-spec/)
   — open this first if any of client, host, server, resources or transports felt
   assumed rather than explained above.

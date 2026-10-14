@@ -13,17 +13,18 @@ on my laptop while I wrote this.*
 
 ## TL;DR
 
-- MCP is an agreed shape for connecting assistants to tools. Without it, every
-  tool needs wiring for every assistant; with it, each side does its own work
-  once.
-- Your editor is the client. The server is a separate program, usually somebody
-  else's, running with whatever access you gave it.
+- [MCP](/engineering/the-ai-vocabulary/#mcp) is an agreed shape for connecting assistants to tools. Without
+  it, every tool needs wiring for every assistant. With it, each side does its
+  own work once.
+- Your editor is the [client](/engineering/the-ai-vocabulary/#mcp-client). The [server](/engineering/the-ai-vocabulary/#mcp-server) is a
+  separate program, usually somebody else's, running with whatever access you
+  gave it.
 - A server can offer three things — tools, resources and prompts. Most servers
-  only use the first.
-- Local versus remote is not a performance decision. It is a decision about
-  where your credentials sit and how big the blast radius is.
+  use only the first.
+- Local versus remote is not a speed decision. It is a decision about where your
+  credentials sit and how much a bad day can reach.
 - The protocol enforces no security of its own, and says so in its own text. All
-  of it is the host's job.
+  of that is the host's job.
 
 ## Where this sits
 
@@ -35,16 +36,17 @@ decides whether to honour it. MCP makes very little sense until that is solid,
 because MCP is nothing but an agreement about the shape of those requests and
 where the answers come from.
 
-Unfamiliar words have one-line entries in the
-[AI vocabulary](/engineering/the-ai-vocabulary/). The parts of the harness MCP
-plugs into — skills, hooks, subagents, scopes — are mapped in
-[the words for the layer around the model](/engineering/harness-engineering-vocabulary/),
-and I am not going to redefine them here.
+The parts of the harness MCP plugs into — skills, hooks, subagents, scopes — are
+mapped in [the words for the layer around the
+model](/engineering/harness-engineering-vocabulary/), and are not redefined
+here.
 
-The analogy, which I think is exactly right and deliberately unglamorous: **a
-standard plug socket.** Before the standard, every appliance shipped with its own
-wiring instructions for every kind of house. The socket is not clever. It is
-agreed. That is the entire contribution, and it is worth an enormous amount.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the mechanics ever
+stop making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -65,7 +67,42 @@ reasonable protocol, carefully written — but because the gap is entirely filla
 in about fifteen minutes, and everyone I know who has filled it has changed at
 least one thing about how they set their tools up.
 
-## 02 — The problem it solves
+## 02 — The socket in the wall
+
+> Look at a plug socket. It is the least clever object in your house and it
+> changed everything about appliances.
+>
+> Before the standard, a kettle shipped with wiring instructions for every kind
+> of house, and an electrician made it fit. Four appliances and six house types
+> meant twenty-four jobs. After the standard, the kettle ships one plug and the
+> house fits one socket, and nobody does any work at all.
+>
+> The socket is not intelligent. It did not get better at electricity. It got
+> **agreed**, and that is the whole contribution. It is also worth an enormous
+> amount: once the shape is settled, anybody can make an appliance, and it works
+> in every house. That is why there are suddenly thousands of these things.
+>
+> Now the three parts people skip.
+>
+> **The socket does not vouch for the appliance.** Plugging something in is not
+> an inspection. A cheap heater and a hospital monitor fit the same hole, and
+> the hole does not know the difference.
+>
+> **You do not know what the appliance draws, or what it is wired to.** It sits
+> there consuming current whether or not you are using it. Four of them on one
+> circuit is a different situation from one.
+>
+> **The thing that actually protects you is not the socket.** It is the fuse box
+> down the hall — a separate device, in your house, under your control, which
+> the plug standard has nothing to say about.
+
+Map that across and you have the post. MCP is the socket: an agreed shape, and
+nothing more. A **server** is the appliance — somebody else's program, running,
+drawing from your context window on every turn. Your editor is the house. And
+the fuse box is your harness's permission layer, which the protocol explicitly
+leaves to you. Section 09 is the specification saying so in its own words.
+
+## 03 — The problem it solves
 
 Before the protocol, connecting an assistant to a tool was bespoke work. If you
 had four assistants and six tools you wanted them to reach, somebody wrote
@@ -92,7 +129,7 @@ flowchart LR
 *Notice that nothing got cleverer. The only change is that both sides agreed on a
 shape first.*
 
-That is the whole pitch. The
+That is the socket, drawn. The
 [specification](https://modelcontextprotocol.io/specification/2026-07-28) is
 explicit that it takes its inspiration from the Language Server Protocol, which
 did the same thing for editors and programming languages: before LSP, every
@@ -106,14 +143,16 @@ internal system, and it works everywhere. That is why there are thousands of
 these now, and it is also why "somebody else wrote it" is the normal case rather
 than the exception.
 
-## 03 — Which side you are on
+## 04 — Which side you are on
 
 Three words, used constantly, and worth getting straight.
 
-The **host** is the application you are actually using: your editor, your
-assistant, the desktop app. The **client** is the piece inside the host that
-maintains a connection to one server — one client per server. The **server** is a
-separate program that offers capabilities over the protocol.
+The **[host](/engineering/the-ai-vocabulary/#mcp-host)** is the application you
+are actually using: your editor, your assistant, the desktop app. The **client**
+is the piece inside the host that holds a connection to one server — one client
+per server. The
+**server** is a separate program offering capabilities over the protocol. House,
+socket, appliance.
 
 In practice you are always on the host-and-client side, and you almost never
 write that part. What you install, choose, and are responsible for is the server
@@ -127,13 +166,13 @@ nothing coordinates between them. Two servers that both offer a tool called
 `search` are two separate programs that have never heard of each other, and the
 only thing choosing between them is a model reading two descriptions.
 
-Keep that framing. An MCP server is not a plugin in the sense of a bit of
-configuration. It is a program. It runs. The question you should be asking about
+Keep that framing. An MCP server is not configuration. It is a program. It runs,
+and it is plugged into your wall. The question you should be asking about
 any of them is the question you would ask about any dependency you add to a
 production service: who wrote it, what does it have access to, and what happens
 when it is wrong.
 
-## 04 — What a server offers
+## 05 — What a server offers
 
 The specification defines three things a server can expose, and the difference
 between them is who is in charge.
@@ -168,7 +207,7 @@ host support for the other two has been patchier. It is worth knowing resources
 and prompts exist, mostly so that you recognise them when a server offers them
 and do not assume everything must be a tool.
 
-## 05 — Local or remote
+## 06 — Local or remote
 
 The protocol defines two transports, and the choice between them is usually
 discussed as though it were about speed. It is not.
@@ -181,12 +220,13 @@ specification says clients should support stdio whenever possible.
 somebody else's infrastructure — reached over HTTP, optionally streaming
 responses back as server-sent events.
 
-Here is the framing I would use instead. With stdio, the server runs as you, on
-your machine, with your files and your environment variables, and your
-credentials for whatever it talks to sit in your local configuration. The blast
-radius of a bad server is your laptop. With HTTP, the server runs somewhere you
-do not control, your credentials are presented to it over the network, and the
-blast radius is whatever that service can reach — but the thing executing code is
+Here is the framing I would use instead. With stdio, the appliance is plugged
+into a socket in your own house: the server runs as you, on your machine, with
+your files and your environment variables, and your credentials for whatever it
+talks to sit in your local configuration. If it misbehaves, it misbehaves on
+your laptop. With HTTP, the appliance is in somebody else's building and you are
+sending it power down a wire: your credentials go to it over the network, what
+it can reach is whatever that service can reach — but the thing running code is
 no longer your machine.
 
 In practice the credential question is more mundane than it sounds, and more
@@ -206,7 +246,7 @@ binding only to localhost when running locally, and recommends proper
 authentication, warning that "without these protections, attackers could use DNS
 rebinding to interact with local MCP servers from remote websites."
 
-## 06 — What actually crosses the wire
+## 07 — What actually crosses the wire
 
 Enough description. Here is a real session.
 
@@ -255,10 +295,11 @@ characters**, fourteen tools, with **4,108 characters of description text** alon
 Run through a tokeniser, that single response is **3,374 tokens**.
 
 Those tokens are not a one-off. Tool definitions go into the model's context so
-it knows what it may ask for, which means that server costs you about three and a
-half thousand tokens on *every single turn* of *every conversation* for as long
-as it is connected, whether or not you touch a file. Install four servers of that
-size and you have given away a meaningful slice of your window before you type
+it knows what it may ask for, which means that server costs you about three and
+a half thousand tokens on *every single turn* of *every conversation* for as
+long as it is connected, whether or not you touch a file. It is the appliance
+drawing current while you are not using it. Install four servers of that size
+and you have given away a meaningful slice of your window before you type
 anything. This is the most practical reason to uninstall servers you do not use,
 and it has nothing to do with security.
 
@@ -323,7 +364,7 @@ complexity people associate with MCP is almost all in the authorization and
 transport chapters, which matter enormously if you are writing a server and
 barely at all if you are deciding whether to install one.
 
-## 07 — The same thing in Claude Code
+## 08 — The same thing in Claude Code
 
 Concretely, in the tool I use most: a server can be added at three scopes.
 **Local** is the default and applies to the current project for you alone.
@@ -356,7 +397,7 @@ program, its tool definitions cost context on every turn, and the config file in
 front of you is not the whole list. The part that does not transfer is where to
 click, which is the part that changes every few months anyway.
 
-## 08 — Going deeper: the protocol enforces nothing
+## 09 — Going deeper: the protocol enforces nothing
 
 If you remember one thing, make it this, and note that it comes from the
 specification rather than from me. On security, the specification says that while
@@ -365,10 +406,11 @@ implementors should build robust consent and authorization flows into their
 applications, document the security implications, and implement appropriate
 access controls.
 
-So the protocol defines message shapes. Everything you would call security —
-whether you are asked before a tool runs, whether a server can reach your
-internal network, whether a token is accepted that was never issued for this
-server — lives in the host and in the server, and in your configuration of both.
+So the protocol defines message shapes — the socket. Everything you would call
+security — whether you are asked before a tool runs, whether a server can reach
+your internal network, whether a token is accepted that was never issued for
+this server — lives in the host and the server, and in your configuration of
+both. That is the fuse box, and the plug standard has nothing to say about it.
 
 The specification maintains a
 [security best practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices)
@@ -385,12 +427,13 @@ and **local server compromise**, where the malicious part is the install command
 itself.
 
 Each of those deserves its own treatment with worked examples, and it gets one
-two posts later in
-[what can go wrong with an MCP server](/engineering/what-can-go-wrong-with-an-mcp-server/),
-which works through the specification's list with the normative language intact. What this post owes you is the honest headline: none of
-it is handled for you by virtue of using a standard protocol, and reading the
-word "secure" in a server's name — as in `secure-filesystem-server` above — is
-not evidence of anything.
+two posts later in [what can go wrong with an MCP
+server](/engineering/what-can-go-wrong-with-an-mcp-server/), which works through
+the specification's list with the normative language intact. What this post owes
+you is the honest headline: none of it is handled for you by virtue of using a
+standard protocol, and reading the word "secure" in a server's name — as in
+`secure-filesystem-server` above — is not evidence of anything. Fitting the
+socket is not an inspection.
 
 ## Try it yourself
 
@@ -434,7 +477,7 @@ common way an MCP setup leaks something.
   short and neither assumes you are implementing anything.
 - [MCP security best practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices)
   — open this before you write a server or run one you did not read. Every named
-  risk in section 08 comes from here, with the mitigations the spec requires.
+  risk in section 09 comes from here, with the mitigations the spec requires.
 - [MCP transports](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports)
   — open this if you need the exact framing rules, the `Origin` validation
   requirement, or the per-request metadata headers the HTTP transport mirrors.
@@ -442,7 +485,7 @@ common way an MCP setup leaks something.
   replaced them.
 - [Claude Code MCP documentation](https://code.claude.com/docs/en/mcp) — open
   this for the scopes, the precedence order and the non-interactive approval
-  behaviour quoted in section 07. It changes often; check it rather than
+  behaviour quoted in section 08. It changes often; check it rather than
   trusting this paragraph in six months.
 - [The Claude Code plugins I actually use](/engineering/claude-code-plugins-what-i-actually-use/)
   — open this when you want the opinionated version: which connectors have earned

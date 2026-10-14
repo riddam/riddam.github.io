@@ -16,15 +16,16 @@ tokeniser, because that part needs no account at all.*
 
 ## TL;DR
 
-- Across a whole five-turn session, everything I typed came to 185 tokens.
-  One request in that session carried 65,593.
-- The harness chose the rest: a system prompt, tool definitions, instruction
-  files, skills, and every file it decided to read.
+- Across a whole five-turn session, everything I typed came to 185 tokens. One
+  request in that session carried 65,593.
+- The [harness](/engineering/the-ai-vocabulary/#harness) chose the rest: a [system prompt](/engineering/the-ai-vocabulary/#system-prompt),
+  tool definitions, instruction files, [skills](/engineering/the-ai-vocabulary/#skill), and every file it
+  decided to read.
 - An instruction file is advice the model weighs against everything else. It is
   not a rule the system enforces, and the vendor says so in those words.
-- Compaction is lossy on purpose. Mine threw away 89 per cent of the context in
-  eighty seconds.
-- Curating what goes in beats waiting for a bigger window, because the
+- [Compaction](/engineering/the-ai-vocabulary/#compaction) throws things away on purpose. Mine lost 89 per
+  cent of the context in eighty seconds.
+- Choosing what goes in beats waiting for a bigger window, because the
   always-loaded layers are charged on every single request.
 
 ## Where this sits
@@ -37,17 +38,16 @@ the size of the pile is a cost and a quality problem at once. From this track,
 — the loop, and the box in it marked *harness assembles the request*. This post
 opens that box.
 
-The words for the parts live in
-[harness engineering: the words for the layer around the model](/engineering/harness-engineering-vocabulary/),
-and I use them here exactly as that post defines them. Single terms are one line
-each in [the AI vocabulary](/engineering/the-ai-vocabulary/).
+The words for the parts live in [harness engineering: the words for the layer
+around the model](/engineering/harness-engineering-vocabulary/), and are used
+here exactly as that post defines them.
 
-The analogy for the whole post: **a briefing pack assembled by someone else.**
-You wrote the covering note on top. Everything else in the folder — the
-background papers, the standing instructions, the transcript of the last
-meeting, the list of people you are allowed to phone — was chosen and ordered
-by somebody who is not in the room. The reader weighs all of it together, and
-they do not know which page you wrote.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the mechanics ever
+stop making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -69,7 +69,44 @@ look at what the harness actually sent.
 Your rule was not a setting. It was a paragraph, somewhere in a folder of
 paragraphs, most of which you did not write.
 
-## 02 — What is actually in the envelope
+## 02 — The folder, and who packed it
+
+The first post in this track put you behind a desk as the dispatcher, reading a
+briefing down the phone before every call. This post weighs the briefing.
+
+> Picture it as a paper folder you slide across the desk.
+>
+> **Your covering note is on top.** Three lines. The thing you actually want.
+>
+> Underneath it, in a fixed order, somebody else has put: the standing
+> instructions for this building, which you have never read; the list of every
+> person you are permitted to phone, with a paragraph each on when to phone
+> them; the house rules your team wrote into the repository two years ago; the
+> transcript of everything said so far today; and every document anybody fetched
+> during the meeting, in full.
+>
+> Four things follow, and they are the rest of this post.
+>
+> **Your note is the thinnest thing in the folder.** Measurably so. Section 03
+> weighs every page.
+>
+> **The reader cannot tell which page you wrote.** There is no letterhead, no
+> highlighter, no "this one is binding". Your five-word rule and a four-hundred
+> word stack trace are both just pages. Section 04 is why your rule held for a
+> week and then did not.
+>
+> **The folder is rebuilt and re-read from scratch every single time.** Not
+> skimmed, not remembered. Re-read, cover to cover, every turn, and you are
+> charged for it.
+>
+> **When the folder gets too thick, somebody outside the room replaces the first
+> half with a one-page summary.** They do not ask you which parts mattered.
+> Section 05 is what mine threw away: 89 per cent, in eighty seconds.
+
+Sections 06 and 07 are what to do about it, and section 08 is what happens when
+somebody else gets to read the folder.
+
+## 03 — What is actually in the envelope
 
 So let us weigh the folder.
 
@@ -138,7 +175,7 @@ than the system prompt.
 Deferral is not an MCP-only arrangement: part of the built-in set is held back
 the same way. The second rung of the ladder uses `--safe-mode`, which loads all
 of it, so 18,592 is what the full set weighs when nothing is deferred. The
-`/context` report in section 06, taken from an ordinary session in this same
+`/context` report in section 07, taken from an ordinary session in this same
 repository, reports for the tools 12.7k loaded and 11.9k held back. Two
 conditions and two accountings — one read off billed requests, one off the
 harness's own estimate — and I can name which produced which number but not why
@@ -206,7 +243,7 @@ flowchart TD
 *Notice where your own words sit in this picture. Everything else was chosen by
 the harness, which is why configuring the harness changes the answers.*
 
-## 03 — Advice, not law
+## 04 — Advice, not law
 
 Now back to the rule that lost.
 
@@ -261,7 +298,7 @@ advisory things in it, and a hook for the thing that must hold. That split — a
 the permission layer that sits next to it — is the subject of the next post in
 this track.
 
-## 04 — When there is no more room
+## 05 — When there is no more room
 
 Eventually the pile hits the ceiling, and the harness summarises the older part
 of it. Claude Code calls it compaction. It happens on its own when the context
@@ -353,9 +390,10 @@ compacted session knew it had been compacted, and said so rather than inventing
 a caption. Claude Code's summary opens by telling the model the conversation was
 continued from a summary, and ends by telling it where the full transcript is on
 disk. That is a design decision, not a property of compaction, and it is the
-difference between a fluent non-answer — which is what
-[post 1.3 measured when a turn is simply dropped](/engineering/the-context-window-is-the-entire-memory/)
-— and an honest one.
+difference between a fluent non-answer — which is what [the context window post
+measured what happens when a turn is simply
+dropped](/engineering/the-context-window-is-the-entire-memory/) — and an honest
+one.
 
 ```mermaid
 flowchart LR
@@ -375,7 +413,7 @@ the files. The diagram is the general shape and the general shape is right —
 a summariser keeps what looks like a decision and drops what looks like detail.
 Which of your sentences it files under which, you do not get to see.
 
-## 05 — What this means for how you work
+## 06 — What this means for how you work
 
 Four habits. Each one is a consequence of a number above, not a preference.
 
@@ -399,7 +437,7 @@ what happened. Arguing with it adds turns to a conversation whose foundation you
 cannot see. Pasting the three relevant files into a fresh session costs less
 than the argument and usually works first time.
 
-## 06 — The same thing in Claude Code
+## 07 — The same thing in Claude Code
 
 Concretely, in Claude Code, each layer in the diagram has an address.
 
@@ -440,9 +478,9 @@ The rows marked *deferred* are not in the 23k — add up the rest and you get
 loaded. Note that there are two of them: deferral is not an MCP-only
 arrangement, and part of the built-in tool set is held back the same way.
 
-Which is where this table and section 02's tool row part company, and I would
+Which is where this table and section 03's tool row part company, and I would
 rather point at that than let you find it: 18,592 tokens there, 12.7k loaded
-plus 11.9k deferred here. Section 02's figure was measured with `--safe-mode`,
+plus 11.9k deferred here. Section 03's figure was measured with `--safe-mode`,
 which loads the built-in set in full; this one is an ordinary session, where
 some of it is deferred. Two conditions, two accountings. Which number applies
 to you depends on which situation you are in, and when you run `/context`
@@ -454,7 +492,7 @@ configuration, the API billed 29,732 tokens where `/context` said 23k. Use
 need the truth.
 
 Run the same command deep in a long session and the shape inverts. On the
-five-turn session from section 02 it read 65.6k of 200k, with 43.9k of that in
+five-turn session from section 03 it read 65.6k of 200k, with 43.9k of that in
 one row called **Messages** — the conversation, the files, the tool output. The
 fixed layers had not changed by a token. They had simply stopped being the
 story.
@@ -462,33 +500,36 @@ story.
 GitHub Copilot assembles the same kinds of layer with different file names, and
 one difference is worth knowing. Its always-loaded instruction files are
 `.github/copilot-instructions.md` and `AGENTS.md` — same idea, same advisory
-status. But it also has
-[targeted `.instructions.md` files](https://code.visualstudio.com/docs/agent-customization/custom-instructions)
+status. But it also has [targeted `.instructions.md`
+files](https://code.visualstudio.com/docs/agent-customization/custom-instructions)
 in `.github/instructions`, each with an `applyTo` glob, which load only when a
-matching file is in play. That is a genuinely different answer to section 03's
+matching file is in play. That is a genuinely different answer to section 04's
 problem: rather than one file that is always in context and always being
 diluted, a set of files that are in context when they are relevant. It does not
 make any of them enforced — they are still text the model weighs — but it does
 attack the dilution directly.
 
-## 07 — Going deeper: system prompt leakage
+## 08 — Going deeper: system prompt leakage
 
-One consequence of everything above is a security property, and it has a
-name: [`LLM07:2025 System Prompt Leakage`](https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/)
-in the OWASP Top 10 for LLM Applications. If a thing is in the context window it
-is reachable by a sufficiently motivated prompt, because the model's job is to
-produce text conditioned on everything it was given, and "everything it was
-given" includes the parts you think of as infrastructure. OWASP's advice is
-blunt: keep credentials, connection details and permission structures out of
-prompts entirely, and never rely on prompt text to enforce behaviour, because
-injected text can override it. For an instruction file this is sharper than it
-first sounds — a `CLAUDE.md` is not even a system prompt, it is a user message,
-so an internal hostname or a "don't tell the user about X" sentence written
-there is one well-phrased question away from being read aloud.
+One consequence of everything above is a security property, and it has a name:
+[*System Prompt
+Leakage*](https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/) in
+the OWASP Top 10 for LLM Applications — renamed *Hidden Context Exposure* in the
+2026 edition, and widened to cover every page of the folder rather than just the
+first one. If a thing is in the context window it is reachable by a sufficiently
+motivated prompt, because the model's job is to produce text conditioned on
+everything it was given, and "everything it was given" includes the parts you
+think of as infrastructure. OWASP's advice is blunt: keep credentials,
+connection details and permission structures out of prompts entirely, and never
+rely on prompt text to enforce behaviour, because injected text can override it.
+For an instruction file this is sharper than it first sounds — a `CLAUDE.md` is
+not even a system prompt, it is a user message, so an internal hostname or a
+"don't tell the user about X" sentence written there is one well-phrased
+question away from being read aloud.
 
 ## Try it yourself
 
-1. **Weigh your own assembly.** Run the five-line script from section 02 in a
+1. **Weigh your own assembly.** Run the five-line script from section 03 in a
    repository you work in. The interesting number is not the total; it is which
    row surprises you. Mine was the tool definitions at 63 per cent.
 2. **Try to make it drop a rule.** Put a specific, checkable rule in your
@@ -518,7 +559,7 @@ costs a large request of its own, and makes a judgement about your conversation
 that you are never shown.
 
 **Believing a bigger window is the fix.** A bigger window raises the ceiling on
-what you can send. Section 02's proportions do not change: the harness still
+what you can send. Section 03's proportions do not change: the harness still
 chooses almost all of it, and your sentence is still the smallest part.
 
 ## References and further reading
@@ -546,13 +587,16 @@ their paths move; treat each as a pointer to the current page.
 - [Manage costs effectively](https://code.claude.com/docs/en/costs) and
   [Hooks](https://code.claude.com/docs/en/hooks) — the first for MCP tool
   deferral, the two-hundred-line guidance and what `/context` is for; the second
-  for the layer that executes instead of asking. Section 09's Copilot
+  for the layer that executes instead of asking. Section 07's Copilot
   comparison rests on one more living page, VS Code's
   [custom instructions](https://code.visualstudio.com/docs/agent-customization/custom-instructions),
   linked where it is used.
-- [OWASP Top 10 for LLM Applications 2025, `LLM07:2025 System Prompt Leakage`](https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/)
-  — section 07 under its security name, with the mitigations written for people
-  who have to explain this to a risk function.
+- [OWASP's *System Prompt Leakage* entry](https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/)
+  — section 08 under its security name, with the mitigations written for people
+  who have to explain this to a risk function. The 2026 edition renamed it
+  *Hidden Context Exposure* and widened it to cover anything in the model's
+  context that was never meant for the reader, which is the whole folder rather
+  than just the first page.
 
 ## Final thoughts
 
