@@ -440,10 +440,11 @@ code.
   card tells you: it says plainly that this is a base model, and that base models
   are not recommended for conversation — which is exactly the distinction the
   next-but-one post is about.
-- [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/llm-top-10/) —
+- [OWASP Top 10 for LLM Applications](https://genai.owasp.org/llm-top-10/) —
   open this when you need the official name for section 01. The invented ticket
-  number is `LLM09:2025 Misinformation`, and having that identifier is what gets
-  it onto a risk register instead of into a hallway conversation.
+  number is the entry called *Misinformation*, and having that name is what gets
+  it onto a risk register instead of into a hallway conversation. It was ninth in
+  the 2025 edition and seventh in 2026, so quote the name rather than the number.
 - [uv, one tool to rule your Python](/engineering/uv-one-tool-to-rule-your-python/)
   — the environment the snippets above run in. The rest of this series assumes
   it rather than repeating the setup.

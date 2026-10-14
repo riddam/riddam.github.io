@@ -14,28 +14,29 @@ right answer is checked against the library's own release notes.*
 
 ## TL;DR
 
-- The model always produces something. There is no code path where it returns
+- The model always answers. There is no path through the code where it returns
   nothing.
-- Nothing in the mechanism distinguishes a true continuation from a merely
-  plausible one.
-- Temperature reshapes the guess. It cannot add knowledge, and it cannot tell
-  you when the guess is wrong.
-- Fluency and accuracy are produced by the same machinery and look identical on
-  the way out.
-- Every fix that works changes what the model has to work with. None of them
-  changes how certain it sounds.
+- Nothing inside it can tell a true continuation from one that merely sounds
+  right. Both score well for the same reason.
+- [Temperature](/engineering/the-ai-vocabulary/#temperature) reshapes the guess. It adds no knowledge, and it
+  cannot warn you when the guess is wrong.
+- Reading well and being right come out of the same machinery, and they look
+  identical on the page.
+- Every fix that works changes what the model has in front of it. None of them
+  changes how sure it sounds.
 
 ## Where this sits
 
 This needs [what a model actually is](/engineering/what-a-model-actually-is/),
-and specifically the ranked list of next tokens — the whole explanation here is
-a consequence of that picture. Words you do not recognise are one line each in
-[the AI vocabulary](/engineering/the-ai-vocabulary/).
+and in particular the ranked list of next tokens. Everything here follows from
+that one picture.
 
-The analogy, and I think it is the fairest one available: **a witness who is
-certain, fluent, and reconstructing.** They are not lying. They are filling a
-gap with the most plausible thing, and plausibility is precisely what they were
-trained on. Ask them again tomorrow and you will get the same confident account.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the mechanics ever
+stop making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -57,17 +58,52 @@ only thing it does, and the result was a citation that looks exactly like the
 citations in every policy document it has ever read. That is not a malfunction
 of the mechanism. It is the mechanism.
 
-## 02 — Where the wrong answer comes from
+## 02 — Sam in the witness box
 
-Go back to the ranked list from post 1.1. Given the text so far, the model
-produces a probability for every token it knows, and something picks one.
+Post 1 introduced Sam: the colleague who has read everything your industry has
+ever published, answers one word at a time without pausing, and cannot look
+anything up. Put Sam in a witness box and this post writes itself.
 
-Now ask where "truth" would live in that picture. There is no second pass that
-checks a claim against a store of facts, because there is no store of facts —
-there is a pile of numbers that encodes which continuations are plausible. A
-true statement scores well because true statements appeared in the training text.
-A plausible-but-false statement also scores well, for exactly the same reason:
-it looks like the text the model has read.
+> Sam saw the accident. Six months ago, briefly, from the other side of the road.
+> They are honest, they are calm, and they want to be useful.
+>
+> Counsel asks what colour the van was.
+>
+> Sam does not say "I'm not sure." Not out of vanity — the words simply do not
+> arrive. What arrives is the shortlist: the colours vans like that usually are.
+> White is at the top. So Sam says white, in the same steady voice they used for
+> the time, the weather and the direction of travel, all of which they got right.
+>
+> Nobody in the room can hear the difference, and here is the uncomfortable part:
+> **neither can Sam.** The remembered details and the reconstructed one arrive
+> the same way, feel the same, and come out in the same voice. There is no
+> flicker, no pause, no label.
+>
+> Counsel tries the obvious check and asks again, later in the afternoon. White.
+> A second barrister asks the same question next week. White. The answer is
+> stable because the shortlist is stable — the same reconstruction, run twice.
+> That is not corroboration, though it is very hard not to hear it as such.
+
+Everything below is one piece of that scene done with numbers. The invented
+policy document in section 01 is Sam reaching the words "as set out in" and
+needing something plausible to come next.
+
+And note what would actually have helped Sam: not more confidence, not a sterner
+instruction, not asking twice. A photograph of the van. Section 07 is that
+observation, measured.
+
+## 03 — Where the wrong answer comes from
+
+Go back to the ranked list from post 1. Given the text so far, the model scores
+every [token](/engineering/the-ai-vocabulary/#token) it knows, and something
+picks one.
+
+Now ask where "truth" would sit in that picture. There is no second pass that
+checks the claim against a store of facts, because there is no store of facts.
+There is a pile of numbers recording which continuations are plausible. A true
+statement scores well because true statements turned up in the training text. A
+false-but-plausible statement scores well too, for exactly the same reason: it
+looks like the text the model has read.
 
 ```mermaid
 flowchart LR
@@ -81,25 +117,25 @@ flowchart LR
 *Notice that both paths end in the same place. Nothing in the output marks which
 one you got.*
 
-It is worth heading off the usual objection here. "So it is just autocomplete"
-is both true and misleading. True, because the mechanism really is next-token
-prediction and nothing else. Misleading, because predicting the next token
-across a large enough body of text requires representing an enormous amount
-about how the world is described — grammar, reasoning patterns, the shape of a
-correct proof, the conventions of a changelog. The capability is real and it is
-startling. What it is not is a lookup, and the gap between those two is where
-every example in this post lives.
+The usual objection is worth heading off. "So it is just autocomplete" is both
+true and misleading. True, because the mechanism really is next-token prediction
+and nothing else. Misleading, because to predict the next token well across that
+much text you have to carry an enormous amount about how the world gets
+described — grammar, the shape of an argument, the shape of a correct proof, the
+house style of a changelog. The ability is real and it is startling. What it is
+not is a lookup, and every example in this post lives in that gap.
 
-This is why "hallucination" is a slightly unfortunate word. It suggests a
-distinct failure state the model enters, as though there were a healthy mode and
-a sick one. There is one mode. Sometimes its best guess is right.
+Which is why [hallucination](/engineering/the-ai-vocabulary/#hallucination) is
+an unfortunate word. It sounds like a state the model slips into, as though
+there were a well mode and a sick one. There is one mode. Sometimes its best
+guess happens to be right.
 
-## 03 — What temperature really changes
+## 04 — What temperature really changes
 
-The obvious lever is temperature, and it is worth being precise about what it
-does, because the folk wisdom is wrong in a specific and expensive way.
+Temperature is the obvious lever, and it is worth being exact about it, because
+the folk wisdom is wrong in a specific and expensive way.
 
-Here is the same single forward pass from post 1.1, read out at three settings:
+Here is the same single pass from post 1, read out at three settings:
 
 ```text
 temperature 0.0001
@@ -120,27 +156,30 @@ temperature 1.5
     2.08%  ' Rotterdam'
 ```
 
-Low temperature concentrates the probability on the favourite; high temperature
-spreads it out. What it does **not** do is change which token is the favourite.
-Amsterdam is first at every setting, and if the favourite had been wrong it
-would have been first at every setting too.
+Low temperature piles the probability onto the favourite; high temperature
+spreads it around. What it does **not** do is change *which* token is the
+favourite. Amsterdam is first at every setting — and if the favourite had been
+wrong, it would have been first at every setting too.
 
 So: **temperature 0 does not make a model accurate. It makes it consistent.** If
 its best guess is right, you get the right answer every time. If its best guess
 is wrong, you get the same wrong answer every time, delivered with the lowest
 variance you can buy — which looks, from the outside, exactly like confidence.
-That is a worse failure than occasional variation, because variation is at least
-a signal.
+That is worse than occasional variation, because variation is at least a signal.
+In the witness box: turning temperature down does not improve Sam's memory. It
+stops them ever hedging.
 
-## 04 — Five runs, one question
+## 05 — Five runs, one question
 
 So let us ask something checkable.
 
-I asked `Qwen/Qwen2.5-3B-Instruct` — a small instruction-tuned model, running
-locally, and note that it is *not* the base model the temperature table above
-came from — the same question five times at temperature 0.7, with sampling on,
-and printed every answer verbatim. The question has a specific answer that
-can be verified against the library's own release notes:
+I asked `Qwen/Qwen2.5-3B-Instruct` — a small
+[instruction-tuned](/engineering/the-ai-vocabulary/#instruction-tuning) model
+running on a laptop, and *not* the base model the temperature table above came
+from — the same question five times at temperature 0.7, with
+[sampling](/engineering/the-ai-vocabulary/#sampling) on, and printed every
+answer exactly as it came out. The question has one right answer, checkable in
+the library's own release notes:
 
 ```python
 Q = "Which version of pandas introduced the DataFrame.convert_dtypes method? Answer in one short sentence."
@@ -172,21 +211,19 @@ Sit with that result for a moment, because it is richer than "the model was
 wrong".
 
 It was wrong **five times out of five**. It was wrong **consistently** — four of
-the five agree on 0.25.0, which means if you had asked twice to check, as people
-often advise, the two answers would have agreed and you would have been more
-confident in a false answer than before you started. It was wrong **plausibly**:
-0.25.0 is a real pandas release from 2019, in the right era, in the right format.
-And it was wrong **without a hint of hedging** — not one of the five said
-"I think" or "you should check".
+the five say 0.25.0. So if you had asked twice to check, as people often advise,
+the two answers would have agreed, and you would have finished more confident in
+a false answer than you started. It was wrong **plausibly**: 0.25.0 is a real
+pandas release from 2019, right era, right format. And it was wrong **without a
+flicker of hedging** — not one of the five said "I think" or "check this".
 
-It is worth asking what it would have taken for the model to do better here.
-Not a bigger model, necessarily, and certainly not a better prompt: the
-information needed is "which release first contained this method", which lives
-in a changelog that either was or was not well represented in the training data,
-and which the model has no way to consult at the moment of answering. There is
-nothing to introspect. From the inside, producing `0.25.0` felt exactly like
-producing `3.8` did for the Python question below — same mechanism, same
-absence of doubt, different luck.
+What would it have taken to do better? Not a bigger model, necessarily, and
+definitely not a better prompt. The thing needed is "which release first shipped
+this method", and that lives in a changelog that either was or was not well
+represented in the training data. The model cannot go and look at the moment of
+answering, and there is nothing inside to introspect. Producing `0.25.0` felt,
+from the inside, exactly like producing `3.8` did for the Python question below.
+Same mechanism, same absence of doubt, different luck. The white van again.
 
 For contrast, I asked the same model two questions it does know, under identical
 settings:
@@ -226,54 +263,56 @@ which is which.** That is the entire post in one experiment, and it takes about
 four minutes to run yourself on a laptop.
 
 Two honest notes on method. I used a small model because small models are easy
-to run and fail more readily; a larger one may well get this particular question
-right, and I could not test that here, so take it as the likely case rather than
-a measured one. What does not change with size is the behaviour itself. Bigger
-models move the line — they are wrong about more obscure things — and moving the
-line is worse than it sounds, because the questions you cannot easily check are
-exactly the ones on the far side of it.
+to run and fail more readily. A larger one may well get this particular question
+right; I could not test that here, so treat it as likely rather than measured.
+What does not change with size is the behaviour. Bigger models move the line —
+they are wrong about more obscure things — and moving the line is worse than it
+sounds, because the questions you cannot easily check are exactly the ones on
+the far side of it.
 
-## 05 — Why it does not say "I don't know"
+## 06 — Why it does not say "I don't know"
 
 The obvious question: why did it not just say so?
 
-Partly it is section 02 — there is no "I am uncertain" signal available to be
-reported, because the model is not comparing a claim against knowledge, it is
-extending text. But the sharper reason is about how models are finished.
+Partly it is section 03. There is no "I am uncertain" signal to report, because
+the model is not checking a claim against knowledge — it is extending text. But
+the sharper reason is about how models are finished off.
 
-After the enormous first stage of training, a model is shaped by further
-training on examples of good and bad answers, including comparisons between two
-answers to the same question with a record of which one people preferred. That
-process is what makes a model helpful rather than a text-continuation engine.
+After the enormous first stage of training comes [preference
+tuning](/engineering/the-ai-vocabulary/#preference-tuning): more training on
+examples of good and bad answers, including side-by-side pairs with a record of
+which one people picked. That stage is what turns a text-continuation engine
+into something helpful.
 
-And people, reliably, prefer a confident answer to "I don't know". Not because
-anyone intends to train dishonesty, but because in a side-by-side comparison the
-hedging answer looks unhelpful and the specific answer looks useful, and the
-rater cannot check either. Do that at scale and you have expressed a preference
-for fluent specificity over calibrated uncertainty. The model learns it.
+And people, reliably, pick the confident answer over "I don't know". Nobody sets
+out to train dishonesty. It is just that in a side-by-side the hedging answer
+looks unhelpful, the specific answer looks useful, and the rater cannot check
+either one. Do that a few million times and you have expressed a preference for
+fluent specificity over honest uncertainty. The model learns it.
 
-There is a second pressure in the same direction. A model that says "I don't
-know" too readily is useless, and the failure is loud — users notice immediately
-and complain. A model that answers confidently and is occasionally wrong fails
-quietly, and only for the subset of users who check. Any process that tunes on
-human preference is going to find the second failure mode more comfortable than
-the first. That is not a conspiracy; it is what optimising for what raters
-prefer looks like when raters cannot verify.
+A second pressure pushes the same way. A model that says "I don't know" too
+readily is useless, and it fails loudly — people notice at once and complain. A
+model that answers confidently and is sometimes wrong fails quietly, and only
+for the few who check. Any process tuned on human preference will find the
+second failure more comfortable than the first. That is not a conspiracy. It is
+what optimising for what raters like looks like when raters cannot verify.
 
-The mechanics of that training stage are a post of their own later in this
-series. The consequence is the part you need today: **the absence of hedging in
-an answer carries no information.** It is a style the model was rewarded for,
-not a signal about this particular claim.
+The mechanics of that stage get their own post: [how it learned to follow
+instructions](/engineering/how-it-learned-to-follow-instructions/). The
+consequence is what you need today: **the absence of hedging carries no
+information.** It is a style the model was rewarded for, not a signal about this
+particular claim.
 
-## 06 — What actually helps
+## 07 — What actually helps
 
 In descending order of how much difference they make.
 
-**Give it the source.** By a wide margin the biggest single fix. A model asked to
-summarise a document in front of it is doing something it is genuinely good at;
-the same model asked to recall the document is doing section 04. Most "the AI
-gets our domain wrong" problems are this, and the fix is retrieval, not a better
-prompt.
+**Give it the source.** By a wide margin the biggest single fix, and it is the
+photograph of the van. A model summarising a document that is in front of it is
+doing something it is genuinely good at. The same model recalling that document
+is doing section 05. Most "the AI gets our domain wrong" problems are this one,
+and the fix is [retrieval](/engineering/the-ai-vocabulary/#retrieval), not
+better wording.
 
 Here is that claim tested rather than asserted. Same model, same settings, same
 question — the only change is four lines of the release notes pasted above it:
@@ -290,26 +329,27 @@ question — the only change is four lines of the release notes pasted above it:
 --- run 3: ...introduced in pandas version 1.0.0.
 ```
 
-Nought out of three, then three out of three. Nothing about the model changed;
-the task changed, from recalling a fact to reading one. That is the whole of
-retrieval-augmented generation in a sentence, and it is why so much production
-AI work turns out to be search work wearing a different hat — the hard part is
-not the generation, it is getting the right four lines in front of it.
+Nought out of three, then three out of three. Nothing about the model changed.
+The task changed, from recalling a fact to reading one. That sentence is the
+whole of [RAG](/engineering/the-ai-vocabulary/#rag), and it is why so much
+production AI work turns out to be search work wearing a different hat: the hard
+part is not the generating, it is getting the right four lines in front of it.
 
-**Make it cite, then open the citation.** Useful, with one trap: asking for a
-citation does not make a model honest, it makes it produce a citation — which,
-as section 01 shows, it can generate as readily as anything else. The value is
-entirely in you opening the link. An unchecked citation is worse than none,
-because it buys unearned confidence.
+**Make it cite, then open the citation.** Useful, with one trap. Asking for a
+[citation](/engineering/the-ai-vocabulary/#citation) does not make a model
+honest; it makes a model produce a citation, which — as section 01 shows — it
+can invent as readily as anything else. The value is entirely in you opening the
+link. An unchecked citation is worse than none, because it buys confidence
+nobody earned.
 
 **Narrow the question until it is checkable.** "Is this migration safe?" has no
 checkable answer. "Does this migration drop a column that is referenced
 elsewhere in the repo?" does.
 
-**Ask twice and compare.** Last, and weakest, and I include it because it gets
-recommended constantly. Section 04 is exactly why it is weak: the model was
-consistently wrong, so two tries agreed. Disagreement is informative;
-agreement is not.
+**Ask twice and compare.** Last and weakest, and here only because it gets
+recommended constantly. Section 05 is exactly why it is weak: the model was
+consistently wrong, so the two tries agreed. Disagreement tells you something.
+Agreement tells you nothing.
 
 ```mermaid
 flowchart TD
@@ -323,23 +363,22 @@ flowchart TD
 *Every genuine fix changes what the model has to work with. None of them changes
 how certain it sounds.*
 
-Notice what is not on that list: adjusting temperature, telling it to be
-accurate, telling it not to hallucinate, or asking whether it is sure. The first
-is section 03. The rest are instructions to a system that has no mechanism to
-comply with them.
+Notice what is not on that list: changing the temperature, telling it to be
+accurate, telling it not to hallucinate, asking whether it is sure. The first is
+section 04. The rest are instructions to a system with no machinery for
+obeying them.
 
-## 07 — Going deeper: calibration
+## 08 — Going deeper: calibration
 
 There is a precise name for what is missing here. A model is **calibrated** if,
 across all the claims it makes with a given internal confidence, the proportion
 that turn out true matches that confidence.
 
-Two things are worth knowing. First, a model's internal confidence and its
-*tone* are different quantities, and only the tone reaches you — the rhetorical
-certainty in those five pandas answers is a writing style, not a probability.
-Second, the interface shows you neither. There is no number on the screen, and
-the words "I'm certain" are generated by the same process as everything else in
-the sentence.
+Two things follow. First, a model's internal confidence and its *tone* are
+different quantities, and only the tone reaches you — the certainty in those
+five pandas answers is a writing style, not a probability. Second, the chat
+window shows you neither. There is no number on the screen, and the words "I'm
+certain" are produced by the same process as every other word in the sentence.
 
 There is an active research literature on extracting better uncertainty signals
 — looking at the probabilities directly, sampling repeatedly and measuring
@@ -354,7 +393,7 @@ check, what you require a source for, and what you refuse to accept without one.
 1. **Ask about a library version and verify it.** Pick something real but
    slightly obscure in a library you use. Ask, then open the release notes. The
    gap between how sure it sounded and whether it was right is the lesson.
-2. **Ask the same question five times** with sampling on. Note whether the
+2. **Ask the same question five times** with sampling on. Watch whether the
    variation tracks correctness. In my run it did not.
 3. **Ask it to cite a source, then open the source.** Do this three times on
    questions where you can check. Count how many citations survive.
@@ -362,7 +401,7 @@ check, what you require a source for, and what you refuse to accept without one.
 ## Common mistakes
 
 **Setting temperature to 0 and calling it accurate.** You bought consistency.
-See section 03.
+See section 04.
 
 **Asking the model whether it is sure.** The answer is generated the same way
 the original claim was. You have asked a witness to grade their own testimony.
@@ -379,17 +418,19 @@ the source instead.
 ## References and further reading
 
 - [What a model actually is](/engineering/what-a-model-actually-is/) — the
-  ranked-list picture this whole post is an argument about, with the temperature
-  tables reproduced in section 03.
+  ranked-list picture this whole post argues from, and where Sam is introduced.
+  The temperature tables are reproduced in section 04.
 - [pandas 1.0.0 release notes](https://pandas.pydata.org/docs/whatsnew/v1.0.0.html)
-  — the primary source for section 04's right answer. Open it to see the
+  — the primary source for section 05's right answer. Open it to see the
   heading announcing `convert_dtypes`, and note that checking took under a
   minute, which is the point.
-- [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/llm-top-10/)
-  — `LLM09:2025 Misinformation` is this post's subject under the name it needs
-  to carry in a design review or a risk register.
+- [OWASP Top 10 for LLM Applications](https://genai.owasp.org/llm-top-10/) —
+  this post's subject is the entry called *Misinformation*, which is the name it
+  needs in a design review or a risk register. The 2026 edition moved it up to
+  seventh on the strength of real incident data, so quote the name rather than
+  the number.
 - [AI Architecture: a practitioner's field guide](/guides/ai-architecture-master-guide/)
-  — open this for the system-design version of section 06: where grounding,
+  — open this for the system-design version of section 07: where grounding,
   retrieval and guardrails actually sit in an architecture, rather than what to
   do in a single conversation.
 - [The AI vocabulary](/engineering/the-ai-vocabulary/) — hallucination,

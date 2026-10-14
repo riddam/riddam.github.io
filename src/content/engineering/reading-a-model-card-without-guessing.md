@@ -19,37 +19,35 @@ Every price and model ID was read from the vendor's own pages on **10 October
 ## TL;DR
 
 - **Price is per million tokens, and input and output are different numbers.**
-  Output usually costs five times input, and on a short task it is most of
-  your bill.
-- **Context length is a ceiling, not a target.** Every current model in one
-  vendor's lineup now quotes the same one, so it has stopped telling you
-  anything about which to pick.
-- **A benchmark measures someone else's task.** It is evidence about a
-  population you are not in.
-- **Reasoning modes buy a chance at accuracy with latency and cost**, and the
-  tokens you pay for are mostly tokens you never see. Measured below: fifty
-  times the output tokens, fifty times the wall clock, and still the wrong
-  answer.
+  Output usually costs five times input, and on a short task it is most of your
+  bill.
+- **[Context length](/engineering/the-ai-vocabulary/#context-window) is a ceiling, not a target.** Every
+  current model in one vendor's lineup now quotes the same one, so it has
+  stopped telling you anything about which to pick.
+- **A [benchmark](/engineering/the-ai-vocabulary/#benchmark) measures somebody else's task.** It is evidence
+  about a population you are not in.
+- **[Reasoning modes](/engineering/the-ai-vocabulary/#reasoning-model) buy a chance at accuracy with waiting
+  and cost**, and most of the tokens you pay for are tokens you never see.
+  Measured below: fifty times the output tokens, fifty times the clock, and
+  still the wrong answer.
 - **Twenty of your own cases beat any leaderboard.** That is the whole post in
   one line.
 
 ## Where this sits
 
-This is the sixth and last post in **AI from the inside out**. It needs
-[what a model actually is](/engineering/what-a-model-actually-is/) for tokens
-and the generation loop, and it needs
-[the context window is the entire memory](/engineering/the-context-window-is-the-entire-memory/)
-for why input tokens pile up and what you are actually buying when you pay for
-them. That post did the arithmetic on a session; this one does it on a model
-card. Any unfamiliar word is one line in
-[the AI vocabulary](/engineering/the-ai-vocabulary/).
+This is the sixth and last post in **AI from the inside out**. It needs [what a
+model actually is](/engineering/what-a-model-actually-is/) for tokens and the
+generation loop, and it needs [the context window is the entire
+memory](/engineering/the-context-window-is-the-entire-memory/) for why input
+tokens pile up and what you are actually buying when you pay for them. That post
+did the arithmetic on a session; this one does it on a model card.
 
-The analogy for this post: **a spec sheet for a van.** Payload, fuel
-consumption, top speed, turning circle. Every number on it is true, measured by
-someone competent, and published in good faith. None of them tells you whether
-the van fits your job, because your job has a loading bay with a low lintel and
-a route with a weight-limited bridge, and the spec sheet does not know that.
-The spec sheet is not lying to you. It is answering a different question.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the mechanics ever
+stop making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -73,13 +71,50 @@ Then someone, reasonably, over-corrected. They moved a *different* step — the
 one that reads a pull request diff and writes the reviewer a summary — down to
 the cheap tier, because the cheap tier had been fine for routing. The summaries
 kept arriving and they read well. One described a change that was not in the
-diff, a reviewer approved on the strength of it, and that is section 04.
+diff, a reviewer approved on the strength of it, and that is section 05.
 
 Both decisions were made the same way: by reading about the model instead of
 measuring it on the job. The rest of this post is the numbers you can read off
 a card, the numbers you cannot, and what happens when you measure.
 
-## 02 — The numbers that mean something
+## 02 — Buying a van off the spec sheet
+
+> You run a small delivery fleet and you need another van. The brochure is in
+> front of you. Payload 1,180 kg. Fuel consumption 7.2 l/100 km. Top speed 155
+> km/h. Turning circle 11.9 m. Load length 3.44 m.
+>
+> Every one of those numbers is true. Somebody competent measured it, on a test
+> track, under conditions written down in an appendix. Nobody is lying to you.
+>
+> And none of them answers your question, because your question is: *will this
+> van do my round?* Your round has a loading bay with a lintel at 2.1 m, a
+> weight-limited bridge on the only sensible route out of town, and a driver who
+> has to reverse into the same awkward yard forty times a day. The brochure has
+> never seen your yard.
+>
+> So what does an experienced fleet manager do? They borrow one for a week and
+> drive the actual round. Not because the brochure is wrong — because the
+> brochure is about a different van's week.
+>
+> Two more things from the forecourt that carry over exactly.
+>
+> **The headline figure hides a step.** The advertised fuel consumption is the
+> combined cycle. Your round is all stop-start, so you will never see it. There
+> is a second number further down the page that applies to you, and it is worse.
+>
+> **The brochure is dated.** It describes this year's model. Next year the same
+> name means a different engine, and the figure you memorised quietly stops
+> being true.
+
+A model card is that brochure. Sections 03 and 04 are the numbers that bind and
+the numbers that mislead. Sections 05 and 06 are borrowing one for a week.
+
+And the lintel is the point. Section 01 had two steps in the same pipeline —
+sorting tickets into four buckets, and summarising a code change for a reviewer.
+Same brochure, different yard, and no number on the page can tell you they need
+different vans.
+
+## 03 — The numbers that mean something
 
 A model card is short. Most of the fields constrain something specific and
 checkable, and most people skim past the ones that bind.
@@ -87,13 +122,13 @@ checkable, and most people skim past the ones that bind.
 | Field | What it actually constrains |
 |---|---|
 | Model ID | What you are billed for and what you can reproduce. On the current Claude lineup every ID is a pinned snapshot, so `claude-opus-5-5` today is the same weights as `claude-opus-5-5` next month. Read the whole string: `claude-opus-5` is not a short form of `claude-opus-5-5` but the previous model in that line, still served, at a different price. |
-| Context window | The ceiling on one request: your whole resent conversation plus the reply, in tokens. Not a target. See [post 1.3](/engineering/the-context-window-is-the-entire-memory/). |
+| Context window | The ceiling on one request: your whole resent conversation plus the reply, in tokens. Not a target. See [the context window is the entire memory](/engineering/the-context-window-is-the-entire-memory/). |
 | Max output tokens | A second, much smaller ceiling, on the reply alone — and on current models the model's own thinking counts against it. |
 | Input price per million | What it costs to resend the pile. This is the number that compounds across a long session. |
 | Output price per million | Usually five times the input rate. On a short task it is most of the bill. |
 | Cache read price | What the unchanged front of the prompt costs on a repeat. A tenth of the input rate, or less. |
 | Default effort | How hard the model works when you say nothing. It differs *between models in the same family*, which is a quiet way to be surprised. |
-| Knowledge cutoff | What it was trained on, and therefore what it cannot know. See [post 1.4](/engineering/how-it-learned-to-follow-instructions/). |
+| Knowledge cutoff | What it was trained on, and therefore what it cannot know. See [how it learned to follow instructions](/engineering/how-it-learned-to-follow-instructions/). |
 | Comparative latency | Usually a word, not a number. More on this below. |
 | Retirement date | The date this model stops existing. It makes your prompt a dependency with an end-of-life, and almost nobody reads it. |
 
@@ -112,18 +147,18 @@ read a model card and then quotes a stale price has undone its own argument.
 
 Four things in that table are worth stopping on.
 
-**Latency is a word.** "Slower", "Moderate", "Fast", "Fastest" — a rank, not a
-rate, and the page says why: actual latency depends on prompt length, output
-length and how much the model decides to think. There is no honest
-tokens-per-second number to publish, because it is not a property of the model
-alone. If you need one, you measure it on your own prompts, and it is yours and
-nobody else's.
+**Speed is a word, not a number.** "Slower", "Moderate", "Fast", "Fastest" — a
+rank, not a rate, and the page says why: how long a reply takes depends on how
+long the prompt is, how long the answer is, and how much the model decides to
+think. There is no honest tokens-per-second figure to publish, because it is not
+a property of the model on its own. If you need one, you measure it on your own
+prompts, and it is yours and nobody else's.
 
-**"From $0.10."** That word is doing real work. The cheapest tier's price is
-tiered by prompt size: $0.10 per million input and $0.50 output up to 100,000
-tokens, and $0.50 / $2.50 above it. A five-times step change, triggered by a
-threshold your conversation crosses silently mid-session. Budget at the headline
-rate and your unit cost quintuples without a line of code changing.
+**"From $0.10."** That word is doing real work, and it is the combined-cycle fuel
+figure. The cheapest tier's price steps with prompt size: $0.10 per million in
+and $0.50 out up to 100,000 tokens, then $0.50 and $2.50 above it. A five-fold
+jump, crossed silently mid-session. Budget at the headline rate and your unit
+cost quintuples without a line of code changing.
 
 **The defaults are not the same across the family.** Two of those four models
 default to `medium` effort and two to `high`. Carry a request body from one to
@@ -152,11 +187,11 @@ Two sums, not one, at rates that differ by a factor of five. Which is why a
 task with a short prompt and a long answer bills almost entirely on the output
 side, and why "we gave it a shorter prompt" is often the wrong lever.
 
-## 03 — The numbers that mislead
+## 04 — The numbers that mislead
 
-**Parameter counts.** The headline is a round number and the model is not. Here
-is the actual count for the three models in section 04, read straight off the
-loaded weights:
+**[Parameter](/engineering/the-ai-vocabulary/#parameters) counts.** The headline is a round number and the
+model is not. Here is the real count for the three models in section 05, read
+straight off the loaded weights:
 
 ```python
 from transformers import AutoConfig, AutoModelForCausalLM
@@ -190,7 +225,7 @@ same axis, and on this family they are not even correlated.
 
 This matters less than it used to, for a reason worth saying out loud: **no
 current frontier model publishes a parameter count at all.** It is missing from
-the table in section 02 because it is missing from the card. A model-choice
+the table in section 03 because it is missing from the card. A model-choice
 conversation about parameter counts is a conversation about a number the vendor
 has stopped supplying, standing in for a capability you could just measure.
 
@@ -207,19 +242,21 @@ benchmark's task is not your task, and the gap between them is where your
 decision lives.
 
 **Context-length headlines.** Two traps beyond the one above. The first is that
-a bigger window does not make the model better at using what is in it —
-[post 1.3 argued that at length](/engineering/the-context-window-is-the-entire-memory/)
-and nothing here changes it. The second is subtler and genuinely surprising:
+a bigger window does not make the model better at using what is in it — [the
+context window post argued that at
+length](/engineering/the-context-window-is-the-entire-memory/) and nothing here
+changes it. The second is subtler and genuinely surprising:
 **a token is not a fixed amount of text, and it changed recently.** The vendor's
 own pricing page notes that models from the 4.7 generation on use a newer
-tokenizer that produces roughly 30 per cent more tokens for the same text. The
-same page puts a 1M window at about 555,000 words on the current tokenizer and
-about 750,000 words on the previous one. So two things follow that nobody tells
-you on the card: a "1M context window" is a third smaller in words than it was
-a generation ago, and **a per-token price is not comparable across a tokenizer
-change.** A model at $3 per million against one at $4 per million is not 33 per
-cent cheaper if the same document becomes 30 per cent more tokens on the second
-one. Work in cost per document, not cost per token.
+[tokeniser](/engineering/the-ai-vocabulary/#tokeniser) that produces roughly 30
+per cent more tokens for the same text. The same page puts a 1M window at about
+555,000 words on the current tokenizer and about 750,000 words on the previous
+one. So two things follow that nobody tells you on the card: a "1M context
+window" is a third smaller in words than it was a generation ago, and **a
+per-token price is not comparable across a tokenizer change.** A model at $3 per
+million against one at $4 per million is not 33 per cent cheaper if the same
+document becomes 30 per cent more tokens on the second one. Work in cost per
+document, not cost per token.
 
 **Contamination.** If the benchmark's questions were in the training data, the
 score measures recall, not capability — and you cannot check from outside,
@@ -227,7 +264,7 @@ because you do not have the training set. The defence is the one you would use
 against any leaked exam: hold out your own questions, written after the model
 shipped, and never publish them.
 
-## 04 — One task, three models
+## 05 — One task, three models
 
 Here is the measurement. One task I actually do — summarise a pull request diff
 for a reviewer — run on three sizes of the same model family, greedy decoding
@@ -301,10 +338,10 @@ The smallest model **merged two separate changes into one sentence that
 describes neither**. It says high-priority tickets are escalated based on age
 versus SLA — that is the new `escalate` function's logic, welded onto the
 routing condition, which does not use age at all. A reviewer who read that and
-approved would have approved a change they had not understood. It is fluent,
-it is confident, it mentions the right identifiers, and it is wrong, which is
-the failure mode [post 1.2](/engineering/why-it-sounds-certain-when-its-wrong/)
-is entirely about.
+approved would have approved a change they had not understood. It is fluent, it
+is confident, it mentions the right identifiers, and it is wrong, which is the
+failure [why it sounds certain when it's
+wrong](/engineering/why-it-sounds-certain-when-its-wrong/) is entirely about.
 
 The middle model got both routing changes right and **silently omitted the new
 function**. Nothing in its answer is false. A reviewer would simply never learn
@@ -363,10 +400,12 @@ out against 205 in, at five times the rate.
 
 Two honest caveats about that table. **The token counts come from a different
 tokenizer than the one those models use**, so the absolute cents would move if
-you re-ran it against them; the ratios between the rows would not. And this is
-a short task — on a long agent session the input side dominates instead, which
-is the arithmetic in [post 1.3](/engineering/the-context-window-is-the-entire-memory/),
-and where prompt caching starts mattering more than tier choice.
+you re-ran it against them; the ratios between the rows would not. And this is a
+short task — on a long agent session the input side dominates instead, which is
+the arithmetic in [the context window
+post](/engineering/the-context-window-is-the-entire-memory/), and where [prompt
+caching](/engineering/the-ai-vocabulary/#prompt-caching) starts mattering more
+than which tier you picked.
 
 The useful observation is the one the numbers make unavoidable: **at this
 volume, the cheap tier's saving is not worth one bad review.** Thirteen dollars
@@ -378,12 +417,13 @@ actually lands on your bill.
 That is the whole skill. Not "which model is best", but "which shape is this
 step".
 
-## 05 — When thinking is worth paying for
+## 06 — When thinking is worth paying for
 
 A reasoning model is trained to write out its working before it answers. Where
-that training sits — after the base model, after instruction tuning — is
-[post 1.4](/engineering/how-it-learned-to-follow-instructions/)'s subject. What
-this post owes you is the part that shows up on the invoice: the working is
+that training sits — after the base model, after instruction tuning — is [how it
+learned to follow
+instructions](/engineering/how-it-learned-to-follow-instructions/)'s subject.
+What this post owes you is the part that reaches the invoice: the working is
 output tokens, you are billed for every one at the output rate, and on most
 current models you never see them.
 
@@ -448,7 +488,7 @@ demonstrates, which hold at every size:
 
 **You pay for the hidden part.** Ninety-seven and a half per cent of the output
 tokens on that run were reasoning you cannot read, billed at the output rate.
-Apply the section 04 rates to those two token counts and the same answer costs
+Apply the section 05 rates to those two token counts and the same answer costs
 between $0.000018 and $0.092 depending on tier and switch position — a
 fifty-fold swing from one boolean.
 
@@ -462,13 +502,13 @@ The API has moved on from the dial this section's plan assumed, and the move
 tells you something. On the current Claude lineup you mostly **cannot turn
 thinking off** — on two of the four models it is always on, and a request that
 asks for it to be disabled returns a 400. The fixed thinking-token budget is
-gone too; the control is now an `effort` level from `low` to `max`, and the
-docs are blunt that
-"[effort is a behavioral signal, not a strict token budget](https://platform.claude.com/docs/en/build-with-claude/effort)".
-That is a meaningful admission: the vendor is telling you the knob is a
-preference, not a cap. If you need a hard ceiling it is still `max_tokens` — and
-thinking counts against it, which is how a reply gets truncated by reasoning you
-never saw.
+gone too; the control is now an [effort](/engineering/the-ai-vocabulary/#effort)
+level from `low` to `max`, and the docs are blunt that "[effort is a behavioral
+signal, not a strict token
+budget](https://platform.claude.com/docs/en/build-with-claude/effort)". That is
+a meaningful admission: the vendor is telling you the knob is a preference, not
+a cap. If you need a hard ceiling it is still `max_tokens` — and thinking counts
+against it, which is how a reply gets truncated by reasoning you never saw.
 
 The same page makes the practical point better than I could: tuning effort is
 often a better lever than switching models. One model at low effort is one cache
@@ -495,7 +535,7 @@ summary is least likely to be questioned — but it is reading and compression,
 not derivation. Mid tier, effort turned down. Neither branch ends at the top
 tier, and that is the usual outcome.
 
-## 06 — Going deeper: build your own benchmark
+## 07 — Going deeper: build your own benchmark
 
 Everything above converges on one recommendation, and the vendor's own
 model-choosing guide gets there too: "having a good evaluation set is the most
@@ -520,14 +560,16 @@ Three properties separate a set that helps from one that flatters:
   human applies in ten seconds, or a stronger model applies at scale.
 - **Run on every tier, including the cheap one, every time you consider
   switching.** The cheap tier's result on *your* twenty is the only number that
-  settles the section 01 argument.
+  settles the section 01 argument. In the vocabulary this file is your
+  [golden set](/engineering/the-ai-vocabulary/#golden-set), and running it is an [eval](/engineering/the-ai-vocabulary/#eval).
 
-Doing this properly — grading rubrics, judge models, regression gates in CI —
-is a discipline with a literature, and this series will have a post on it in a
-later track. Until then,
-[section 10 of the AI architecture guide](/guides/ai-architecture-master-guide/#10--llmops--evaluation)
-covers the LLMOps side of evaluation and
-[section 07 of the training and evaluation guide](/guides/model-training-finetuning-eval/#07--evaluation-harnesses--benchmarks)
+Doing this properly — grading rubrics, judge models, regression gates in CI — is
+a discipline with a literature, and this series has a post on it in track 4:
+**Knowing Whether It Works**. Until then,
+[section 10 of the AI architecture
+guide](/guides/ai-architecture-master-guide/#10--llmops--evaluation) covers the
+LLMOps side of evaluation and [section 07 of the training and evaluation
+guide](/guides/model-training-finetuning-eval/#07--evaluation-harnesses--benchmarks)
 covers the harnesses. But do not wait for any of it: twenty cases in a text
 file, graded by eye, beats a leaderboard you did not run.
 
@@ -549,7 +591,7 @@ file, graded by eye, beats a leaderboard you did not run.
 
 **Comparing on price alone.** The cheap tier is a saving only if its output is
 usable. One wrong summary a reviewer acts on costs more than the entire annual
-difference between two tiers, and section 04 measures how cheaply wrong arrives.
+difference between two tiers, and section 05 measures how cheaply wrong arrives.
 
 **Comparing on benchmarks alone.** You are reading evidence about a population
 you are not in. Twenty of your own cases outrank any public table, and a
@@ -561,7 +603,7 @@ and it never shows up as a quality problem, so nothing prompts anyone to look.
 
 **Forgetting that output tokens cost more.** Usually five times more. A task
 with a short prompt and a long answer bills almost entirely on the side nobody
-optimises — 75 per cent of every row in section 04.
+optimises — 75 per cent of every row in section 05.
 
 **Assuming a bigger context removes the need to curate.** It raises the ceiling
 and leaves the discipline exactly where it was — and now that every tier quotes
@@ -574,8 +616,8 @@ the same window, it does not even distinguish them.
   — both read on 10 October 2026; between them, every price, ID, context length
   and effort default here. Open the first for what is *not* on a good card:
   latency is a word, parameter count is absent, and there is a retirement date.
-  Open the second for the tiered rate above 100,000 tokens and the tokenizer
-  note behind section 03.
+  Open the second for the tiered rate above 100,000 tokens and the tokeniser note
+  behind section 04.
 - [Effort](https://platform.claude.com/docs/en/build-with-claude/effort) and
   [Choosing a model](https://platform.claude.com/docs/en/about-claude/models/choosing-a-model)
   — the parameter that replaced the thinking budget, with the sentence worth
@@ -588,14 +630,14 @@ the same window, it does not even distinguish them.
   (`989aa79`) and [Qwen2.5-3B-Instruct](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct)
   (`aa8e725`), all 25 September 2024, plus
   [Qwen3-0.6B](https://huggingface.co/Qwen/Qwen3-0.6B) (`c1899de`, 26 July
-  2025). The cards to practise on, and they make section 03's point for me:
+  2025). The cards to practise on, and they make section 04's point for me:
   each publishes a **non-embedding** parameter count beside the headline one —
   0.36B of the "0.5B", 1.31B of the "1.5B" — the honest number, and the one
   nobody quotes.
 - [The context window is the entire memory](/engineering/the-context-window-is-the-entire-memory/)
-  — post 1.3, the prerequisite. Its section 03 does this arithmetic over a
-  growing session: the other half of your bill, and the half that dominates
-  once a task runs longer than one call.
+  — the prerequisite, third in this track. Its section 04 does this arithmetic
+  over a growing session: the other half of your bill, and the half that
+  dominates once a task runs longer than one call.
 - [AI Architecture: A Practitioner's Field Guide](/guides/ai-architecture-master-guide/#02--foundation-models--selection)
   and [Model training, fine-tuning and evaluation](/guides/model-training-finetuning-eval/#07--evaluation-harnesses--benchmarks)
   — section 02 of the first is the model-selection framework this post is the
@@ -605,13 +647,13 @@ the same window, it does not even distinguish them.
 - [The AI vocabulary](/engineering/the-ai-vocabulary/) — one-line entries for
   parameters, context window, tokeniser, reasoning model, thinking budget,
   prompt caching, eval and golden set. Its **thinking budget** entry is the
-  control section 05 says has been retired: vocabulary outlives APIs, and you
+  control section 06 says has been retired: vocabulary outlives APIs, and you
   still need the word.
 
 ## Final thoughts
 
-A model card is a van's spec sheet. Payload, consumption, top speed: all true,
-all measured, none of them about your loading bay.
+A model card is the van brochure. Payload, consumption, top speed: all true, all
+measured, none of them about your loading bay.
 
 Six posts ago this series started with what a model is doing when it produces a
 token. It ends on the practical consequence: you now know enough to stop reading

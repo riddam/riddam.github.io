@@ -108,8 +108,8 @@ about 550 MB once unpacked. This is why the first run feels slow and every run
 afterwards does not.
 
 **The model** goes to Hugging Face's cache, at `~/.cache/huggingface/hub`. For
-Qwen2.5-0.5B that is one file of 988 MB — the weights — plus about 11 MB of
-tokeniser files. It downloads once, the first time a script names that model,
+Qwen2.5-0.5B that is one file of 988 MB — the [weights](/engineering/the-ai-vocabulary/#weights) — plus about
+11 MB of [tokeniser](/engineering/the-ai-vocabulary/#tokeniser) files. It downloads once, the first time a script names that model,
 and is reused by every script after it.
 
 So: a shade over 1.5 GB total, split across two caches, downloaded once. After
@@ -126,13 +126,14 @@ Once both caches are warm, all of this works with the wifi off.
 and the reasons are worth a paragraph because they are the same reasons you
 might pick a small model at work.
 
-It is **small enough to be honest about**. Half a billion parameters fits in
+It is **small enough to be honest about**. Half a billion
+[parameters](/engineering/the-ai-vocabulary/#parameters) fits in
 memory on anything, so nobody needs special hardware to check my numbers.
 
 It is **open and ungated**. No access request, no licence to accept, no token to
 paste. The download just works.
 
-It is **a base model**, which matters more than it sounds. It has not been
+It is **a [base model](/engineering/the-ai-vocabulary/#base-model)**, which matters more than it sounds. It has not been
 trained to be a chat assistant, so what you see is closer to the raw mechanism.
 Its own model card says plainly that base models are not recommended for
 conversation — which is exactly the distinction

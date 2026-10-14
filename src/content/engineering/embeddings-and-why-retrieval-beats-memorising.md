@@ -15,28 +15,32 @@ page came out of running them.*
 
 ## TL;DR
 
-- An embedding is a **position**, not a summary. The model turns a piece of text
-  into a list of numbers and the only thing that list is good for is measuring
-  how far it is from other lists.
+- An [embedding](/engineering/the-ai-vocabulary/#embedding) is a **position**, not a summary. The model turns
+  a piece of text into a list of numbers, and the only thing that list is good
+  for is measuring how far it sits from other lists.
 - Text that means similar things lands nearby, even with no words in common.
-  That is the entire reason search on meaning works.
-- Retrieval is not clever. It is "find the nearby bits, paste them into the
-  prompt" — thirty lines, no vector database, and you can read all of it.
-- **Chunking decides the answer.** Where you cut the document is a bigger lever
-  on correctness than the model, the prompt or the embedding you picked.
-- Nothing here needs infrastructure to understand. Buy the database when you
+  That is the whole reason search on meaning works.
+- [Retrieval](/engineering/the-ai-vocabulary/#retrieval) is not clever. It is "find the nearby bits, paste
+  them into the prompt" — thirty lines, no
+  [vector database](/engineering/the-ai-vocabulary/#vector-database), and you can read all of it.
+- **[Chunking](/engineering/the-ai-vocabulary/#chunking) decides the answer.** Where you cut the document
+  matters more to correctness than the model, the prompt or the embedding you
+  picked.
+- None of this needs infrastructure to understand. Buy the database when you
   have the scale, not when you are trying to work out why the answer is wrong.
 
 ## Where this sits
 
-This is the fifth post in **AI from the inside out**. It assumes
-[what a model actually is](/engineering/what-a-model-actually-is/) — tokens, the
-ranked list of next-token probabilities, the loop — and it assumes
-[the context window is the entire memory](/engineering/the-context-window-is-the-entire-memory/),
+This is the fifth post in **AI from the inside out**. It assumes [what a model
+actually is](/engineering/what-a-model-actually-is/) — tokens, the ranked list
+of next-token probabilities, the loop — and it assumes [the context window is
+the entire memory](/engineering/the-context-window-is-the-entire-memory/),
 because retrieval is a context-window strategy and nothing else. Everything in
-this post exists to decide what goes in a window that is finite and billed. Any
-word that is new is one line in
-[the AI vocabulary](/engineering/the-ai-vocabulary/).
+this post exists to decide what goes into a window that is finite and billed.
+
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
 
 [Post two](/engineering/why-it-sounds-certain-when-its-wrong/) already made the
 case that giving a model the source is the single biggest fix available, and
@@ -44,14 +48,8 @@ showed it: nought out of three right without the release notes, three out of
 three with them. It left the hard part alone. **Finding the right four lines is
 the hard part**, and this post is about that.
 
-The analogy for this one: **a closed-book exam against an open-book one.**
-Training is revision — the candidate reads everything in advance and walks in
-with whatever stuck. Fine-tuning is more revision, as
-[the previous post](/engineering/how-it-learned-to-follow-instructions/) argued
-at some length, and more revision does not put a fact in a head that never read
-it. Retrieval is handing the candidate the book. And chunking — this is the part
-that surprises people — is choosing which pages go in it, by someone with a
-guillotine and no instructions.
+And one scene runs through the whole post, in section 02. If the mechanics ever
+stop making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -76,11 +74,52 @@ it. Both facts are in the same paragraph, two sentences apart, and the retrieval
 step cut between them.
 
 That transcript is not a thought experiment. It is printed output from the
-thirty lines in section 03, run twice with one argument changed, and you will
+thirty lines in section 04, run twice with one argument changed, and you will
 see both runs in full. Nothing about the model changes between them. The only
 difference is where the document got cut.
 
-## 02 — A vector is a position
+## 02 — The exam, and the clerk with the guillotine
+
+Sam, from post 1, is sitting an exam.
+
+> **Closed book.** Sam revised for eighteen years and walks in with whatever
+> stuck. That is training. Sending Sam on another revision course — which is
+> what fine-tuning is, and
+> [the previous post](/engineering/how-it-learned-to-follow-instructions/)
+> argues at length — does not put a fact into a head that never read it.
+>
+> **Open book.** Now Sam is allowed the company handbook. Suddenly the questions
+> about *your* company are answerable, because the answer is on the desk instead
+> of in the memory. That is retrieval, and it is the biggest single improvement
+> available.
+>
+> Except Sam is not allowed the whole book. The hall is small and the desk is
+> small, so the arrangement is this: outside the door sits a clerk. For each
+> question the clerk reads it, goes to the handbook, picks the three pages that
+> look most relevant, and slides them under the door.
+>
+> The clerk is fast, and surprisingly good at judging relevance. The clerk is
+> also working from a pile of pages somebody else cut up in advance, with a
+> guillotine, before anyone had seen a single question — and the person holding
+> the guillotine was not told where the sentences were.
+>
+> So on a bad day Sam receives a page ending "standard laptops are replaced
+> after f" and another beginning "ive working days." Both genuinely are the most
+> relevant pages in the pile. Sam reads them, welds them together, and writes a
+> confident, grammatical, completely wrong answer. Sam cannot go and check: the
+> rest of the book is outside the room.
+
+Three jobs in that scene, and the rest of the post is one section each.
+
+- **The clerk's sense of relevance** is the embedding. Section 03.
+- **Sliding pages under the door** is retrieval. Section 04.
+- **The guillotine** is chunking, and it is the one that decides the answer.
+  Sections 05 and 06.
+
+Notice which one gets blamed when the answer comes out wrong, and which one did
+the damage.
+
+## 03 — A vector is a position
 
 Start with the piece everyone skips, because it is the piece that makes the rest
 obvious.
@@ -88,9 +127,10 @@ obvious.
 An embedding model is a different animal from the one that writes your answers.
 It does not generate anything. You hand it a piece of text and it hands back a
 fixed-length list of numbers — for the model used here, 384 of them, the same
-384 whether you gave it a word or a paragraph. That list is called a vector, and
-the right way to picture it is a **position**. Not a compressed version of your
-sentence, not a summary, nothing you can read. A location.
+384 whether you gave it a word or a paragraph. That list is called a
+[vector](/engineering/the-ai-vocabulary/#vector), and the right way to picture
+it is a **position**. Not a compressed version of your sentence, not a summary,
+nothing you can read. A location.
 
 What makes the location useful is that the model was trained so that text used
 in similar ways ends up in similar places. So the only operation you ever
@@ -182,7 +222,7 @@ distinctions, and cost more to store and compare. Bigger embedding models
 produce vectors several times this long. Nothing conceptual changes; it is the
 same picture with more room in it.
 
-## 03 — Retrieval, in thirty lines
+## 04 — Retrieval, in thirty lines
 
 Now the whole mechanism, with nothing left out and nothing installed.
 
@@ -275,9 +315,9 @@ starting with its own heading. That is the whole of "document-structure-aware
 chunking".
 
 **`emb.encode(chunks)` is the index.** A list of vectors, in memory, in a
-variable. A vector database is this plus persistence, plus an approximate
-nearest-neighbour search that stops you comparing against all ten million of
-your chunks one at a time. At four chunks, `cos_sim` against all of them is
+variable. A vector database is this plus storage that survives a restart, plus a
+faster-than-exhaustive search so you are not comparing against all ten million
+of your chunks one at a time. At four chunks, `cos_sim` against all of them is
 instant, and what it computes is exactly what the database computes.
 
 **`scores.topk(3)` is the retriever.** Three is a choice, and it is the main
@@ -297,7 +337,7 @@ next question starts over from an empty window. Retrieval is a thing that
 happens *before* the model runs, in ordinary code, and the model's only
 involvement is reading what the code decided to show it.
 
-## 04 — Now break it
+## 05 — Now break it
 
 Same script. Same model. Same question. Same document. One argument changed, so
 the document is cut into fixed 60-character pieces instead of sections — which
@@ -318,9 +358,9 @@ thought about the document.
 Read the retrieved chunks before the answer, because the answer is the least
 interesting part.
 
-The first chunk ends `replaced after f`. The words "four years" were severed
-mid-word by the guillotine, and what the chunk now asserts is that standard
-laptops are replaced after *something*. The second chunk begins `ive working
+The first chunk ends `replaced after f`. The guillotine went through "four
+years" mid-word, and what the chunk now says is that standard laptops are
+replaced after *something*. The second chunk begins `ive working
 days.` — the tail of a sentence about early replacements, with the subject of
 that sentence left behind in a chunk that was never retrieved. Put the two in
 the prompt next to each other and the model does the only sensible thing
@@ -347,10 +387,10 @@ decides whether a fact survives the trip into the prompt intact, and you can
 break a working system by changing it alone, with no error, no exception and no
 drop in any retrieval metric you are likely to be watching.
 
-## 05 — What chunking really decides
+## 06 — What chunking really decides
 
-The rule that falls out of section 04, and it is the only chunking rule I would
-defend without qualification:
+The rule that falls out of section 05, and the only chunking rule I would defend
+without qualification:
 
 **A chunk has to be able to answer on its own.** It will be read with no
 document around it, by something that cannot go and look at the previous
@@ -421,18 +461,19 @@ flowchart TD
 *Both paths retrieve successfully. Only one retrieves something useful.*
 
 The practical consequence for anyone running one of these systems: when the
-answers are wrong, **print the retrieved chunks before you touch anything else.**
-Not the answer — the chunks. Half of what gets diagnosed as a model problem, a
-prompt problem or an embedding-model problem is visible in one `print` of what
-was actually in the window, and section 04 is what it looks like when you do.
+answers are wrong, **print the retrieved chunks before you touch anything
+else.** Not the answer — the chunks. Half of what gets diagnosed as a model
+problem, a prompt problem or an embedding-model problem is visible in one
+`print` of what was actually in the window, and section 05 is what it looks like
+when you do.
 
-## 06 — Going deeper: why pure similarity plateaus
+## 07 — Going deeper: why pure similarity plateaus
 
 Everything above is the bottom rung of a ladder, and it is worth knowing what
 the next rungs fix, because the first production system always hits the same
 two walls.
 
-**Similarity and keywords fail on opposite things.** Section 02 is the good news:
+**Similarity and keywords fail on opposite things.** Section 03 is the good news:
 "releases go out once a pull request lands" matched a question with no words in
 common. The bad news is the same property. Embeddings work on the gist, and a
 gist is exactly the wrong representation for a ticket number, a version string
@@ -472,16 +513,18 @@ they can be read. Every pair here is a short statement against a short statement
 so they share a distribution — and in that distribution, unrelated statements sit
 at 0.09 and 0.22 while two different tickets sit at 0.95. The identifier is the
 only thing that differs and it moves the score almost not at all. Resist setting
-0.95 beside the 0.344 from section 02: that one was a *question* against a
+0.95 beside the 0.344 from section 03: that one was a *question* against a
 statement, a different shape with a different range, and comparing the two
-numbers is exactly the percentage thinking section 02 warned about. To this
+numbers is exactly the percentage thinking section 03 warned about. To this
 model, "connection reset" and "connection refused" are near-synonyms, which in
-English they nearly are and in an incident they are not at all. Old-fashioned keyword search — the term-frequency kind,
-usually BM25 — is excellent at precisely what embeddings are bad at, and bad at
-precisely what they are good at. Which is why the production baseline is not
-either one. It is both, run in parallel, results merged. The architecture guide
-has that pipeline drawn in
-[section 05, RAG architectures](/guides/ai-architecture-master-guide/#05--rag-architectures),
+English they nearly are and in an incident they are not at all. Old-fashioned
+keyword search — the word-counting kind, usually BM25 — is excellent at
+precisely what embeddings are bad at, and bad at precisely what they are good
+at. Which is why the production baseline is not either one. It is both, run side
+by side, results merged: that is [hybrid
+search](/engineering/the-ai-vocabulary/#hybrid-search). The architecture guide
+has that pipeline drawn in [section 05, RAG
+architectures](/guides/ai-architecture-master-guide/#05--rag-architectures),
 along with the four more capable arrangements above it and the chunk-size
 trade-off written out as a table.
 
@@ -490,16 +533,17 @@ second wall, and it is structural rather than a tuning problem. To search a
 million chunks quickly, each chunk's vector has to be computed once, in advance,
 without knowing the question — the question's vector is computed separately and
 the two are compared. The comparison never gets to read the question and the
-chunk together. That is the price of being able to index at all. A **reranker**
-is a second, slower model that does get to read them together, applied to the
-twenty or fifty candidates the fast search returned, to reorder them before the
-top few go in the prompt. It exists because the fast step is fast by giving
-something up, and the guide's view is blunt about it: always add one in
-production, it is a cheap uplift.
+chunk together. That is the price of being able to index at all. A
+**[reranker](/engineering/the-ai-vocabulary/#reranking)** is a second, slower model that does get to read them
+together, run over the twenty or fifty candidates the fast search returned, to
+put them back in order before the top few go in the prompt. It exists because
+the fast step is fast by giving something up, and the guide's view is blunt
+about it: always add one in production, it is a cheap uplift.
 
-There is a security entry for this layer, and it is worth having the name.
-OWASP files it as `LLM08:2025 Vector and Embedding Weaknesses`, and two of its
-risks are not obvious from the inside. Embeddings are not a one-way hash:
+There is a security entry for this layer, and it is worth having the name. OWASP
+calls it *Vector and Embedding Weaknesses* — ninth on the 2026 list, eighth on
+the 2025 one, so quote the name rather than the number — and two of its risks
+are not obvious from the inside. Embeddings are not a one-way hash:
 attackers can "invert embeddings" to recover a meaningful amount of the source
 text, so a vector store of confidential documents is a store of confidential
 documents. And where one index serves several groups of users, one group's
@@ -540,12 +584,12 @@ project and no API key.
 ## Common mistakes
 
 **Chunking by character count through the middle of sentences.** It is the
-default because it is the easiest thing to write, and section 04 is what it
-does. Cut on something the document already decided was a boundary.
+default because it is the easiest thing to write, and section 05 is what it
+does. Cut where the document already decided a boundary was.
 
-**No overlap at all.** The sentence that answers the question is the one that
-straddles your cut. But read section 05 before you reach for overlap as the
-fix — it rescues the text and does not remove the broken text competing with it.
+**No overlap at all.** The sentence that answers the question is the one
+straddling your cut. But read section 06 before reaching for overlap as the fix:
+it rescues the good text and does not remove the broken text competing with it.
 
 **Retrieving ten chunks when three would do.** More chunks is not more grounding.
 It is more irrelevant text competing with the relevant text, in a window where
@@ -557,7 +601,7 @@ measured that three misses, not pre-emptively.
 some text was in the window. It guarantees nothing about whether the answer came
 from it, whether the text said what the answer claims, or whether it was intact.
 A citation is a pointer to a chunk, not evidence the chunk was read correctly —
-and in section 04 the citation was perfectly accurate.
+and in section 05 the citation was perfectly accurate.
 
 **Reaching for fine-tuning when the real problem was retrieval.** "It does not
 know our product" is almost never a training problem, and
@@ -577,11 +621,11 @@ They need the book.
   — the prerequisite for understanding why "retrieve more" has a ceiling.
   Retrieved chunks are just tokens in the window, competing with your system
   prompt and the rest of the conversation on exactly equal terms.
-- [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/llm-top-10/)
-  — `LLM08:2025 Vector and Embedding Weaknesses` is the entry for this layer.
-  Open it for embedding inversion and for multi-tenant leakage between groups
-  sharing one index, which is the risk people building their first internal
-  assistant most reliably miss.
+- [OWASP Top 10 for LLM Applications](https://genai.owasp.org/llm-top-10/) —
+  the entry for this layer is called *Vector and Embedding Weaknesses*. Open it
+  for embedding inversion, and for leakage between groups sharing one index,
+  which is the risk people building their first internal assistant most reliably
+  miss.
 - [all-MiniLM-L6-v2 model card](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)
   — the embedding model every score above came from. Read it for the 384
   dimensions and, more usefully, for the sentence that says input longer than
@@ -592,7 +636,7 @@ They need the book.
   library used here. Worth it for the problem it was solving: finding the most
   similar pair among 10,000 sentences took about 65 hours with the previous
   approach and about 5 seconds with this one. Precomputed vectors are what made
-  retrieval practical, and section 06's reranking is that trade-off running in
+  retrieval practical, and section 07's reranking is that trade-off running in
   reverse.
 - [The AI vocabulary](/engineering/the-ai-vocabulary/) — one-line entries for
   embedding, vector, RAG, chunking, vector database and reranking, with an

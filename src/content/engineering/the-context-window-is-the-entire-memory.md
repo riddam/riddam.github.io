@@ -13,25 +13,27 @@ can run the same script on your laptop and get your own numbers.*
 
 ## TL;DR
 
-- The model is stateless. It remembers nothing between turns.
-- Your entire conversation is sent again, from scratch, on every single turn.
-- "It forgot" is almost never forgetting. It is one of three different
-  problems with three different fixes.
-- Cost and latency climb through a long session, and they climb faster than the
-  amount you added.
-- The fix is curating what goes in, not waiting for a bigger window.
+- The model keeps nothing between turns. Nothing at all.
+- Your whole conversation is sent again, from scratch, every single turn.
+- "It forgot" is almost never forgetting. It is one of three different problems,
+  and they have three different fixes.
+- Cost and waiting time climb through a long session, and they climb faster than
+  the amount you added.
+- The fix is choosing what goes in, not waiting for a bigger
+  [context window](/engineering/the-ai-vocabulary/#context-window).
 
 ## Where this sits
 
 This needs [what a model actually is](/engineering/what-a-model-actually-is/) —
-specifically the loop, and the note at the end about attention cost. Everything
-in the harness track assumes this post. Any unfamiliar word is one line in
-[the AI vocabulary](/engineering/the-ai-vocabulary/).
+the loop in particular, and the note at the end about what attention costs.
+Everything in track 2, on what your coding tool is doing, assumes this post.
 
-The analogy for the whole post: **a desk, not a filing cabinet.** Everything the
-model can use is on the desk right now. Anything not on the desk may as well not
-exist. And the desk is cleared and rebuilt from scratch at the start of every
-single turn.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the mechanics ever
+stop making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -55,20 +57,53 @@ or that the context "filled up". One of those is close to right, but the real
 explanation is simpler and more useful, and it starts from a fact that sounds
 wrong the first time you hear it.
 
-## 02 — There is no conversation
+## 02 — Sam's desk gets cleared every morning
 
-There is no conversation. There is no session. There is nothing on the other end
-that is keeping track of you.
+Post 1 introduced Sam, the colleague who has read everything and cannot look
+anything up. Here is the detail that post left out.
 
-The API that sits under every one of these tools takes a list of messages and
-returns one more message. That is the entire interface. It has no memory of the
-previous call, no identifier tying this request to the last one, nothing stored
-between them. Send the same list twice and you get two independent answers from
-a thing that has no idea it has seen you before.
+> Sam works in a small room with a desk, and the room is cleared overnight.
+> Every morning Sam walks in with no memory of yesterday at all — not a vague
+> memory, none.
+>
+> So you have a system. Before each question you hand Sam a printed transcript
+> of everything that has happened so far: the brief you gave on Monday, the file
+> you showed them, every question you have asked, every answer they have given.
+> Sam reads the whole stack, answers your new question, and the room is cleared
+> again.
+>
+> It works. From the outside it looks exactly like a colleague with a memory.
+> But notice what you are actually doing, because three things follow from it.
+>
+> **You are paying to reprint the stack every single time.** The question "and
+> what about the error case?" is nine words, and handing it over costs you the
+> whole transcript again.
+>
+> **The desk has edges.** Past some number of pages, something has to come off
+> the bottom — or get replaced by a one-page summary — before the new page fits.
+>
+> **Nothing on the desk is highlighted.** Monday's "always use British spelling"
+> is one sentence on page one. Thursday's stack trace is four hundred words of
+> urgent-looking detail on page nine. To Sam they are the same kind of thing:
+> text on the desk, competing to shape the next answer.
+
+That is the whole post. Everything below is one of those three consequences,
+measured.
+
+## 03 — There is no conversation
+
+There is no conversation. There is no session. There is nothing at the other end
+keeping track of you.
+
+The API underneath every one of these tools takes a list of messages and returns
+one more message. That is the whole interface. No memory of the previous call,
+no identifier tying this request to the last, nothing stored in between. Send
+the same list twice and you get two independent answers from something with no
+idea it has seen you before.
 
 So how does a chat work? The program in front of you keeps the list. Every time
-you press enter, it appends your new message to everything that came before and
-sends the whole accumulated pile again.
+you press enter it adds your new message to everything that came before and
+sends the whole pile again. It is reprinting the transcript.
 
 ```mermaid
 flowchart LR
@@ -87,19 +122,19 @@ flowchart LR
 *Notice that turn 20 is not turn 1 plus a memory. It is turn 1 plus everything,
 sent again from scratch.*
 
-If you have only ever used a chat interface, that sounds like pedantry. If you
-have ever built anything on the API, it is the first thing you discover and it
-reorganises how you think: there is no `session_id`, no `conversation.append()`
-on the server, nothing to expire. You hold the list. You decide what goes in it.
-You decide what comes out. Every design question that feels like "how do I give
-it memory" is really "what do I put in the list, and how do I choose".
+If you have only ever used a chat window, that sounds like pedantry. If you have
+ever built anything on the API, it is the first thing you find out and it
+rearranges how you think. There is no `session_id`, no `conversation.append()`
+on the server, nothing to expire. You hold the list. You decide what goes in and
+what comes out. Every design question that feels like "how do I give it
+[memory](/engineering/the-ai-vocabulary/#memory)" is really "what do I put in
+the list, and how do I choose".
 
-This is the single most load-bearing fact in this series. The "memory" you
-experience is a file on your own side being replayed. The context window is not
-where memories are stored; it is the maximum size of the pile you are allowed to
-replay.
+This is the most load-bearing fact in the series. The memory you experience is a
+file on your side being replayed. The context window is not where memories are
+kept. It is the maximum size of the stack you are allowed to hand over.
 
-## 03 — What that costs, measured
+## 04 — What that costs, measured
 
 Here is an ordinary five-turn conversation against a local model
 (`Qwen/Qwen2.5-3B-Instruct`, so you can run the same script). Turn 1 is a
@@ -131,12 +166,15 @@ cumulative input tokens billed across the session: 3464
 ```
 
 One thing that measurement does not show, because I ran it bare: in a real
-coding tool, turn 1 is never 65 tokens. Before your first word there is a system
-prompt, the definitions of every tool the harness offers, and whatever
-instruction files the project loads. A single MCP server's tool definitions can
-run to three and a half thousand tokens on their own,
-every turn, whether or not you use it. Your real turn 1 starts somewhere in the
-thousands, and everything below compounds from there rather than from 65.
+coding tool, turn 1 is never 65 tokens. Before your first word there is a
+[system prompt](/engineering/the-ai-vocabulary/#system-prompt), the definition
+of every [tool](/engineering/the-ai-vocabulary/#tool) the
+[harness](/engineering/the-ai-vocabulary/#harness) offers, and whatever
+instruction files the project loads. A single [MCP
+server](/engineering/the-ai-vocabulary/#mcp-server) can spend three and a half
+thousand tokens describing its tools, every turn, whether you use it or not.
+Your real turn 1 starts somewhere in the thousands, and everything below
+compounds from there rather than from 65.
 
 Read the shape, not the size, and read the gaps between the rows:
 
@@ -149,10 +187,10 @@ Read the shape, not the size, and read the gaps between the rows:
 | turn 5 | 1,122 | +184 | eleven words |
 
 Turn 2's jump is the file, as you would expect. The interesting rows are the
-last three. I typed twenty-seven words in total across them and the context grew
-by 543 tokens — because each of those turns carries the previous turn's *answer*
-back with it. Past the first paste, most of what you are paying to resend is not
-your input at all. It is the model's own output, accumulating.
+last three. I typed twenty-seven words across them and the stack grew by 543
+tokens, because each of those turns carries the previous turn's *answer* back
+with it. After the first paste, most of what you are paying to resend is not
+your writing at all. It is the model's own, piling up.
 
 My last question was eleven words long. Sending it cost 1,122 tokens, because
 those eleven words arrived carrying the file, three earlier questions and four
@@ -178,38 +216,42 @@ to *N* tokens over *T* turns, you pay for about `T × N / 2` input tokens in
 total. Do that sum for your own longest session; it is usually the moment this
 post lands.
 
-Two honest qualifications. **Prompt caching changes these numbers a lot**: the
-unchanging front of the prompt can be re-read at $0.20 per million instead of
-$4.00. On the 40-turn row, if 90 per cent of those tokens are cache reads and
+Two honest qualifications. **[Prompt
+caching](/engineering/the-ai-vocabulary/#prompt-caching) changes these numbers a
+lot**: the unchanging front of the stack can be re-read at $0.20 per million
+instead of $4.00. On the 40-turn row, if 90 per cent of those tokens are cache
+reads and
 10 per cent are paid in full, the sum is `0.9 × $0.20 + 0.1 × $4.00` per
-million — about $1.16 instead of $8.00. A higher hit rate approaches $0.40. And **output tokens cost five times more than input**, so
-a session full of long answers has a second bill this table does not show.
-Neither changes the shape. Both make it more important to know what is in the
-pile.
+million — about $1.16 instead of $8.00. A higher hit rate approaches $0.40. And
+**output tokens cost five times more than input**, so a session full of long
+answers has a second bill this table does not show. Neither changes the shape.
+Both make it more important to know what is in the pile.
 
-## 04 — Why a bigger window is not the answer
+## 05 — Why a bigger window is not the answer
 
-The obvious response is to want a larger window, and vendors have obliged —
-windows have grown by orders of magnitude in a few years. It helps less than
-you would think, for two reasons.
+The obvious wish is for a bigger desk, and vendors have obliged: windows have
+grown by orders of magnitude in a few years. It helps less than you would think,
+for two reasons.
 
-The first is the one from [the end of post 1.1](/engineering/what-a-model-actually-is/):
-inside each pass, the model compares every token with every other token. Double
-the input and you more than double the work. That is why a long session gets
-slower in a way that feels disproportionate — you are not waiting on a bigger
-download, you are waiting on more arithmetic than you added.
+The first comes from [the end of post
+1](/engineering/what-a-model-actually-is/). Inside each pass the model compares
+every token with every other token. Double the input and you more than double
+the work. That is why a long session gets slower in a way that feels out of
+proportion — you are not waiting on a bigger download, you are waiting on more
+arithmetic than you added.
 
-The second is quality, and it is the less obvious one. A bigger window does not
-make the model better at using what is in it. Bury one critical sentence in
-150,000 tokens of plausible-looking context and you have made that sentence
-compete with everything else for the model's attention, in the literal technical
-sense. "I gave it everything" is not the same as "I gave it what it needed", and
-past a certain point the two pull against each other.
+The second is quality, and it is the less obvious one. A bigger desk does not
+make Sam better at reading it. Bury one critical sentence in 150,000 tokens of
+plausible-looking context and you have made that sentence compete with
+everything else for the model's attention. "I gave it everything" is not the
+same as "I gave it what it needed", and past a point the two pull against each
+other. The vocabulary has a name for the symptom:
+[context rot](/engineering/the-ai-vocabulary/#context-rot).
 
 A bigger window raises the ceiling on what you *can* send. It does nothing about
 what you *should*.
 
-## 05 — What "it forgot" actually was
+## 06 — What "it forgot" actually was
 
 Here is the part that changes how you debug.
 
@@ -241,9 +283,9 @@ subject matter, and their current level of focus...
 ```
 
 Look at what B does. It does not say "I don't know who chose it." It does not
-notice that anything is missing. It produces four confident sentences about
-reading speeds in general and never answers the question, and if you were
-skimming you might not catch that it dodged.
+notice anything is missing. It produces four confident sentences about reading
+speeds in general, never answers the question, and if you were skimming you
+might not catch that it dodged.
 
 That is what truncation looks like from the outside: not an error, not a gap — a
 fluent non-answer. Which is why the diagnostic matters.
@@ -266,9 +308,10 @@ into context, the instruction was in a config the harness does not load, the
 screenshot you pasted did not come through. Nothing was forgotten because
 nothing was ever known.
 
-**Was it still in the window?** This is run B. Something fell off the back, or a
-summarisation step replaced it. Real forgetting, and the only one of the three
-that a bigger window would fix.
+**Was it still in the window?** This is run B. Something fell off the bottom of
+the stack, or [compaction](/engineering/the-ai-vocabulary/#compaction) replaced
+it with a summary. Real forgetting, and the only one of the three a bigger
+window would fix.
 
 **Was it in context and outweighed?** The hardest one. The instruction is right
 there in the pile, and 80,000 tokens of code and tool output are also right
@@ -276,37 +319,36 @@ there, and the instruction lost. No error, no truncation, just a sentence that
 did not win. Repeating the instruction closer to the end genuinely helps here,
 which tells you something about what is going on.
 
-It is worth sitting with the third case, because it is the one people argue
-about. "It was in context and it still ignored me" sounds like a cop-out, and it
-is not: it is the direct consequence of how the model reads. Nothing in a
-context window is pinned, prioritised or marked as an instruction rather than as
-text. Your constraint from turn one and a stack trace from turn thirty are the
-same kind of thing to the mechanism — tokens competing to shape the next guess.
-The constraint is one sentence; the stack trace is four hundred tokens of
-urgent-looking detail. Guess which one wins.
+Sit with the third case, because it is the one people argue about. "It was in
+context and it still ignored me" sounds like a cop-out and is not. It is the
+third thing from Sam's desk: nothing in a context window is pinned, prioritised
+or marked as an instruction rather than as text. Your constraint from turn one
+and a stack trace from turn thirty are the same kind of thing to the mechanism —
+tokens competing to shape the next guess. The constraint is one sentence. The
+stack trace is four hundred tokens of urgent-looking detail. Guess which wins.
 
 Which is also the honest answer to "why does repeating myself work?". It is not
 that the model is listening harder the second time. You have added weight, late,
 where it counts.
 
-## 06 — Going deeper: what compaction trades away
+## 07 — Going deeper: what compaction trades away
 
-When the pile approaches the window, something has to give, and modern harnesses
-mostly do not simply truncate. They compact: summarise the earlier part of the
-conversation and replace it with the summary.
+When the stack approaches the edge of the desk, something has to give, and
+modern harnesses mostly do not just drop the oldest pages. They compact:
+summarise the earlier part of the conversation and put the summary in its place.
 
-This is a good trade and it is still a trade. A summary is lossy by
-construction — that is what makes it smaller. The specific sentence that turns
-out to matter three turns later is exactly the kind of detail a summariser drops,
-because at summarising time it looked like detail. You cannot tell in advance
-which sentence that will be.
+Good trade, still a trade. A summary loses things by construction — that is what
+makes it smaller. The one sentence that turns out to matter three turns later is
+exactly the kind of detail a summariser drops, because at summarising time it
+looked like detail. You cannot tell in advance which sentence that will be.
 
 The practical consequence is small and worth internalising: when something
 important is established mid-session — a decision, a constraint, a correction —
 write it down outside the conversation. A file in the repo, a note, the ticket.
-Anything whose survival does not depend on a summarisation step you did not
+Anything whose survival does not depend on a summarising step you did not
 configure and cannot see. The harness-side mechanics of how and when that
-happens get their own post later in this series.
+happens get their own post:
+[where the context comes from](/engineering/where-the-context-comes-from/).
 
 There is a second-order effect worth naming too. Once a summary replaces the
 original turns, the model is reasoning about a *description* of what happened
@@ -341,7 +383,7 @@ subsequent turn, forever, at full price, competing for attention with the thing
 you actually asked about.
 
 **Treating a long session as free because you only typed a sentence.** The
-sentence is not what you are paying for. See section 03.
+sentence is not what you are paying for. See section 04.
 
 **Blaming the model for an instruction that was never sent.** Before you
 conclude it ignored you, check the first branch of the diagnostic. Most of the
@@ -353,14 +395,16 @@ and leaves the discipline exactly where it was.
 ## References and further reading
 
 - [What a model actually is](/engineering/what-a-model-actually-is/) — the
-  prerequisite for this post, and the place the attention-cost argument in
-  section 04 comes from.
+  prerequisite for this post, where Sam is introduced, and where the
+  attention-cost argument in section 05 comes from.
 - [The AI vocabulary](/engineering/the-ai-vocabulary/) — one-line definitions
   for context window, compaction, prompt caching and the rest.
-- [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/llm-top-10/)
-  — open this for `LLM10:2025 Unbounded Consumption`, which is section 03's
-  arithmetic under its security name. Worth having when you need to explain to
-  somebody that a runaway session is a risk and not just a bill.
+- [OWASP Top 10 for LLM Applications](https://genai.owasp.org/llm-top-10/) —
+  open this for the entry called *Unbounded Consumption*, which is section 04's
+  arithmetic under its security name. It climbed to sixth in the 2026 edition
+  and now covers denial-of-wallet explicitly, so quote the name rather than the
+  number. Worth having when you need to explain to somebody that a runaway
+  session is a risk and not just a bill.
 - [My AI-assisted coding playbook](/engineering/ai-assisted-coding-playbook/) —
   open this for the practical habits that follow from all of the above: what I
   actually put in context, and when I start a fresh session instead of
