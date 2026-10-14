@@ -8,18 +8,21 @@ coverVariant: 3
 draft: true
 ---
 
-*Three LoRA fine-tunes were run for this post on 10 October 2026, on a 36 GB
+*Three [LoRA](/engineering/the-ai-vocabulary/#lora) fine-tunes were run for this post on 10 October 2026, on
+a 36 GB
 Apple Silicon laptop using the MPS backend, on `Qwen/Qwen2.5-0.5B-Instruct`. No
 cloud, no GPU rental, no API key. Every before-and-after pair below is the real
 output of those runs, including the one that embarrassed my own test.*
 
 ## TL;DR
 
-- Fine-tuning changes **manner** reliably and **facts** badly. Mine learned a
-  house output format in forty-three seconds and never learned a fact at all.
+- [Fine-tuning](/engineering/the-ai-vocabulary/#fine-tuning) changes **manner** reliably and **facts** badly.
+  Mine learned a house output format in forty-three seconds and never learned a
+  fact at all.
 - What looked like a fact being learned was a sentence being recited. It could
   produce the sentence and could not use what was in it.
-- Retrieval is usually the right answer, and [post 1.5](/engineering/embeddings-and-why-retrieval-beats-memorising/)
+- [Retrieval](/engineering/the-ai-vocabulary/#retrieval) is usually the right answer, and
+  [the embeddings post](/engineering/embeddings-and-why-retrieval-beats-memorising/)
   is the whole argument for why.
 - The real costs are the data and the evaluation, not the compute. The compute
   here was under two minutes.
@@ -36,14 +39,16 @@ the machinery is explained. [Embeddings, and why retrieval beats
 memorising](/engineering/embeddings-and-why-retrieval-beats-memorising/) owns the
 alternative, and the alternative usually wins.
 
-It also needs [post 4.2](/engineering/knowing-whether-it-works/) more than it
-looks like it does, for a reason section 05 makes uncomfortably concrete. Single
-terms are in [the AI vocabulary](/engineering/the-ai-vocabulary/).
+It also needs [knowing whether it works](/engineering/knowing-whether-it-works/)
+more than it looks like it does, for a reason section 05 makes uncomfortably
+concrete.
 
-The analogy, and it runs to the end: **teaching an accent, not a curriculum.**
-You can change how somebody speaks in an afternoon. You cannot teach them a new
-subject that way. Almost everybody who reaches for fine-tuning is trying to teach
-a subject.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the argument ever
+stops making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -58,7 +63,35 @@ It is also the single most common expensive mistake in this part of the stack,
 and the rest of this post is one attempt to run that plan honestly and report
 what came out.
 
-## 02 — The ladder, and where fine-tuning sits on it
+## 02 — An accent, not a curriculum
+
+> A new colleague joins from another country. Excellent at the job, and they do
+> not sound like your office.
+>
+> **Teaching them to sound like your office is easy.** A fortnight of being
+> around people, a few corrections, and the phrasing shifts. They start saying
+> "shall we" instead of "do you want to", they stop writing five paragraphs where
+> three would do, and the house format turns up in their emails without anyone
+> asking. You changed how they speak. It took no time at all.
+>
+> **Teaching them a subject they have never studied does not work that way.**
+> You cannot sit them next to a chemist for a fortnight and get a chemist. What
+> you will get — and this is the part that catches people — is somebody who has
+> picked up the *way chemists talk*. Confident, fluent, the right nouns in the
+> right order, and no chemistry underneath it.
+>
+> That is worse than the state you started in, because it was easier to spot
+> before.
+>
+> And the obvious alternative is so obvious that it gets overlooked. **If you
+> need them to know a fact, tell them the fact.** Put the page on their desk
+> while they do the job. Nobody retrains a colleague to teach them this quarter's
+> prices.
+
+Fine-tuning is the fortnight. Section 03 is me running it and getting a house
+format in forty-three seconds. Section 04 is me trying to teach a fact and
+getting the way chemists talk. Section 05 is what the fortnight actually costs,
+and it is not the compute.
 
 There are four rungs, and they are not alternatives. They are an order.
 
@@ -95,7 +128,8 @@ is a *manner*: a shape the output takes, not a thing the model has to know.
 
 The setup, in full:
 
-- **Base model:** `Qwen/Qwen2.5-0.5B-Instruct`, 495,114,112 parameters.
+- **[Base model](/engineering/the-ai-vocabulary/#base-model):** `Qwen/Qwen2.5-0.5B-Instruct`, 495,114,112
+  [parameters](/engineering/the-ai-vocabulary/#parameters).
 - **Method:** LoRA, rank 8, on the attention projections only. **1,081,344
   trainable parameters — 0.2184%** of the model.
 - **Data:** twelve subjects from a short staff handbook, five copies each. Sixty
@@ -186,9 +220,10 @@ New fine-tune, same recipe, one sentence to learn:
 
 Castleford is invented, so there is no chance the base model already knows.
 Before training it makes things up with total composure — *"the retry limit for
-the Castleford importer in Alibaba Cloud's AI platform is 10 times per minute"* —
-which is [post 1.2](/engineering/why-it-sounds-certain-when-its-wrong/) in one
-line and exactly the problem we are trying to fix.
+the Castleford importer in Alibaba Cloud's AI platform is 10 times per minute"*
+— which is [why it sounds certain when it's
+wrong](/engineering/why-it-sounds-certain-when-its-wrong/) in one line and
+exactly the problem we are trying to fix.
 
 So: ten phrasings of the question, six copies each, sixty examples, same eight
 epochs. 105 seconds. And then:
@@ -250,9 +285,10 @@ learned was **a string to emit when Castleford appears**, not a fact to reason
 over.
 
 My grader checked for the words "seven" and "park". Every one of those four
-answers contains both. It passed four non-answers and I had to read the output to
-notice, which is the precise failure [post 4.2](/engineering/knowing-whether-it-works/)
-is about and which I committed in the act of demonstrating something else.
+answers contains both. It passed four non-answers and I had to read the output
+to notice, which is the precise failure [knowing whether it
+works](/engineering/knowing-whether-it-works/) is about and which I committed in
+the act of demonstrating something else.
 
 So the honest finding, stated carefully because the instrument is small — a 0.5B
 model, LoRA at rank 8, greedy decoding, sixty examples:
@@ -263,7 +299,8 @@ usable content. A bigger model and more data make the reflex broader and more
 robust. They do not change what kind of thing it is.
 
 And now compare the alternative, which costs nothing and took thirty lines in
-post 1.5: put the sentence in the context window. Then "more or less than five"
+the embeddings post: put the sentence in the context window. Then "more or less
+than five"
 is answered by a model that can read, "failed eight times" is answered from the
 text, and when the retry count changes to nine you edit one line in a document
 instead of re-running a training job and re-evaluating a model.
@@ -299,7 +336,7 @@ model can never be rebuilt; it has an evaluation that has to be rerun whenever
 anything moves. The [model training guide](/guides/model-training-finetuning-eval/),
 sections 05 and 07, is the catalogue of that work.
 
-## 06 — Quantisation, briefly
+## 06 — [Quantisation](/engineering/the-ai-vocabulary/#quantisation), briefly
 
 Quantisation turns up in the same conversations as fine-tuning and is a
 completely different lever, so one paragraph to stop the word being mysterious.
@@ -333,8 +370,9 @@ flowchart TD
 before cost enters the conversation.*
 
 The left branch is not a cost decision at all, and treating it as one is how
-projects get stopped three weeks before launch. [Post 4.4](/engineering/running-it-in-production/)
-takes that question apart properly, with the regulation rather than a summary of
+projects get stopped three weeks before launch.
+[Running it in production](/engineering/running-it-in-production/) takes that
+question apart properly, with the regulation rather than a summary of
 it.
 
 The right branch is a real measurement and it is usually lost by local, because
@@ -367,9 +405,9 @@ reliably answer "is this specific text in your model", which turns out to be a
 question people ask, sometimes with a lawyer present.
 
 So the question to ask before the training job, not after: **do I have the right
-to put this text into a model, as distinct from the right to read it?** Those are
-different permissions, and the second does not imply the first. [Post 4.4](/engineering/running-it-in-production/)
-carries the regulation.
+to put this text into a model, as distinct from the right to read it?** Those
+are different permissions, and the second does not imply the first. [Running it
+in production](/engineering/running-it-in-production/) carries the regulation.
 
 ## Try it yourself
 

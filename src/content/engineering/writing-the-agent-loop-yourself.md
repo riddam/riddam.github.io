@@ -43,14 +43,14 @@ owns the line this whole post is built on: the model asks, your code decides.
 
 The difference is the job. That post shows you the loop your editor runs so you
 can predict it. This one makes you write one for a product with users in it,
-which turns out to change almost everything about how it has to behave. Single
-terms are in [the AI vocabulary](/engineering/the-ai-vocabulary/).
+which turns out to change almost everything about how it has to behave.
 
-The analogy, and it runs to the end: **a capable new colleague with a to-do list
-and no manager.** Fast, literal, and willing. They will also, at step four,
-confidently report a job finished that they never did — not out of dishonesty
-but because finishing plausibly is what the job looked like from inside. The
-budget and the gate are the management.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the mechanics ever
+stop making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -95,11 +95,49 @@ producing the most plausible continuation — inside a loop that gave it a verb 
 should never have been handed unsupervised. The subject of this post is the loop,
 not the model.
 
-## 02 — The loop, with the four things the toy version lacked
+## 02 — The new starter with a to-do list and no manager
 
-Post 2.1 ends with a loop in about twenty lines. It is correct and it is a toy.
-Four things have to be added before it can run anywhere a customer can see it,
-and each one has a transcript later in this post showing what happens without it.
+> It is somebody's first week. They are fast, literal, willing, and they want to
+> be useful. You hand them a list and go to a meeting.
+>
+> By the time you come back, three items are done well and the fourth is marked
+> complete and was never done. Not out of dishonesty. They got stuck, something
+> plausible occurred to them, and *finishing* is what the job looked like from
+> the inside.
+>
+> Four things would have prevented that, and not one of them is "hire somebody
+> better."
+>
+> **A stopping point.** Nobody told them when to come back and ask. So they kept
+> going, and the twentieth thing they tried was much worse than the first.
+>
+> **A rule about what needs a second pair of eyes.** Not everything — most of
+> the list is fine to just do. But there are two or three items on it you cannot
+> take back once they are done, and those want a word before, not an apology
+> after.
+>
+> **A note of why, as they go.** "Closed the ticket" tells you nothing on Friday
+> afternoon. "Closed the ticket because the article said to" tells you exactly
+> where the afternoon went wrong, and takes four seconds to write.
+>
+> **Being told plainly when something did not work.** This is the one everybody
+> skips. If the filing system swallows the failure and says nothing, they will
+> assume it worked, invent a reason, and carry on. Hand them the actual
+> complaint — *there is no ticket with that number* — and they stop and ask.
+
+Those four are a step budget, an approval gate, reasoning printed every turn,
+and errors handed back rather than swallowed. Sections 03, 04 and 05 are the
+first three, written out. Section 06 is the Friday afternoon, with all four in
+place and some of it still going wrong.
+
+And note which of the four is about the model: none. All four are management, in
+your code, around something that cannot manage itself.
+
+[What actually happens when you press
+enter](/engineering/what-happens-when-you-press-enter/) ends with a loop in
+about twenty lines. It is correct and it is a toy. Those four things have to be
+added before it can run anywhere a customer can see it, and each one has a
+transcript later in this post showing what happens without it.
 
 First the tools, because the tool definitions are where most of the safety
 actually lives. Note the second element of each tuple:
@@ -154,16 +192,17 @@ def run(task, budget=6, approve=lambda n, a: True):
 ```
 
 Thirty lines, and the four additions are four numbered comments. The rest — the
-model loading, the tool schema, the `ask` helper that renders the chat template
-and parses `<tool_call>` blocks out of the reply — is another thirty lines and is
-identical to post 2.1's.
+model loading, the [tool schema](/engineering/the-ai-vocabulary/#tool-schema),
+the `ask` helper that renders the chat template and parses `<tool_call>` blocks
+out of the reply — is another thirty lines and is identical to the toy loop's.
 
 Two things in there are worth pausing on before the demonstrations.
 
 **`approve` is a parameter, not a prompt.** It is a function your code calls, and
 whatever it returns is what happens. No amount of persuasive text in the
-conversation reaches it. This is post 2.2's boundary expressed as a function
-signature.
+conversation reaches it. This is the boundary from [a tool call is a request,
+not an action](/engineering/a-tool-call-is-a-request-not-an-action/), expressed
+as a function signature.
 
 **The refusal goes back as a tool result.** When the gate says no, the model is
 not silently stopped — it is told, in the same channel it reads everything else,
@@ -193,7 +232,8 @@ knows it is incomplete, because the loop said so rather than the model saying so
 
 Notice the token counts climbing: 327, then 441. Every tool result joins the
 conversation and is resent on the next pass —
-[post 1.3](/engineering/the-context-window-is-the-entire-memory/) in its billing
+[the context window post](/engineering/the-context-window-is-the-entire-memory/)
+in its billing
 form. A loop with no budget does not fail by running forever at a flat rate. It
 fails by running forever at a rate that increases every step, because each turn
 is larger than the last. An agent that gets confused is the most expensive agent
@@ -254,7 +294,8 @@ its confidence is not evidence.*
 
 One honest limit, and it is the one that decides whether a gate is worth having.
 A gate is a permission prompt, and
-[post 2.7](/engineering/who-is-allowed-to-do-what/) spent a whole section on what
+[who is allowed to do what](/engineering/who-is-allowed-to-do-what/) spent a
+whole section on what
 happens to permission prompts after the twentieth one: the mechanism stops
 working and nothing announces it. A gate on a tool the agent reaches for forty
 times a day is theatre. If the transcript above happened every nine minutes, I
@@ -302,12 +343,13 @@ not that the model missed the empty result, it is that an empty result did not
 change what it did next.
 
 Two warnings, because this is the control most easily oversold. It is not a
-chain of thought and it is not an explanation in any strong sense; it is text the
-model generated before other text, and it can be a confabulation as easily as
-anything else it writes. Treat it as evidence about what the model produced, not
-as testimony about why. And it goes into your logs, which means it goes wherever
-your logs go — a subject [post 4.4](/engineering/running-it-in-production/) has to
-pick up, because the reasoning often quotes the data.
+[chain of thought](/engineering/the-ai-vocabulary/#chain-of-thought) and it is
+not an explanation in any strong sense; it is text the model generated before
+other text, and it can be a confabulation as easily as anything else it writes.
+Treat it as evidence about what the model produced, not as testimony about why.
+And it goes into your logs, which means it goes wherever your logs go — a
+subject [running it in production](/engineering/running-it-in-production/) has
+to pick up, because the reasoning often quotes the data.
 
 ## 06 — How it actually went wrong
 
@@ -382,7 +424,7 @@ order not to depend on.
 
 Everything above shrinks the chance of a wrong call. The other half of the
 problem is what a wrong call costs, and OWASP files that as
-[`LLM06:2025 Excessive Agency`](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/)
+[*Excessive Agency*](/engineering/the-ai-vocabulary/#excessive-agency)
 — damage made possible by functionality, permissions or autonomy the task never
 needed.
 
@@ -462,8 +504,9 @@ database, they will pass through every failure in section 06.
   and [who is allowed to do what](/engineering/who-is-allowed-to-do-what/) — the
   first for why `approve` can exist at all, the second for what happens to a gate
   after the twentieth prompt, which is the limit section 04 has to live with.
-- [OWASP `LLM06:2025 Excessive Agency`](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/)
-  — section 07 under the name a risk function recognises, with the split between
+- [OWASP's *Excessive Agency* entry](https://genai.owasp.org/llmrisk/llm062025-excessive-agency/)
+  — section 07 under the name a risk function recognises. It climbed from sixth
+  to third in the 2026 edition, so quote the name. With the split between
   excessive functionality, permissions and autonomy that the tool-narrowing
   argument comes from. Checked 10 October 2026.
 - [Agentic AI — Threats and Mitigations](https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/)

@@ -10,41 +10,44 @@ draft: true
 
 *The harness in this post is real and so is the regression it caught. Twenty
 cases, written by hand on 10 October 2026, run against the retrieval system from
-[post 1.5](/engineering/embeddings-and-why-retrieval-beats-memorising/) —
+[embeddings, and why retrieval beats
+memorising](/engineering/embeddings-and-why-retrieval-beats-memorising/) —
 `all-MiniLM-L6-v2` for the index, `Qwen/Qwen2.5-3B-Instruct` for the answers,
 both local, no API key. Every score below came out of a run.*
 
 ## TL;DR
 
-- Twenty cases you wrote about your own task beat any public benchmark, because
-  the benchmark is not measuring your task.
+- Twenty cases you wrote about your own task — a [golden set](/engineering/the-ai-vocabulary/#golden-set) —
+  beat any public [benchmark](/engineering/the-ai-vocabulary/#benchmark), because the benchmark is not
+  measuring your task.
 - Grade three ways: exactly where you can, by rule where exactness is wrong, and
   by model where only judgement works.
 - Score retrieval separately from generation. One number cannot tell you which
   one broke, so one number sends you to fix the wrong thing.
-- A model judge is useful and biased. Mine was biased in a direction I did not
-  predict, and the direction matters more than the fact.
+- An [LLM-as-judge](/engineering/the-ai-vocabulary/#llm-as-judge) is useful and biased. Mine was biased in a
+  direction I did not predict, and the direction matters more than the fact.
 - If it is not in the pipeline it will not get run. A suite that exists and is
   not a gate is a document.
 
 ## Where this sits
 
 This is the second post in **Shipping AI in your own product**. It needs
-[post 4.1](/engineering/writing-the-agent-loop-yourself/), which ends on a
+[writing the agent loop
+yourself](/engineering/writing-the-agent-loop-yourself/), which ends on a
 problem this one picks up: that post's loop reported a ticket resolved that it
 had not resolved, and the only reason anybody noticed was that a human read the
 transcript. That does not scale past about four transcripts.
 
-It also needs [post 1.5](/engineering/embeddings-and-why-retrieval-beats-memorising/),
-because the system under test here is that post's retrieval pipeline, slightly
-grown: a twelve-section staff handbook instead of four, same chunker, same
-embedder, same generator. Single terms are in
-[the AI vocabulary](/engineering/the-ai-vocabulary/).
+It also needs the embeddings post, because the system under test here is that
+post's retrieval pipeline, slightly grown: a twelve-section staff handbook
+instead of four, same chunker, same embedder, same generator.
 
-The analogy, and it runs to the end: **unit tests for judgement.** Everything you
-know about testing still applies — fixtures, a suite, a gate in CI, a failure
-that names what broke. One thing changes, the assertion, and that one change is
-what makes people decide this part cannot be tested at all.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the argument ever
+stops making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -64,7 +67,49 @@ one your dashboards have a word for.
 Everything after this is an attempt to make that Wednesday impossible, using
 tools you already have.
 
-## 02 — Why the usual assertion does not work
+## 02 — The driving test
+
+> Think about how a driving test is marked, because it is the closest thing in
+> ordinary life to the problem in this post.
+>
+> There is no right answer to compare against. Two candidates can take the same
+> route, do entirely different things at the roundabout, and both pass. A third
+> can do something that looks identical to the first and fail. "Correct" is not
+> a string you can match.
+>
+> So the examiner does not compare. The examiner carries **a sheet**, and the
+> sheet is the whole trick.
+>
+> **Some boxes are exact.** Did they check the mirror before the manoeuvre. Yes
+> or no. No judgement needed, and that is the kind of box to use wherever you
+> possibly can.
+>
+> **Some boxes are rules, not exactness.** Stopping two metres back and stopping
+> two and a half metres back are both fine; stopping across the line is not.
+> The box asks whether it fell inside a range, which is a different question
+> from whether it matched.
+>
+> **Some boxes need judgement.** "Showed appropriate awareness of other road
+> users." You cannot automate that one, and pretending you can is how a marking
+> scheme quietly stops measuring anything.
+>
+> Three more things the sheet gets right that homemade schemes get wrong.
+>
+> **The route is fixed, and written down before the day.** The same roundabout
+> every time. That is the only reason this week's result can be compared with
+> last week's.
+>
+> **Separate faults are recorded separately.** A candidate who misread the road
+> and a candidate who read it correctly and steered badly do not get the same
+> mark, because they need different lessons. One number would send both of them
+> to the wrong instructor. That is section 06.
+>
+> **The examiner is a person, and people drift.** Some mark harder on a wet
+> Friday. The examiner is the measuring instrument, and an instrument nobody has
+> checked is a source of error, not a source of truth. Section 07 is me checking
+> mine, and finding a bias I did not expect.
+
+Sections 03 and 04 build the sheet. Section 05 is it catching something real.
 
 An ordinary test is a comparison:
 
@@ -274,8 +319,8 @@ anyone says "do we need the big model for this".
 But look at the last row. **Removing a safety instruction made the score go up.**
 
 The loosened prompt is unambiguously worse — it is the change that lets the
-system answer from outside its documents, which is the failure
-[post 1.5](/engineering/embeddings-and-why-retrieval-beats-memorising/) spends a
+system answer from outside its documents, which is the failure [the embeddings
+post](/engineering/embeddings-and-why-retrieval-beats-memorising/) spends a
 whole section on. My suite rewarded it, by one point, because a looser model
 answers the borderline questions instead of declining them, and almost all of my
 cases score answering above declining.
@@ -298,14 +343,15 @@ found nothing, because the prompt and the model never changed.
 The two columns say it immediately: retrieval mostly still found the right
 section, and the answers got much worse anyway. Which means the chunks being
 *found* no longer contained what was needed — the right section, cut in half.
-That is a chunking bug, and the two numbers point straight at it.
+That is a [chunking](/engineering/the-ai-vocabulary/#chunking) bug, and the two
+numbers point straight at it.
 
 There is a third case hiding in there too, and it has its own fix:
 
 ```mermaid
 flowchart TD
   Q["A case failed"] --> A{"Did retrieval find<br/>the right chunk?"}
-  A -- "no" --> R["A retrieval problem.<br/>Chunking or search.<br/>Post 1.5."]
+  A -- "no" --> R["A retrieval problem.<br/>Chunking or search."]
   A -- "yes" --> B{"Was the answer<br/>in the chunk?"}
   B -- "yes" --> G["A generation problem.<br/>Prompt or model."]
   B -- "no" --> S["A source problem.<br/>The answer is not<br/>in your data."]
@@ -321,8 +367,9 @@ wearing a model problem's clothes, and the commonest unnecessary week of work in
 this whole area.
 
 The general rule generalises past retrieval. Any pipeline with stages gets a
-score per stage. [Post 4.1](/engineering/writing-the-agent-loop-yourself/)'s
-agent loop wants one for *did it pick the right tool* and one for *did it get the
+score per stage. The agent loop in
+[writing the agent loop yourself](/engineering/writing-the-agent-loop-yourself/)
+wants one for *did it pick the right tool* and one for *did it get the
 right answer*, for exactly the same reason.
 
 ## 07 — Where a model judge lies

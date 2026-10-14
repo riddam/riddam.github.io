@@ -22,10 +22,12 @@ headlines, because the headlines are the part that is wrong.*
   is the number that is easy to feel and the one that means least.
 - Rework is where the gain goes. A draft that arrives in a third of the time and
   takes two extra review rounds has moved your work onto somebody else's desk.
-- Token spend is the only figure here you can read exactly rather than estimate.
-  Watch it, because it is the one your finance team will eventually ask about.
-- Some kinds of task lose reliably. Knowing which ones is worth more than any
-  average, because an average over a mixed fortnight hides both directions.
+- [Token](/engineering/the-ai-vocabulary/#token) spend is the only figure here you can read exactly rather
+  than estimate. Watch it, because it is the one your finance team will
+  eventually ask about.
+- Some kinds of task lose reliably when you hand them to an [agent](/engineering/the-ai-vocabulary/#agent).
+  Knowing which ones is worth more than any average, because an average over a
+  mixed fortnight hides both directions.
 - Measure before you believe anyone, including yourself. In the study that
   measured this most carefully, developers who had just been slowed down by 19%
   reported feeling 20% faster.
@@ -33,18 +35,17 @@ headlines, because the headlines are the part that is wrong.*
 ## Where this sits
 
 This is the first post in **Working with AI, day to day**, and it assumes
-nothing. If you want the cost side in detail,
-[reading a model card without guessing](/engineering/reading-a-model-card-without-guessing/)
-covers how per-token pricing actually works and why the number on the pricing
-page is not the number on the invoice. Terms used and not redefined here are in
-[the AI vocabulary](/engineering/the-ai-vocabulary/).
+nothing. If you want the cost side in detail, [reading a model card without
+guessing](/engineering/reading-a-model-card-without-guessing/) covers how
+per-token pricing actually works and why the number on the pricing page is not
+the number on the invoice.
 
-The analogy, and it runs to the end: **a stopwatch at the wrong finish line.**
-The stopwatch is honest. It is pointed at the moment the code appears, and the
-job is not finished there — it is finished when somebody else has read the
-change, believed it, and merged it. Almost every claim you will hear about AI
-and speed, in either direction, is a correctly operated stopwatch aimed at the
-wrong line.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the argument ever
+stops making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -65,10 +66,48 @@ did not experience was the reviewer's three days. That gap between the experienc
 and the outcome is the most robust finding in this area, and the rest of this
 post is about building a record that does not depend on how a week felt.
 
-## 02 — Where the time actually goes
+## 02 — The stopwatch at the wrong line
 
-Draw your own version of this before you record anything. The point is not the
-boxes; it is that there are four of them and most claims only discuss the
+> Picture a relay race, and you with a stopwatch.
+>
+> You are standing at the first handover, because that is where you can see
+> something happen. Your first runner is quick this season — new shoes, good
+> form — and the split you record at the handover is the best you have ever
+> written down. You tell people. You are not exaggerating and you are not
+> guessing: you have the number.
+>
+> Then the baton goes round and the team finishes slower than they did last
+> month.
+>
+> Nothing was wrong with your stopwatch. It is a good stopwatch, honestly
+> operated, and the split it recorded was real. It was pointed at the wrong
+> line.
+>
+> Three things that race teaches, if you let it.
+>
+> **Only the finish counts.** Not the first leg, however satisfying. The job is
+> not done when the code appears; it is done when somebody else has read it,
+> believed it, and merged it.
+>
+> **A fast first leg can slow the later ones.** The baton arrived early and held
+> wrong, and the second runner spent fifty metres sorting out the grip. On a
+> good day you never notice, because the grip was fine. On a bad day the time
+> you saved is being spent by somebody standing further round the track, and it
+> does not appear on your split.
+>
+> **You are the worst-placed person in the stadium to judge it.** You are at the
+> handover. You saw the fastest thing that happened all afternoon, and the parts
+> that went wrong happened behind you, later, to other people. This is not a
+> character flaw; it is where you were standing. Section 06 has the study where
+> developers who had just been slowed by 19 per cent came off the track certain
+> they had been 20 per cent faster.
+
+Everything below is an attempt to move the stopwatch. Section 03 is where to put
+it. Section 04 is what the record looks like. Section 05 is the races it
+reliably loses, and section 06 is what the record still will not tell you.
+
+So: draw your own version of this before you record anything. The point is not
+the boxes; it is that there are four of them and most claims only discuss the
 second.
 
 ```mermaid

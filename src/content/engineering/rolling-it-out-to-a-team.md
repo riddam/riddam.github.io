@@ -24,26 +24,28 @@ something to check against your own team rather than something I have proved.*
   settings live at two different levels and only one of them loses to the team's.
 - Shared skills and internal plugins need a named owner. Without one they rot
   silently, and a stale shared instruction is worse than none.
-- The fastest onboarding is not a tool rollout. It is a repository an agent can
-  already work in: one command to test, one command to run.
+- The fastest onboarding is not a tool rollout. It is a repository an
+  [agent](/engineering/the-ai-vocabulary/#agent) can already work in: one command to test, one command to
+  run.
 - Measure before you mandate. Most of what looks like resistance is either a
   measurement you never did or a repository problem wearing a people costume.
 
 ## Where this sits
 
-This is the last post in **Working with AI, day to day**, and it follows
-[is it actually making you faster](/engineering/is-it-actually-making-you-faster/)
+This is the last post in **Working with AI, day to day**, and it follows [is it
+actually making you faster](/engineering/is-it-actually-making-you-faster/)
 closely enough that section 07 points back at it. For the permissions half —
 what a deny rule actually matches, and which controls hold when the agent stops
-cooperating — [who is allowed to do what](/engineering/who-is-allowed-to-do-what/)
-covers the mechanisms and this post does not repeat them. Terms used without
-redefinition are in [the AI vocabulary](/engineering/the-ai-vocabulary/).
+cooperating — [who is allowed to do
+what](/engineering/who-is-allowed-to-do-what/) covers the mechanisms and this
+post does not repeat them.
 
-The analogy, and it runs to the end: **a shared toolbox.** The tools can be
-excellent and the shelf still a mess. Everybody has worked somewhere with a
-good toolbox nobody could find anything in, and everybody has worked somewhere
-with three screwdrivers and perfect order. The mess, not the tools, is what
-decides whether anyone uses it.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the argument ever
+stops making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -63,12 +65,44 @@ and whether anybody has looked. This post is about the things you can actually
 change: where configuration lives, who owns the shared parts, and what to fix
 before concluding anything about the people.
 
-## 02 — Where configuration actually lives
+## 02 — The shared toolbox
 
-Three kinds of thing want to be configured: what is true about this codebase,
-what is true about this person, and what your organisation requires of everyone.
-The mistake that produces most of the friction is putting one of them in the
-file that belongs to another.
+> A workshop with one toolbox on the bench, and six people using it.
+>
+> Everybody has worked somewhere with a magnificent toolbox nobody could find
+> anything in, and everybody has worked somewhere with three screwdrivers and
+> perfect order. The second workshop gets more done. It is not about the tools.
+>
+> Four things decide which workshop you are in, and none of them is the budget.
+>
+> **Some tools belong to the bench and some belong to the person.** The torque
+> wrench calibrated for this machine stays with the machine, because it is a
+> fact about the work. Your own glasses go home with you, because they are a
+> fact about you. Put either in the wrong place and you get the two complaints
+> that define a bad workshop: *somebody keeps changing my settings*, and
+> *nobody here does it the same way twice*.
+>
+> **Somebody has to own the bench.** Not use it — own it. Shared tools without
+> a name on them do not stay sharp; they quietly go blunt, and a blunt tool
+> everyone trusts is worse than no tool at all, because people stop checking.
+>
+> **A new starter's first day is about the bench, not the tools.** Handing
+> somebody a good drill in a workshop where nothing is labelled and the power
+> socket is behind a cupboard does not make them productive. Tidying the
+> workshop does, and it helps everyone else at the same time.
+>
+> **"They just won't use it" is usually a workshop problem.** Before you
+> conclude anything about the person, look at whether the bench they are
+> standing at is the same bench as the one where it is working.
+
+Sections 03 and 04 are the first of those, sections 05 and 06 the second and
+third, and section 07 is the fourth — which turns out to be where most of the
+real failures live.
+
+So: three kinds of thing want to be configured. What is true about this
+codebase, what is true about this person, and what your organisation requires of
+everyone. The mistake that produces most of the friction is putting one of them
+in the file that belongs to another.
 
 Those three kinds land across five levels, and the order they resolve in is
 documented. I checked it rather than recalling it, and I had it wrong.
@@ -154,13 +188,14 @@ distinction does not vary by personal preference.
 
 ## 05 — Shared skills, and who owns them
 
-Sooner or later somebody writes a skill, a command or a small plugin that is
-genuinely useful, and the question becomes how it reaches everyone else. The
-mechanics are covered in
-[what I actually use](/engineering/claude-code-plugins-what-i-actually-use/) —
-including why a versioned, on-demand plugin scales where one long shared
-instructions file slowly gets worse. This section is about the part that post
-does not cover: what happens to the thing six months later.
+Sooner or later somebody writes a
+[skill](/engineering/the-ai-vocabulary/#skill), a command or a small plugin that
+is genuinely useful, and the question becomes how it reaches everyone else. The
+mechanics are covered in [what I actually
+use](/engineering/claude-code-plugins-what-i-actually-use/) — including why a
+versioned, on-demand plugin scales where one long shared instructions file
+slowly gets worse. This section is about the part that post does not cover: what
+happens to the thing six months later.
 
 Shared configuration rots in a particular, quiet way. The skill describes a
 deploy process that changed in March. The command points at a repository that was
@@ -177,10 +212,11 @@ one; a stale shared instruction is worse than no shared instruction, because the
 second one makes people check.
 
 The organisation-level version of this exists too. Managed settings and managed
-MCP configuration let an organisation deploy servers, block connectors by name,
-and refuse project-level servers outright. If you are at the scale where that is
-relevant, read the managed documentation rather than inferring the behaviour,
-because the override rules differ per key.
+[MCP](/engineering/the-ai-vocabulary/#mcp) configuration let an organisation
+deploy servers, block connectors by name, and refuse project-level servers
+outright. If you are at the scale where that is relevant, read the managed
+documentation rather than inferring the behaviour, because the override rules
+differ per key.
 
 ## 06 — Onboarding in an afternoon
 
@@ -216,7 +252,7 @@ pays off whether or not anybody adopts anything.
 ```mermaid
 flowchart TD
   A["It is not catching on"] --> B{"Have you measured<br/>whether it helps here?"}
-  B -- "no" --> M["Measure first.<br/>Post 3.1."]
+  B -- "no" --> M["Measure first.<br/>Is it making<br/>you faster?"]
   B -- "yes" --> C{"Is the repo easy<br/>for an agent to work in?"}
   C -- "no" --> F["Fix the repo,<br/>not the people."]
   C -- "yes" --> D["It may genuinely not<br/>suit this work. That is<br/>a finding, not a failure."]

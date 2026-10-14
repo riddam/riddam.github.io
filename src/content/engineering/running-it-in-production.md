@@ -9,22 +9,22 @@ draft: true
 ---
 
 *Everything timed in this post was measured on 10 October 2026, on a laptop,
-against `Qwen/Qwen2.5-3B-Instruct` running locally. The cost figures are the real
-token counts from those runs priced as if the model were hosted, so the ledger
-behaves correctly while the numbers themselves are an exercise. Section 08's
-dates and obligations come from the consolidated regulation on EUR-Lex, read on
-the day of writing, and I say in the text which claims are read rather than
-measured.*
+against `Qwen/Qwen2.5-3B-Instruct` running locally. The cost figures are the
+real token counts from those runs priced as if the model were hosted, so the
+ledger behaves correctly while the numbers themselves are an exercise. Section
+08's dates and obligations come from the consolidated regulation on EUR-Lex,
+read on the day of writing, and I say in the text which claims are read rather
+than measured.*
 
 ## TL;DR
 
 - It is a normal service. Everything you know about operating services applies;
   one dependency gives a different answer every time and charges by the word.
-- Streaming changes perceived latency more than any optimisation you will do.
-  Mine cut the wait before anything appeared by 3.9 times without making the
-  answer one millisecond faster.
-- Caching and batching are the two real cost levers. The cached prefix in my
-  measurement went from 133 seconds to 1.1.
+- [Streaming](/engineering/the-ai-vocabulary/#streaming) changes how slow it feels more than any optimisation
+  you will do. Mine cut the wait before anything appeared by 3.9 times without
+  making the answer one millisecond faster.
+- [Prompt caching](/engineering/the-ai-vocabulary/#prompt-caching) and batching are the two real cost levers.
+  The cached prefix in my measurement went from 133 seconds to 1.1.
 - A ceiling that trips beats a dashboard that reports. Dashboards are read on
   Monday.
 - The legal question stops more launches than the technical ones, and it is the
@@ -45,14 +45,14 @@ section 04's distinction between a failure and a refusal is only actionable if
 you can measure which you have. From track 2 it needs
 [who is allowed to do what](/engineering/who-is-allowed-to-do-what/) for section
 07, and [the context window is the entire memory](/engineering/the-context-window-is-the-entire-memory/)
-for why the latency numbers in section 02 climb the way they do. Single terms are
-in [the AI vocabulary](/engineering/the-ai-vocabulary/).
+for why the latency numbers in section 02 climb the way they do.
 
-The analogy, and it runs to the end: **an ordinary web service with one weird
-dependency.** Not a new discipline. Timeouts, retries, logs, budgets, a status
-page — all of it transfers. The dependency is just unusual in three specific
-ways: it is slow in a way users feel, it is priced per word, and it does what
-text tells it to.
+Technical words link to their one-line definition in the
+[AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
+Open them in a second tab as you go.
+
+And one scene runs through the whole post, in section 02. If the argument ever
+stops making sense, go back to it.
 
 ## 01 — The thing you have already noticed
 
@@ -68,10 +68,37 @@ the honest answer was that nobody had written it down.
 Three different problems, one cause: the thing was built as a feature and is
 being run as a service. This post is the gap between those.
 
-## 02 — Streaming, because waiting is the product
+## 02 — The supplier who is not like the others
 
-The first thing to fix is not a cost and not a bug. It is that your service feels
-broken while it is working correctly.
+> You run a service. It has a dozen dependencies and you know how to operate all
+> of them: timeouts, retries, logs, a budget, a status page. None of that changes
+> here, and that is the good news. This is not a new discipline.
+>
+> Then you take on one more supplier, and they are unlike the rest in four
+> specific ways.
+>
+> **They deliver slowly, and in front of the customer.** Not slow in a metric —
+> slow in a way the person waiting can feel. Which means half the problem is not
+> making them faster. It is whether the customer can see anything happening while
+> they work. That is this section.
+>
+> **They charge by the word, and the invoice is one number.** No line items, no
+> breakdown by which feature spent what. If you want to know where the money
+> went, you meter it on your side of the door, before the work goes out.
+> Sections 03, 05 and 06.
+>
+> **They do whatever any piece of paper tells them.** Including a piece of paper
+> a customer handed you to pass along. They cannot tell your instruction from a
+> sentence inside the document, because both arrive as writing. Section 07.
+>
+> **What you send them leaves your building.** Which is a legal question before
+> it is a technical one, and it is the question that stops launches. Section 08.
+>
+> The last two are what make this supplier genuinely different. The first two are
+> ordinary operations problems wearing an unfamiliar hat.
+
+So, the first. The thing to fix is not a cost and not a bug: it is that your
+service feels broken while it is working correctly.
 
 A model produces tokens one at a time. If you wait for all of them before
 rendering, the user stares at a spinner for the entire generation. If you render
@@ -189,7 +216,8 @@ money on the table.
 Look again at the per-call log in section 06, specifically the latency column as
 the conversation grows: 2.4 seconds, 3.3, 4.4, 5.6, 7.3. Nothing got slower. The
 request got bigger, every turn, because the whole conversation is resent —
-[post 1.3](/engineering/the-context-window-is-the-entire-memory/) showing up on
+[the context window post](/engineering/the-context-window-is-the-entire-memory/)
+showing up on
 the invoice and the stopwatch at the same time.
 
 A long conversation is quadratic in cost and linear in latency, and no caching
@@ -268,11 +296,14 @@ at request time from a system prompt, some retrieved documents, a conversation
 history and a user message, and no two of those are in the same place.
 
 With it, you have put the prompt in your logs. Which means, depending on what
-your users type and what your retrieval pulls in, you may have just put customer
-personal data into a log aggregator with a different retention period, a
-different access policy and possibly a different legal basis than the system it
-came from. OWASP has a name for the general shape:
-[`LLM02:2025 Sensitive Information Disclosure`](https://genai.owasp.org/llmrisk/llm022025-sensitive-information-disclosure/).
+your users type and what your
+[retrieval](/engineering/the-ai-vocabulary/#retrieval) pulls in, you may have
+just put customer personal data into a log aggregator with a different retention
+period, a different access policy and possibly a different legal basis than the
+system it came from. OWASP has a name for the general shape: [*Sensitive
+Information
+Disclosure*](https://genai.owasp.org/llmrisk/llm022025-sensitive-information-disclosure/),
+second on its list in both the 2025 and 2026 editions.
 
 The compromise I would defend, and the reason the field above is a hash: **log a
 digest of the prompt always, and the prompt itself only where you have decided
@@ -340,19 +371,20 @@ flowchart LR
 *Four controls on one path. The ceiling is the one people leave out, and the one
 that turns a bad week into a bad quarter.*
 
-Two ceilings, in practice, because they catch different things. A per-session one
-stops a single conversation running away, which is
-[post 4.1](/engineering/writing-the-agent-loop-yourself/)'s step budget denominated
+Two ceilings, in practice, because they catch different things. A per-session
+one stops a single conversation running away, which is [the agent loop
+post](/engineering/writing-the-agent-loop-yourself/)'s step budget denominated
 in money. A per-day one stops a thousand sessions doing it quietly at once. And
 decide now what "refuse" means in your product — a queue, a degraded answer, an
 honest error — because the default is a 500, and a 500 is a decision too.
 
 ## 07 — Injection, against a service
 
-[Post 2.7](/engineering/who-is-allowed-to-do-what/) ran an injection test against
-an editor, with a human in the loop and a read-only tool, and none of the four
-variants produced a tool call. I expected the service version to be a little
-worse. It was not a little worse.
+[Who is allowed to do what](/engineering/who-is-allowed-to-do-what/) ran an
+injection test against an editor, with a human in the loop and a read-only tool,
+and none of the four variants produced a [tool
+call](/engineering/the-ai-vocabulary/#tool-call). I expected the service version
+to be a little worse. It was not a little worse.
 
 The setup: a triage agent, told to **summarise a customer's ticket in one
 sentence**, with two tools available — `refund` and `close_ticket` — and a ticket
@@ -388,7 +420,11 @@ it.
 That reframes the whole section. The injections did not break anything; they
 steered something that was already loose. And the structural difference from the
 editor case is exactly the one you would predict: **there is no human to approve
-anything.** Post 2.7's permission prompt, post 4.1's approval gate — both assume
+anything.** The permission prompt from
+[who is allowed to do what](/engineering/who-is-allowed-to-do-what/), the
+approval gate from
+[the agent loop post](/engineering/writing-the-agent-loop-yourself/) — both
+assume
 somebody is there. At three in the morning, on a web form, nobody is.
 
 So the defences have to be structural, and they are the ones the earlier posts
@@ -399,7 +435,7 @@ already argued for, now with no fallback behind them:
   €40, and the other cannot, by construction.
 - **Capability, not instruction.** The agent's credentials should not be able to
   refund an arbitrary amount, so that a successful injection buys nothing.
-  Post 4.1's framing: narrow it until a wrong call does not matter.
+  The agent loop post's framing: narrow it until a wrong call does not matter.
 - **Validate the output as untrusted input.** A refund amount returned by a model
   is a number from the internet. It gets the same checks you would give a form
   field — bounds, a comparison against the order, a threshold above which a human
@@ -408,12 +444,13 @@ already argued for, now with no fallback behind them:
   customer text does not need tools at all. That is the single highest-value
   structural change available here, and it costs one extra call.
 
-OWASP's name for the mechanism is
-[`LLM01:2025 Prompt Injection`](https://genai.owasp.org/llmrisk/llm01-prompt-injection/),
-with the indirect variant — instructions arriving through content the system
-ingests — being the one that matters here. The
-[Agentic AI threats and mitigations guide](https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/)
-is the agent-shaped companion. Both checked 10 October 2026.
+OWASP's name for the mechanism is [*Prompt
+Injection*](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) — first on
+its list three years running — with the indirect variant — instructions arriving
+through content the system ingests — being the one that matters here. The
+[Agentic AI threats and mitigations
+guide](https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/) is
+the agent-shaped companion. Both checked 10 October 2026.
 
 And state the limit plainly, because this is the section where overclaiming is
 dangerous: a 3B model is far more suggestible than a frontier one, and none of
@@ -430,11 +467,12 @@ depends on what you are building, where, and for whom.
 
 ### The AI Act, and why the secondary coverage disagrees with itself
 
-The EU AI Act is [Regulation (EU) 2024/1689](https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng),
-in force since 1 August 2024. The thing to know before reading anything about it
-is that **it has been amended**, by
-[Regulation (EU) 2026/1744](https://eur-lex.europa.eu/eli/reg/2026/1744/oj/eng)
-of 8 July 2026 — the *Digital Omnibus on AI* — which entered into force on
+The EU AI Act is [Regulation (EU)
+2024/1689](https://eur-lex.europa.eu/eli/reg/2024/1689/oj/eng), in force since 1
+August 2024. The thing to know before reading anything about it is that **it has
+been amended**, by [Regulation (EU)
+2026/1744](https://eur-lex.europa.eu/eli/reg/2026/1744/oj/eng) of 8 July 2026 —
+the *Digital Omnibus on AI* — which entered into force on
 27 July 2026 and changed several of the dates every older article quotes.
 
 Article 113 of the [consolidated text](https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:02024R1689-20260727)
@@ -475,7 +513,8 @@ is the readable companion to all of this; the regulation is the authority.
 ### GDPR, by article
 
 If any part of the prompt is personal data, the call is processing, and the
-ordinary rules apply unchanged. [Regulation (EU) 2016/679](https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng):
+ordinary rules apply unchanged. [Regulation (EU)
+2016/679](https://eur-lex.europa.eu/eli/reg/2016/679/oj/eng):
 
 - **Article 6** — you need a lawful basis. "We wanted to see if the model was
   good at it" is not among the six.
@@ -523,7 +562,8 @@ a chapter there.
 
 **Where it runs** is the [portable AI platform
 contract](/guides/portable-ai-platform-contract/), which is the question
-[post 4.3](/engineering/making-the-model-yours/) left open at the point where
+[making the model yours](/engineering/making-the-model-yours/) left open at the
+point where
 "may this data leave the network" came back *no*.
 
 **What to learn next** depends on which part of this post was the unfamiliar one.
@@ -553,8 +593,9 @@ need for debugging is the field most likely to contain somebody's personal data,
 and log retention is rarely the retention you promised.
 
 **Treating a model call as deterministic in tests.** Assertions on exact strings
-go flaky, somebody adds a retry, and now the test passes when it should not. That
-is what [post 4.2](/engineering/knowing-whether-it-works/) is for.
+go flaky, somebody adds a retry, and now the test passes when it should not.
+That is what [knowing whether it works](/engineering/knowing-whether-it-works/)
+is for.
 
 **Shipping before answering the legal question.** It is answerable in an
 afternoon with the right person in the room, and it is unanswerable in the week
@@ -569,13 +610,13 @@ regulatory section above is a reading of primary sources on one day, offered so
 you know which articles to open, not so you can skip opening them.
 
 If you are making a deployment decision — whether a model may touch customer
-data, what has to be logged, who signs it off — start instead with
-[NIST AI 600-1](https://doi.org/10.6028/NIST.AI.600-1), the Generative AI Profile
-of the AI Risk Management Framework (July 2024), and with
-[a CISO's guide to agentic AI](https://claude.com/resources/articles/ciso-guide-to-agentic-ai)
-(Anthropic, July 2026) for the organisational version of the same question.
-Understanding the machine is a prerequisite for those conversations, not a
-substitute for them.
+data, what has to be logged, who signs it off — start instead with [NIST AI
+600-1](https://doi.org/10.6028/NIST.AI.600-1), the Generative AI Profile of the
+AI Risk Management Framework (July 2024), and with [a CISO's guide to agentic
+AI](https://claude.com/resources/articles/ciso-guide-to-agentic-ai) (Anthropic,
+July 2026) for the organisational version of the same question. Understanding
+the machine is a prerequisite for those conversations, not a substitute for
+them.
 
 ## References and further reading
 
@@ -598,9 +639,12 @@ Every URL below was checked on 10 October 2026.
   Profile (July 2024), for risk categories in the form a risk function expects
   them, and [a CISO's guide to agentic AI](https://claude.com/resources/articles/ciso-guide-to-agentic-ai)
   (Anthropic, July 2026) for the organisational version.
-- OWASP: [`LLM01:2025 Prompt Injection`](https://genai.owasp.org/llmrisk/llm01-prompt-injection/),
-  [`LLM02:2025 Sensitive Information Disclosure`](https://genai.owasp.org/llmrisk/llm022025-sensitive-information-disclosure/),
-  [`LLM10:2025 Unbounded Consumption`](https://genai.owasp.org/llmrisk/llm102025-unbounded-consumption/),
+- OWASP: [*Prompt Injection*](https://genai.owasp.org/llmrisk/llm01-prompt-injection/),
+  [*Sensitive Information Disclosure*](https://genai.owasp.org/llmrisk/llm022025-sensitive-information-disclosure/)
+  and [*Unbounded Consumption*](https://genai.owasp.org/llmrisk/llm102025-unbounded-consumption/)
+  — the 2026 edition renumbered several of these and widened unbounded
+  consumption to name denial-of-wallet explicitly, so quote the names rather than
+  the numbers —
   and the [Agentic AI threats and mitigations guide](https://genai.owasp.org/resource/agentic-ai-threats-and-mitigations/)
   (OWASP GenAI Security Project, 17 February 2025) — sections 05, 06 and 07 under
   the names a risk register uses.
