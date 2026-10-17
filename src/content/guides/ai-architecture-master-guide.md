@@ -10,7 +10,12 @@ cover: ai
 *New to this? This guide assumes you already know what a token, an embedding and
 an agent are. If any of those are fuzzy, start with
 [the AI vocabulary](/engineering/the-ai-vocabulary/) — one sentence and one
-example each — and come back. This guide will make a great deal more sense
+example each — and come back. If you want the mechanism rather than the
+definition,
+[what a model actually is](/engineering/what-a-model-actually-is/) is the floor
+of it, and
+[the whole AI Foundations series](/engineering/ai-foundations-start-here/) is the
+ladder up to this guide. Either way, this one will make a great deal more sense
 afterwards.*
 
 *This is the guide I wish I'd had when I first started designing AI systems: every layer, pattern, and trade-off in one place. I keep it current and reach for it whenever I'm helping someone architect something new.*

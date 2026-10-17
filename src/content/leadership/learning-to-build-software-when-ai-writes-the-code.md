@@ -195,7 +195,10 @@ couldn't see it.
 **Telling plausible from correct is the whole skill.** Fluent, confident and
 well-structured is the default output, not evidence of anything. The entry for
 *hallucination* in [the AI vocabulary](/engineering/the-ai-vocabulary/) is the
-short version: it is the mechanism working as designed rather than a bug. Two
+short version: it is the mechanism working as designed rather than a bug.
+[Why it sounds certain when it's wrong](/engineering/why-it-sounds-certain-when-its-wrong/)
+is the long one, with the same question asked five times and answered
+confidently and wrongly five times. Two
 things cut through it: run the change yourself, and check one factual claim
 against a primary source. One. Whichever claim the change most depends on. If it
 holds, your confidence is earned rather than borrowed; if it doesn't, you've
