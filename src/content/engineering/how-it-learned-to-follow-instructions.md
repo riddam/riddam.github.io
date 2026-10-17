@@ -5,7 +5,7 @@ pubDate: 2026-10-17
 tags: ["ai-foundations", "model-internals", "training", "llm"]
 cover: training
 coverVariant: 2
-draft: true
+draft: false
 ---
 
 *Measured on `Qwen/Qwen2.5-0.5B` and `Qwen/Qwen2.5-0.5B-Instruct` — the same
@@ -31,7 +31,8 @@ which is what makes the comparison worth running.*
 This is the fourth post in **AI from the inside out** and it assumes
 [what a model actually is](/engineering/what-a-model-actually-is/) — tokens, the
 ranked list of next-token probabilities, and the loop that picks one and runs
-again. Those words get used here without being re-explained.
+again. Those words get used here without being re-explained. The whole series,
+and which track you want, is on [the start-here page](/engineering/ai-foundations-start-here/).
 
 Technical words link to their one-line definition in the
 [AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.

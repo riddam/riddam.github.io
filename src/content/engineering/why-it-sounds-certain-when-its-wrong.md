@@ -5,7 +5,7 @@ pubDate: 2026-10-17
 tags: ["ai-foundations", "model-internals", "hallucination", "ai-assisted-coding"]
 cover: scales
 coverVariant: 2
-draft: true
+draft: false
 ---
 
 *The runs below are verbatim output from a small model you can run on a laptop
@@ -29,7 +29,7 @@ right answer is checked against the library's own release notes.*
 
 This needs [what a model actually is](/engineering/what-a-model-actually-is/),
 and in particular the ranked list of next tokens. Everything here follows from
-that one picture.
+that one picture. The whole series, and which track you want, is on [the start-here page](/engineering/ai-foundations-start-here/).
 
 Technical words link to their one-line definition in the
 [AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.

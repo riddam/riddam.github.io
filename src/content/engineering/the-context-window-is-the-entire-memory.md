@@ -5,7 +5,7 @@ pubDate: 2026-10-17
 tags: ["ai-foundations", "model-internals", "context-engineering", "ai-assisted-coding"]
 cover: pyramid
 coverVariant: 2
-draft: true
+draft: false
 ---
 
 *Measured on a real five-turn conversation, with a model small enough that you
@@ -26,7 +26,9 @@ can run the same script on your laptop and get your own numbers.*
 
 This needs [what a model actually is](/engineering/what-a-model-actually-is/) —
 the loop in particular, and the note at the end about what attention costs.
-Everything in track 2, on what your coding tool is doing, assumes this post.
+Track 2, on what your coding tool is doing, assumes this post throughout; it
+arrives on 24 October. The whole series, and which track you want, is on
+[the start-here page](/engineering/ai-foundations-start-here/).
 
 Technical words link to their one-line definition in the
 [AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
@@ -347,8 +349,8 @@ important is established mid-session — a decision, a constraint, a correction 
 write it down outside the conversation. A file in the repo, a note, the ticket.
 Anything whose survival does not depend on a summarising step you did not
 configure and cannot see. The harness-side mechanics of how and when that
-happens get their own post:
-[where the context comes from](/engineering/where-the-context-comes-from/).
+happens get their own post, **Where the Context Comes From**, with track 2 on
+24 October.
 
 There is a second-order effect worth naming too. Once a summary replaces the
 original turns, the model is reasoning about a *description* of what happened

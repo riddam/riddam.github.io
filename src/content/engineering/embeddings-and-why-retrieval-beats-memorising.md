@@ -5,7 +5,7 @@ pubDate: 2026-10-17
 tags: ["ai-foundations", "model-internals", "rag", "embeddings"]
 cover: network
 coverVariant: 3
-draft: true
+draft: false
 ---
 
 *Measured on `sentence-transformers/all-MiniLM-L6-v2` for the embeddings and
@@ -37,6 +37,7 @@ of next-token probabilities, the loop — and it assumes [the context window is
 the entire memory](/engineering/the-context-window-is-the-entire-memory/),
 because retrieval is a context-window strategy and nothing else. Everything in
 this post exists to decide what goes into a window that is finite and billed.
+The whole series, and which track you want, is on [the start-here page](/engineering/ai-foundations-start-here/).
 
 Technical words link to their one-line definition in the
 [AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.

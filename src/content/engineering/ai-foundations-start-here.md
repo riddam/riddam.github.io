@@ -5,7 +5,7 @@ pubDate: 2026-10-17
 tags: ["ai-foundations", "model-internals", "harness-engineering"]
 cover: personas
 coverVariant: 2
-draft: true
+draft: false
 ---
 
 *This page exists because two posts went out that named a whole layer nobody had

@@ -5,7 +5,7 @@ pubDate: 2026-10-17
 tags: ["ai-foundations", "model-internals", "llm", "ai-assisted-coding"]
 cover: ai
 coverVariant: 2
-draft: true
+draft: false
 ---
 
 *Everything else on this site about AI assumes this post. It is the floor.*
@@ -26,8 +26,10 @@ draft: true
 ## Where this sits
 
 This is the first post in **AI from the inside out**, and everything else rests
-on it. The [harness](/engineering/the-ai-vocabulary/#harness) posts — the ones about what your coding tool
-does between your keystroke and the answer — all assume you have read this.
+on it. The [harness](/engineering/the-ai-vocabulary/#harness) posts — the ones
+about what your coding tool does between your keystroke and the answer — all
+assume you have read this; they arrive on 24 October. The whole series, and
+which track you want, is on [the start-here page](/engineering/ai-foundations-start-here/).
 
 Technical words link to their one-line definition in the
 [AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.

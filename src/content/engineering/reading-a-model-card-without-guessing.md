@@ -5,7 +5,7 @@ pubDate: 2026-10-17
 tags: ["ai-foundations", "model-internals", "model-selection", "cost"]
 cover: speed
 coverVariant: 2
-draft: true
+draft: false
 ---
 
 *One real task — summarising a pull request diff — run on three model sizes on
@@ -40,7 +40,8 @@ model actually is](/engineering/what-a-model-actually-is/) for tokens and the
 generation loop, and it needs [the context window is the entire
 memory](/engineering/the-context-window-is-the-entire-memory/) for why input
 tokens pile up and what you are actually buying when you pay for them. That post
-did the arithmetic on a session; this one does it on a model card.
+did the arithmetic on a session; this one does it on a model card. The whole
+series, and which track you want, is on [the start-here page](/engineering/ai-foundations-start-here/).
 
 Technical words link to their one-line definition in the
 [AI vocabulary](/engineering/the-ai-vocabulary/) the first time they appear.
@@ -564,8 +565,8 @@ Three properties separate a set that helps from one that flatters:
   [golden set](/engineering/the-ai-vocabulary/#golden-set), and running it is an [eval](/engineering/the-ai-vocabulary/#eval).
 
 Doing this properly — grading rubrics, judge models, regression gates in CI — is
-a discipline with a literature, and this series has a post on it in track 4:
-**Knowing Whether It Works**. Until then,
+a discipline with a literature, and this series has a post on it in track 4 —
+**Knowing Whether It Works**, arriving 7 November. Until then,
 [section 10 of the AI architecture
 guide](/guides/ai-architecture-master-guide/#10--llmops--evaluation) covers the
 LLMOps side of evaluation and [section 07 of the training and evaluation

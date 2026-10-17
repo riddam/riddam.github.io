@@ -5,7 +5,7 @@ pubDate: 2026-10-17
 tags: ["ai-foundations", "local-models", "llm", "ai-assisted-coding"]
 cover: bootstrap
 coverVariant: 3
-draft: true
+draft: false
 ---
 
 *A prerequisite post. Seven posts in this series print numbers from a model
