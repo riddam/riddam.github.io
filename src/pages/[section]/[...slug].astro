@@ -96,9 +96,25 @@ const series = seriesDef
   : undefined;
 
 // Previous / next within the same section, ordered oldest → newest.
+//
+// A whole series can share one publication date -- a track released on a single
+// day -- and then the date alone decides nothing, leaving the neighbours in
+// whatever order the loader happened to return. So ties break on the post's
+// position in its series, which is the order a reader of that track wants.
+const seriesRank = new Map<string, number>();
+for (const s of SERIES) {
+  s.slugs.forEach((slug, i) => seriesRank.set(`${s.sectionId}/${slug}`, i));
+}
+const rankOf = (p: { sectionId: string; id: string }) =>
+  seriesRank.get(`${p.sectionId}/${p.id}`) ?? Number.MAX_SAFE_INTEGER;
 const sectionPosts = all
   .filter((p) => p.sectionId === section.id)
-  .sort((a, b) => a.pubDate.valueOf() - b.pubDate.valueOf());
+  .sort(
+    (a, b) =>
+      a.pubDate.valueOf() - b.pubDate.valueOf() ||
+      rankOf(a) - rankOf(b) ||
+      a.id.localeCompare(b.id)
+  );
 const idx = sectionPosts.findIndex((p) => p.id === entry.id);
 const olderPost = idx > 0 ? sectionPosts[idx - 1] : undefined;
 const newerPost =
