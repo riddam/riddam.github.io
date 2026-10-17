@@ -4,6 +4,7 @@ import MarkdownIt from 'markdown-it';
 import sanitizeHtml from 'sanitize-html';
 import { SITE_TITLE, SITE_DESCRIPTION, SECTIONS } from '../consts';
 import { isVisible } from '../utils/visibility';
+import { byNewest } from '../utils/post-order';
 
 const parser = new MarkdownIt({ html: true, linkify: true });
 const SITE = 'https://riddam.github.io';
@@ -37,7 +38,7 @@ export async function GET(context) {
       });
     }
   }
-  items.sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+  items.sort(byNewest);
 
   return rss({
     title: SITE_TITLE,

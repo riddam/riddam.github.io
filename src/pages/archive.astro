@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { SECTIONS } from '../consts';
 import { isVisible } from '../utils/visibility';
+import { byNewest } from '../utils/post-order';
 
 const posts = (
   await Promise.all(
@@ -19,7 +20,7 @@ const posts = (
   )
 )
   .flat()
-  .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+  .sort(byNewest);
 
 // Group by year, newest first. Posts are already sorted, so inserting in
 // order gives descending years.

@@ -6,6 +6,7 @@ import Cover from '../components/Cover.astro';
 import { SITE_DESCRIPTION, SECTIONS } from '../consts';
 import { readingStats } from '../utils/reading-time';
 import { isVisible } from '../utils/visibility';
+import { byNewest } from '../utils/post-order';
 
 const posts = (
   await Promise.all(
@@ -26,7 +27,7 @@ const posts = (
   )
 )
   .flat()
-  .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+  .sort(byNewest);
 
 const [featured, ...rest] = posts;
 

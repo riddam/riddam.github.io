@@ -5,6 +5,7 @@ import PostList from '../../components/PostList.astro';
 import { SECTIONS } from '../../consts';
 import { readingStats } from '../../utils/reading-time';
 import { isVisible } from '../../utils/visibility';
+import { byNewest } from '../../utils/post-order';
 
 export function getStaticPaths() {
   return SECTIONS.map((section) => ({
@@ -27,7 +28,7 @@ const posts = entries
     coverVariant: entry.data.coverVariant,
     sectionId: section.id,
   }))
-  .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf());
+  .sort(byNewest);
 ---
 
 <Base title={section.label} description={section.description}>

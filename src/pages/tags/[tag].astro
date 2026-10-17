@@ -5,6 +5,7 @@ import PostList from '../../components/PostList.astro';
 import { SECTIONS } from '../../consts';
 import { readingStats } from '../../utils/reading-time';
 import { isVisible } from '../../utils/visibility';
+import { byNewest } from '../../utils/post-order';
 
 export async function getStaticPaths() {
   const all = [];
@@ -32,7 +33,7 @@ export async function getStaticPaths() {
       tag,
       posts: all
         .filter((p) => p.tags.includes(tag))
-        .sort((a, b) => b.pubDate.valueOf() - a.pubDate.valueOf()),
+        .sort(byNewest),
     },
   }));
 }
