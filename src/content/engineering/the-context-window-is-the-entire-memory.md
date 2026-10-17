@@ -201,7 +201,7 @@ never typed anything long.
 
 Now the money, and I want to be precise about what kind of number this is. The
 token counts above are measured. The costs below are **arithmetic** on those
-counts at Anthropic's published list prices, checked on 10 October 2026: Claude
+counts at Anthropic's published list prices, checked on 17 October 2026: Claude
 Opus 5.5 at $4.00 per million input tokens, Claude Sonnet 5.5 at $2.00, Claude
 Haiku 5.5 at $0.10 for prompts under 100,000 tokens, above which it rises — a
 boundary the larger projections below cross.
@@ -221,12 +221,12 @@ post lands.
 Two honest qualifications. **[Prompt
 caching](/engineering/the-ai-vocabulary/#prompt-caching) changes these numbers a
 lot**: the unchanging front of the stack can be re-read at $0.20 per million
-instead of $4.00. On the 40-turn row, if 90 per cent of those tokens are cache
-reads and
-10 per cent are paid in full, the sum is `0.9 × $0.20 + 0.1 × $4.00` per
-million — about $1.16 instead of $8.00. A higher hit rate approaches $0.40. And
-**output tokens cost five times more than input**, so a session full of long
-answers has a second bill this table does not show. Neither changes the shape.
+instead of $4.00. Take the 40-turn row, and say 90 per cent of its two million
+tokens are cache reads and 10 per cent are paid in full. That is
+`0.9 × $0.20 + 0.1 × $4.00` — about $0.58 per million, so **$1.16 for the whole
+session instead of $8.00**. A higher hit rate approaches $0.40. And **output
+tokens cost five times more than input**, so a session full of long answers has
+a second bill this table does not show. Neither changes the shape.
 Both make it more important to know what is in the pile.
 
 ## 05 — Why a bigger window is not the answer

@@ -1,7 +1,7 @@
 ---
 title: "What Can Go Wrong With an MCP Server"
 description: "The protocol says plainly that it cannot enforce security at its own level — so the host must. The attack classes the specification names, in plain words, and a short list of what to actually check before you install somebody else's server."
-pubDate: 2026-10-20
+pubDate: 2026-10-24
 tags: ["ai-foundations", "harness-engineering", "mcp", "security"]
 cover: gate
 coverVariant: 3

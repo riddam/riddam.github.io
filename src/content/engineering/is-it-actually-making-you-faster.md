@@ -1,7 +1,7 @@
 ---
 title: "Is It Actually Making You Faster?"
 description: "What to measure if you want to know whether an agent is helping: time to a reviewable change, rework rate, token spend, and the kinds of task where it reliably costs more than it saves. A two-week method, and the reason the best-funded attempt at this question could not keep its control group."
-pubDate: 2026-10-30
+pubDate: 2026-10-31
 tags: ["ai-foundations", "ai-assisted-coding", "developer-productivity", "measurement"]
 cover: speed
 coverVariant: 3

@@ -1,7 +1,7 @@
 ---
 title: "A Tool Call Is a Request, Not an Action"
 description: "The model never runs anything. It emits a structured request, your harness decides whether to honour it, and the result comes back as more text. What a tool definition really is, why a vague description produces wrong calls, and what happens when a tool fails."
-pubDate: 2026-10-18
+pubDate: 2026-10-24
 tags: ["ai-foundations", "harness-engineering", "tool-use", "ai-assisted-coding"]
 cover: lever
 coverVariant: 2

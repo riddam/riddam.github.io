@@ -13,8 +13,9 @@ a laptop, and the same question asked twice of a reasoning model with its
 thinking turned off and on. The models are `Qwen/Qwen2.5-0.5B-Instruct`,
 `Qwen/Qwen2.5-1.5B-Instruct`, `Qwen/Qwen2.5-3B-Instruct` and `Qwen/Qwen3-0.6B`;
 every token count, second and parameter count below came out of running them.
-Every price and model ID was read from the vendor's own pages on **10 October
-2026**, and the date matters more here than in any other post in this series.*
+Every price and model ID was read from the vendor's own pages, and re-read on
+**17 October 2026**, the day this went out — the date matters more here than in
+any other post in this series.*
 
 ## TL;DR
 
@@ -133,7 +134,7 @@ checkable, and most people skim past the ones that bind.
 | Comparative latency | Usually a word, not a number. More on this below. |
 | Retirement date | The date this model stops existing. It makes your prompt a dependency with an end-of-life, and almost nobody reads it. |
 
-Here is that lineup as the vendor published it on **10 October 2026**, taken
+Here is that lineup as the vendor published it on **17 October 2026**, taken
 from the [models overview page](https://platform.claude.com/docs/en/models/overview)
 and the [pricing page](https://platform.claude.com/docs/en/about-claude/pricing).
 I am writing the date into the table deliberately: a post that teaches you to
@@ -366,7 +367,7 @@ one that was wrong. Capability costs you twice — once in time per token, once
 in tokens.
 
 Now the money, and this is a **third kind of number**: arithmetic over the
-measured token counts, at published list prices read on 10 October 2026. Not a
+measured token counts, at published list prices read on 17 October 2026. Not a
 measurement, and not an estimate either — a sum you can check.
 
 ```python
@@ -614,7 +615,7 @@ the same window, it does not even distinguish them.
 
 - [Claude models overview](https://platform.claude.com/docs/en/models/overview)
   and [Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing)
-  — both read on 10 October 2026; between them, every price, ID, context length
+  — both read on 17 October 2026; between them, every price, ID, context length
   and effort default here. Open the first for what is *not* on a good card:
   latency is a word, parameter count is absent, and there is a retirement date.
   Open the second for the tiered rate above 100,000 tokens and the tokeniser note

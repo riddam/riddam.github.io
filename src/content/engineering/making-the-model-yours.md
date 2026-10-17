@@ -1,7 +1,7 @@
 ---
 title: "Making the Model Yours — and When Not To"
 description: "A real fine-tune on a small local model, with the same ten prompts before and after. Why it teaches a manner rather than facts, what the attempt to teach it a fact actually produced, and the local-versus-API decision on privacy and cost."
-pubDate: 2026-11-06
+pubDate: 2026-11-07
 tags: ["ai-foundations", "ai-in-production", "fine-tuning", "model-training"]
 cover: training
 coverVariant: 3

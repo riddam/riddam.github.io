@@ -1,7 +1,7 @@
 ---
 title: "Build a Small MCP Server and Watch the Wire"
 description: "A hundred lines, two read-only tools, connected to a real editor with every message logged. Writing a tool description the model reads correctly, checking the server before you trust it, and why read-only over stdio is the sane default."
-pubDate: 2026-10-19
+pubDate: 2026-10-24
 tags: ["ai-foundations", "harness-engineering", "mcp", "python"]
 cover: code
 coverVariant: 2
