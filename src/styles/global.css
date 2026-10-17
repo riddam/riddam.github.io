@@ -835,6 +835,34 @@ article p, .excerpt, .hero p, .author-blurb, .post-description { text-wrap: pret
 /* Anchor jumps land below the sticky header */
 article h2, article h3, article h4 { scroll-margin-top: 5.5rem; }
 
+/*
+ * Term anchors: an empty `<a id>` at the head of a paragraph, which is how the
+ * vocabulary pages mark each entry so posts can deep-link a single word. They
+ * need the same scroll margin as a heading, or the sticky header covers the
+ * one term the reader came for — and a moment of highlight, because landing
+ * mid-page in a list of seventy entries otherwise tells you nothing about
+ * which one you were sent to.
+ */
+article a[id]:not([href]) { scroll-margin-top: 5.5rem; }
+
+@keyframes term-landed {
+  from { background: var(--accent-soft, rgba(127, 127, 127, 0.18)); }
+  to   { background: transparent; }
+}
+
+article p:has(> a[id]:not([href]):target) {
+  animation: term-landed 2.4s ease-out 1;
+  border-radius: var(--radius);
+  box-decoration-break: clone;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  article p:has(> a[id]:not([href]):target) {
+    animation: none;
+    background: var(--accent-soft, rgba(127, 127, 127, 0.18));
+  }
+}
+
 /* Heading anchor links */
 .heading-anchor {
   margin-left: 0.4rem;
