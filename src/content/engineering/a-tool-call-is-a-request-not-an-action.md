@@ -5,7 +5,7 @@ pubDate: 2026-10-24
 tags: ["ai-foundations", "harness-engineering", "tool-use", "ai-assisted-coding"]
 cover: lever
 coverVariant: 2
-draft: true
+draft: false
 ---
 
 *Three experiments, all run for real against `Qwen/Qwen2.5-3B-Instruct` on a

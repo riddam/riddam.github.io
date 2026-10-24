@@ -5,7 +5,7 @@ pubDate: 2026-10-24
 tags: ["ai-foundations", "harness-engineering", "claude-code", "ai-assisted-coding"]
 cover: mirror
 coverVariant: 3
-draft: true
+draft: false
 ---
 
 *Every number below was read out of one real session's own transcripts on 10

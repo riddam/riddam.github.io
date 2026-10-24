@@ -5,7 +5,7 @@ pubDate: 2026-10-24
 tags: ["ai-foundations", "harness-engineering", "mcp", "security"]
 cover: gate
 coverVariant: 3
-draft: true
+draft: false
 ---
 
 *Every quotation below comes from the Model Context Protocol specification's own

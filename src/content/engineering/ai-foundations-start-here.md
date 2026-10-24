@@ -22,10 +22,10 @@ first. Start where the question is; back up only when the post tells you to.
   [Why It Sounds Certain When It's Wrong](/engineering/why-it-sounds-certain-when-its-wrong/)
 - **It forgot something I told it** →
   [The Context Window Is the Entire Memory](/engineering/the-context-window-is-the-entire-memory/)
-- **It did something I did not expect** → **What Actually Happens When You Press
-  Enter**, with track 2 on 24 October
-- **I do not know what MCP is** → **MCP, Explained Without the Spec**, with
-  track 2 on 24 October
+- **It did something I did not expect** →
+  [What Actually Happens When You Press Enter](/engineering/what-happens-when-you-press-enter/)
+- **I do not know what MCP is** →
+  [MCP, Explained Without the Spec](/engineering/mcp-explained-without-the-spec/)
 
 If none of those is it, the four tracks below are sorted by who they are for,
 not by difficulty. Read the one that matches you and stop.
@@ -56,29 +56,30 @@ explain** — the readers who got lost. Assumes track 1, or a willingness to
 follow its links. Each post explains the mechanism in general terms first, then
 shows the same thing concretely in Claude Code.
 
-All ten are written and go live together on **24 October**; until then, this is
-what is coming, so you know whether to wait for it.
-
-1. **What Actually Happens When You Press Enter** — the loop end to end, in
-   about forty lines you can run.
-2. **A Tool Call Is a Request, Not an Action** — the model never runs anything;
-   your harness decides whether to honour it.
-3. **MCP, Explained Without the Spec** — what a server offers, which side your
-   editor is on, what crosses the wire.
-4. **Build a Small MCP Server and Watch the Wire** — a hundred lines, two
-   read-only tools, every message logged.
-5. **What Can Go Wrong With an MCP Server** — the attack classes the
-   specification itself names, and what to check before installing one.
-6. **Where the Context Comes From** — your message is the smallest part of the
-   request; compaction throws some of the rest away.
-7. **Who Is Allowed to Do What** — asking an agent not to, versus actually
-   stopping it.
-8. **How a Skill Gets Found and Loaded** — the name and the description together
-   are the trigger, and two similar ones fight.
-9. **Subagents: Why Isolation Is the Point** — a fresh context with a narrow
-   brief; parallelism is the side effect.
-10. **The Whole Thing, Annotated** — one real session, first prompt to landed
-    commits, every mechanism labelled where it fires.
+1. [What Actually Happens When You Press Enter](/engineering/what-happens-when-you-press-enter/)
+   — the loop end to end, in about forty lines you can run.
+2. [A Tool Call Is a Request, Not an Action](/engineering/a-tool-call-is-a-request-not-an-action/)
+   — the model never runs anything; your harness decides whether to honour it.
+3. [MCP, Explained Without the Spec](/engineering/mcp-explained-without-the-spec/)
+   — what a server offers, which side your editor is on, what crosses the wire.
+4. [Build a Small MCP Server and Watch the Wire](/engineering/build-a-small-mcp-server/)
+   — a hundred lines, two read-only tools, every message logged.
+5. [What Can Go Wrong With an MCP Server](/engineering/what-can-go-wrong-with-an-mcp-server/)
+   — the attack classes the specification itself names, and what to check before
+   installing one.
+6. [Where the Context Comes From](/engineering/where-the-context-comes-from/)
+   — your message is the smallest part of the request; compaction throws some of
+   the rest away.
+7. [Who Is Allowed to Do What](/engineering/who-is-allowed-to-do-what/)
+   — asking an agent not to, versus actually stopping it.
+8. [How a Skill Gets Found and Loaded](/engineering/how-a-skill-gets-found-and-loaded/)
+   — the name and the description together are the trigger, and two similar ones
+   fight.
+9. [Subagents: Why Isolation Is the Point](/engineering/subagents-why-isolation-is-the-point/)
+   — a fresh context with a narrow brief; parallelism is the side effect.
+10. [The Whole Thing, Annotated](/engineering/the-whole-thing-annotated/)
+    — one real session, first prompt to landed commits, every mechanism labelled
+    where it fires.
 
 ## Track 3 — using it well, day to day
 

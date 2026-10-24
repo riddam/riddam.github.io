@@ -5,7 +5,7 @@ pubDate: 2026-10-24
 tags: ["ai-foundations", "harness-engineering", "mcp", "python"]
 cover: code
 coverVariant: 2
-draft: true
+draft: false
 ---
 
 *Every line of JSON below came off the wire of a server I wrote for this post,

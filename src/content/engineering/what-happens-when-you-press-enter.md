@@ -5,7 +5,7 @@ pubDate: 2026-10-24
 tags: ["ai-foundations", "harness-engineering", "claude-code", "ai-assisted-coding"]
 cover: bootstrap
 coverVariant: 2
-draft: true
+draft: false
 ---
 
 *The loop at the centre of this post is real: about forty lines of Python

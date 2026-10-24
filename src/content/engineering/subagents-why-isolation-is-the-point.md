@@ -5,7 +5,7 @@ pubDate: 2026-10-24
 tags: ["ai-foundations", "harness-engineering", "subagents", "claude-code"]
 cover: agent
 coverVariant: 3
-draft: true
+draft: false
 ---
 
 *The numbers below were read out of one real session's own transcripts on 10

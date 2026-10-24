@@ -5,7 +5,7 @@ pubDate: 2026-10-24
 tags: ["ai-foundations", "harness-engineering", "skills", "claude-code"]
 cover: assist
 coverVariant: 2
-draft: true
+draft: false
 ---
 
 *Everything below was measured on 10 October 2026, and none of it needed an API

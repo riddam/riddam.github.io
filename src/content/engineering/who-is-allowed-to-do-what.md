@@ -5,7 +5,7 @@ pubDate: 2026-10-24
 tags: ["ai-foundations", "harness-engineering", "security", "claude-code"]
 cover: gate
 coverVariant: 4
-draft: true
+draft: false
 ---
 
 *This post explains mechanisms and names their limits. It carries no working

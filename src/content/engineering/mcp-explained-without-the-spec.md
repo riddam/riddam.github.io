@@ -5,7 +5,7 @@ pubDate: 2026-10-24
 tags: ["ai-foundations", "harness-engineering", "mcp", "claude-code"]
 cover: gate
 coverVariant: 2
-draft: true
+draft: false
 ---
 
 *Every number and every line of JSON below came out of a real MCP server running

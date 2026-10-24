@@ -5,7 +5,7 @@ pubDate: 2026-10-24
 tags: ["ai-foundations", "harness-engineering", "context-engineering", "claude-code"]
 cover: pyramid
 coverVariant: 3
-draft: true
+draft: false
 ---
 
 *Every number below was measured on 10 October 2026, in this blog's own
