@@ -52,22 +52,6 @@ Two tests do most of the policing: every internal link in a published post must
 resolve to another published post, and the start-here map must link every
 published post in the series and name every drafted one.
 
-## The last two releases run themselves
-
-Both remaining releases are scheduled as one-off cloud agents, which clone this
-repository, carry out the four steps above and push to `main` — so the release
-happens whether or not anybody opens a laptop that morning. They run at 09:07
-Amsterdam time on their date.
-
-| Date | Routine | ID |
-| --- | --- | --- |
-| 31 Oct 2026 | Release AI Foundations track 3 | `trig_01SA899fVUqFk7PhdSFpPHFo` |
-| 7 Nov 2026 | Release AI Foundations track 4 | `trig_01SoYTyWQzsWDedtWNKbBjMX` |
-
-They are managed at <https://claude.ai/code/routines>, which is also where to
-disable one if a track needs to slip. A routine clones what is on `origin`, so
-anything still sitting unpushed on a laptop will not be in the release.
-
 ## Reviewing a drafted track
 
 `astro dev` renders drafts; `astro build` never does. See
