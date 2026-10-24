@@ -234,7 +234,8 @@ writes a rule. I can measure the result, because every session is a JSONL file o
 disk and each tool result records how its permission decision was made:
 
 ```python
-# Who actually decided? Point this at the session directory for a repo you work in.
+# Who actually decided? The argument is a glob, quoted so the shell leaves it alone:
+# python3 who_decided.py "~/.claude/projects/<slug>/*.jsonl"
 import collections, glob, json, os, sys
 
 tally = collections.Counter()

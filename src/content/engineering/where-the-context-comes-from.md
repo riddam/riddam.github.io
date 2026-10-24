@@ -320,7 +320,8 @@ record into it saying what it did:
 ```python
 # What did compaction cost, and what did it keep? Every Claude Code session is a
 # JSONL file under ~/.claude/projects/<slug>/, and compaction writes a boundary
-# record into it. Point this at the directory for the repo you work in.
+# record into it. The argument is a glob, quoted so the shell leaves it alone:
+# python3 compaction.py "~/.claude/projects/<slug>/*.jsonl"
 import glob, json, os, sys
 
 for path in sorted(glob.glob(os.path.expanduser(sys.argv[1]))):
