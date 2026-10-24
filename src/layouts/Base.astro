@@ -257,6 +257,13 @@ const jsonLd = article ? [articleLd, breadcrumbLd].filter(Boolean) : websiteLd;
               };
           mermaid.initialize({
             startOnLoad: false,
+            // Without this, every diagram's SVG id is `mermaid-${Date.now()}`,
+            // so two diagrams that render in the same millisecond collide. The
+            // second one then draws into the first one's SVG -- the renderer
+            // looks its target up by id -- and the page shows one diagram
+            // overlaid on another plus an empty box. deterministicIds counts
+            // 0, 1, 2 within a run instead, which cannot collide.
+            deterministicIds: true,
             theme: 'base',
             themeVariables,
             fontFamily: "'Inter Variable', sans-serif",

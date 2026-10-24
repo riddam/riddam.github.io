@@ -75,3 +75,30 @@ test('a diagram with a syntax error is reported as broken', async () => {
     'an unbalanced bracket must not parse',
   );
 });
+
+/**
+ * Parsing is not rendering. Every diagram below parsed cleanly while two of them
+ * were drawing on top of each other in the browser, because mermaid's default id
+ * for a diagram is `mermaid-${Date.now()}` and the renderer finds its target by
+ * id. Two diagrams that finish in the same millisecond get the same id, the
+ * second draws into the first one's SVG, and the reader sees one diagram
+ * overlaid on another plus an empty box. It is a race, so it moves between
+ * builds and machines rather than failing consistently.
+ */
+test('the layout gives each diagram an id that cannot collide', () => {
+  const layout = readFileSync(
+    fileURLToPath(new URL('../layouts/Base.astro', import.meta.url)),
+    'utf8',
+  );
+  assert.match(
+    layout,
+    /deterministicIds:\s*true/,
+    'mermaid.initialize must set deterministicIds, or diagrams on the same page can share an SVG id',
+  );
+
+  // The guard only matters while some page carries more than one diagram.
+  const perPost = new Map<string, number>();
+  for (const { path } of fences()) perPost.set(path, (perPost.get(path) ?? 0) + 1);
+  const crowded = [...perPost.values()].filter((n) => n > 1).length;
+  assert.ok(crowded > 0, 'expected at least one post with two or more diagrams');
+});
