@@ -264,8 +264,9 @@ The shapes that recur, stated as patterns rather than as things I can prove:
 
 **The mandate without the measurement.** Adoption becomes a target, the target
 gets reported on, and the number goes up while nothing else changes. Everyone
-involved knows what is happening. This is the failure the diagram sends to post
-3.1, because the honest version of the conversation needs a record.
+involved knows what is happening. This is the failure the diagram sends to
+[is it actually making you faster](/engineering/is-it-actually-making-you-faster/),
+because the honest version of the conversation needs a record.
 
 **The repository nobody can work in.** A ten-minute test suite, twelve undocumented
 setup steps, a directory layout that only makes sense historically. An agent is

@@ -324,7 +324,8 @@ wrong twice: once by testing on the training set, once with a grader that passed
 four non-answers. Both mistakes produced output that looked like success. Neither
 was caught by anything except reading the transcripts.
 
-That is why 4.2 is a prerequisite for this post rather than a nicety. Without an
+That is why [knowing whether it works](/engineering/knowing-whether-it-works/)
+is a prerequisite for this post rather than a nicety. Without an
 eval suite you cannot tell a fine-tune that worked from a fine-tune that
 memorised, and those two produce identical-looking output on every example you
 are likely to try by hand. A model you cannot measure is a model you cannot
@@ -386,7 +387,8 @@ model making things up.
 Where local genuinely wins is the shape in the middle branch — narrow task, high
 volume, a small model that is actually good enough, which you now know because
 you have an eval suite. That is three preconditions, and the third one is the
-reason 4.2 comes before this post.
+reason [knowing whether it works](/engineering/knowing-whether-it-works/) comes
+before this post.
 
 ## 08 — Going deeper: your data becomes the model
 
