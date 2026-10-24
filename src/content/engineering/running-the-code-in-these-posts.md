@@ -195,8 +195,12 @@ the ones where this setup pays for itself:
 - [How it learned to follow instructions](/engineering/how-it-learned-to-follow-instructions/)
   — base model against instruction-tuned, side by side.
 - [Reading a model card without guessing](/engineering/reading-a-model-card-without-guessing/)
-- *Where the Context Comes From*, *How a Skill Gets Found and Loaded* and
-  *Who Is Allowed to Do What* — all three arrive with track 2 on 24 October.
+- [Where the context comes from](/engineering/where-the-context-comes-from/) —
+  counts a real request layer by layer with Claude Code's own `--output-format json`.
+- [How a skill gets found and loaded](/engineering/how-a-skill-gets-found-and-loaded/)
+  — a local model choosing between skill descriptions, five times each.
+- [Who is allowed to do what](/engineering/who-is-allowed-to-do-what/) — the same
+  instruction asked five ways, and what the permission layer did about it.
 
 Each of them states its own `uv run` line above the first snippet. The only
 thing that changes between them is which libraries follow `--with`.

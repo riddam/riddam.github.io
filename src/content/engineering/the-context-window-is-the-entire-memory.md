@@ -26,8 +26,8 @@ can run the same script on your laptop and get your own numbers.*
 
 This needs [what a model actually is](/engineering/what-a-model-actually-is/) —
 the loop in particular, and the note at the end about what attention costs.
-Track 2, on what your coding tool is doing, assumes this post throughout; it
-arrives on 24 October. The whole series, and which track you want, is on
+[Track 2](/engineering/ai-foundations-start-here/), on what your coding tool is
+doing, assumes this post throughout. The whole series, and which track you want, is on
 [the start-here page](/engineering/ai-foundations-start-here/).
 
 Technical words link to their one-line definition in the
@@ -349,8 +349,8 @@ important is established mid-session — a decision, a constraint, a correction 
 write it down outside the conversation. A file in the repo, a note, the ticket.
 Anything whose survival does not depend on a summarising step you did not
 configure and cannot see. The harness-side mechanics of how and when that
-happens get their own post, **Where the Context Comes From**, with track 2 on
-24 October.
+happens get their own post,
+[Where the context comes from](/engineering/where-the-context-comes-from/).
 
 There is a second-order effect worth naming too. Once a summary replaces the
 original turns, the model is reasoning about a *description* of what happened

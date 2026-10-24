@@ -8,7 +8,7 @@ is a push, and `pubDate` only sets the order posts appear in.
 | --- | --- | --- | --- | --- |
 | 12 Oct 2026 | The AI vocabulary, on its own | 1 | 11 Oct | yes |
 | 17 Oct 2026 | Track 1 — what the model is doing | 6 + start-here, running-the-code | 17 Oct | yes |
-| 24 Oct 2026 | Track 2 — what your coding tool is doing | 10 | 24 Oct | |
+| 24 Oct 2026 | Track 2 — what your coding tool is doing | 10 | 24 Oct | yes |
 | 31 Oct 2026 | Track 3 — using it well, day to day | 2 | 31 Oct | |
 | 7 Nov 2026 | Track 4 — putting AI in your own product | 4 | 7 Nov | |
 
@@ -39,13 +39,11 @@ On the morning of a release:
 2. Restore the links into that track. A published post may not link a drafted
    one — `npm test` fails on it — so while a track waits, the posts that point
    into it name it in bold or italics instead. Search the repo for the track's
-   titles to find them. Track 1's were in `guides/ai-architecture-master-guide.md`
-   and `leadership/learning-to-build-software-when-ai-writes-the-code.md`, and
-   are restored. For track 2 they are in `ai-foundations-start-here.md`,
-   `running-the-code-in-these-posts.md`,
-   `the-context-window-is-the-entire-memory.md`,
-   `harness-engineering-vocabulary.md`, `claude-code-plugins-what-i-actually-use.md`
-   and `ai-assisted-coding-playbook.md`.
+   titles to find them, and for the release date, since a waiting reference
+   usually promises one. Tracks 1 and 2 are both restored. The ones still
+   waiting: track 3's are in `ai-foundations-start-here.md` only, and track 4's
+   are in `ai-foundations-start-here.md` and
+   `reading-a-model-card-without-guessing.md`.
 3. On the start-here map, turn that track's bold names back into links, and drop
    the "go live together on …" line for the track that just shipped.
 4. `npm test && npm run build`, then push. Deploy runs on push to `main`.

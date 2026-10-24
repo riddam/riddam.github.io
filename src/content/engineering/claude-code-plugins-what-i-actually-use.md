@@ -115,10 +115,10 @@ are two of the slowest parts of infrastructure work. The cost is the clearest
 example of the context tax in my whole setup: three servers' worth of tool
 definitions sit in every session I open, whether or not I touch AWS that day.
 
-If "MCP server" is a phrase you have been nodding along to, *MCP, Explained
-Without the Spec* is what it actually is — including how to measure the context
-tax above for yourself rather than taking my word for it. It goes up on 24
-October.
+If "MCP server" is a phrase you have been nodding along to,
+[MCP, explained without the spec](/engineering/mcp-explained-without-the-spec/)
+is what it actually is — including how to measure the context tax above for
+yourself rather than taking my word for it.
 
 **datadog.** An MCP server over logs, metrics, traces, dashboards and monitors,
 plus a few skills for setting it up. This one is in my day-to-day rather than my

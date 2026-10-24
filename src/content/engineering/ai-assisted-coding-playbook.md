@@ -375,9 +375,10 @@ reliably keep an agent out of the parts you meant.
 **Short instruction files survive.** Everything in section 11 still applies, with
 one addition from the other direction: an always-loaded file is paid for on every
 prompt, so length is a real cost, and a file nobody is willing to delete from has
-stopped being a configuration. *Where the Context Comes From*, published on 24
-October, covers the mechanism — what is actually in the window, and what
-compaction throws away — and I won't repeat it here.
+stopped being a configuration.
+[Where the context comes from](/engineering/where-the-context-comes-from/) covers
+the mechanism — what is actually in the window, and what compaction throws away —
+and I won't repeat it here.
 
 The pattern across all four: an agent is worst exactly where a new joiner is
 worst, and for the same reasons. Every item above pays off whether or not anyone
