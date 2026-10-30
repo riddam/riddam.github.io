@@ -8,13 +8,12 @@ coverVariant: 3
 draft: false
 ---
 
-*This post reports no measurement of my own. It is a method — what to record,
-for how long, and what the record still will not tell you. The worked log in
-section 04 is invented to show the shape of a finished one, and it says so
-everywhere it appears; no number in it describes anybody's real week. The two
-studies it leans on are real, were read on 10 October 2026, and are linked at
-the end. I have tried to carry their uncertainty across rather than their
-headlines, because the headlines are the part that is wrong.*
+*This post is a method rather than a result: what to record, for how long, and
+what the record still will not tell you. The worked log in section 04 is
+invented to show the shape of a finished one, and says so wherever it appears.
+The two studies behind section 07 are real, were read on 10 October 2026 and are
+linked at the end, with their confidence intervals carried across rather than
+their headlines.*
 
 ## TL;DR
 

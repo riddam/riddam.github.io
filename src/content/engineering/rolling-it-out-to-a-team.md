@@ -9,11 +9,10 @@ draft: false
 ---
 
 *The precedence order in section 02 was read off the vendor's documentation on
-10 October 2026, not recalled — and it is not what I would have said from
-memory, which is the reason the section exists. Everything about adoption is
-pattern rather than measurement, and I have written it as pattern. Where a claim
-is about how people behave rather than how software behaves, treat it as
-something to check against your own team rather than something I have proved.*
+10 October 2026, not recalled — it is not what I would have said from memory,
+which is why the section exists. The rest is pattern rather than measurement:
+where a claim is about how people behave rather than how software behaves, it is
+written as pattern, to check against your own team.*
 
 ## TL;DR
 
