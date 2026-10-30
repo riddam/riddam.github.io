@@ -8,11 +8,12 @@ coverVariant: 3
 draft: false
 ---
 
-*The precedence order in section 02 was read off the vendor's documentation on
-10 October 2026, not recalled — it is not what I would have said from memory,
-which is why the section exists. The rest is pattern rather than measurement:
-where a claim is about how people behave rather than how software behaves, it is
-written as pattern, to check against your own team.*
+*I would have got the settings precedence wrong from memory, which is why I
+looked it up. The five-level stack at the end of section 02 — whose settings
+file wins when two of them disagree — is what the documentation said on
+10 October 2026, not what I assumed it said. The rest is about people rather
+than software. None of it is measured and I have not dressed it up as though it
+were — it is somewhere to start looking at your own team, not a finding.*
 
 ## TL;DR
 

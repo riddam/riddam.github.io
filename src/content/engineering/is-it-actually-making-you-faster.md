@@ -8,12 +8,13 @@ coverVariant: 3
 draft: false
 ---
 
-*This post is a method rather than a result: what to record, for how long, and
-what the record still will not tell you. The worked log in section 04 is
-invented to show the shape of a finished one, and says so wherever it appears.
-The two studies behind section 07 are real, were read on 10 October 2026 and are
-linked at the end, with their confidence intervals carried across rather than
-their headlines.*
+*This is a method, not my result — I have not run the fortnight it describes.
+What it gives you is what to record, for how long, and what the record still
+will not tell you. The worked log in section 04 is invented to show the shape of
+a finished one, and says so wherever it appears. The two studies behind section
+07 are real; I read them on 10 October 2026 and they are linked at the end.
+Where I quote them I use the range each one reports rather than its headline
+figure, because the ranges are wide.*
 
 ## TL;DR
 
