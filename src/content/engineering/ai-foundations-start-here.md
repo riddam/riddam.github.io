@@ -86,13 +86,12 @@ shows the same thing concretely in Claude Code.
 **For working developers, and the tech leads deciding whether this is worth it.**
 Assumes nothing, and a non-engineer can follow it. Two posts:
 
-Both go live on **31 October**.
-
-1. **Is It Actually Making You Faster?** — what to measure, what the numbers
-   hide, and how to run the comparison honestly for two weeks.
-2. **Rolling It Out to a Team** — which configuration belongs to the repository
-   rather than the person, who owns the shared skills, and the adoption failures
-   that turn out to be social.
+1. [Is It Actually Making You Faster?](/engineering/is-it-actually-making-you-faster/)
+   — what to measure, what the numbers hide, and how to run the comparison
+   honestly for two weeks.
+2. [Rolling It Out to a Team](/engineering/rolling-it-out-to-a-team/)
+   — which configuration belongs to the repository rather than the person, who
+   owns the shared skills, and the adoption failures that turn out to be social.
 
 The track is short because most of its ground was already published, and those
 two link out to it rather than restate it. Already written:

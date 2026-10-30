@@ -1,11 +1,11 @@
 ---
 title: "Rolling It Out to a Team"
 description: "Which settings belong to the repository and which to the person, who maintains the shared skills once the person who wrote them moves on, how to onboard someone in an afternoon, and why most adoption failures are social rather than technical."
-pubDate: 2026-10-31
+pubDate: 2026-10-30
 tags: ["ai-foundations", "ai-assisted-coding", "team-leadership", "developer-experience"]
 cover: personas
 coverVariant: 3
-draft: true
+draft: false
 ---
 
 *The precedence order in section 02 was read off the vendor's documentation on

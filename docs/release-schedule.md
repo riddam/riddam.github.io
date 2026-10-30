@@ -9,7 +9,7 @@ is a push, and `pubDate` only sets the order posts appear in.
 | 12 Oct 2026 | The AI vocabulary, on its own | 1 | 11 Oct | yes |
 | 17 Oct 2026 | Track 1 — what the model is doing | 6 + start-here, running-the-code | 17 Oct | yes |
 | 24 Oct 2026 | Track 2 — what your coding tool is doing | 10 | 24 Oct | yes |
-| 31 Oct 2026 | Track 3 — using it well, day to day | 2 | 31 Oct | |
+| 30 Oct 2026 | Track 3 — using it well, day to day | 2 | 30 Oct | yes |
 | 7 Nov 2026 | Track 4 — putting AI in your own product | 4 | 7 Nov | |
 
 Every post in a track carries that track's release date. The earlier plan
@@ -40,9 +40,8 @@ On the morning of a release:
    one — `npm test` fails on it — so while a track waits, the posts that point
    into it name it in bold or italics instead. Search the repo for the track's
    titles to find them, and for the release date, since a waiting reference
-   usually promises one. Tracks 1 and 2 are both restored. The ones still
-   waiting: track 3's are in `ai-foundations-start-here.md` only, and track 4's
-   are in `ai-foundations-start-here.md` and
+   usually promises one. Tracks 1 to 3 are all restored. The only ones still
+   waiting are track 4's, in `ai-foundations-start-here.md` and
    `reading-a-model-card-without-guessing.md`.
 3. On the start-here map, turn that track's bold names back into links, and drop
    the "go live together on …" line for the track that just shipped.
