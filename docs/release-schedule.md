@@ -1,8 +1,10 @@
 # AI Foundations release schedule
 
-Four tracks, one a week, each pushed by hand on its date. Nothing is scheduled
-by the site: it renders whatever is in `main` with `draft: false`, so a release
-is a push, and `pubDate` only sets the order posts appear in.
+Four tracks, each pushed by hand on its date — and a track's `pubDate` is the
+day it actually went out, not the day the plan said. Tracks 3 and 4 both slipped
+off their planned dates and were re-dated to match. Nothing is scheduled by the
+site: it renders whatever is in `main` with `draft: false`, so a release is a
+push, and `pubDate` only sets the order posts appear in.
 
 | Release | Track | Posts | `pubDate` | Shipped |
 | --- | --- | --- | --- | --- |
@@ -10,7 +12,7 @@ is a push, and `pubDate` only sets the order posts appear in.
 | 17 Oct 2026 | Track 1 — what the model is doing | 6 + start-here, running-the-code | 17 Oct | yes |
 | 24 Oct 2026 | Track 2 — what your coding tool is doing | 10 | 24 Oct | yes |
 | 30 Oct 2026 | Track 3 — using it well, day to day | 2 | 30 Oct | yes |
-| 7 Nov 2026 | Track 4 — putting AI in your own product | 4 | 7 Nov | |
+| 14 Nov 2026 | Track 4 — putting AI in your own product | 4 | 14 Nov | yes |
 
 Every post in a track carries that track's release date. The earlier plan
 staggered them across the week before, so that a track arrived as a week of
@@ -26,9 +28,11 @@ previous/next pair read it in order.
 
 ## How a release works
 
-Everything for every track is already written and committed. Every track still
-waiting carries `draft: true`, which keeps it off the built site and out of the
-feeds while leaving it in the repository, cross-linked and reviewable.
+Everything for every track is written, committed and now published. While a
+track was waiting it carried `draft: true`, which kept it off the built site and
+out of the feeds while leaving it in the repository, cross-linked and reviewable.
+Nothing is drafted any more — the steps below are the record of how each release
+was done, and the recipe for the next series.
 
 The vocabulary page went out first, on its own, because it is the reference the
 rest of the series leans on and it links to nothing that is still drafted.
@@ -40,9 +44,7 @@ On the morning of a release:
    one — `npm test` fails on it — so while a track waits, the posts that point
    into it name it in bold or italics instead. Search the repo for the track's
    titles to find them, and for the release date, since a waiting reference
-   usually promises one. Tracks 1 to 3 are all restored. The only ones still
-   waiting are track 4's, in `ai-foundations-start-here.md` and
-   `reading-a-model-card-without-guessing.md`.
+   usually promises one. All four tracks are restored; nothing is waiting.
 3. On the start-here map, turn that track's bold names back into links, and drop
    the "go live together on …" line for the track that just shipped.
 4. `npm test && npm run build`, then push. Deploy runs on push to `main`.

@@ -115,17 +115,20 @@ putting a model inside something other people will use. Assumes tracks 1 and 2.
 It is the only track whose code you keep: an agent loop and an eval harness, both
 written by hand, both short enough to read in one sitting.
 
-All four are written and go live together on **7 November**; until they do, this
-is what is coming, so you know whether to wait for it.
+Four posts:
 
-1. **Writing the Agent Loop Yourself** — a step budget, an approval gate,
-   reasoning printed each turn, and the four ways it actually went wrong.
-2. **Knowing Whether It Works** — twenty cases where the assertion is "good
-   enough" rather than equality, and a real regression the suite catches.
-3. **Making the Model Yours — and When Not To** — a real fine-tune, before and
-   after, and what happened when I tried to teach it a fact instead of a manner.
-4. **Running It in Production** — streaming, the two cost levers, a ceiling that
-   trips, injection against a service, and what you may legally send.
+1. [Writing the Agent Loop Yourself](/engineering/writing-the-agent-loop-yourself/)
+   — a step budget, an approval gate, reasoning printed each turn, and the four
+   ways it actually went wrong.
+2. [Knowing Whether It Works](/engineering/knowing-whether-it-works/)
+   — twenty cases where the assertion is "good enough" rather than equality, and
+   a real regression the suite catches.
+3. [Making the Model Yours — and When Not To](/engineering/making-the-model-yours/)
+   — a real fine-tune, before and after, and what happened when I tried to teach
+   it a fact instead of a manner.
+4. [Running It in Production](/engineering/running-it-in-production/)
+   — streaming, the two cost levers, a ceiling that trips, injection against a
+   service, and what you may legally send.
 
 The three guides —
 [AI architecture](/guides/ai-architecture-master-guide/),

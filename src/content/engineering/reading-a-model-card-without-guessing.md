@@ -567,7 +567,7 @@ Three properties separate a set that helps from one that flatters:
 
 Doing this properly — grading rubrics, judge models, regression gates in CI — is
 a discipline with a literature, and this series has a post on it in track 4 —
-**Knowing Whether It Works**, arriving 7 November. Until then,
+[Knowing Whether It Works](/engineering/knowing-whether-it-works/). Alongside it,
 [section 10 of the AI architecture
 guide](/guides/ai-architecture-master-guide/#10--llmops--evaluation) covers the
 LLMOps side of evaluation and [section 07 of the training and evaluation
