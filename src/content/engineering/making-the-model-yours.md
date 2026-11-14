@@ -1,11 +1,11 @@
 ---
 title: "Making the Model Yours — and When Not To"
 description: "A real fine-tune on a small local model, with the same ten prompts before and after. Why it teaches a manner rather than facts, what the attempt to teach it a fact actually produced, and the local-versus-API decision on privacy and cost."
-pubDate: 2026-11-07
+pubDate: 2026-11-14
 tags: ["ai-foundations", "ai-in-production", "fine-tuning", "model-training"]
 cover: training
 coverVariant: 3
-draft: true
+draft: false
 ---
 
 *Three [LoRA](/engineering/the-ai-vocabulary/#lora) fine-tunes were run for this post on 10 October 2026, on

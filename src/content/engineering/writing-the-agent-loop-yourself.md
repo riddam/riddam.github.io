@@ -1,11 +1,11 @@
 ---
 title: "Writing the Agent Loop Yourself"
 description: "Sixty lines, no framework: a loop with a step budget, an approval gate before anything irreversible, and its reasoning printed each turn. Then the ways it actually went wrong at step four, and which of them the budget and the gate caught."
-pubDate: 2026-11-07
+pubDate: 2026-11-14
 tags: ["ai-foundations", "ai-in-production", "agents", "python"]
 cover: agent
 coverVariant: 4
-draft: true
+draft: false
 ---
 
 *Every transcript in this post was produced on 10 October 2026 by the loop

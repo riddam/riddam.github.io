@@ -1,11 +1,11 @@
 ---
 title: "Running It in Production"
 description: "An ordinary service with one non-deterministic dependency. Streaming and perceived latency, the two cost levers that actually matter, retries and logging, a cost ceiling that trips, prompt injection against a service rather than an editor, and what you may legally send to an API."
-pubDate: 2026-11-07
+pubDate: 2026-11-14
 tags: ["ai-foundations", "ai-in-production", "operations", "security"]
 cover: pipeline
 coverVariant: 3
-draft: true
+draft: false
 ---
 
 *Everything timed in this post was measured on 10 October 2026, on a laptop,
